@@ -19,6 +19,9 @@ state are intentionally excluded from version control.
   diagnostic command behavior.
 - [`analysis/xhalf-usb-identity.md`](analysis/xhalf-usb-identity.md) — verified
   USB identity and normal-mode PTP interface.
+- [`analysis/ptp-and-service-command-paths.md`](analysis/ptp-and-service-command-paths.md)
+  — separation of normal PTP, hidden factory PTP operations, and the UVC
+  RCA/EUC shell-forwarding path.
 
 ## Artifact identity
 
