@@ -1,0 +1,17 @@
+{
+  "original": {
+    "path": "FPUPDATE.DAT",
+    "bytes": 165795434,
+    "sha256": "3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68"
+  },
+  "extracted": {
+    "path": "firmware-main.bin",
+    "bytes": 14910464,
+    "sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+    "dat_start": "0x8fe3d20",
+    "dat_end_exclusive": "0x9e1c120",
+    "runtime_base": "0x40000000",
+    "matches_original_slice": true
+  },
+  "analysis": "Original firmware unchanged; reproduction uses synthetic emulator RAM."
+}

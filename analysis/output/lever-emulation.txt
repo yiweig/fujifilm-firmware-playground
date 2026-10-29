@@ -1,0 +1,12 @@
+Bounded execution: 0x4041cd28 through asset selection at 0x40229628.
+Original ARM code, synthetic capture/playback/metadata RAM. Logging and drawing setup calls stubbed.
+This reproduces label selection, not hardware behavior or metadata freshness.
+Provia | RAM experiment=none | input field=0 | selected=0 | asset=A:\RO_RES\PNG\FIC\FSIM\PRO.PNG | steps=285
+Provia | RAM experiment=set field to 0x29 | input field=0 | selected=0 | asset=A:\RO_RES\PNG\FIC\FSIM\PRO.PNG | steps=343
+Velvia | RAM experiment=none | input field=0 | selected=0 | asset=A:\RO_RES\PNG\FIC\FSIM\PRO.PNG | steps=285
+Velvia | RAM experiment=set field to 0x29 | input field=0 | selected=1 | asset=A:\RO_RES\PNG\FIC\FSIM\VE.PNG | steps=328
+Classic Chrome | RAM experiment=none | input field=0 | selected=0 | asset=A:\RO_RES\PNG\FIC\FSIM\PRO.PNG | steps=285
+Classic Chrome | RAM experiment=set field to 0x29 | input field=0 | selected=3 | asset=A:\RO_RES\PNG\FIC\FSIM\CC.PNG | steps=335
+Acros | RAM experiment=none | input field=0 | selected=0 | asset=A:\RO_RES\PNG\FIC\FSIM\PRO.PNG | steps=285
+Acros | RAM experiment=set field to 0x29 | input field=0 | selected=8 | asset=A:\RO_RES\PNG\FIC\FSIM\AR_S.PNG | steps=320
+PASS: all eight bounded executions matched the expected selectors.

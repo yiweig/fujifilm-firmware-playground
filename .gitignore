@@ -1,0 +1,47 @@
+# Original and extracted firmware images
+FPUPDATE.DAT
+*.bin
+*.elf
+*.fw
+*.img
+
+# Camera image / sensor dumps
+*.RAW
+*.raw
+*.RAF
+*.raf
+*.DNG
+*.dng
+
+# Reverse-engineering project databases and local tool state
+*.gpr
+*.rep/
+analysis/project/
+analysis/cache/
+analysis/settings/
+
+# Generated logs and transient files
+*.log
+*.tmp
+*.swp
+*~
+.DS_Store
+
+# Language/tool caches
+__pycache__/
+*.py[cod]
+*.class
+.venv/
+venv/
+.idea/
+.vscode/
+
+# Large captures and archives
+*.pcap
+*.pcapng
+*.saz
+*.zip
+*.7z
+*.tar
+*.tar.gz
+
