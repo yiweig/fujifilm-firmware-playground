@@ -22,6 +22,9 @@ state are intentionally excluded from version control.
 - [`analysis/ptp-and-service-command-paths.md`](analysis/ptp-and-service-command-paths.md)
   — separation of normal PTP, hidden factory PTP operations, and the UVC
   RCA/EUC shell-forwarding path.
+- [`analysis/uvc-service-mode-activation.md`](analysis/uvc-service-mode-activation.md)
+  — static trace from power-on calibration selection through `uvctestcmd`,
+  `USBUVC.BIN`, and UVC service callback registration.
 
 ## Artifact identity
 
