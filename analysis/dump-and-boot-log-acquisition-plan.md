@@ -5,9 +5,19 @@ and cold-boot log without deliberately changing persistent camera state. It is
 not yet an instruction to connect to unidentified board pads or send undocumented
 USB commands.
 
+## Owner constraints
+
+The camera will not be disassembled, probed internally, or sent to a repair
+lab. UART-pad capture and physical storage acquisition are therefore excluded
+from the active plan. They remain documented below only to explain why they are
+not being pursued. The active acquisition route is external USB, with SD-card
+boot/logging considered only if a fully understood non-writing mechanism is
+found.
+
 ## Recommendation
 
-Use this order:
+With unrestricted hardware access the routes would normally be ranked as
+follows:
 
 1. ask FujiMod/iCatch researchers for an existing X-half service-mode chord,
    UART pad map, or SPCA6500 read-only profile;
@@ -20,6 +30,9 @@ UART observation is the least invasive electrically after the pads and logic
 voltage are known. USB is mechanically easier, but an unqualified service
 command can write settings, calibration, or flash. A physical chip read risks
 board damage and may need NAND ECC/OOB knowledge.
+
+Under the owner constraints, proceed directly to Route B and do not execute a
+request until its X-half-specific read-only semantics are proven statically.
 
 ## What each artifact would answer
 
@@ -84,6 +97,12 @@ before UART setup.
 Normal X-half USB is observed as PTP `04CB:030A`. Static analysis found hidden
 factory PTP operations and a separate UVC/RCA command-forwarding implementation,
 but neither is a proven arbitrary read path in normal retail mode.
+
+The internal shell behind the UVC/RCA path includes a `dump` command described
+as reading memory/register ranges. It also contains explicitly mutating commands
+such as `fill`, which is why exposing the shell is not by itself a safety proof.
+The promising capability is present; the unresolved risk is how to enter the
+mode and constrain the transport to the read-only command.
 
 FujiMod's ff80 service/debug protocol supports memory operations for qualified
 camera definitions. Its documentation explicitly makes command availability,
