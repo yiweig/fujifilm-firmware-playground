@@ -35,6 +35,9 @@ state are intentionally excluded from version control.
 - [`analysis/brick-risk-and-recovery.md`](analysis/brick-risk-and-recovery.md)
   — updater safeguards, failure modes, current SD-recovery status, and safety
   gates required before any modified-firmware flash.
+- [`analysis/spca6500-package-and-recovery-comparison.md`](analysis/spca6500-package-and-recovery-comparison.md)
+  — matched SPHOST container slots, decoded HDR2 resource disks,
+  Firmware1/Firmware2 write flow, and the bounded USB-recovery lead.
 - [`analysis/fujimod-new-camera-onboarding.md`](analysis/fujimod-new-camera-onboarding.md)
   — FujiMod's public bring-up resources, current X half support gaps, and a
   beginner-safe research path for a new processor family.

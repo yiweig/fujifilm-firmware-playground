@@ -12,6 +12,12 @@ or communicating with the camera. The camera was unplugged throughout.
 - The container header declares an end at `0x09e1d16a`, followed by a
   `0x500`-byte outer trailer.
 
+The word at header offset `0x1fc` is an additive checksum. Summing all
+little-endian 32-bit words through the declared end, with the final partial word
+zero-padded, produces zero when the stored value `0x03b263c0` is included. The
+outer trailer is not covered by this sum and still appears to carry a separate
+security/metadata structure whose verification rule is unresolved.
+
 The machine-readable region inventory, including per-region hashes, is
 [`output/firmware-regions.json`](output/firmware-regions.json). It is generated
 by [`inventory_firmware.py`](inventory_firmware.py).
@@ -22,7 +28,9 @@ by [`inventory_firmware.py`](inventory_firmware.py).
 |---|---:|---|---|
 | `0x00000000..0x000a2bff` | `666,624` | top-level header and card updater | top-level pointer and updater strings/code |
 | `0x000a2c00..0x000a3bff` | `4,096` | `SUNP BURN HDR 1` | exact header pointer/string |
-| `0x000a3c00..0x082a3d1f` | `136,315,168` | `SUNP BURN HDR 2` plus opaque bulk payload | exact boundary; internal format unresolved |
+| `0x000a3c00..0x000a3d1f` | `288` | `SUNP BURN HDR 2` control header | exact marker and FAT boundary |
+| `0x000a3d20..0x078a3d1f` | `125,829,120` | FAT16 resource image A (`RO_RES`) | FAT16 geometry and exact endpoint |
+| `0x078a3d20..0x082a3d1f` | `10,485,760` | FAT16 resource image B (`USER_RES`) | FAT16 geometry; ends exactly at `firstburn` |
 | `0x082a3d20..0x082c3d1f` | `131,072` | `firstburn` manifest and padding | manifest text; aligned zImage follows |
 | `0x082c3d20..0x084c0d8f` | `2,084,976` | ARM Linux zImage | zImage header and matching manifest size |
 | `0x084c0d90..0x086c3d1f` | `2,109,328` | kernel partition padding | between verified payloads |
@@ -33,9 +41,13 @@ by [`inventory_firmware.py`](inventory_firmware.py).
 | `0x09e1ca70..0x09e1d169` | `1,786` | `DRAMPAR3` and declared tail | exact header pointer/string |
 | `0x09e1d16a..0x09e1d669` | `1,280` | outer trailer | actual size minus declared end |
 
-The 130 MiB HDR2 payload has long high-entropy and low-entropy runs. Entropy
-cannot distinguish encryption from compression, and the region also contains
-sparse areas, so it remains deliberately labelled **opaque**, not “encrypted.”
+HDR2 uses the same 0x120-byte control-header plus A/B resource-disk construction
+documented in a public SPCA6500 comparison image. Both X half disks use OEM
+label `ICATCH` and FAT16. The larger A image contains the read-only resource
+tree and the smaller B image contains user resources. Individual proprietary
+resource file formats still need decoding, but the region's outer storage
+format is no longer opaque. See
+[`spca6500-package-and-recovery-comparison.md`](spca6500-package-and-recovery-comparison.md).
 
 No ELF, UBI, or flattened-device-tree magic was found in the package. The only
 SquashFS superblock is at `0x086c3d20`.
@@ -56,8 +68,8 @@ The kernel contains SPCA6500 platform code, NAND, UART, GPIO, I2C, SPI, SDIO,
 USB, UBI, SquashFS, and fastboot-related support. Neither the package nor the
 decompressed kernel contains an FDT magic header. The best present inference is
 that this Linux build uses SPCA6500 board/platform code and ATAG-style boot data,
-not an appended device tree. An encoded object hidden inside HDR2 cannot be
-excluded until that format is decoded.
+not an appended device tree. The now-identified FAT resource images contain no
+plain FDT magic either; a transformed proprietary resource cannot be excluded.
 
 ## Root filesystem
 
@@ -134,8 +146,9 @@ The update contains two substantial execution environments:
 
 The internal mask boot ROM is still absent. The card updater, NAND boot stage,
 or another early loader must validate and place these payloads before the DRAM
-image's reset vector runs. The updater at the start of the package is therefore
-the next likely place to investigate integrity checks and recovery behavior.
+image's reset vector runs. Comparable iCatch tools provide a concrete USB ISP
+and mask-boot lead, but no X half entry condition or immutable recovery path has
+been demonstrated.
 
 ## Reproduction
 

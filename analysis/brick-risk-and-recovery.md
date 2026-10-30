@@ -61,9 +61,12 @@ safe. In particular:
 - Read-back verification detects a bad write only after writing has begun.
 - The updater can update early-boot data such as DRAM parameters and `rawC`.
   Damage there may prevent higher-level recovery code from starting.
-- The package's outer 1,280-byte trailer and the large `SUNP BURN HDR 2`
-  region remain undecoded. A reliable modified-package integrity/repacking
-  procedure does not yet exist.
+- The former `SUNP BURN HDR 2` unknown is now bounded as a 0x120-byte header
+  followed by 120 MiB and 10 MiB FAT16 A/B resource images. The outer
+  1,280-byte trailer and its integrity/repacking rules remain unresolved. The
+  header checksum at `0x1fc` is now identified as a zero-sum of little-endian
+  32-bit words through the declared package end, but that alone is not a
+  reliable modified-package procedure.
 
 The portable evidence is
 [`output/rea-card-updater-safety-evidence.json`](output/rea-card-updater-safety-evidence.json).
@@ -93,6 +96,21 @@ The relevant pinned public sources are:
 - [generated recovery recipes](https://github.com/justjake/fujimod/blob/974e95dafab3b7a281e7453aad8ff029f7df2a58/catalog/recovery/recipes.generated.json)
 - [firmware catalog containing `xhalf-200`](https://github.com/justjake/fujimod/blob/974e95dafab3b7a281e7453aad8ff029f7df2a58/catalog/firmware-versions.generated.json)
 - [catalog-generation status](https://github.com/justjake/fujimod/blob/974e95dafab3b7a281e7453aad8ff029f7df2a58/catalog/generation.generated.json)
+
+## SPCA6500 USB recovery lead
+
+A public V50/SPCA6500 reverse-engineering repository uses the same seven-slot
+`SUNP BURN FILE` format and includes iCatch FRM tools and drivers. Its files
+distinguish mask boot, ISP boot, and firmware boot, and its driver recognizes
+SPCA6500 bulk/null USB interfaces. A reported shutter+USB+power sequence reaches
+that mode on some cameras, but the repository explicitly says it fails on an
+Akaso V50 Pro. The mechanism is therefore chipset-family evidence, not an X
+half procedure and not proof that the path survives damaged flash.
+
+This improves recovery status from “no concrete lead” to **plausible but
+unproven**. It does not clear the cold-recovery safety gate. Details and pinned
+sources are in
+[`spca6500-package-and-recovery-comparison.md`](spca6500-package-and-recovery-comparison.md).
 
 ## Failure modes
 

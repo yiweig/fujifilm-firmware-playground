@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import array
 import hashlib
 import json
 import mmap
@@ -20,6 +21,83 @@ ELF_MAGIC = b"\x7fELF"
 UBI_MAGIC = b"UBI#"
 SQUASHFS_MAGIC = b"hsqs"
 GZIP_MAGIC = b"\x1f\x8b\x08"
+
+
+def little_endian_word_sum(data: mmap.mmap, end: int) -> int:
+    """Return the modulo-2^32 sum of zero-padded little-endian u32 words."""
+    total = 0
+    chunk_size = 4 * 1024 * 1024
+    for position in range(0, end, chunk_size):
+        chunk = bytes(data[position : min(position + chunk_size, end)])
+        if len(chunk) % 4:
+            chunk += b"\0" * (-len(chunk) % 4)
+        words = array.array("I")
+        words.frombytes(chunk)
+        if words.itemsize != 4:
+            raise SystemExit("native unsigned int is not 32 bits")
+        if struct.pack("=I", 1) != struct.pack("<I", 1):
+            words.byteswap()
+        total = (total + sum(words)) & 0xFFFFFFFF
+    return total
+
+
+def fat16_volume(data: mmap.mmap, start: int, name: str) -> dict:
+    """Parse enough of an embedded FAT16 boot sector to bound the volume."""
+    bytes_per_sector = struct.unpack_from("<H", data, start + 0x0B)[0]
+    sectors_per_cluster = data[start + 0x0D]
+    reserved_sectors = struct.unpack_from("<H", data, start + 0x0E)[0]
+    fat_count = data[start + 0x10]
+    root_entry_count = struct.unpack_from("<H", data, start + 0x11)[0]
+    total_sectors_16 = struct.unpack_from("<H", data, start + 0x13)[0]
+    sectors_per_fat = struct.unpack_from("<H", data, start + 0x16)[0]
+    total_sectors_32 = struct.unpack_from("<I", data, start + 0x20)[0]
+    total_sectors = total_sectors_16 or total_sectors_32
+    if (
+        data[start + 0x36 : start + 0x3E] != b"FAT16   "
+        or data[start + 0x1FE : start + 0x200] != b"\x55\xaa"
+        or bytes_per_sector == 0
+        or total_sectors == 0
+    ):
+        raise SystemExit(f"{name} does not have the expected FAT16 boot sector")
+
+    root_sectors = (
+        root_entry_count * 32 + bytes_per_sector - 1
+    ) // bytes_per_sector
+    root_start = start + (
+        reserved_sectors + fat_count * sectors_per_fat
+    ) * bytes_per_sector
+    root_names: list[str] = []
+    for offset in range(root_start, root_start + root_entry_count * 32, 32):
+        first = data[offset]
+        attributes = data[offset + 11]
+        if first == 0:
+            break
+        if first == 0xE5 or attributes == 0x0F or attributes & 0x08:
+            continue
+        base = bytes(data[offset : offset + 8]).decode("ascii", "replace").rstrip()
+        extension = bytes(data[offset + 8 : offset + 11]).decode(
+            "ascii", "replace"
+        ).rstrip()
+        root_names.append(base + (f".{extension}" if extension else ""))
+
+    size = total_sectors * bytes_per_sector
+    return {
+        "name": name,
+        "format": "FAT16",
+        "start": f"0x{start:08x}",
+        "end_exclusive": f"0x{start + size:08x}",
+        "size": size,
+        "bytes_per_sector": bytes_per_sector,
+        "sectors_per_cluster": sectors_per_cluster,
+        "reserved_sectors": reserved_sectors,
+        "fat_count": fat_count,
+        "sectors_per_fat": sectors_per_fat,
+        "root_entry_count": root_entry_count,
+        "root_start": f"0x{root_start:08x}",
+        "data_start": f"0x{root_start + root_sectors * bytes_per_sector:08x}",
+        "root_entries": root_names,
+        "sha256": sha256_range(data, start, size),
+    }
 
 
 def sha256_range(data: mmap.mmap, start: int, size: int) -> str:
@@ -73,6 +151,12 @@ def main() -> None:
                 struct.unpack_from("<7I", data, 0x10)
             )
             actual_size = len(data)
+            stored_word_checksum = struct.unpack_from("<I", data, 0x1FC)[0]
+            declared_word_sum = little_endian_word_sum(data, declared_end)
+            if declared_word_sum != 0:
+                raise SystemExit(
+                    "declared package does not satisfy the 32-bit word-sum checksum"
+                )
             if data[hdr1 : hdr1 + 16] != b"SUNP BURN HDR 1\0":
                 raise SystemExit("HDR1 offset does not point to SUNP BURN HDR 1")
             if data[hdr2 : hdr2 + 16] != b"SUNP BURN HDR 2\0":
@@ -81,6 +165,13 @@ def main() -> None:
                 raise SystemExit("HDR3 offset does not point to SUNP BURN HDR 3")
             if data[drampar : drampar + 8] != b"DRAMPAR3":
                 raise SystemExit("DRAM parameter offset does not point to DRAMPAR3")
+
+            hdr2_payload_start = hdr2 + 0x120
+            resource_a = fat16_volume(data, hdr2_payload_start, "resource image A")
+            resource_b_start = int(resource_a["end_exclusive"], 16)
+            resource_b = fat16_volume(data, resource_b_start, "resource image B")
+            if int(resource_b["end_exclusive"], 16) != linux_start:
+                raise SystemExit("FAT16 A/B images do not exactly fill the HDR2 payload")
 
             manifest_text = bytes(data[linux_start : linux_start + 0x200]).split(
                 b"\0", 1
@@ -148,6 +239,9 @@ def main() -> None:
                     "sha256": sha256_range(data, 0, actual_size),
                     "format": "SUNP BURN FILE",
                     "declared_end": f"0x{declared_end:08x}",
+                    "word_checksum_offset": "0x000001fc",
+                    "word_checksum": f"0x{stored_word_checksum:08x}",
+                    "declared_little_endian_u32_sum": f"0x{declared_word_sum:08x}",
                     "trailer_size": actual_size - declared_end,
                 },
                 "header_offsets": {
@@ -158,6 +252,7 @@ def main() -> None:
                     "hdr3": f"0x{hdr3:08x}",
                     "drampar3": f"0x{drampar:08x}",
                 },
+                "hdr2_resource_images": [resource_a, resource_b],
                 "firstburn_manifest": {
                     "kernel_size": kernel_size,
                     "rootfs_size": rootfs_size,
@@ -205,7 +300,9 @@ def main() -> None:
                 "regions": [
                     region("package header and updater", 0, hdr1, "top-level header pointer", data),
                     region("SUNP BURN HDR 1", hdr1, hdr2, "top-level header pointer", data),
-                    region("HDR2 opaque bulk payload", hdr2, linux_start, "top-level header pointer", data),
+                    region("SUNP BURN HDR 2 control header", hdr2, hdr2_payload_start, "HDR2 marker and FAT16 boundary", data),
+                    region("FAT16 resource image A", hdr2_payload_start, resource_b_start, "FAT16 boot sector", data),
+                    region("FAT16 resource image B", resource_b_start, linux_start, "FAT16 boot sector", data),
                     region("firstburn manifest/padding", linux_start, zimage_start, "manifest and zImage magic", data),
                     region("ARM zImage", zimage_start, zimage_start + zimage_size, "zImage header and manifest", data),
                     region("kernel-to-rootfs padding", zimage_start + zimage_size, squashfs_start, "adjacent verified regions", data),

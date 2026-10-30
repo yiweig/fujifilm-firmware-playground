@@ -156,6 +156,10 @@ flowchart TD
   sdrecovery["Cold SD recovery / RAM OS image<br/>not demonstrated on X half"]:::unknown
   rom -. "possible but unproven" .-> sdrecovery
   sdrecovery -. "desired independent recovery route" .-> main
+
+  usbisp["iCatch USB ISP / mask-boot tool family<br/>documented on comparable V50 devices<br/>X half entry and ROM independence unproven"]:::inferred
+  rom -. "chipset-family lead only" .-> usbisp
+  usbisp -. "desired RAM loader / flash repair route" .-> early
 ```
 
 ### Safety boundary shown by the flow
@@ -186,7 +190,9 @@ flowchart LR
   subgraph pkg["FPUPDATE.DAT file offsets — not runtime addresses"]
     p0["0x00000000..0x000a2bff<br/>header + card updater"]:::observed
     p1["0x000a2c00..0x000a3bff<br/>SUNP BURN HDR 1"]:::observed
-    p2["0x000a3c00..0x082a3d1f<br/>HDR2 + opaque bulk payload"]:::unknown
+    p2h["0x000a3c00..0x000a3d1f<br/>HDR2 control header"]:::observed
+    p2a["0x000a3d20..0x078a3d1f<br/>FAT16 resource image A — RO_RES"]:::observed
+    p2b["0x078a3d20..0x082a3d1f<br/>FAT16 resource image B — USER_RES"]:::observed
     p3["0x082a3d20..0x082c3d1f<br/>firstburn manifest / padding"]:::observed
     p4["0x082c3d20..0x084c0d8f<br/>Linux zImage"]:::observed
     p5["0x086c3d20..0x08fd281f<br/>SquashFS rootfs"]:::observed
@@ -218,7 +224,8 @@ flowchart LR
   p4 -->|"payload size matches firstburn manifest"| n1
   p5 -->|"payload size matches firstburn manifest"| n2
   p6 -->|"runtime image mapping"| c4
-  p2 -. "contents / destinations unresolved" .-> n5
+  p2a -. "resource destination mapping unresolved" .-> n5
+  p2b -. "resource destination mapping unresolved" .-> n5
   p8 -. "updater destination unresolved" .-> n5
   n5 -. "early loader mapping unresolved" .-> c4
 ```
@@ -248,8 +255,8 @@ file ranges remain in `update-package-and-linux.md` and
 | Storage | active NAND/SD code; Linux partition construction; package zImage/rootfs | NAND part/capacity; FW1/FW2/rawC physical placement; bad-block metadata |
 | USB | normal physical camera enumerates as PTP `04CB:030A`; separate UVC/EUC code exists | safe service-mode entry; UVC selector source; read-only debug transport |
 | Linux | exact kernel and rootfs; OpenWrt inventory; Broadcom support files | normal runtime role; actual network interfaces; exposed UART pads |
-| Update safety | package checks, read-back verification, retries, backup strings, FW1 checksum messages | complete control flow; outer trailer; HDR2; automatic fallback; power-loss recovery |
-| Recovery | FujiMod proves SD recovery on other processor families | X half SD filenames, chord, boot-ROM contract, and independent recovery image |
+| Update safety | package checksum algorithm, shared FW1/FW2 writer, read-back comparison, retries, backup strings, FW1 checksum messages; HDR2 FAT A/B layout | outer-trailer validation; automatic fallback; power-loss recovery |
+| Recovery | FujiMod proves SD recovery on other processor families; comparable V50 tools distinguish mask/ISP boot and USB bulk/null modes | X half SD/USB entry chord, boot-ROM contract, ROM independence, and recovery image |
 
 ## Source reports
 
@@ -258,6 +265,7 @@ file ranges remain in `update-package-and-linux.md` and
 - [`update-package-and-linux.md`](update-package-and-linux.md)
 - [`output/firmware-regions.json`](output/firmware-regions.json)
 - [`brick-risk-and-recovery.md`](brick-risk-and-recovery.md)
+- [`spca6500-package-and-recovery-comparison.md`](spca6500-package-and-recovery-comparison.md)
 - [`xhalf-usb-identity.md`](xhalf-usb-identity.md)
 - [`ptp-and-service-command-paths.md`](ptp-and-service-command-paths.md)
 - [`uvc-service-mode-activation.md`](uvc-service-mode-activation.md)

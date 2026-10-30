@@ -5,6 +5,9 @@
     "sha256": "3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68",
     "format": "SUNP BURN FILE",
     "declared_end": "0x09e1d16a",
+    "word_checksum_offset": "0x000001fc",
+    "word_checksum": "0x03b263c0",
+    "declared_little_endian_u32_sum": "0x00000000",
     "trailer_size": 1280
   },
   "header_offsets": {
@@ -15,6 +18,46 @@
     "hdr3": "0x09e1c120",
     "drampar3": "0x09e1ca70"
   },
+  "hdr2_resource_images": [
+    {
+      "name": "resource image A",
+      "format": "FAT16",
+      "start": "0x000a3d20",
+      "end_exclusive": "0x078a3d20",
+      "size": 125829120,
+      "bytes_per_sector": 512,
+      "sectors_per_cluster": 4,
+      "reserved_sectors": 1,
+      "fat_count": 2,
+      "sectors_per_fat": 240,
+      "root_entry_count": 512,
+      "root_start": "0x000dff20",
+      "data_start": "0x000e3f20",
+      "root_entries": [
+        "RO_RES"
+      ],
+      "sha256": "2d693dbf7bf96aed2f5455bf3af39381f59071691d879ab364518051f5fcb05f"
+    },
+    {
+      "name": "resource image B",
+      "format": "FAT16",
+      "start": "0x078a3d20",
+      "end_exclusive": "0x082a3d20",
+      "size": 10485760,
+      "bytes_per_sector": 512,
+      "sectors_per_cluster": 2,
+      "reserved_sectors": 1,
+      "fat_count": 2,
+      "sectors_per_fat": 40,
+      "root_entry_count": 512,
+      "root_start": "0x078adf20",
+      "data_start": "0x078b1f20",
+      "root_entries": [
+        "USER_RES"
+      ],
+      "sha256": "b8827f21b399642484767a357ba0dfb67403bc6b5eb4ed40aceb73ada65eba89"
+    }
+  ],
   "firstburn_manifest": {
     "kernel_size": 2084976,
     "rootfs_size": 9497344,
@@ -75,12 +118,28 @@
       "basis": "top-level header pointer"
     },
     {
-      "name": "HDR2 opaque bulk payload",
+      "name": "SUNP BURN HDR 2 control header",
       "start": "0x000a3c00",
+      "end_exclusive": "0x000a3d20",
+      "size": 288,
+      "sha256": "69edc5231a0305051c75fe796caafb47f1213fc93ade35b69b0b869cca0444ac",
+      "basis": "HDR2 marker and FAT16 boundary"
+    },
+    {
+      "name": "FAT16 resource image A",
+      "start": "0x000a3d20",
+      "end_exclusive": "0x078a3d20",
+      "size": 125829120,
+      "sha256": "2d693dbf7bf96aed2f5455bf3af39381f59071691d879ab364518051f5fcb05f",
+      "basis": "FAT16 boot sector"
+    },
+    {
+      "name": "FAT16 resource image B",
+      "start": "0x078a3d20",
       "end_exclusive": "0x082a3d20",
-      "size": 136315168,
-      "sha256": "44bb484d982065f96a584cecf7c387199328d4603181053955d983399a489f1f",
-      "basis": "top-level header pointer"
+      "size": 10485760,
+      "sha256": "b8827f21b399642484767a357ba0dfb67403bc6b5eb4ed40aceb73ada65eba89",
+      "basis": "FAT16 boot sector"
     },
     {
       "name": "firstburn manifest/padding",
