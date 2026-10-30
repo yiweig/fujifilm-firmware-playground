@@ -38,6 +38,9 @@ state are intentionally excluded from version control.
 - [`analysis/firmware-copy-and-fallback.md`](analysis/firmware-copy-and-fallback.md)
   — observed Firmware1 transaction behavior, preservation of Firmware2, and
   the still-unproven cold-boot fallback selector.
+- [`analysis/dump-and-boot-log-acquisition-plan.md`](analysis/dump-and-boot-log-acquisition-plan.md)
+  — ranked, read-only routes for acquiring UART boot logs, RAM/boot-ROM state,
+  and internal flash, with safety gates for each route.
 - [`analysis/spca6500-package-and-recovery-comparison.md`](analysis/spca6500-package-and-recovery-comparison.md)
   — matched SPHOST container slots, decoded HDR2 resource disks,
   Firmware1/Firmware2 write flow, and the bounded USB-recovery lead.
