@@ -32,12 +32,21 @@ executable, read-only, or one real hardware segment.
 | `0x10401000..0x10402fff` | ARM GICv2 distributor and CPU interface | derived |
 | `0x3f000000..0x3f00ffff` | on-chip SRAM used for page tables, exception state, copied routines/data, and per-core stacks | derived |
 | `0x40000000..0x40e383ff` | extracted, initialized DRAM image: vectors, code, constants, and initialized data | observed |
-| `0x40e38400..at least 0x414fb9fc` | runtime static storage/BSS and globals not backed by bytes in the extracted image | derived |
+| `0x40e38400..approximately 0x414fb780` | candidate runtime static-storage/BSS reservation not backed by bytes in the extracted image | inferred |
 | above that | heap, frame buffers, general DRAM, aliases, and true DRAM limit not yet established | unknown |
 
-The last static address is a lower-bound observation, not a declaration that
-`0x414fb9fc` is the BSS end. A lone apparent access above it was rejected as a
-likely disassembly/data false positive.
+The packaged image ends at `0x40e38400`; its last non-zero byte is at
+`0x40e38273`, followed by 396 bytes of zero padding. `0x414fb780` occurs as an
+exact literal in startup and in an allocator-like boundary check at
+`0x400025b4`. If it is the linker/static-storage ceiling, the unbacked span is
+`0x006c3380` bytes (about 6.76 MiB). This interpretation is useful but not yet
+proved: the boundary-check routine is reached indirectly, and its semantics are
+not a textbook `sbrk` implementation.
+
+The earlier `0x414fb9fc` apparent access was rechecked and rejected. It came
+from carrying a literal base through a loop after the register had been
+overwritten, demonstrating why the static address scanner is only a candidate
+generator.
 
 ## Boot and CPU initialization
 
@@ -51,9 +60,21 @@ The first seven words are ARM exception-vector branches. Reset branches from
 5. uses `0x100002f0` as a secondary-core rendezvous/entry location; and
 6. initializes the interrupt controller at `0x10401000/0x10402000`.
 
+The word at image offset `0x60` is `0x4000148c`, a separate secondary-core
+entry. The primary path calls the routine at `0x4000103c`, enters the broader
+platform bootstrap at `0x400037e8`, and passes `0x40003498` onward as the main
+initialization-task entry. That task brings up the OS/HAL layers and then the
+camera subsystems.
+
 The image therefore begins at a genuine runtime entry point, not merely at an
 arbitrary function boundary. This is the application/DRAM-stage entry point,
 however—not necessarily the first instruction executed after power-on.
+
+No conventional whole-BSS zeroing loop or copy table has yet been found on
+this primary reset path. Either an earlier loader prepares the unbacked static
+storage, or the relevant table/loop is behind an initialization routine not yet
+identified. Consequently, `0x40e38400` and `0x414fb780` should not yet be used
+as write or RAM-firmware boundaries without runtime confirmation.
 
 ## On-chip SRAM (`0x3f...`)
 
@@ -136,8 +157,9 @@ address-access census, but package/partition discovery remains a separate task.
 
 1. Name the remaining `0x10001`, `0x10003`, and `0x10017` blocks by
    tracing their callers to source-path/assert strings.
-2. Recover the startup linker tables to determine exact initialized-data, BSS,
-   heap, and DRAM boundaries.
+2. Confirm the candidate `0x414fb780` linker/runtime boundary through the
+   `os mem` debug command or a RAM snapshot, and locate who clears the unbacked
+   static-storage span.
 3. Decode the opaque `SUNP BURN HDR 2` bulk region and analyze the card updater
    for integrity and recovery behavior.
 4. Build a register-level map only for the subsystem relevant to a proposed
