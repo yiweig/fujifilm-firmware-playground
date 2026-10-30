@@ -63,15 +63,44 @@ safe. In particular:
   Damage there may prevent higher-level recovery code from starting.
 - The former `SUNP BURN HDR 2` unknown is now bounded as a 0x120-byte header
   followed by 120 MiB and 10 MiB FAT16 A/B resource images. The outer
-  1,280-byte trailer and its integrity/repacking rules remain unresolved. The
-  header checksum at `0x1fc` is now identified as a zero-sum of little-endian
-  32-bit words through the declared package end, but that alone is not a
-  reliable modified-package procedure.
+  1,280-byte trailer remains semantically unresolved, but it lies outside the
+  range checked by the traced updater and no traced update path validates it.
+  The header checksum at `0x1fc` is a zero-sum of little-endian 32-bit words
+  through the declared package end and is actively enforced by the embedded
+  card updater. That alone is not a reliable modified-package procedure.
 
 The portable evidence is
 [`output/rea-card-updater-safety-evidence.json`](output/rea-card-updater-safety-evidence.json).
 Addresses in that bundle are offsets in the extracted card updater, not runtime
 addresses in the main firmware.
+
+## Package-integrity path now traced
+
+The X half has three relevant preflight stages:
+
+1. The camera application at `0x405ae02c` checks the container magic, seeks to
+   the main-firmware slot, and requires the `FFSD_BRN:` marker and project ID
+   `KC36D10`. Its phrase `signature offset` refers to this firmware marker, not
+   an RSA-style signature.
+2. Its nominal whole-file checksum function at `0x405ae61c` is a no-op in this
+   build: it reads the file, prints a zero sum, and returns success.
+3. The embedded card updater at `0x405efddc` independently adds all 32-bit words
+   through the header's declared end and aborts unless the modulo-2^32 result is
+   zero. This is the real package integrity gate before its write machinery.
+
+The official file has a 0x500-byte trailer beyond that declared end. It has a
+signature-like 256-byte block and metadata, but no traced X half update routine
+consumes it. Static searches found no standard SHA-256/RSA verification
+artifacts tied to it. This is negative evidence, not proof that cryptographic
+validation is impossible elsewhere.
+
+Practical consequence: a main-application patch appears technically
+repackable by changing only the intended bytes and recomputing the word at
+`0x1fc`; there is no demonstrated cryptographic signing barrier in the traced
+path. The dominant risk is therefore no longer “we cannot make a package the
+camera will accept.” It is “the camera may accept our package and write a bad
+image without a proven independent recovery route.” That is the more dangerous
+failure mode and does not change the no-flash recommendation.
 
 ## Current status of SD recovery
 

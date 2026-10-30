@@ -53,6 +53,62 @@ device-specific evidence and must not be generalized to the X half. The
 apparent `0x2c` parser label remains unexplained; that field is zero in both
 samples.
 
+### X half integrity control-flow trace
+
+Static ARM control flow now confirms that the checksum is enforced by the X
+half's embedded card updater:
+
+- card-update orchestration begins at runtime address `0x405efddc` in the main
+  image's copy of the updater;
+- it reads the byte count from parsed-header field `+0x10`, which corresponds
+  to package header offset `0x10` (`0x09e1d16a` in this update);
+- it processes exactly that many bytes with helper `0x40057d68`, which adds
+  aligned little-endian 32-bit words and packs any final one to three bytes in
+  little-endian order;
+- it accumulates the result modulo 2^32 and proceeds only when the result is
+  zero; otherwise it prints `BRN file chksum err:%08x` and returns updater
+  error 9.
+
+This is the same algorithm independently derived from the bytes. It also
+defines the check's boundary: the official file is `0x09e1d66a` bytes, but the
+declared and checksummed region ends at `0x09e1d16a`. The final `0x500` bytes
+are outside this updater checksum.
+
+The camera application's earlier firmware-menu checks are weaker:
+
+- `0x405ae02c` opens `D:\\FPUPDATE.DAT`, confirms `SUNP BURN FILE`, seeks to
+  the slot-3/main-firmware offset from header offset `0x1c`, scans the first
+  7,935 bytes for `FFSD_BRN:`, and requires project ID `KC36D10`;
+- its message `cannot seek to signature offset` uses “signature” to mean that
+  embedded firmware marker/slot, not a cryptographic signature; and
+- `0x405ae61c`, titled `CheckFirmwareUpgradeCheckSum` by its own log text,
+  opens and reads the whole file but leaves its sum variable at zero, prints
+  `sum32=0x00000000`, and returns success unconditionally in this build.
+
+Therefore the high-level checksum check is a stub, while the lower-level card
+updater's additive checksum is active. Recalculating `0x1fc` is necessary for a
+modified package to reach the write path. It is not sufficient evidence that a
+modified flash is safe.
+
+### The outer 0x500-byte trailer
+
+Observed trailer structure begins with 256 high-entropy bytes, followed by the
+fixed descending byte sequence `20 1f ... 02 01`, the string `0.001.000`, two
+copies of the declared package length, small flags, and zero padding. The
+descending 32-byte value is not the SHA-256 of the declared package, in either
+byte order. Searches of both the main image and extracted card updater found no
+copy of that sequence, no SHA-256 initial-constant table, and no standard
+SHA-256 PKCS#1 DigestInfo prefix. The version string also does not occur in
+either executable.
+
+No traced X half update function reads or validates the trailer: the menu
+checker merely reads the full file into memory and returns success, and the
+card updater stops at the declared end. This makes the trailer look like
+tooling/signing metadata that this firmware build does not enforce. Its exact
+producer and the meaning of the 256-byte block remain unknown, so “not enforced
+by the traced path” must not be generalized to every boot stage or firmware
+version.
+
 | Slot | Public Akaso role | X half role | Confidence |
 |---:|---|---|---|
 | 0 | ISP/card-update bootloader | package header plus ARM card updater; code begins at `0x540` | strong structural match |
