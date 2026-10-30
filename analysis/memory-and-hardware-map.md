@@ -32,16 +32,24 @@ executable, read-only, or one real hardware segment.
 | `0x10401000..0x10402fff` | ARM GICv2 distributor and CPU interface | derived |
 | `0x3f000000..0x3f00ffff` | on-chip SRAM used for page tables, exception state, copied routines/data, and per-core stacks | derived |
 | `0x40000000..0x40e383ff` | extracted, initialized DRAM image: vectors, code, constants, and initialized data | observed |
-| `0x40e38400..approximately 0x414fb780` | candidate runtime static-storage/BSS reservation not backed by bytes in the extracted image | inferred |
+| `0x40e38400..0x414fb77f` | unbacked runtime RAM below a confirmed memory/allocator ceiling; exact owners and contents remain unknown | derived/unknown |
 | above that | heap, frame buffers, general DRAM, aliases, and true DRAM limit not yet established | unknown |
 
 The packaged image ends at `0x40e38400`; its last non-zero byte is at
-`0x40e38273`, followed by 396 bytes of zero padding. `0x414fb780` occurs as an
-exact literal in startup and in an allocator-like boundary check at
-`0x400025b4`. If it is the linker/static-storage ceiling, the unbacked span is
-`0x006c3380` bytes (about 6.76 MiB). This interpretation is useful but not yet
-proved: the boundary-check routine is reached indirectly, and its semantics are
-not a textbook `sbrk` implementation.
+`0x40e38273`, followed by 396 bytes of zero padding. The primary startup path
+passes the exact literal `0x414fb780` to the setter at `0x400017a0`, which stores
+it at `0x40e4af04`. The later OS bootstrap at `0x40049db4` reads that global and
+passes it to `0x4001f8dc` during memory initialization.
+
+The routine at `0x400025b4` independently confirms the boundary's allocator
+role. It initializes a cursor at `0x40e37c58` to `0x414fb780`, adds a signed
+increment, rejects results above `0x414fb780`, and otherwise commits the new
+cursor while returning its old value. With a negative increment it is a
+downward-moving bump allocator starting at that ceiling. This establishes
+`0x414fb780` as a runtime memory/allocator upper boundary, but not specifically
+as a linker BSS end. The unbacked span below it is `0x006c3380` bytes (about
+6.76 MiB); which portions are static storage, kernel memory, or another pool
+remain unknown.
 
 The earlier `0x414fb9fc` apparent access was rechecked and rejected. It came
 from carrying a literal base through a loop after the register had been
@@ -73,8 +81,9 @@ however—not necessarily the first instruction executed after power-on.
 No conventional whole-BSS zeroing loop or copy table has yet been found on
 this primary reset path. Either an earlier loader prepares the unbacked static
 storage, or the relevant table/loop is behind an initialization routine not yet
-identified. Consequently, `0x40e38400` and `0x414fb780` should not yet be used
-as write or RAM-firmware boundaries without runtime confirmation.
+identified. Consequently, the newly confirmed allocator ceiling still should
+not be treated as a safe write or RAM-firmware upload boundary without runtime
+confirmation of the intervening region's owners.
 
 ## On-chip SRAM (`0x3f...`)
 
@@ -149,6 +158,16 @@ during decompilation and had to be restarted:
 - `output/rea-hardware-map-evidence-partial.json`
 - `output/rea-hardware-map-evidence.json`
 
+A later Ghidra 12.1.4/REA pass is retained in
+`output/rea-ghidra-startup-memory-evidence.json`. REA's synthetic-ELF
+auto-import selected `ARM:LE:32:v8`, which correctly mapped the image but
+misdecoded ARMv7 banked-stack instructions such as the `MSR sp_irq` at
+`0x40000ee0`. Startup conclusions therefore use a separate raw-binary Ghidra
+import forced to `ARM:LE:32:v7:default`, plus LLVM disassembly for exact
+instruction verification. The resulting focused decompilation is in
+`output/startup-v7.txt`. This distinction matters: changing Ghidra versions did
+not fix an incorrect language selection.
+
 REA's firmware-region scanner could not be used on this macOS host because its
 configured Binwalk workflow requires Linux. This does not affect the local
 address-access census, but package/partition discovery remains a separate task.
@@ -157,9 +176,10 @@ address-access census, but package/partition discovery remains a separate task.
 
 1. Name the remaining `0x10001`, `0x10003`, and `0x10017` blocks by
    tracing their callers to source-path/assert strings.
-2. Confirm the candidate `0x414fb780` linker/runtime boundary through the
-   `os mem` debug command or a RAM snapshot, and locate who clears the unbacked
-   static-storage span.
+2. Use the `os mem` debug command or a RAM snapshot to identify the live owners
+   below the confirmed `0x414fb780` allocator ceiling, locate who clears the
+   unbacked span, and determine which callers move the downward cursor at
+   `0x40e37c58`.
 3. Decode the opaque `SUNP BURN HDR 2` bulk region and analyze the card updater
    for integrity and recovery behavior.
 4. Build a register-level map only for the subsystem relevant to a proposed

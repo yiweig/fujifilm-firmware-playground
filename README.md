@@ -44,6 +44,26 @@ Known identities:
 - analysis ELF wrapper:
   `7e5534e40adc45c14ca19b6d1ebd0ea730ccf1d13125eedcc35d802434133755`
 
+## Ghidra import
+
+Use Ghidra 12.1.4 and force the raw image to the ARMv7 language. The synthetic
+ELF is useful for address-aware command-line disassembly, but Ghidra's automatic
+ELF selection currently chooses `ARM:LE:32:v8` and misdecodes some privileged
+ARMv7 startup instructions.
+
+```sh
+bash analysis/run-ghidra.sh \
+  -import firmware-main.bin \
+  -processor ARM:LE:32:v7 -cspec default \
+  -loader BinaryLoader -loader-baseAddr 0x40000000 \
+  -loader-blockName firmware -overwrite \
+  -preScript SeedFirmware.java
+```
+
+`GHIDRA_INSTALL_DIR`, `GHIDRA_PROJECT_DIR`, and `GHIDRA_PROJECT_NAME` can
+override the launcher defaults. Local project files and tool state stay ignored
+by Git.
+
 ## Safety boundary
 
 Static-analysis findings are not proof of runtime behavior. Do not flash a
