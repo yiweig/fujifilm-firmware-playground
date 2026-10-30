@@ -27,6 +27,10 @@ analysis/settings/
 *~
 .DS_Store
 
+# Reproducible, high-volume static-analysis detail. Keep the compact page
+# summary and curated maps; regenerate this file with analysis/map_hardware.py.
+analysis/output/static-memory-accesses.tsv
+
 # Language/tool caches
 __pycache__/
 *.py[cod]

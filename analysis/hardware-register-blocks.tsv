@@ -1,0 +1,28 @@
+start	end	classification	confidence	basis
+0x10000000	0x10000fff	global system control and GPIO	observed	GPIO IRQ code directly uses 0x10000008..0x1000001c; startup and many HALs use later offsets
+0x10001000	0x10001fff	unknown system block	unknown	30 statically resolved accesses; no subsystem attribution yet
+0x10002000	0x10002fff	command-queue/CDSP auxiliary registers	observed	hal_cq command code and hal_cdsp code directly access this range
+0x10003000	0x10003fff	multi-channel transfer/buffer engine	inferred	channel-strided registers contain address and size fields; subsystem name not yet recovered
+0x10004000	0x10004fff	flash/SD/UART peripheral complex	observed	hal_nand and hal_sd code directly access this range; peripheral UART/SDIO drivers are present
+0x10005000	0x10005fff	USB device/OHCI host controller	observed	hal_usb and hal_ohci code directly access this range
+0x10006000	0x10006fff	audio and ADC complex	observed	hal_aud and hal_adc code directly access this range
+0x10007000	0x10007fff	MAC hardware engine	observed	hal_mac code directly accesses this range; MAC expansion is not yet known and should not be assumed to mean Ethernet
+0x10008000	0x10008fff	JPEG codec	observed	hal_jpeg_encode code directly accesses this range
+0x10009000	0x10009fff	front-end sensor/LVDS interface	observed	hal_front_lvds code directly accesses 0x10009800 and 0x10009c00-area registers
+0x1000a000	0x1000afff	display controller	observed	hal_disp code directly accesses this range
+0x1000b000	0x1000bfff	IME image engine	observed	hal_ime code directly accesses this range
+0x1000c000	0x1000cfff	H.264 codec	observed	hal_h264 code directly accesses this range
+0x1000d000	0x1000dfff	CDSP main block	observed	hal_cdsp code directly accesses this range
+0x10010000	0x10010fff	unknown	unknown	only one statically resolved access
+0x10011000	0x10011fff	command-queue interrupt/control block	observed	hal_cq/hal_cq_int.c references occur in code directly accessing this range
+0x10015000	0x10015fff	global power/clock/reset control	inferred	used by early CPU initialization and GPU/HWC reset or trigger sequences
+0x10016000	0x10016fff	unknown	unknown	only three statically resolved accesses
+0x10017000	0x10017fff	unknown engine	unknown	79 statically resolved accesses; identity not yet corroborated
+0x10018000	0x10018fff	GPU/HWC	observed	hal_gpu/hal_hwc code directly accesses 0x10018800-area registers
+0x1001e000	0x1001efff	system/generic timer adjustment	derived	code programs this block while reading and writing ARM CP15 generic-timer state
+0x10201000	0x10205fff	CoreSight debug/trace components	derived	debug initialization layout and adjacent CoreSight blocks
+0x10230000	0x10230fff	CoreSight debug component	derived	uses standard CoreSight lock-access offset 0xfb0 and unlock value 0xc5acce55
+0x10238000	0x10239fff	CoreSight debug/trace components	derived	adjacent CoreSight-style register layouts and lock-access offsets
+0x1023c000	0x1023cfff	CoreSight ETM	observed	firmware error text names ETMSR and code uses CoreSight lock-access register at +0xfb0
+0x10401000	0x10401fff	ARM GIC distributor	derived	startup register offsets and per-interrupt CPU-target initialization match GICv2 distributor behavior
+0x10402000	0x10402fff	ARM GIC CPU interface	derived	startup writes control and priority-mask registers at +0x0 and +0x4

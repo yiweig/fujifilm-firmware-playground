@@ -25,6 +25,10 @@ state are intentionally excluded from version control.
 - [`analysis/uvc-service-mode-activation.md`](analysis/uvc-service-mode-activation.md)
   — static trace from power-on calibration selection through `uvctestcmd`,
   `USBUVC.BIN`, and UVC service callback registration.
+- [`analysis/memory-and-hardware-map.md`](analysis/memory-and-hardware-map.md) —
+  initial SPCA6500 address-space, boot, RAM, MMIO, storage, and hardware map.
+- [`analysis/update-package-and-linux.md`](analysis/update-package-and-linux.md)
+  — `FPUPDATE.DAT` regions, Linux/OpenWrt inventory, and NAND partition layout.
 
 ## Artifact identity
 

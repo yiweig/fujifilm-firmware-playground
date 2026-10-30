@@ -1,0 +1,158 @@
+{
+  "artifact": {
+    "path": "FPUPDATE.DAT",
+    "size": 165795434,
+    "sha256": "3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68",
+    "format": "SUNP BURN FILE",
+    "declared_end": "0x09e1d16a",
+    "trailer_size": 1280
+  },
+  "header_offsets": {
+    "hdr1": "0x000a2c00",
+    "hdr2": "0x000a3c00",
+    "linux_region": "0x082a3d20",
+    "main_dram_image": "0x08fe3d20",
+    "hdr3": "0x09e1c120",
+    "drampar3": "0x09e1ca70"
+  },
+  "firstburn_manifest": {
+    "kernel_size": 2084976,
+    "rootfs_size": 9497344,
+    "value_3_unknown": 4194304,
+    "value_4_unknown": 33554432
+  },
+  "kernel": {
+    "format": "ARM zImage",
+    "start": "0x082c3d20",
+    "size": 2084976,
+    "header_load": "0x00000000",
+    "header_end": "0x001fd070",
+    "gzip_start": "0x082c6eb3",
+    "decompressed_size": 3486368,
+    "version": "Linux version 3.18.11 (oscar_lin@RDFW-SRV13232) (gcc version 4.8.3 (OpenWrt/Linaro GCC 4.8-2014.04 unknown) ) #638 PREEMPT Fri Aug 14 10:47:30 CST 2026",
+    "embedded_fdt_offsets": [],
+    "sha256": "877dc1b0307234037744dfec36dfcef40d4b4780f8c51909420c2173c5cd5118"
+  },
+  "rootfs": {
+    "format": "SquashFS 4.0",
+    "start": "0x086c3d20",
+    "size": 9497344,
+    "inode_count": 858,
+    "block_size": 131072,
+    "compression_id": 1,
+    "created_utc": "2026-08-14T02:47:36+00:00",
+    "sha256": "8c8602a0a908c6fb123f00417f5f4cd8d4ee983a61c6d8178ec3590b8f84b113"
+  },
+  "main_dram_image": {
+    "start": "0x08fe3d20",
+    "size": 14910464,
+    "runtime_base": "0x40000000",
+    "sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923"
+  },
+  "signatures": {
+    "elf_offsets": [],
+    "fdt_offsets": [],
+    "ubi_offsets": [],
+    "squashfs_offsets": [
+      "0x086c3d20"
+    ]
+  },
+  "regions": [
+    {
+      "name": "package header and updater",
+      "start": "0x00000000",
+      "end_exclusive": "0x000a2c00",
+      "size": 666624,
+      "sha256": "5d21297336b769528eb7fd9617699b365a88f46543bb2f7015e358e8b269deb9",
+      "basis": "top-level header pointer"
+    },
+    {
+      "name": "SUNP BURN HDR 1",
+      "start": "0x000a2c00",
+      "end_exclusive": "0x000a3c00",
+      "size": 4096,
+      "sha256": "561cf7699f396b2f369cd50e9f58e823f645412e3ab9f8740f4e875aefcc130b",
+      "basis": "top-level header pointer"
+    },
+    {
+      "name": "HDR2 opaque bulk payload",
+      "start": "0x000a3c00",
+      "end_exclusive": "0x082a3d20",
+      "size": 136315168,
+      "sha256": "44bb484d982065f96a584cecf7c387199328d4603181053955d983399a489f1f",
+      "basis": "top-level header pointer"
+    },
+    {
+      "name": "firstburn manifest/padding",
+      "start": "0x082a3d20",
+      "end_exclusive": "0x082c3d20",
+      "size": 131072,
+      "sha256": "e60ae5ccc79302d75ee045a26946297d65be4edf2aa9c58f72812cd2754c2227",
+      "basis": "manifest and zImage magic"
+    },
+    {
+      "name": "ARM zImage",
+      "start": "0x082c3d20",
+      "end_exclusive": "0x084c0d90",
+      "size": 2084976,
+      "sha256": "877dc1b0307234037744dfec36dfcef40d4b4780f8c51909420c2173c5cd5118",
+      "basis": "zImage header and manifest"
+    },
+    {
+      "name": "kernel-to-rootfs padding",
+      "start": "0x084c0d90",
+      "end_exclusive": "0x086c3d20",
+      "size": 2109328,
+      "sha256": "c2c195f5e0e1dcce92ef0f6321aee07881b1a593635d71f9fdef2cd49475707c",
+      "basis": "adjacent verified regions"
+    },
+    {
+      "name": "SquashFS rootfs",
+      "start": "0x086c3d20",
+      "end_exclusive": "0x08fd2820",
+      "size": 9497344,
+      "sha256": "8c8602a0a908c6fb123f00417f5f4cd8d4ee983a61c6d8178ec3590b8f84b113",
+      "basis": "superblock and manifest"
+    },
+    {
+      "name": "rootfs-to-main padding",
+      "start": "0x08fd2820",
+      "end_exclusive": "0x08fe3d20",
+      "size": 70912,
+      "sha256": "5eab30cb3c7fd30e82726fa35210a21731bae90ab7f6bb50bba46049f7526125",
+      "basis": "adjacent verified regions"
+    },
+    {
+      "name": "SPCA6500 DRAM CODE",
+      "start": "0x08fe3d20",
+      "end_exclusive": "0x09e1c120",
+      "size": 14910464,
+      "sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+      "basis": "top-level pointers and embedded header"
+    },
+    {
+      "name": "SUNP BURN HDR 3",
+      "start": "0x09e1c120",
+      "end_exclusive": "0x09e1ca70",
+      "size": 2384,
+      "sha256": "7cd46e1ea118be690550c095a5f74b2aeb80fa1b1d2465e953fe279ae0442ff3",
+      "basis": "top-level header pointer"
+    },
+    {
+      "name": "DRAMPAR3 and declared tail",
+      "start": "0x09e1ca70",
+      "end_exclusive": "0x09e1d16a",
+      "size": 1786,
+      "sha256": "97cc52ee2732967b8d8e4a0ac38ae44e4589120cf716ac39446f73e8e1f8858a",
+      "basis": "top-level header pointer"
+    },
+    {
+      "name": "outer trailer",
+      "start": "0x09e1d16a",
+      "end_exclusive": "0x09e1d66a",
+      "size": 1280,
+      "sha256": "5dba09a03aa61629638f6a861da21910d83674777a86dd222c29af6ebb9d69c3",
+      "basis": "actual size exceeds declared end"
+    }
+  ]
+}
