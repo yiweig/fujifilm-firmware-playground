@@ -32,6 +32,9 @@ state are intentionally excluded from version control.
 - [`analysis/brick-risk-and-recovery.md`](analysis/brick-risk-and-recovery.md)
   — updater safeguards, failure modes, current SD-recovery status, and safety
   gates required before any modified-firmware flash.
+- [`analysis/fujimod-new-camera-onboarding.md`](analysis/fujimod-new-camera-onboarding.md)
+  — FujiMod's public bring-up resources, current X half support gaps, and a
+  beginner-safe research path for a new processor family.
 
 ## Artifact identity
 
