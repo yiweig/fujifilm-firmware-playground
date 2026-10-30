@@ -189,6 +189,37 @@ states the sequence did not work on an Akaso V50 Pro. The README calls this
 mask ROM or flash-resident code. We therefore must not try that sequence on the
 X half as if it were established recovery.
 
+### Practical value for the USB-only X half route
+
+The repository is particularly useful now that internal probing is out of
+scope. Its Akaso resource inventory includes `RO_RES/USBUVC.BIN` and
+`RO_RES/USBUVC_360.BIN`. The bundled vendor reflash package independently
+contains another `RO_RES/6350/USBUVC.BIN`, plus:
+
+- `USB_CAM.dll` and `USB_CAM5000.ini`, likely host-side camera transport;
+- `FRM.exe` and `autofrm.exe`, the reflash clients;
+- `spca6350isp.bin`, an ISP-stage loader;
+- `SPC.bin`, a larger firmware/loader artifact;
+- processor profiles and DRAM parameter files; and
+- Windows bulk, null and camera-interface drivers.
+
+These artifacts give us a three-way static comparison:
+
+1. the X half's `USBUVC.BIN` and UVC/RCA handlers;
+2. a second SPCA6500-family camera's UVC resource and main firmware; and
+3. the vendor host program, driver declarations and ISP loader that speak the
+   corresponding USB protocols.
+
+The highest-value next work is to extract both camera UVC resources, identify
+their format and descriptors, and match their callbacks or packet constants to
+the host-side DLL/client. After that, static analysis of the reflash client can
+separate identity/read commands from erase/program commands and reveal how the
+ISP loader is uploaded. No Windows executable needs to be run.
+
+This comparison can explain protocol structure and locate homologous X-half
+code. It still cannot supply X-half DRAM parameters, flash geometry, button
+chord, USB VID/PID or safe loader address. Those remain body-specific gates.
+
 ## Recovery confidence and next proof
 
 Current classification: **yellow lead, not a safety net**.
