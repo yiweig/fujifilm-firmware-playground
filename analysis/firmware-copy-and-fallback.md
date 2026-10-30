@@ -138,4 +138,3 @@ We should not test fallback by corrupting Firmware1.
 - REA evidence for the corrected card-updater mapping and relevant strings is
   saved in
   [`output/rea-card-updater-linked-base-evidence.json`](output/rea-card-updater-linked-base-evidence.json).
-
