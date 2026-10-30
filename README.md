@@ -29,6 +29,9 @@ state are intentionally excluded from version control.
   initial SPCA6500 address-space, boot, RAM, MMIO, storage, and hardware map.
 - [`analysis/update-package-and-linux.md`](analysis/update-package-and-linux.md)
   — `FPUPDATE.DAT` regions, Linux/OpenWrt inventory, and NAND partition layout.
+- [`analysis/brick-risk-and-recovery.md`](analysis/brick-risk-and-recovery.md)
+  — updater safeguards, failure modes, current SD-recovery status, and safety
+  gates required before any modified-firmware flash.
 
 ## Artifact identity
 
