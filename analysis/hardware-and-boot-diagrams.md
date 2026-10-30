@@ -140,9 +140,9 @@ flowchart TD
   updatecard["SD card: official FPUPDATE.DAT"]:::observed
   updater["Embedded ARMv7 card updater<br/>execution entry/loading path unresolved"]:::observed
   checks["Package size / checksum / storage checks"]:::observed
-  backup["Backup-file paths + FW1 checksum invalidation<br/>transaction interpretation inferred"]:::inferred
-  writes["Write + read-back verify<br/>FW1, FW2, resources, rawC, DRAM params"]:::critical
-  finish["Restore FW1 checksum / complete / power off<br/>control flow still to prove"]:::inferred
+  backup["Keep Firmware2 + invalidate FW1 checksum before write<br/>restore only on success"]:::observed
+  writes["Write + read-back verify<br/>ordinary path: FW1 + package resources<br/>generic updater can also write FW2"]:::critical
+  finish["Success: restore FW1 checksum<br/>failure: leave FW1 invalid"]:::observed
 
   updatecard -. "boot/update chord and loader boundary unknown" .-> updater
   updater --> checks

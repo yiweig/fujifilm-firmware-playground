@@ -46,16 +46,19 @@ restore FW1 checksum1 %04x
 keep damaged FW1 checksum
 ```
 
-The likely interpretation is a transaction marker: invalidate Firmware1 before
-programming and restore its checksum only after a successful update. That would
-reduce the chance of silently booting a partially written Firmware1 image. This
-is an inference from string context, not yet a proven control-flow trace.
+Control flow now proves this is a transaction marker in the X half's ordinary
+UI update path: the UI enables checksum invalidation, the updater changes
+Firmware1's stored checksum before programming, restores it only on success,
+and deliberately leaves it invalid on failure. The same official path keeps
+Firmware2 unchanged. What remains inferred is the next boot stage's response
+to invalid Firmware1.
 
 These mechanisms reduce corruption risk; they do not make modified firmware
 safe. In particular:
 
-- The presence of Firmware1 and Firmware2 does **not** establish automatic
-  fallback. Boot selection and failover behavior remain unknown.
+- Firmware2 is preserved while Firmware1 is transactionally updated, which is
+  strong evidence of fallback intent. Automatic cold-boot selection of
+  Firmware2 is still unproved because that earlier selector is absent.
 - Backup/recovery messages do not establish what is backed up, where it is
   stored, or whether recovery runs after loss of power.
 - Read-back verification detects a bad write only after writing has begun.
@@ -73,6 +76,11 @@ The portable evidence is
 [`output/rea-card-updater-safety-evidence.json`](output/rea-card-updater-safety-evidence.json).
 Addresses in that bundle are offsets in the extracted card updater, not runtime
 addresses in the main firmware.
+
+The control-flow update and corrected linked address base are documented in
+[`firmware-copy-and-fallback.md`](firmware-copy-and-fallback.md), with additional
+REA evidence in
+[`output/rea-card-updater-linked-base-evidence.json`](output/rea-card-updater-linked-base-evidence.json).
 
 ## Package-integrity path now traced
 
@@ -146,7 +154,7 @@ sources are in
 | Failure point | Likely result | Present confidence |
 |---|---|---|
 | Modified package fails an outer check before writes | Update rejected; camera probably remains usable | medium |
-| Power loss or media/read error after writes start | Firmware1 may remain deliberately invalid or another region may be partial | medium |
+| Power loss or media/read error after writes start | Firmware1 remains deliberately invalid; Firmware2 is preserved, but automatic selection is unproved and another region may be partial | medium |
 | Validly repacked but buggy main application | Camera may fail normal boot while early updater/recovery could survive | low; recovery entry unproven |
 | Damage to DRAM parameters, `rawC`, reserved headers, or early loader data | Failure before normal recovery UI; possible service/board-level recovery | medium |
 | Incorrect handling of device-specific settings/calibration | Camera-specific data loss even if generic firmware is restorable | low-to-medium; backup scope unknown |

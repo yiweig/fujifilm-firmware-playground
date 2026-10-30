@@ -35,6 +35,9 @@ state are intentionally excluded from version control.
 - [`analysis/brick-risk-and-recovery.md`](analysis/brick-risk-and-recovery.md)
   — updater safeguards, failure modes, current SD-recovery status, and safety
   gates required before any modified-firmware flash.
+- [`analysis/firmware-copy-and-fallback.md`](analysis/firmware-copy-and-fallback.md)
+  — observed Firmware1 transaction behavior, preservation of Firmware2, and
+  the still-unproven cold-boot fallback selector.
 - [`analysis/spca6500-package-and-recovery-comparison.md`](analysis/spca6500-package-and-recovery-comparison.md)
   — matched SPHOST container slots, decoded HDR2 resource disks,
   Firmware1/Firmware2 write flow, and the bounded USB-recovery lead.

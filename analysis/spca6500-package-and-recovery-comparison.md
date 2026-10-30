@@ -155,10 +155,15 @@ runtime addresses. Static ARM disassembly establishes:
 - the two copies use separate parsed offsets/sizes but share the same storage
   interface and verification loop.
 
-This proves two separately selectable firmware copies in the updater. It does
-**not** prove that the boot loader automatically falls back from a corrupt
-Firmware1 to Firmware2. Selection during update and selection during boot are
-different questions.
+The generic updater can write two separately selectable firmware regions, but
+the X half 2.00 UI path does not normally do so. Its parsed Firmware2-enable
+field remains zero, the top-level header has no second firmware payload at
+offset `0x2c`, and orchestration follows `keep original Firmware2`. Meanwhile,
+the UI explicitly enables a Firmware1 transaction mode that invalidates its
+stored checksum before writing, restores it only on success, and leaves it
+invalid on failure. This is strong fallback-intent evidence, but it still does
+**not** prove that the boot loader automatically cold-boots Firmware2. See
+[`firmware-copy-and-fallback.md`](firmware-copy-and-fallback.md).
 
 ## Public USB/boot evidence
 
