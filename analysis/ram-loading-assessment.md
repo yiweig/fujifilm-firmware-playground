@@ -29,6 +29,16 @@ RAM loading through the running stock firmware also depends on that firmware bei
 
 No hardware command sequence is recommended yet. No SD-boot support has been established.
 
+## Follow-up: concrete application boot commands
+
+The [RAM boot entry-point investigation](ram-boot-entrypoints.md) identifies
+`sdboot` and `usbt` in the 2.00 diagnostic command table. The former discards
+its advertised address argument and jumps even after a read error; the latter
+changes USB and system mode but does not yet establish a loader protocol.
+Neither command currently provides a verified test or independent recovery.
+The vendor archive supplies distinct boot-method, upload, and flash-programming
+operation declarations for the next host-DLL comparison.
+
 Source links (pinned to inspected revision):
 
 - [USB protocol](https://github.com/justjake/fujimod/blob/9e8370bc1ee2aaf64cc87da9f4aa0597db88dc0e/crates/usb/PROTOCOL.md)

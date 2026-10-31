@@ -13,6 +13,9 @@ state are intentionally excluded from version control.
   preset limits and the 12,800-to-6,400 modification hypothesis.
 - [`analysis/ram-loading-assessment.md`](analysis/ram-loading-assessment.md) —
   recovery and RAM-loading considerations.
+- [`analysis/ram-boot-entrypoints.md`](analysis/ram-boot-entrypoints.md) —
+  `sdboot` argument/error hazards, the `usbt` transition, and vendor USB-loader
+  protocol leads toward RAM execution and independent recovery.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`
