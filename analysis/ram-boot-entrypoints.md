@@ -105,6 +105,13 @@ No ready-to-run upload command or bootable SD layout has been established.
 
 ## Reproduce and sources
 
+The REA/Ghidra cross-check completed auto-analysis but failed to resolve the
+worker address: the bridge reported image base `0x0` despite import logs
+selecting `0x40000000`. No pseudocode result was obtained and the session was
+closed. The findings above rely on original-file ARM instructions decoded
+through the existing address-aware LLVM helper, not a successful REA dossier.
+Resolve that provider mapping issue before further REA function queries.
+
 Use `analysis/fw.py disasm` for `4030543c..40305490`,
 `40345c80..40345cd4`, `400778fc..40077980`, and
 `4031d498..4031d548`; use `literals` for `40df9544..40df9550`
