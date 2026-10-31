@@ -127,10 +127,16 @@ effects, and the FRM caller's subsequent actions remain unverified.
 
 ## Next work
 
-Match request `0xfd` with indices `0x04f3`/`0x04f7`/`0x04f1` to the X-half
-USB configuration-4 dispatcher. Establish its descriptor identity, memory
-address interpretation, completion/execute handling, and persistent side
-effects. Separately inspect the vendor loader's startup for automatic writes.
+The [X-half receiver follow-up](xhalf-usb-ram-receiver.md) now matches the
+`0xfd` index family, target-0 dispatch, the boot query's RAM allocations,
+and the copy/execute handoff. It also finds a first-use parameter-processing
+branch in `0x04f3`, so the host RAM-copy name alone does not imply a generic
+device memory write. Verified retail mode entry remains unresolved.
+
+Trace the factory caller that selects X-half USB API mode 4 and establish
+whether entry changes persistent settings. Finish auditing the receiver's
+parameter processing, memory ranges, completion/error handling, and shutdown
+helpers. Separately inspect the vendor loader's startup for automatic writes.
 An X-half-specific receiver and RAM map are needed before preparing any live
 upload. Independent recovery still needs a boot entry available without the
 main installed application.
