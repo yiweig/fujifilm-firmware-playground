@@ -54,6 +54,16 @@ RAW-support pass. The likely output is a camera-internal `.RAW`/Bayer dump whose
 dimensions, bit packing, black level, and CFA layout still need to be determined
 from a sample.
 
+## Version-history check
+
+Firmware 1.01 contains the same command sequence and diagnostic family. Its
+main image places `cmdCdspRcaRaw::` at `0x40A82B25`, `snap attr raw=1` at
+`0x40A82B5D`, `snap attr raw=0` at `0x40A82B76`, and `pvraw 2 1 1` at
+`0x40A82B9B`. It also retains help text for
+`pvraw <opt> <sensor> <num>` and `pvraw disk=<diskId>`. This makes the handler
+a stable launch-era engineering facility rather than evidence of an unfinished
+consumer RAW feature newly added in later firmware.
+
 ## Why it matters
 
 If the retail camera exposes the registered diagnostic console, this command may

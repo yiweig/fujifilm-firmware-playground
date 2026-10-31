@@ -48,6 +48,30 @@ These facts show that the platform knows how to materialize sensor buffers as
 engineering `.RAW` dumps. They do not establish a documented file layout or a
 consumer-compatible container.
 
+## Historical corroboration from firmware 1.01
+
+The earliest available post-launch firmware already contains the same
+engineering RAW family. Its main image includes:
+
+```text
+cmdCdspRcaRaw::
+snap attr raw=1
+snap attr raw=0
+pvraw 2 1 1
+pvraw <opt> <sensor> <num>
+pvraw disk=<diskId>
+%s\DCIM\RAW%d_%dx%d_%d.RAW
+D:\DCIM\RAW.RAW
+```
+
+This establishes that sensor dumping was a launch-era platform capability,
+not a feature added in 2.00. The `pvraw` help strings also corroborate a
+selectable output disk and explicit sensor/frame-count arguments. A bounded
+printable-string search of the 1.01 main image still found no `.RAF`, `.DNG`,
+`RAW+JPEG`, `JPEG+RAW`, RAW-development, or RAW-conversion label. This
+strengthens the engineering-dump interpretation but remains negative string
+evidence, not proof that no production writer exists.
+
 REA evidence:
 
 - Raw-format strings: `ev_04cbe63531bcf7162c14a0c8520be50d5ac483fc4fd6050b47b45d17dcda363a`
@@ -147,14 +171,15 @@ evidence does not show that production implementation waiting behind one flag.
 
 ## Safest next investigation
 
-1. Compare this firmware with a closely related Fuji body on the same platform
-   that supports RAF. Shared functions could reveal whether a production writer
-   was removed, retained but disconnected, or never linked.
-2. Trace how the `cmdCdspRcaRaw` handler is registered and whether it can be
+1. Trace how the `cmdCdspRcaRaw` handler is registered and whether it can be
    invoked through an existing non-persistent service interface.
-3. Establish RAM-only execution and recovery before invoking it on the camera.
-4. Capture one engineering `.RAW` file and characterize it offline.
-5. Only then design a normal-shutter hook and desktop DNG converter.
+2. Compare the 1.01 and 2.00 handlers and their downstream writer to recover
+   stable command syntax, destination handling, and completion/error behavior.
+3. Compare with a closely related Fuji body on the same platform that supports
+   RAF, if one can be identified, to look for a production writer.
+4. Establish RAM-only execution and recovery before invoking it on the camera.
+5. Capture one engineering `.RAW` file and characterize it offline.
+6. Only then design a normal-shutter hook and desktop DNG converter.
 
 This route separates the highest-value experiment—proving that the camera can
 save a usable sensor dump—from the much riskier work of altering the normal
