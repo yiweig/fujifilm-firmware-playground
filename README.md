@@ -16,6 +16,9 @@ state are intentionally excluded from version control.
 - [`analysis/ram-boot-entrypoints.md`](analysis/ram-boot-entrypoints.md) —
   `sdboot` argument/error hazards, the `usbt` transition, and vendor USB-loader
   protocol leads toward RAM execution and independent recovery.
+- [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
+  iCatch host-library RAM copy/upload/run paths, active connection setup, and
+  the remaining X-half receiver and loader-side-effect questions.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`

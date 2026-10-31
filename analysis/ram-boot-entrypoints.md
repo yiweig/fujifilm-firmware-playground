@@ -91,6 +91,11 @@ storage setting says SPI, further limiting trust in generic labels.
 
 ## Next bounded investigation
 
+The [host DLL follow-up](vendor-usb-loader.md) establishes separate RAM-copy
+and upload/run functions and confirms that `FrmChcekIspCon` actively uploads,
+resets, and applies parameters depending on boot stage. Matching those
+operations to the X-half receiver remains the next device-specific step.
+
 1. Trace `USB_CAM.dll`'s boot-method query, upload, and execution flow; identify
    whether connection alone can erase/program or modify configuration.
 2. Follow X-half USB configuration 4 to its descriptors and request dispatcher,
