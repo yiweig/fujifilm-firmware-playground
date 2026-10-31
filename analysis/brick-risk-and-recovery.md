@@ -108,6 +108,12 @@ metadata suffix is identical except for two copies of the declared package
 length. That makes the trailer's layout much less likely to be incidental, but
 still does not reveal a verifier in the traced installation path.
 
+Official firmware 1.01 ends exactly at its declared, checksummed package end
+and has no `0x500`-byte trailer. This proves the trailer was not an inherent
+requirement of the original X-half update format. It does not establish whether
+newer installed firmware added an otherwise-unseen policy requiring trailers
+on incoming updates.
+
 Practical consequence: a main-application patch appears technically
 repackable by changing only the intended bytes and recomputing the word at
 `0x1fc`; there is no demonstrated cryptographic signing barrier in the traced

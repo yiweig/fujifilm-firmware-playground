@@ -6,9 +6,10 @@ Static analysis strongly supports replacing Auto ISO 3's maximum of ISO 12800
 with ISO 6400 using one ARM instruction change. No firmware or update-container
 bytes were modified during this investigation.
 
-Official firmware 1.20 and 1.30 use the same semantic mapping: Auto 1, 2, and 3
-pass range codes `3`, `5`, and `7`, while range code `6` already means ISO
-6400. The behavior therefore predates 2.00 rather than being introduced by it.
+Official firmware 1.01, 1.20, and 1.30 use the same semantic mapping: Auto 1,
+2, and 3 pass range codes `3`, `5`, and `7`, while range code `6` already means
+ISO 6400. The behavior therefore dates back at least to the earliest available
+post-launch update rather than being introduced by 2.00.
 Exact historical coordinates are recorded in
 [the version comparison](firmware-1.30-vs-2.00.md).
 

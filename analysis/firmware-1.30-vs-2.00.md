@@ -1,17 +1,17 @@
-# X half firmware 1.20, 1.30, and 2.00
+# X half firmware 1.01 through 2.00
 
 ## Outcome
 
-The official 1.20 and 1.30 images provide strong evidence that the lever-review
-Provia problem is a firmware 2.00 regression. All three callers clear a
-temporary photo record and copy the same 30-byte capture fragment before
-drawing the secondary-screen film label. In both older versions the renderer
-resolves the film choice directly from playback metadata. In 2.00 a new
+The official 1.01, 1.20, and 1.30 images provide strong evidence that the
+lever-review Provia problem is a firmware 2.00 regression. All four callers
+clear a temporary photo record and copy the same 30-byte capture fragment
+before drawing the secondary-screen film label. In all three older versions
+the renderer resolves the film choice directly from playback metadata. In 2.00 a new
 cached-selector field was added, but this caller leaves it at zero; zero is
 interpreted as the already-resolved Provia selector.
 
-The Auto ISO behavior is different: all three versions use the same mapping.
-Auto 3 has selected the ISO-12800 range code since at least 1.20, and the
+The Auto ISO behavior is different: all four versions use the same mapping.
+Auto 3 has selected the ISO-12800 range code since at least 1.01, and the
 adjacent ISO-6400 range code already exists in every inspected release.
 Replacing Auto 3 remains a narrow change; adding a fourth preset remains a
 multi-path settings/UI change.
@@ -23,12 +23,15 @@ camera.
 
 | Release | Official `FPUPDATE.DAT` SHA-256 | Size | Main image SHA-256 |
 | --- | --- | ---: | --- |
+| 1.01 | `a0276f25a4542e785a4fd5319b42fe6808b0209e4bdcde5d119f5b90b2e0777d` | 162,254,474 | `64ca08d346075907bbec2dde2db50bc3a5507a93e5d7b2e5024d4a59599125f9` |
 | 1.20 | `a130ceae2c8cc4f8ac0734ab5761076d45a5aa0bf4be3406ebb49ac3aefaf2c9` | 163,727,242 | `85d6d280605148d131c28f71b3560742310878340c6de5d1c05faf00d02a2c8f` |
 | 1.30 | `72d20d9c1c5a2a18d7e5c1ace7916460cebbfe082b4c46551ffd574ec029040b` | 163,630,698 | `34034d7d1314485fbbd8167669a83dbea4d3dc80cc9ba3c87c7ded2c96aa9df6` |
 | 2.00 | `3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68` | 165,795,434 | `80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923` |
 
-All three main images were loaded as little-endian ARMv7 raw binaries at
-`0x40000000`. The complete verified 1.20 and 1.30 package inventories are in
+All four main images were loaded as little-endian ARMv7 raw binaries at
+`0x40000000`. The complete verified 1.01, 1.20, and 1.30 package inventories
+are in
+[`output/firmware-regions-1.01.json`](output/firmware-regions-1.01.json),
 [`output/firmware-regions-1.20.json`](output/firmware-regions-1.20.json) and
 [`output/firmware-regions-1.30.json`](output/firmware-regions-1.30.json); the
 2.00 inventory is in
@@ -37,31 +40,68 @@ All three main images were loaded as little-endian ARMv7 raw binaries at
 ## Package-level comparison
 
 The high-level container layout through the Linux-region start is stable. All
-three packages satisfy the same modulo-2^32 little-endian word-sum rule, with a
+four packages satisfy the same modulo-2^32 little-endian word-sum rule, with a
 sum of zero over the declared package extent.
 
-| Region | 1.20 | 1.30 | 2.00 | Three-version result |
-| --- | ---: | ---: | ---: | --- |
-| Package header/updater | 666,624 | 666,624 | 666,624 | changed every release |
-| `SUNP BURN HDR 1` | 4,096 | 4,096 | 4,096 | byte-identical in all three |
-| HDR2 control header | 288 | 288 | 288 | byte-identical in all three |
-| FAT16 resource image A | 125,829,120 | 125,829,120 | 125,829,120 | changed every release |
-| FAT16 resource image B | 10,485,760 | 10,485,760 | 10,485,760 | changed in 1.30, then stable |
-| ARM zImage | 2,170,872 | 2,170,880 | 2,084,976 | changed every release |
-| SquashFS rootfs | 8,185,766 | 8,104,968 | 9,497,344 | changed every release |
-| Main DRAM application | 14,153,216 | 14,187,520 | 14,910,464 | changed every release |
-| `SUNP BURN HDR 3` | 2,160 | 2,384 | 2,384 | changed in 1.30, then stable |
-| `DRAMPAR3` and declared tail | 1,786 | 1,786 | 1,786 | byte-identical in all three |
-| Outer trailer | 1,280 | 1,280 | 1,280 | changed every release |
+| Region | 1.01 | 1.20 | 1.30 | 2.00 | Four-version result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Package header/updater | 666,624 | 666,624 | 666,624 | 666,624 | changed every release |
+| `SUNP BURN HDR 1` | 4,096 | 4,096 | 4,096 | 4,096 | byte-identical in all four |
+| HDR2 control header | 288 | 288 | 288 | 288 | byte-identical in all four |
+| FAT16 resource image A | 125,829,120 | 125,829,120 | 125,829,120 | 125,829,120 | changed every release |
+| FAT16 resource image B | 10,485,760 | 10,485,760 | 10,485,760 | 10,485,760 | 1.01=1.20; 1.30=2.00 |
+| ARM zImage | 2,170,928 | 2,170,872 | 2,170,880 | 2,084,976 | changed every release |
+| SquashFS rootfs | 8,433,915 | 8,185,766 | 8,104,968 | 9,497,344 | changed every release |
+| Main DRAM application | 14,123,520 | 14,153,216 | 14,187,520 | 14,910,464 | changed every release |
+| `SUNP BURN HDR 3` | 2,160 | 2,160 | 2,384 | 2,384 | 1.01=1.20; 1.30=2.00 |
+| `DRAMPAR3` and declared tail | 1,786 | 1,786 | 1,786 | 1,786 | byte-identical in all four |
+| Outer trailer | 0 | 1,280 | 1,280 | 1,280 | absent in 1.01; changed thereafter |
 
-The Linux kernel remains version 3.18.11. Embedded build strings identify 1.20
-as build `#24` from 2025-06-09, 1.30 as `#154` from 2025-10-14, and 2.00 as
-`#638` from 2026-08-14. The three-version match strengthens the interpretation
-of HDR1, the HDR2 control header, and DRAM parameters as stable structure. It
+The Linux kernel remains version 3.18.11. Embedded build strings identify 1.01
+as build `#146` from 2025-04-02, 1.20 as `#24` from 2025-06-09, 1.30 as `#154`
+from 2025-10-14, and 2.00 as `#638` from 2026-08-14. The four-version match
+strengthens the interpretation of HDR1, the HDR2 control header, and DRAM parameters as stable structure. It
 does not establish flash partition addresses or prove that those fields are
 ignored by the updater.
 
+Version 1.01 is also the only inspected official package with no bytes beyond
+its declared, checksummed extent. This proves the `0x500`-byte outer trailer
+was not structurally required in the original release, although it does not
+prove later boot stages ignore trailers added to newer packages.
+
+The 1.01 and 1.20 root filesystems have nearly identical path sets: 859 versus
+860 entries. The later image updates the Broadcom Bluetooth firmware/server,
+adds `etc/.bpub.pem` and `iperf`, and removes `tcpdump`. Those Linux-side
+changes are unrelated to the lever and Auto ISO behavior traced below.
+
 ## Lever-review regression
+
+### Firmware 1.01
+
+The `MSG_KEY_L2` string is at `0x40ABFFC5`. Its lever path already implements
+the same correct design later seen in 1.20 and 1.30:
+
+```asm
+403edfe8  mov  r1, r6
+403edfec  mov  r2, #0x1a8
+403edff0  add  r0, sp, #0x148
+403edff4  bl   0x4000cdf0       ; memset(record, 0, 0x1a8)
+403edff8  ldr  r1, [r5]
+403edffc  add  r2, sp, #0x148
+403ee000  add  r0, r2, #0xde
+403ee004  add  r1, r1, #0xca
+403ee008  mov  r2, #0x1e
+403ee00c  bl   0x40008b8c       ; memcpy(record + 0xde, capture + 0xca, 30)
+...
+403ee034  add  r1, sp, #0x148
+403ee038  mov  r0, #1
+403ee03c  bl   0x404f56fc       ; film/filter label renderer
+```
+
+The renderer at `0x404F56FC` reads `record[0xc0]` only as a condition, then
+maps the film/filter value directly from the global playback-metadata object.
+There is no cached selector near the record end. Thus the correct behavior was
+present in the earliest post-launch firmware we have.
 
 ### Firmware 1.20
 
@@ -126,21 +166,34 @@ field equals `0x29`, the explicit “unknown” sentinel. Because the lever call
 zeroes the record and never writes `0x29`, the helper returns immediately and
 zero is rendered as film index zero, Provia.
 
-| Role | 1.20 RAM / DAT | 1.30 RAM / DAT | 2.00 RAM / DAT |
-| --- | --- | --- | --- |
-| Clear temporary record | `0x403EE08C` / `0x09291DAC` | `0x403EEDFC` / `0x09272B1C` | `0x4041CD34` / `0x09400A54` |
-| Copy 30-byte capture fragment | `0x403EE0A4` / `0x09291DC4` | `0x403EEE14` / `0x09272B34` | `0x4041CD4C` / `0x09400A6C` |
-| Call film/filter renderer | `0x403EE0D4` / `0x09291DF4` | `0x403EEE44` / `0x09272B64` | `0x4041CD7C` / `0x09400A9C` |
-| Renderer entry | `0x404F724C` / `0x0939AF6C` | `0x404FB2B0` / `0x0937EFD0` | `0x405621D4` / `0x09545EF4` |
+| Role | 1.01 RAM / DAT | 1.20 RAM / DAT | 1.30 RAM / DAT | 2.00 RAM / DAT |
+| --- | --- | --- | --- | --- |
+| Clear temporary record | `0x403EDFF4` / `0x09131D14` | `0x403EE08C` / `0x09291DAC` | `0x403EEDFC` / `0x09272B1C` | `0x4041CD34` / `0x09400A54` |
+| Copy 30-byte capture fragment | `0x403EE00C` / `0x09131D2C` | `0x403EE0A4` / `0x09291DC4` | `0x403EEE14` / `0x09272B34` | `0x4041CD4C` / `0x09400A6C` |
+| Call film/filter renderer | `0x403EE03C` / `0x09131D5C` | `0x403EE0D4` / `0x09291DF4` | `0x403EEE44` / `0x09272B64` | `0x4041CD7C` / `0x09400A9C` |
+| Renderer entry | `0x404F56FC` / `0x0923941C` | `0x404F724C` / `0x0939AF6C` | `0x404FB2B0` / `0x0937EFD0` | `0x405621D4` / `0x09545EF4` |
 
-This three-version comparison strengthens the candidate fix: initialize the
+This four-version comparison strengthens the candidate fix: initialize the
 2.00 selector to `0x29` before the renderer call, restoring the metadata
-resolution behavior that 1.20 and 1.30 performed directly. It still does not
-prove that the global metadata object has been refreshed for the just-captured
+resolution behavior that 1.01, 1.20, and 1.30 performed directly. It still
+does not prove that the global metadata object has been refreshed for the just-captured
 image at that instant; that runtime-state question remains the final
 logic-level validation gate.
 
 ## Auto ISO comparison
+
+Firmware 1.01 uses the same three preset codes as every later release:
+
+```asm
+40465ba4  mov r0, #3           ; Auto 1
+40465bac  mov r0, #5           ; Auto 2
+40465bb4  mov r0, #7           ; Auto 3
+40465bb8  bl  0x40211918       ; range-code mapper
+```
+
+Its range-code mapper sends code 6 to the `MAX ISO 6400` case and code 7 to
+`MAX ISO 12800`, confirming that the narrow replacement was possible in the
+earliest inspected release as well.
 
 Firmware 1.20 already has the same Auto mapping:
 
@@ -165,16 +218,25 @@ The range-code mapper contains both `MAX ISO 6400` and `MAX ISO 12800` and maps
 codes 6 and 7 respectively. Version 2.00 preserves the same 3/5/7 Auto mapping
 at `0x4043F078`; its Auto 3 immediate is at `0x4043F180`.
 
-| Candidate | 1.20 | 1.30 | 2.00 |
-| --- | --- | --- | --- |
-| Auto 3 instruction | `0x40465D04`, DAT `0x09309A24` | `0x404685F4`, DAT `0x092EC314` | `0x4043F180`, DAT `0x09422EA0` |
-| Original instruction | `mov r0, #7` (`07 00 A0 E3`) | `mov r0, #7` (`07 00 A0 E3`) | `mov r0, #7` (`07 00 A0 E3`) |
-| Replacement hypothesis | `mov r0, #6` (`06 00 A0 E3`) | `mov r0, #6` (`06 00 A0 E3`) | `mov r0, #6` (`06 00 A0 E3`) |
+| Candidate | 1.01 | 1.20 | 1.30 | 2.00 |
+| --- | --- | --- | --- | --- |
+| Auto 3 instruction | `0x40465BB4`, DAT `0x091A98D4` | `0x40465D04`, DAT `0x09309A24` | `0x404685F4`, DAT `0x092EC314` | `0x4043F180`, DAT `0x09422EA0` |
+| Original instruction | `mov r0, #7` (`07 00 A0 E3`) | `mov r0, #7` (`07 00 A0 E3`) | `mov r0, #7` (`07 00 A0 E3`) | `mov r0, #7` (`07 00 A0 E3`) |
+| Replacement hypothesis | `mov r0, #6` (`06 00 A0 E3`) | `mov r0, #6` (`06 00 A0 E3`) | `mov r0, #6` (`06 00 A0 E3`) | `mov r0, #6` (`06 00 A0 E3`) |
 
-Only 2.00 is relevant to a current-camera modification. The 1.20 and 1.30
-coordinates are corroborating history, not proposed downgrade or flash targets.
+Only 2.00 is relevant to a current-camera modification. The 1.01, 1.20, and
+1.30 coordinates are corroborating history, not proposed downgrade or flash
+targets.
 
 ## Evidence and limitations
+
+REA/Ghidra 12.1.4 analyzed 28,833 procedures in the 1.01 raw ARM image.
+Relevant retained Evidence includes:
+
+- procedure inventory: `ev_008e8a49658caa4db275c1671bda95748d86cd11d172c06fc728c58374236908`
+- lever handler and bounded instruction trace: `ev_517f5118cbcae40345e183c347eae03597f4a4bf8ff6f556408ccbcb93190413`
+- 1.01 film renderer: `ev_bc74e825c8683d1bfc084529ee11b8034f50e66ee8784e0ff74e60c11feb5991`
+- 1.01 Auto ISO mapper: `ev_a5ec6948193c1e96707855537a18531434b4520e87350759452b2d0f805cffb8`
 
 REA/Ghidra 12.1.4 analyzed 28,904 procedures in the 1.30 raw ARM image.
 Relevant retained evidence includes:
@@ -192,12 +254,12 @@ Evidence includes:
 - film renderer: `ev_e0f97906c976460af300426dcdd66c6190ab86b260236fe97ed7322c4facf870`
 - Auto ISO mapper: `ev_543994083bfe0e6b32ca4b89490589ca8857a08bca637f99b5c988757e186bca`
 
-The full REA evidence export and provider snapshot are intentionally ignored as
-large, reproducible local analysis artifacts. Ghidra function boundaries are
+The full REA evidence exports and provider snapshots are intentionally ignored
+as large, reproducible local analysis artifacts. Ghidra function boundaries are
 imperfect in several jump-table-heavy routines; the conclusions above rely on
 the observed ARM instructions, call references, and verified file mappings,
 not on generated function names.
 
-None of these comparisons repairs the package checksum, establishes whether another
-signature is enforced, or provides a safe recovery route. Those remain
-mandatory before producing or installing any modified package.
+None of these comparisons repairs the package checksum, establishes whether
+another signature is enforced, or provides a safe recovery route. Those
+remain mandatory before producing or installing any modified package.

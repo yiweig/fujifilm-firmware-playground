@@ -2,8 +2,8 @@
 
 The firmware's `MSG_KEY_L2` review path contains a concrete initialization defect that explains the reported symptom. It clears a temporary photo record to zero and passes that record to the film-label renderer without initializing its film/filter selector. Zero is a valid selector for Provia. The renderer consequently skips metadata resolution and draws the Provia asset.
 
-Comparison with official firmware 1.20 and 1.30 strongly identifies this as a
-2.00 regression. Both older versions have the same lever-review pattern—clear
+Comparison with official firmware 1.01, 1.20, and 1.30 strongly identifies this
+as a 2.00 regression. All three older versions have the same lever-review pattern—clear
 a temporary record, copy 30 bytes, and draw the film label—but their renderer
 resolves the film choice directly from playback metadata. Version 2.00 enlarged
 the record, added the selector-at-`+0x1a0` shortcut, and failed to initialize

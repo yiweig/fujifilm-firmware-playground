@@ -110,6 +110,11 @@ This is consistent with a content-dependent 256-byte signature or opaque
 producer value followed by a fixed metadata record, but does not identify the
 algorithm or prove that the camera verifies it.
 
+Official firmware 1.01 has no outer trailer at all: the file ends exactly at
+the declared, checksummed package extent. The trailer was therefore added
+after the first post-launch update and is not part of the invariant seven-slot
+container structure.
+
 No traced X half update function reads or validates the trailer: the menu
 checker merely reads the full file into memory and returns success, and the
 card updater stops at the declared end. This makes the trailer look like
