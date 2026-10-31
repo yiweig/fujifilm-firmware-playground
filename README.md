@@ -41,6 +41,9 @@ state are intentionally excluded from version control.
 - [`analysis/dump-and-boot-log-acquisition-plan.md`](analysis/dump-and-boot-log-acquisition-plan.md)
   — ranked, read-only routes for acquiring UART boot logs, RAM/boot-ROM state,
   and internal flash, with safety gates for each route.
+- [`analysis/official-firmware-versions.md`](analysis/official-firmware-versions.md)
+  — official download provenance, hashes, and recovered historical X-half
+  firmware URLs; binary artifacts remain ignored.
 - [`analysis/spca6500-package-and-recovery-comparison.md`](analysis/spca6500-package-and-recovery-comparison.md)
   — matched SPHOST container slots, decoded HDR2 resource disks,
   Firmware1/Firmware2 write flow, and the bounded USB-recovery lead.
