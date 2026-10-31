@@ -14,6 +14,10 @@ persistent write was found in that branch or the inspected resource parser.
 This is a bounded static finding, not a guarantee that the full USB transition
 has no persistent side effects.
 
+Follow-up: [shell access and USB lifecycle](shell-access-and-usb-lifecycle.md)
+identifies conditional filesystem remounts in the common USB transition and
+an API-test USB character bridge, still dependent on personality selection.
+
 We still lack a verified way to invoke this shell from a normally booted retail
 camera. This discovery therefore does not yet provide a usable RAM-boot
 procedure or recovery from damaged installed firmware. See the matched

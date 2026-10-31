@@ -92,7 +92,10 @@ setter. Consequently:
 
 `sub_405e6828` registers the shell command `uvctestcmd` with handler
 `sub_405e67e4`. The command is also registered by case 17 of `sub_40673548`,
-which logs `appUvcThreadCreate`.
+which logs `appUvcThreadCreate`. Further tracing identifies this as the `sys`
+shell command's numeric subcommand, not an application startup event. This
+route already requires shell access; the log alone does not prove that it
+creates a thread. See [shell access and USB lifecycle](shell-access-and-usb-lifecycle.md).
 
 The `uvctestcmd` handler performs the UVC transition:
 
