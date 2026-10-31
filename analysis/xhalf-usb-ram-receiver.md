@@ -122,8 +122,11 @@ still require auditing before a live test.
 
 - A verified temporary entry into API mode 4 from a retail boot. `usbt` is an
   internal shell command, so invoking it depends on access not yet established.
-  A second application call site at `0x40523650..0x40523654` also selects
-  mode 4; its surrounding factory-command parser is a useful next entry lead.
+  The second application call site at `0x40523650..0x40523654` belongs to
+  the factory `clbt` command's `usb` subcommand. Its direct branch appears
+  to change runtime configuration; retail shell access is still unresolved.
+  See [loader mode entry](xhalf-loader-mode-entry.md) for the trace and the
+  neighboring subcommands that explicitly write saved settings.
 - Exact descriptors/endpoints and how the vendor Windows driver's IOCTL maps
   to USB transactions for this receiver.
 - First-use parameter processing and the uploaded program's initialization:

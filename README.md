@@ -22,6 +22,9 @@ state are intentionally excluded from version control.
 - [`analysis/xhalf-usb-ram-receiver.md`](analysis/xhalf-usb-ram-receiver.md) —
   matched X-half USB loader requests, iCatch identity switching, parameter
   processing, and the RAM copy/execute handoff.
+- [`analysis/xhalf-loader-mode-entry.md`](analysis/xhalf-loader-mode-entry.md) —
+  factory loader-mode caller, runtime USB resource selection, persistent
+  factory settings to avoid, and an unresolved SD command-file reader.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`
