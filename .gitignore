@@ -31,6 +31,11 @@ analysis/settings/
 # summary and curated maps; regenerate this file with analysis/map_hardware.py.
 analysis/output/static-memory-accesses.tsv
 
+# Full REA evidence exports and reusable provider snapshots are local analysis
+# caches. Curated findings and small reproducible inventories remain tracked.
+analysis/output/rea-*-evidence.json
+*.rea-snapshot
+
 # Language/tool caches
 __pycache__/
 *.py[cod]
