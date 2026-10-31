@@ -101,6 +101,15 @@ copy of that sequence, no SHA-256 initial-constant table, and no standard
 SHA-256 PKCS#1 DigestInfo prefix. The version string also does not occur in
 either executable.
 
+The official X half 1.20, 1.30, and 2.00 trailers sharpen this structure. Every
+byte in the first `0x100`-byte block changes among the three releases. From
+trailer offset `0x100` through `0x4ff`, only six byte positions vary: three
+bytes in each of the two stored package-length copies (`0x134..0x136` and
+`0x150..0x152`). Everything else in that `0x400`-byte suffix is identical.
+This is consistent with a content-dependent 256-byte signature or opaque
+producer value followed by a fixed metadata record, but does not identify the
+algorithm or prove that the camera verifies it.
+
 No traced X half update function reads or validates the trailer: the menu
 checker merely reads the full file into memory and returns success, and the
 card updater stops at the declared end. This makes the trailer look like

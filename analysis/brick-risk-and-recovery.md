@@ -102,6 +102,12 @@ consumes it. Static searches found no standard SHA-256/RSA verification
 artifacts tied to it. This is negative evidence, not proof that cryptographic
 validation is impossible elsewhere.
 
+Comparison of official 1.20, 1.30, and 2.00 packages shows that all 256 bytes
+of the signature-like block vary by release, while the following 1,024-byte
+metadata suffix is identical except for two copies of the declared package
+length. That makes the trailer's layout much less likely to be incidental, but
+still does not reveal a verifier in the traced installation path.
+
 Practical consequence: a main-application patch appears technically
 repackable by changing only the intended bytes and recomputing the word at
 `0x1fc`; there is no demonstrated cryptographic signing barrier in the traced

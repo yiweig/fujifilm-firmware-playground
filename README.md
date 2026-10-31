@@ -45,8 +45,8 @@ state are intentionally excluded from version control.
   — official download provenance, hashes, and recovered historical X-half
   firmware URLs; binary artifacts remain ignored.
 - [`analysis/firmware-1.30-vs-2.00.md`](analysis/firmware-1.30-vs-2.00.md)
-  — verified package-region comparison and version-specific traces of the
-  lever-review film-simulation regression and Auto ISO mapping.
+  — verified 1.20/1.30/2.00 package comparison and version-specific traces of
+  the lever-review film-simulation regression and Auto ISO mapping.
 - [`analysis/spca6500-package-and-recovery-comparison.md`](analysis/spca6500-package-and-recovery-comparison.md)
   — matched SPHOST container slots, decoded HDR2 resource disks,
   Firmware1/Firmware2 write flow, and the bounded USB-recovery lead.
