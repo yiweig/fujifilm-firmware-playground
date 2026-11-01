@@ -28,6 +28,9 @@ state are intentionally excluded from version control.
 - [`analysis/shell-access-and-usb-lifecycle.md`](analysis/shell-access-and-usb-lifecycle.md)
   — UART shell input, the API-test USB character bridge, shell-only UVC
   registration, and conditional filesystem remounts during USB transitions.
+- [`analysis/service-boot-selection.md`](analysis/service-boot-selection.md) —
+  application boot-mask construction, factory flags, RTC-backed reboot
+  selection, and packaged USB resources with loader-ID protection.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`

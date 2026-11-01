@@ -30,6 +30,10 @@ The remaining unresolved piece is what sets the UVC/API-test selector. A setter
 exists, but this firmware image contains no direct call or stored pointer to it.
 That suggests the value may be supplied by a boot loader, dynamically loaded
 factory component, hardware/service state, or code absent from this image.
+These are hypotheses, not an identified writer. The follow-up
+[service boot trace](service-boot-selection.md) identifies the surrounding
+boot mask's application writer, RTC-backed reboot state, and the zero-selector
+branch's explicit USB API mode-4 selection.
 
 ## 1. Power-on calibration event
 
@@ -50,6 +54,7 @@ Inside that branch it can post event `0xF2000012`, accompanied by the log
 `EnableTest.txt` is therefore involved in entering calibration mode, but the
 file check is nested behind other state. Static analysis does not establish
 that placing this file on an SD card is sufficient, nor that doing so is safe.
+The helper checks nonzero file size; an empty file fails this check.
 
 ## 2. Calibration-event dispatch
 
