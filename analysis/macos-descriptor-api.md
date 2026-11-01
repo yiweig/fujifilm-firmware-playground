@@ -103,3 +103,14 @@ This step sends no factory PTP commands. It does not resolve `ptpcamerad`
 ownership, factory-read freshness, factory registration lifetime, service-entry
 calibration hazards, RAM loading, or independent recovery. Those remain the
 separate constraints documented in the linked investigation reports.
+
+## Completed live metadata check
+
+Later on 2026-11-01, the user connected the camera normally. A fresh inventory
+identified exactly one matching device and its current entry ID. The helper's
+explicit descriptor-read mode succeeded; its 39-byte output passed the strict
+endpoint parser. The measured endpoints and exact descriptor bytes are recorded
+in [the USB identity report](xhalf-usb-identity.md#configuration-descriptor-read-2026-11-01).
+This qualifies descriptor retrieval on this host/device connection, not bulk
+PTP access or absence of underlying USB descriptor requests. No exclusive-open,
+PTP, driver detach, service entry, or marker-file operation was performed.

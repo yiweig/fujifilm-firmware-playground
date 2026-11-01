@@ -91,3 +91,37 @@ metadata route, but it was not executed: not requiring exclusive open alone
 does not prove all current plugin initialization/caching behavior is free of
 USB bus requests. The installed implementation and lifecycle need inspection
 before treating it as equivalent to the completed cached-registry check.
+
+## Configuration descriptor read, 2026-11-01
+
+After the user reconnected the camera (possibly on another port), a fresh
+inventory found exactly one `04cb:030a` device with active configuration 1 and
+interface 0 owned by `ptpcamerad`. The fresh registry entry ID was used only for
+this observation; location/address/entry IDs are not stable across connections.
+
+The reviewed native helper successfully retrieved configuration index 0 without
+exclusive device open, interface claiming, PTP operations, driver detachment,
+or stopping `ptpcamerad`. This was an actual metadata API call, not just cached
+registry inspection. Whether macOS issued USB descriptor traffic is unobserved.
+See [the API investigation](macos-descriptor-api.md) for the inspected path.
+
+The returned 39-byte descriptor was:
+
+```text
+0902270001010080fa090400000306010100070582020002000705030200020007058403080001
+```
+
+| Field | Observed descriptor value |
+| --- | --- |
+| Configuration value / interfaces | 1 / 1 |
+| Interface / alternate setting | 0 / 0 |
+| Class / subclass / protocol | 6 / 1 / 1 |
+| Bulk IN (camera to host) | `0x82`, maximum packet 512 bytes |
+| Bulk OUT (host to camera) | `0x03`, maximum packet 512 bytes |
+| Interrupt IN (events) | `0x84`, maximum packet 8 bytes, interval field 1 |
+
+The exact bytes passed `Endpoints.from_configuration(raw, 1)`, producing
+`Endpoints(bulk_in=130, bulk_out=3, packet_size=512)`. The interrupt endpoint
+details were decoded from its final seven-byte descriptor. No endpoint transfer
+was attempted; ownership and native bulk transport remain unqualified. No
+service mode, SD markers, factory reads, or camera storage writes were used.

@@ -149,9 +149,11 @@ test supplies a fake callable; it is not a native libusb or camera test.
 
 Follow-up: [macOS descriptor API investigation](macos-descriptor-api.md) records
 the installed plugin's cache path and an offline-tested native helper. The
-registry-only observation is complete, but endpoint addresses remain unknown.
-Next: retrieve the configuration descriptor with the camera normally attached,
-then finish device/firmware preflight and ownership handling using those facts.
+registry-only observation and subsequent native descriptor retrieval are complete.
+The [identity report](xhalf-usb-identity.md#configuration-descriptor-read-2026-11-01)
+records the measured bulk IN `0x82`, bulk OUT `0x03` (512-byte packets), and
+interrupt IN `0x84` endpoints. The strict parser accepted the actual descriptor.
+Next: finish device/firmware preflight and ownership handling using those facts.
 Do not create `EnablePTPAP.txt` or `EnableTest.txt` for that metadata check.
 Factory-read freshness, registration revocation/reset and physical error recovery
 remain limitations described in the earlier reports. No firmware flash or
