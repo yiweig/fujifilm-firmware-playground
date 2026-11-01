@@ -142,12 +142,15 @@ records the `ioreg -l` correction; there are now 19 passing host test methods.
 python3 -m unittest discover -s analysis -p 'test_*.py' -v
 ```
 
-17 test methods cover protocol safety, descriptor rejection, packet fragmentation,
+19 test methods cover protocol safety, descriptor rejection, packet fragmentation,
 partial writes, timeout counts/deadlines, rejection before native I/O, integration
 with the complete reader, and serial/unrelated-device redaction. The ctypes ABI
 test supplies a fake callable; it is not a native libusb or camera test.
 
-Next: obtain cached descriptors/ownership observations with the camera attached,
+Follow-up: [macOS descriptor API investigation](macos-descriptor-api.md) records
+the installed plugin's cache path and an offline-tested native helper. The
+registry-only observation is complete, but endpoint addresses remain unknown.
+Next: retrieve the configuration descriptor with the camera normally attached,
 then finish device/firmware preflight and ownership handling using those facts.
 Do not create `EnablePTPAP.txt` or `EnableTest.txt` for that metadata check.
 Factory-read freshness, registration revocation/reset and physical error recovery

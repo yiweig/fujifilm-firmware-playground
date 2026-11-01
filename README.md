@@ -49,6 +49,9 @@ state are intentionally excluded from version control.
 - [`analysis/usb-transport-qualification.md`](analysis/usb-transport-qualification.md)
   — bounded bulk adapter, offline notification checks, cached registry inspection,
   and the remaining native-library/device-ownership requirements.
+- [`analysis/macos-descriptor-api.md`](analysis/macos-descriptor-api.md)
+  — inspected macOS descriptor-cache path, metadata-only helper, offline checks,
+  and the unresolved possibility of descriptor traffic on a cache miss.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`

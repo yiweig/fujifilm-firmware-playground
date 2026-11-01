@@ -35,7 +35,7 @@ def inventory(tree):
             continue
         item = {'vendor': '04cb', 'product': '030a', 'interfaces': [],
                 'endpoint_plans': [], 'source': 'cached IORegistry; no camera commands sent'}
-        for key in ['locationID', 'USB Address', 'bNumConfigurations', 'bConfigurationValue',
+        for key in ['IORegistryEntryID', 'locationID', 'USB Address', 'bNumConfigurations', 'bConfigurationValue',
                     'kUSBCurrentConfiguration', 'bcdUSB', 'bcdDevice', 'Device Speed']:
             if type(device.get(key)) is int:
                 item[key] = device[key]
