@@ -141,6 +141,33 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             long runtime=0x42030000L;
             bytes(runtime,new byte[0x40]);put(runtime,1,runtimeUsb?1:0);
             put(0x40d6d014L,4,runtime);
+            return startMainBoundary();
+        }
+        void sampleBootUsb(boolean present) throws Exception {
+            // Execute the original sampler against the image's initialized boot-state pointer.
+            if(get(0x40d6d014L,4)!=0x40e6bc84L)throw new Exception("Unexpected boot-state pointer");
+            put(0x1000517aL,1,present?1:0);put(0x1000904cL,1,0x20);
+            start(0x400df530L,0);boolean logged=false;
+            for(int n=0;n<300;n++) {
+                monitor.checkCancelled();long p=thread.getCounter().getOffset();
+                if(p==END) {if(!logged)throw new Exception("Missing boot-sampler log");return;}
+                if(p==0x400410ccL) {
+                    if(logged || reg("r0")!=0 || reg("r1")!=0x40af7196L)
+                        throw new Exception("Unexpected boot-sampler log");
+                    logged=true;returned();continue;
+                }
+                if(!((p>=0x400df530L && p<0x400df60cL) ||
+                     (p>=0x40123d44L && p<0x40123d60L) ||
+                     (p>=0x40123c0cL && p<0x40123c14L) ||
+                     (p>=0x40123d7cL && p<0x40123d84L) ||
+                     (p>=0x401250e4L && p<0x401250ecL)))
+                    throw new Exception("Unqualified boot-sampler callee "+Long.toHexString(p));
+                thread.stepInstruction();
+            }
+            throw new Exception("Boot-sampler instruction limit");
+        }
+        boolean startMainBoundary() throws Exception {
+            // Consume the existing boot-state pointer/bit without changing it.
             put(0x40e6bc0cL,1,0); // gbPwrOnToViewMode, read for logging in this prefix.
             put(0x40e4ae64L,1,0); // Avoid the separate low-two-bits == 1 charging branch.
             put(0x40e7af10L,4,0); // No optional callback table for 40126930.
@@ -307,6 +334,26 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
                     throw new Exception("StartMain Boolean control mismatch");
             }
             out.println("PASS: four StartMain flag/runtime-bit controls select mode 4 only for flag=0 and runtime bit=1; other cases post F2000010 and return.");
+            for(int initial=0;initial<2;initial++)for(int present=0;present<2;present++) {
+                Arm boot=new Arm();boot.bytes(COLD,expected);boot.put(FLAG,1,0);
+                boot.put(0x40e66958L,2,1);
+                byte[] before=new byte[32];Arrays.fill(before,(byte)0xa6);
+                before[0]=(byte)(0x80|initial);before[1]=(byte)0xf0;
+                boot.bytes(0x40e6bc84L,before);boot.sampleBootUsb(present!=0);
+                byte[] after=before.clone();after[0]=(byte)(0x80|initial|present);
+                if(present!=0)after[1]=(byte)0xe0;
+                if(!Arrays.equals(after,boot.bytes(0x40e6bc84L,32)) ||
+                   !Arrays.equals(expected,boot.bytes(COLD,1024)) || boot.get(FLAG,1)!=0)
+                    throw new Exception("Boot-sampler RAM preservation mismatch");
+                // Prove StartMain consumes the sampled RAM, not freshly supplied presence.
+                boot.put(0x1000517aL,1,0);
+                if(boot.startMainBoundary()!=((initial|present)!=0) ||
+                   !Arrays.equals(after,boot.bytes(0x40e6bc84L,32)) ||
+                   !Arrays.equals(expected,boot.bytes(COLD,1024)))
+                    throw new Exception("Boot-sampler to StartMain mismatch");
+            }
+            out.println("PASS: four initial-bit/presence controls execute original boot sampler using image pointer 40e6bc84; USB-present sets bit 0 and clears byte-1 bit 4, absent preserves prior bit; all other boot bytes/cold RAM preserved.");
+            out.println("PASS: StartMain consumes the sampled boot-state bit after raw presence is changed to zero; mode-4 result follows the latch, not current presence, under supplied power-class/callback prerequisites.");
             out.println("No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.");
             out.println("Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.");
             out.println("Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.");
@@ -314,6 +361,7 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             out.println("Additional completion test models Power IC read/write and indicator API; delays stubbed; no physical peripheral effects or asynchronous callbacks validated.");
             out.println("State-0001 test captures the idle-timeout queue post, then explicitly supplies its event to the dispatcher; actual timer, queue scheduling and readiness remain unverified.");
             out.println("StartMain test explicitly delivers F2000000; supplies runtime pointer/bit, power-class low bits 0 and null optional callback table; stubs 400410bc prefix, clock/log and resource setup; stops before mode setter.");
+            out.println("Boot-sampler tests retain the image pointer, supply 32 boot-state bytes and MMIO presence/GPIO values, stub only final sampler log, then use unchanged sampled RAM for StartMain; full early startup and later bit writers not modeled.");
             out.println("Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.");
         }
     }

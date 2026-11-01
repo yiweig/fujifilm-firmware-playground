@@ -7,6 +7,10 @@ ARM runtime coordinates, base `0x40000000`.
 
 ## Finding
 
+Follow-up: [boot USB latch and producer audit](boot-usb-latch-and-start-producers.md)
+identifies the runtime bit's source, reproduces its use without substituting
+a pointer, and audits the diagnostic prefix and initial-setup producers.
+
 A UI-group transition is not required for every loader-selection path.
 In state `0x0001`, event `0xf2000000` reaches the startup handler's
 `StartMain` branch. This branch selects USB API mode 4 if an additional

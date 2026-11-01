@@ -40,6 +40,9 @@ state are intentionally excluded from version control.
 - [`analysis/start-main-loader-gate.md`](analysis/start-main-loader-gate.md) —
   StartMain selects the loader from state 1 without a group transition;
   conditional offline composition, runtime-bit controls and event-timing gap.
+- [`analysis/boot-usb-latch-and-start-producers.md`](analysis/boot-usb-latch-and-start-producers.md)
+  — boot-time USB latch source and controls, initial-setup event producers,
+  and RAM diagnostic prefix audit.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.
