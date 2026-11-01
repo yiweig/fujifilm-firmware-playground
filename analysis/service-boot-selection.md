@@ -38,6 +38,10 @@ It combines that with state at `0x40e4ae64`, saved settings, and inputs from
 are inverted before packing. Physical button names and a valid button sequence
 are not established by these bit operations.
 
+Follow-up: [the button investigation](service-mode-button-candidate.md) maps
+the relevant inputs to PLAY, MOVIE and flash ON, and reproduces the outer gate
+in offline ARM emulation. Live timing and the later setting gate remain open.
+
 One branch can return base mask `0x00300002` when power-source prerequisites
 and saved-state bits `13..14 == 3` agree. Other inputs add bits to the result.
 This does not imply a particular three-button combination.
@@ -51,7 +55,7 @@ The shared cold-data buffer is `0x40e4df02`. Diagnostic printing at
 | --- | --- | --- |
 | `0x68`, halfword | `FgBootType` | `0x4012526c`: returns 1 when bit 3 is clear |
 | `0x6a`, halfword | `FgUsbMode` | `0x40125284`: returns 1 when low nibble differs from 8 |
-| `0x0a`, byte | semantic name unresolved | `0x405219a0`: reloads 1,024 bytes of `COLDDATA.BIN` and returns this byte |
+| `0x0a`, low byte of halfword | `DisableTest`, established by follow-up diagnostic trace | `0x405219a0`: reloads 1,024 bytes of `COLDDATA.BIN` and returns this byte |
 
 The USB getter also stores whether bits `8..11` are nonzero in a RAM flag at
 `0x40e7ae50`. These observations are not a complete cold-data specification.

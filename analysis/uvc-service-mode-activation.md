@@ -55,6 +55,10 @@ Inside that branch it can post event `0xF2000012`, accompanied by the log
 file check is nested behind other state. Static analysis does not establish
 that placing this file on an SD card is sufficient, nor that doing so is safe.
 The helper checks nonzero file size; an empty file fails this check.
+The [button follow-up](service-mode-button-candidate.md) identifies the
+special mask's PLAY/MOVIE/flash inputs and names cold-data offset `0x0a`
+as the low byte of `DisableTest`. This still leaves live settings and safe
+calibration entry unverified.
 
 ## 2. Calibration-event dispatch
 
