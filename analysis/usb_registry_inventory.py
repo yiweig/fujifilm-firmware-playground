@@ -9,6 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 import plistlib
+import re
 import subprocess
 import sys
 
@@ -34,7 +35,8 @@ def inventory(tree):
             continue
         item = {'vendor': '04cb', 'product': '030a', 'interfaces': [],
                 'endpoint_plans': [], 'source': 'cached IORegistry; no camera commands sent'}
-        for key in ['locationID', 'USB Address', 'bNumConfigurations', 'bConfigurationValue']:
+        for key in ['locationID', 'USB Address', 'bNumConfigurations', 'bConfigurationValue',
+                    'kUSBCurrentConfiguration', 'bcdUSB', 'bcdDevice', 'Device Speed']:
             if type(device.get(key)) is int:
                 item[key] = device[key]
         serial = device.get('USB Serial Number')
@@ -43,15 +45,22 @@ def inventory(tree):
         for child in nodes(device):
             interface = {key: child[key] for key in [
                 'bInterfaceNumber', 'bAlternateSetting', 'bInterfaceClass',
-                'bInterfaceSubClass', 'bInterfaceProtocol', 'bNumEndpoints',
+                'bInterfaceSubClass', 'bInterfaceProtocol', 'bNumEndpoints', 'bConfigurationValue',
             ] if type(child.get(key)) is int}
             if 'bInterfaceNumber' in interface:
                 item['interfaces'].append(interface)
+            if child.get('IOObjectClass') == 'AppleUSBHostInterfaceUserClient':
+                creator = child.get('IOUserClientCreator', '')
+                match = re.fullmatch(r'pid \d+, (.+)', creator) if isinstance(creator, str) else None
+                if match:
+                    owners = item.setdefault('interface_user_client_owners', [])
+                    if match[1] not in owners:
+                        owners.append(match[1])
             # Parse descriptor-shaped cached byte values without publishing arbitrary data.
             for value in child.values():
                 if isinstance(value, bytes) and value[:2] == b'\x09\x02':
                     try:
-                        config = device.get('bConfigurationValue')
+                        config = device.get('bConfigurationValue', device.get('kUSBCurrentConfiguration'))
                         plan = Endpoints.from_configuration(value, config)
                     except (ProtocolError, TypeError):
                         continue
@@ -73,8 +82,14 @@ def main():
     if args.read_registry:
         if sys.platform != 'darwin':
             parser.error('IORegistry inspection requires macOS')
-        raw = subprocess.run(['/usr/sbin/ioreg', '-a', '-p', 'IOUSB'], check=True,
-                             capture_output=True, timeout=15).stdout
+        try:
+            raw = subprocess.run(['/usr/sbin/ioreg', '-a', '-l', '-p', 'IOService',
+                                  '-r', '-c', 'IOUSBHostDevice'], check=True,
+                                 capture_output=True, timeout=15).stdout
+        except subprocess.CalledProcessError as error:
+            raise SystemExit('Cached registry read failed: ' + error.stderr.decode(errors='replace').strip())
+        except subprocess.TimeoutExpired:
+            raise SystemExit('Cached registry read timed out')
     else:
         raw = args.plist.read_bytes()
     found = inventory(plistlib.loads(raw))

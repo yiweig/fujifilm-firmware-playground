@@ -113,7 +113,8 @@ The next useful physical check is metadata-only:
 python3 analysis/usb_registry_inventory.py --read-registry
 ```
 
-This runs only `/usr/sbin/ioreg -a -p IOUSB` and parses its plist output. It
+The corrected tool runs only
+`/usr/sbin/ioreg -a -l -p IOService -r -c IOUSBHostDevice` and parses its plist output. It
 prints matching device nodes for `04cb:030a`, selected interface metadata,
 location/address if available, and a hash of the serial string when present.
 It excludes raw serial strings and unrelated devices. It does not create a
@@ -129,6 +130,11 @@ The tool was tested only on synthetic plist data in this pass. It was not run
 against the current registry. The camera must be connected for a useful fresh
 registry observation; OS activity on attachment is outside the tool's control.
 No calibration marker or special startup combination is required for this check.
+
+Follow-up: [the 2026-11-01 identity observation](xhalf-usb-identity.md)
+records the completed registry-only check. It confirmed the interface and
+`ptpcamerad` ownership, but no endpoint descriptors were exposed. It also
+records the `ioreg -l` correction; there are now 19 passing host test methods.
 
 ## Tests and remaining work
 
