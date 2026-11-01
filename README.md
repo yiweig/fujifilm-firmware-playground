@@ -37,6 +37,9 @@ state are intentionally excluded from version control.
 - [`analysis/disabletest-override-assessment.md`](analysis/disabletest-override-assessment.md)
   — existing SD marker override, persistent `clbt entest` alternative, and
   the post-entry safety question that remains before testing.
+- [`analysis/calibration-entry-safety.md`](analysis/calibration-entry-safety.md)
+  — automatic confirmation sequence, offline execution to a calibration
+  worker, persistent factory-data operations, and remaining live-test barriers.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`

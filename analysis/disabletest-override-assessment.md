@@ -73,6 +73,11 @@ without modifying factory settings, and how normal operation is restored.
 A volatile file override does not make everything it enables volatile.
 No live marker test is endorsed by this finding.
 
+Follow-up: [the calibration safety trace](calibration-entry-safety.md) now
+reproduces automatic confirmation reaching a worker in offline emulation,
+identifies saved-data writes, and distinguishes the remaining unknown live
+settings and exit lifecycle.
+
 ## Reproduction
 
 Use `analysis/fw.py disasm` on ranges `40517550 40517620`,
