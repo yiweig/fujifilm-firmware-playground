@@ -7,6 +7,10 @@ Runtime base `0x40000000`, little-endian ARMv7.
 
 ## Findings
 
+Follow-up: [retail PTP command boundaries](retail-ptp-command-boundaries.md)
+checks operation/property registrations and the command-arrival notification.
+Those inspected surfaces do not provide the missing shell/refresh entry.
+
 The remaining known refresh at `0x4051d5f4` belongs to internal shell command
 `DPC`, selector 31. Its selected branch refreshes the cached USB-selection
 flag without an explicit file or RTC write. Four original-ARM controls verify

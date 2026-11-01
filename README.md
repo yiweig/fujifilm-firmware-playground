@@ -55,6 +55,9 @@ state are intentionally excluded from version control.
 - [`analysis/usb-cache-refresh-reachability.md`](analysis/usb-cache-refresh-reachability.md)
   — DPC debug-shell refresh, reset-completion producer and RTC writes,
   original-code controls, and the known cache-writer reachability inventory.
+- [`analysis/retail-ptp-command-boundaries.md`](analysis/retail-ptp-command-boundaries.md)
+  — operation/callback registrations, property and reset-code limits, and
+  command-arrival notification controls in the ordinary PTP UI state.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

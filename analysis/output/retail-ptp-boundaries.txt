@@ -1,0 +1,21 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Property tests enter callback 405c9efc directly; supplied input, not full PTP acceptance/transaction.
+PASS: property=001f boundary=43000000; all image/globals unchanged; no external call executed.
+PASS: property=101d boundary=43000000; all image/globals unchanged; no external call executed.
+PASS: property=d608 boundary=43000000; all image/globals unchanged; no external call executed.
+PASS: property=0114 boundary=43000000; all image/globals unchanged; no external call executed.
+PASS: property=500c boundary=405ca018; all image/globals unchanged; no external call executed.
+PASS: property=5011 boundary=40008b8c; all image/globals unchanged; no external call executed.
+Notification tests supply event 6251001a via application dispatcher in state 8000; only print modeled as return.
+Fixtures: resume latch 40e7ae4a=1; runtime word 40e065b0=0; no physical device state inferred.
+Parameters f2000023/f2000084 are synthetic internal stress controls, not encodable 16-bit PTP opcodes.
+PASS: notification parameter=0000001f flag=0 returned; only last-operation word 413cb55c changes; cache and cold RAM preserved.
+PASS: notification parameter=0000001f flag=1 returned; only last-operation word 413cb55c changes; cache and cold RAM preserved.
+PASS: notification parameter=f2000023 flag=0 returned; only last-operation word 413cb55c changes; cache and cold RAM preserved.
+PASS: notification parameter=f2000023 flag=1 returned; only last-operation word 413cb55c changes; cache and cold RAM preserved.
+PASS: notification parameter=f2000084 flag=0 returned; only last-operation word 413cb55c changes; cache and cold RAM preserved.
+PASS: notification parameter=f2000084 flag=1 returned; only last-operation word 413cb55c changes; cache and cold RAM preserved.
+PASS: notification parameter=00001010 flag=0 returned; only last-operation word 413cb55c changes; cache and cold RAM preserved.
+PASS: notification parameter=00001010 flag=1 returned; only last-operation word 413cb55c changes; cache and cold RAM preserved.
+Known-property controls stop before white-balance mutation or datetime memcpy; neither is executed to completion.
+No live requests, shell, USB mode setter, file or RTC calls; reset opcode support is a separate static finding.
