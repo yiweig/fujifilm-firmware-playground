@@ -37,6 +37,9 @@ state are intentionally excluded from version control.
 - [`analysis/idle-usb-refresh.md`](analysis/idle-usb-refresh.md) — shorter refresh
   path from state 1, idle-timeout event producer, saved-state audit and remaining
   transition into the loader-selecting UI branch.
+- [`analysis/start-main-loader-gate.md`](analysis/start-main-loader-gate.md) —
+  StartMain selects the loader from state 1 without a group transition;
+  conditional offline composition, runtime-bit controls and event-timing gap.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

@@ -136,6 +136,48 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             }
             throw new Exception("Idle instruction limit");
         }
+        boolean startMainBoundary(boolean runtimeUsb) throws Exception {
+            // Preserve the current UI state and USB flag; supply only runtime prerequisites.
+            long runtime=0x42030000L;
+            bytes(runtime,new byte[0x40]);put(runtime,1,runtimeUsb?1:0);
+            put(0x40d6d014L,4,runtime);
+            put(0x40e6bc0cL,1,0); // gbPwrOnToViewMode, read for logging in this prefix.
+            put(0x40e4ae64L,1,0); // Avoid the separate low-two-bits == 1 charging branch.
+            put(0x40e7af10L,4,0); // No optional callback table for 40126930.
+            start(0x404db31cL,0xf2000000L);boolean queued=false,resource=false;
+            for(int n=0;n<600;n++) {
+                monitor.checkCancelled();long p=thread.getCounter().getOffset();
+                if(p==END) {if(!queued)throw new Exception("Missing StartMain continuation");return false;}
+                if(p==0x4038d6d0L) {
+                    if(reg("r0")!=4 || !resource || queued)throw new Exception("Unexpected StartMain mode boundary");
+                    return true;
+                }
+                if(p==0x405cbb84L) {
+                    if(reg("r0")!=1 || resource)throw new Exception("Unexpected StartMain resource selection");
+                    resource=true;returned();continue;
+                }
+                if(p==0x400410bcL) {
+                    if(reg("r0")!=0 || reg("r1")!=0x40bc4ad4L)throw new Exception("Unexpected StartMain prefix API");
+                    returned();continue;
+                }
+                if(p==0x4000cd00L || p==0x40004064L) {returned();continue;}
+                if(p==0x4006f330L) {
+                    if(queued || resource || reg("r0")!=0xf2000010L ||
+                       reg("r1")!=0 || reg("r2")!=0 || reg("r3")!=0)
+                        throw new Exception("Unexpected StartMain continuation");
+                    queued=true;returned();continue;
+                }
+                if(!((p>=0x404db31cL && p<0x404db3dcL) ||
+                     (p>=0x404d51b0L && p<0x404d55bcL) ||
+                     (p>=0x40517b18L && p<0x40517b2cL) ||
+                     (p>=0x405180f0L && p<0x405181ecL) ||
+                     (p>=0x40518538L && p<0x4051854cL) ||
+                     (p>=0x40126930L && p<0x40126a24L)))
+                    throw new Exception("Unqualified StartMain callee "+Long.toHexString(p));
+                thread.stepInstruction();
+            }
+            throw new Exception("StartMain instruction limit");
+        }
         boolean loaderBoundary() throws Exception {
             put(0x40e66958L,2,0x8000);put(0x40e6696bL,1,1);
             return usbEventAtCurrentState();
@@ -252,12 +294,26 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
                simple.get(0x40e66958L,2)!=1 || !Arrays.equals(expected,simple.bytes(COLD,1024)))
                 throw new Exception("State-0001 direct refresh continuity mismatch");
             out.println("PASS: subsequent USB event with presence=1 and status=1 returns without loader or charging-control entry; state, cold RAM and refreshed flag unchanged.");
+            if(!simple.startMainBoundary(true) || simple.get(FLAG,1)!=0 ||
+               simple.get(0x40e66958L,2)!=1 || !Arrays.equals(expected,simple.bytes(COLD,1024)))
+                throw new Exception("Continuous StartMain loader boundary mismatch");
+            out.println("PASS: supplied StartMain after idle refresh reaches mode-4 boundary in unchanged UI state 0001, with runtime bit 0 set; cold RAM and flag unchanged.");
+            for(int flag=0;flag<2;flag++)for(int bit=0;bit<2;bit++) {
+                Arm control=new Arm();control.bytes(COLD,expected);control.put(FLAG,1,flag);
+                control.put(0x40e66958L,2,1);
+                if(control.startMainBoundary(bit!=0)!=(flag==0 && bit==1) ||
+                   control.get(FLAG,1)!=flag || control.get(0x40e66958L,2)!=1 ||
+                   !Arrays.equals(expected,control.bytes(COLD,1024)))
+                    throw new Exception("StartMain Boolean control mismatch");
+            }
+            out.println("PASS: four StartMain flag/runtime-bit controls select mode 4 only for flag=0 and runtime bit=1; other cases post F2000010 and return.");
             out.println("No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.");
             out.println("Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.");
             out.println("Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.");
             out.println("Continuity test supplies USB-presence MMIO and connection/charging status; 300-unit delay stubbed; stops before charging control.");
             out.println("Additional completion test models Power IC read/write and indicator API; delays stubbed; no physical peripheral effects or asynchronous callbacks validated.");
             out.println("State-0001 test captures the idle-timeout queue post, then explicitly supplies its event to the dispatcher; actual timer, queue scheduling and readiness remain unverified.");
+            out.println("StartMain test explicitly delivers F2000000; supplies runtime pointer/bit, power-class low bits 0 and null optional callback table; stubs 400410bc prefix, clock/log and resource setup; stops before mode setter.");
             out.println("Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.");
         }
     }

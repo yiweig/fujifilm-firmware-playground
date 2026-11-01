@@ -110,6 +110,11 @@ observation is claimed.
 
 ## Remaining gap
 
+Follow-up: [StartMain loader gate](start-main-loader-gate.md) demonstrates a
+different event that reaches loader selection from state 1 itself. A group
+transition is therefore not required for every candidate composition; actual
+event timing and safe repeatability remain unresolved.
+
 This improves the refresh hypothesis but still does not connect state 1 to
 the loader-selecting UI branch. In the new continuous test, the next USB event
 returns with state 1. Actual idle-event generation, suppression-byte lifetime,
