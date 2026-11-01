@@ -19,6 +19,9 @@ state are intentionally excluded from version control.
 - [`analysis/recovery-entry-review.md`](analysis/recovery-entry-review.md) —
   early shell startup conditions, eSD firmware-slot header provenance, and why
   neither yet establishes independent SD/USB recovery.
+- [`analysis/normal-usb-loader-entry.md`](analysis/normal-usb-loader-entry.md) —
+  calibration-free UI loader path, saved USB-setting gate, caller census and
+  offline ARM reproduction; temporary retail activation remains unresolved.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

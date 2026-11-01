@@ -1,0 +1,14 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Synthetic cold data, UI state and cable; no hardware accessed.
+PASS: getter over all 16 low nibbles with high flag 0x100; only nibble 8 returns zero.
+Runtime flag is !getter at inspected initialization sites.
+PASS: flag=0 cached=0 cable=0 -> mode4 boundary
+PASS: flag=0 cached=0 cable=1 -> mode4 boundary
+PASS: flag=0 cached=1 cable=0 -> mode4 boundary
+PASS: flag=0 cached=1 cable=1 -> mode4 boundary
+PASS: flag=1 cached=0 cable=0 -> returned
+PASS: flag=1 cached=0 cable=1 -> normal USB branch boundary
+PASS: flag=1 cached=1 cable=0 -> normal USB branch boundary
+PASS: flag=1 cached=1 cable=1 -> returned
+Event delivery supplied; logging, cable getter and descriptor setup stubbed.
+Stops before mode setter/normal USB work; no calibration, USB lifecycle or entry timing validated.

@@ -23,6 +23,11 @@ camera. This discovery therefore does not yet provide a usable RAM-boot
 procedure or recovery from damaged installed firmware. See the matched
 [USB RAM receiver](xhalf-usb-ram-receiver.md) for what mode 4 exposes.
 
+Follow-up: [normal UI loader entry](normal-usb-loader-entry.md) establishes
+additional calibration-free mode-4 branches in USB event handling. Their saved
+factory USB-setting gate is reproduced offline; temporary retail activation
+remains unresolved.
+
 ## Command identity and mode-4 branch
 
 The command table at `0x40e18094` contains these three pointers:
