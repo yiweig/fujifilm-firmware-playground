@@ -129,6 +129,10 @@ evidence is claimed.
 
 ## Research consequence
 
+Follow-up: [idle-event refresh](idle-usb-refresh.md) removes the need to reach
+`0x0301` for the refresh step. The missing transition into a loader-selecting
+UI state remains relevant; the priority below records the earlier hypothesis.
+
 Repeatedly delivering the same USB event after the conditional refresh is
 not an established way to finish RAM-loader entry. The unresolved parts remain
 an actual producer of UI state `0x0301`, any later UI transition that consumes

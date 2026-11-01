@@ -7,6 +7,10 @@ Addresses are ARMv7 runtime coordinates, base `0x40000000`.
 
 ## Result
 
+Follow-up: [idle-event refresh](idle-usb-refresh.md) demonstrates a shorter
+path from state `0x0001`, without display/object cleanup. The prerequisites
+below apply to this `0x0301` experiment, not to every flag-refresh path.
+
 The alternate `0x0301` UI-state branch really bypasses the known RTC-writing
 cleanup. The emulator now enters through the normal UI dispatcher, executes
 the event handler and refresh, then returns with the staged cold-data RAM

@@ -117,6 +117,25 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             }
             throw new Exception("Alternate refresh instruction limit");
         }
+        long idleTimeoutMessage() throws Exception {
+            // Capture a queue post; this does not emulate the real queue or its producer.
+            start(0x404db31cL,0xf0000071L);long posted=0;
+            for(int n=0;n<200;n++) {
+                long p=thread.getCounter().getOffset();
+                if(p==END)return posted;
+                if(p==0x40004064L) {returned();continue;}
+                if(p==0x4006f330L) {
+                    if(posted!=0 || reg("r1")!=0 || reg("r2")!=0 || reg("r3")!=0)
+                        throw new Exception("Unexpected idle queue post");
+                    posted=reg("r0");returned();continue;
+                }
+                if(!((p>=0x404db31cL && p<0x404db3dcL) ||
+                     (p>=0x404d51b0L && p<0x404d55bcL)))
+                    throw new Exception("Unexpected idle callee "+Long.toHexString(p));
+                thread.stepInstruction();
+            }
+            throw new Exception("Idle instruction limit");
+        }
         boolean loaderBoundary() throws Exception {
             put(0x40e66958L,2,0x8000);put(0x40e6696bL,1,1);
             return usbEventAtCurrentState();
@@ -213,11 +232,32 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             out.println("PASS: resource-not-ready control reaches initialization/wait path; stopped before execution.");
             if(a.alternateRefresh(true,true,0x300)!=-3)throw new Exception("0300 control failed");
             out.println("PASS: 0300 control with +1025 set reaches broader cleanup 405c7ff8; stopped before execution.");
+            Arm simple=new Arm();simple.bytes(COLD,expected);simple.put(FLAG,1,1);
+            simple.put(0x40e66958L,2,1);simple.put(0x40e6697dL,1,1);
+            if(simple.idleTimeoutMessage()!=0 || simple.get(FLAG,1)!=1)
+                throw new Exception("Idle suppression control mismatch");
+            out.println("PASS: +102d=1 control suppresses the idle-timeout queue post and leaves the USB flag unchanged.");
+            simple.put(0x40e6697dL,1,0);
+            if(simple.idleTimeoutMessage()!=0xf2000084L || simple.get(FLAG,1)!=1 ||
+               simple.get(0x40e66958L,2)!=1 || !Arrays.equals(expected,simple.bytes(COLD,1024)))
+                throw new Exception("Idle event producer mismatch");
+            out.println("PASS: supplied MSG_KEY_IDLE_TIME_OUT in UI state 0001 and +102d=0 posts F2000084 with three zero arguments; state, cold RAM and flag unchanged.");
+            if(simple.alternateRefresh(false,true,1)!=0 || simple.get(FLAG,1)!=0 ||
+               simple.get(0x40e66958L,2)!=1 || simple.get(0x412c281cL,1)!=0 ||
+               !Arrays.equals(expected,simple.bytes(COLD,1024)))
+                throw new Exception("State-0001 direct refresh mismatch");
+            out.println("PASS: supplied F2000084 in UI state 0001 refreshes flag with zero display/object calls; display-active input and staged cold RAM preserved, state remains 0001.");
+            simple.put(0x1000517aL,1,1);simple.put(0x40e7ae40L,1,1);
+            if(simple.usbEventAtCurrentState() || simple.chargingBoundary || simple.get(FLAG,1)!=0 ||
+               simple.get(0x40e66958L,2)!=1 || !Arrays.equals(expected,simple.bytes(COLD,1024)))
+                throw new Exception("State-0001 direct refresh continuity mismatch");
+            out.println("PASS: subsequent USB event with presence=1 and status=1 returns without loader or charging-control entry; state, cold RAM and refreshed flag unchanged.");
             out.println("No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.");
             out.println("Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.");
             out.println("Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.");
             out.println("Continuity test supplies USB-presence MMIO and connection/charging status; 300-unit delay stubbed; stops before charging control.");
             out.println("Additional completion test models Power IC read/write and indicator API; delays stubbed; no physical peripheral effects or asynchronous callbacks validated.");
+            out.println("State-0001 test captures the idle-timeout queue post, then explicitly supplies its event to the dispatcher; actual timer, queue scheduling and readiness remain unverified.");
             out.println("Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.");
         }
     }

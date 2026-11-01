@@ -34,6 +34,9 @@ state are intentionally excluded from version control.
 - [`analysis/usb-charge-path-completion.md`](analysis/usb-charge-path-completion.md)
   — modeled completion of that charging branch, Power IC charger classification,
   and why it does not itself supply the missing loader transition.
+- [`analysis/idle-usb-refresh.md`](analysis/idle-usb-refresh.md) — shorter refresh
+  path from state 1, idle-timeout event producer, saved-state audit and remaining
+  transition into the loader-selecting UI branch.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.
