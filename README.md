@@ -49,6 +49,9 @@ state are intentionally excluded from version control.
 - [`analysis/ptp-ui-state-and-exit.md`](analysis/ptp-ui-state-and-exit.md) —
   PTP-state refresh controls through the application dispatcher, USB-out
   boundary, teardown/remount order and camera-mode return decision.
+- [`analysis/usb-return-mode-reentry.md`](analysis/usb-return-mode-reentry.md) —
+  shooting USB-entry and playback gate controls: both use the cached flag;
+  changing cold-data RAM alone does not change the tested branch decisions.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

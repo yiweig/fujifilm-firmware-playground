@@ -1,0 +1,16 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Shooting: supplied USB_IN f0000044 via application dispatcher, state 2000, no active Wi-Fi/UI cleanup.
+Playback: interior gate slice 404d9a6c, synthetic state 1006; preceding cleanup/guards NOT executed.
+Only printf 40004064 and delay 4006a074 modeled as returns; stop BEFORE first selected downstream call.
+PASS: shooting USB_IN flag=0 FgUsbMode=0114 cached-presence=1 -> 405cbb84; image/globals unchanged; logs=2 delays=1.
+PASS: shooting USB_IN flag=0 FgUsbMode=0118 cached-presence=1 -> 405cbb84; image/globals unchanged; logs=2 delays=1.
+PASS: shooting USB_IN flag=1 FgUsbMode=0114 cached-presence=1 -> 4000f9d0; image/globals unchanged; logs=2 delays=1.
+PASS: shooting USB_IN flag=1 FgUsbMode=0118 cached-presence=1 -> 4000f9d0; image/globals unchanged; logs=2 delays=1.
+PASS: playback gate slice flag=0 FgUsbMode=0114 cached-presence=1 -> 405cbb84; image/globals unchanged; logs=2 delays=0.
+PASS: playback gate slice flag=0 FgUsbMode=0118 cached-presence=1 -> 405cbb84; image/globals unchanged; logs=2 delays=0.
+PASS: playback gate slice flag=1 FgUsbMode=0114 cached-presence=1 -> 4000f9d0; image/globals unchanged; logs=2 delays=0.
+PASS: playback gate slice flag=1 FgUsbMode=0118 cached-presence=1 -> 4000f9d0; image/globals unchanged; logs=2 delays=0.
+PASS: shooting USB_IN flag=0 FgUsbMode=0114 cached-presence=0 -> 43000000; image/globals unchanged; logs=0 delays=1.
+PASS: shooting USB_IN flag=1 FgUsbMode=0114 cached-presence=0 -> 43000000; image/globals unchanged; logs=0 delays=1.
+No USB connection, filesystem, COLD getter/refresh, peripheral configuration, mode setter or loader executed.
+These independent gate fixtures do not prove staged settings survive USB exit or qualify a live activation route.

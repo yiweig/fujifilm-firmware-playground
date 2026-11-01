@@ -6,6 +6,11 @@ ARM runtime addresses, base `0x40000000`.
 
 ## Finding
 
+Follow-up: [USB return-mode re-entry](usb-return-mode-reentry.md) traces the
+selected playback/shooting entries and reproduces their cached-flag gates.
+Neither tested gate reloads the staged field; complete intervening
+initialization and shared-buffer lifetime remain unqualified.
+
 The inspected ordinary PTP entry selects UI state `0x8000`. In that state,
 the full application dispatcher returns without changing RAM for each of
 the proposed idle, refresh and `StartMain` events, under the modeled runtime
