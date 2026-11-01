@@ -53,10 +53,14 @@ elif cmd=='strings':
             print(f'{a:08x} {s!r} pointers={hits}')
 elif cmd=='literals':
     start,end=(int(a,16) for a in ARGS[1:3])
+    if not BASE <= start < end <= BASE + len(DATA) or start % 4 or end % 4:
+        raise SystemExit('Expected an aligned range inside the selected image')
     for p in range(start,end,4):
         w=word(p); print(f'{p:08x}: {w:08x} {string(w)}')
 elif cmd=='disasm':
     start,end=(int(a,16) for a in ARGS[1:3])
+    if not BASE <= start < end <= BASE + len(DATA) or start % 4 or end % 4:
+        raise SystemExit('Expected an aligned range inside the selected image')
     out=ROOT/'analysis/output'/f'{IMAGE.stem}.elf'
     if not out.exists():
         names=b'\0.text\0.shstrtab\0'; off=256; noff=off+len(DATA); shoff=(noff+len(names)+3)&~3

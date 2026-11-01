@@ -1,0 +1,18 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline synthetic RAM composition; refresh slice and event delivery explicitly supplied.
+PASS: RAM staging changes only synthetic cold-data byte +6a; cached USB flag stays 1; supplied event returns without loader.
+PASS: supplied original refresh slice changes cached flag to 0; supplied USB event reaches mode-4 boundary.
+PASS: restoring synthetic RAM block and refreshing restores original cold-data bytes and ordinary event result.
+PASS: full supplied 0301 UI event path returns, refreshes flag to 0 and preserves staged cold RAM; only five display/object calls stubbed.
+PASS: subsequent supplied USB event in resulting state 0001 reaches charging-control boundary 40124b74, not direct loader selection; stopped before control, cold RAM and cached flag unchanged.
+PASS: modeled charging path returns to caller without loader; exactly one Power IC masked-write and one indicator request; staged cold RAM, USB flag and UI state preserved.
+PASS: USB-presence-zero control in state 0001 returns before charging control.
+PASS: display-active control reaches display cleanup; stopped at log before unqualified display callees.
+PASS: resource-not-ready control reaches initialization/wait path; stopped before execution.
+PASS: 0300 control with +1025 set reaches broader cleanup 405c7ff8; stopped before execution.
+No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.
+Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.
+Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.
+Continuity test supplies USB-presence MMIO and connection/charging status; 300-unit delay stubbed; stops before charging control.
+Additional completion test models Power IC read/write and indicator API; delays stubbed; no physical peripheral effects or asynchronous callbacks validated.
+Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.

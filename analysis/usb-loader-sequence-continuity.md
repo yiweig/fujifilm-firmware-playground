@@ -150,3 +150,8 @@ Original-byte `analysis/fw.py disasm` ranges (end exclusive):
 Existing local Ghidra 12.1.4 ARMv7 state was reused after the recorded REA
 raw-image mapping issue. No fresh REA evidence or camera runtime observation
 is claimed.
+
+Follow-up: [charging branch completion](usb-charge-path-completion.md) runs the
+original charge-control path with modeled peripheral and indicator APIs. It
+returns without a direct UI transition or loader selection, preserving the
+staged setting; asynchronous hardware behavior remains unqualified.

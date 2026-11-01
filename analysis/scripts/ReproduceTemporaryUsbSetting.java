@@ -20,6 +20,7 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
         AddressSpace ram=currentProgram.getLanguage().getDefaultSpace();
         PcodeThread<byte[]> thread;
         boolean chargingBoundary;
+        int modeledChargeWrites, modeledIndicatorCalls;
         Arm() {
             bytes(BASE,image);bytes(COLD,new byte[1024]);
             bytes(0x40e65950L,new byte[0x1100]);bytes(0x413e32d8L,new byte[0x80]);
@@ -121,14 +122,32 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             return usbEventAtCurrentState();
         }
         boolean usbEventAtCurrentState() throws Exception {
+            return usbEventAtCurrentState(false);
+        }
+        boolean usbEventAtCurrentState(boolean modelCharge) throws Exception {
             chargingBoundary=false;
+            modeledChargeWrites=0;modeledIndicatorCalls=0;
             start(0x404db31cL,0xf0000044L);
             for(int n=0;n<600;n++) {
                 long p=thread.getCounter().getOffset();
                 if(p==END)return false;
-                if(p==0x40124b74L) {chargingBoundary=true;return false;}
+                if(p==0x40124b74L && !modelCharge) {chargingBoundary=true;return false;}
+                if(modelCharge && p==0x40043220L) {
+                    if(reg("r0")!=6)throw new Exception("Unexpected modeled Power IC register");
+                    put(reg("r1"),1,8);returned();continue;
+                }
+                if(modelCharge && p==0x40043318L) {
+                    if(reg("r0")!=6 || reg("r1")!=8 || reg("r2")!=0 || reg("r3")!=32)
+                        throw new Exception("Unexpected charging-control write");
+                    modeledChargeWrites++;returned();continue;
+                }
+                if(modelCharge && p==0x40124e94L) {
+                    if(reg("r0")!=1)throw new Exception("Unexpected indicator request");
+                    modeledIndicatorCalls++;returned();continue;
+                }
                 if(p==0x4006a074L) {
-                    if(reg("r0")!=3 || reg("r1")!=300)throw new Exception("Unexpected connection delay");
+                    if(reg("r0")!=3 || !(reg("r1")==300 || (modelCharge && reg("r1")==1)))
+                        throw new Exception("Unexpected connection delay");
                     returned();continue;
                 }
                 if(p==0x4038d6d0L) {
@@ -143,6 +162,7 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
                      (p>=0x40123d44L && p<0x40123d54L) ||
                      (p>=0x401250e4L && p<0x401250ecL) ||
                      (p>=0x40124b08L && p<0x40124b28L) ||
+                     (modelCharge && p>=0x40124b74L && p<0x40124d7cL) ||
                      (p>=0x40124eecL && p<0x40124f34L)))
                     throw new Exception("Unexpected UI callee "+Long.toHexString(p));
                 thread.stepInstruction();
@@ -179,6 +199,11 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             if(a.usbEventAtCurrentState() || !a.chargingBoundary || a.get(0x40e66958L,2)!=1 || a.get(FLAG,1)!=0 ||
                !Arrays.equals(expected,a.bytes(COLD,1024)))throw new Exception("Continuous event control mismatch");
             out.println("PASS: subsequent supplied USB event in resulting state 0001 reaches charging-control boundary 40124b74, not direct loader selection; stopped before control, cold RAM and cached flag unchanged.");
+            a.put(0x40e7ae41L,1,1);
+            if(a.usbEventAtCurrentState(true) || a.modeledChargeWrites!=1 || a.modeledIndicatorCalls!=1 ||
+               a.get(0x40e7ae41L,1)!=0 || a.get(0x40e66958L,2)!=1 || a.get(FLAG,1)!=0 ||
+               !Arrays.equals(expected,a.bytes(COLD,1024)))throw new Exception("Modeled charging completion mismatch");
+            out.println("PASS: modeled charging path returns to caller without loader; exactly one Power IC masked-write and one indicator request; staged cold RAM, USB flag and UI state preserved.");
             a.put(0x1000517aL,1,0);
             if(a.usbEventAtCurrentState() || a.chargingBoundary)throw new Exception("Disconnected continuity control mismatch");
             out.println("PASS: USB-presence-zero control in state 0001 returns before charging control.");
@@ -192,6 +217,7 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             out.println("Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.");
             out.println("Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.");
             out.println("Continuity test supplies USB-presence MMIO and connection/charging status; 300-unit delay stubbed; stops before charging control.");
+            out.println("Additional completion test models Power IC read/write and indicator API; delays stubbed; no physical peripheral effects or asynchronous callbacks validated.");
             out.println("Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.");
         }
     }
