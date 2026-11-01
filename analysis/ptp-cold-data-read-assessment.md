@@ -138,6 +138,11 @@ validates the response schema. The ignored file-read result still needs a
 freshness strategy or an explicit limit on what the capture can establish.
 No live USB client was created or executed in this pass.
 
+Follow-up: [the session audit and restricted reader](ptp-reader-and-session-audit.md)
+now document OpenSession/CloseSession, the separate USB-out path, registration
+lifetime, and a tested offline protocol client. A live USB backend and complete
+physical lifecycle qualification remain outstanding.
+
 No separate automatic-calibration suppression file was identified in the
 previously inspected scheduling path. This candidate instead avoids that
 mode entirely while gathering evidence. The calibration entry and safe-exit

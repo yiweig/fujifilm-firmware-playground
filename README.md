@@ -43,6 +43,9 @@ state are intentionally excluded from version control.
 - [`analysis/ptp-cold-data-read-assessment.md`](analysis/ptp-cold-data-read-assessment.md)
   — ordinary-PTP candidate for reading factory flags, exact read/write direction,
   offline chunk-read reproduction, and the ignored file-read-status limitation.
+- [`analysis/ptp-reader-and-session-audit.md`](analysis/ptp-reader-and-session-audit.md)
+  — restricted protocol client and simulation, session/USB-out traces,
+  registration lifetime, and requirements for a future live transport.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`
