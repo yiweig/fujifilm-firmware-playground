@@ -1,0 +1,18 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Synthetic UI state 8000, staged cold RAM, both USB flag values; supplied delivery; only log function 40004064 stubbed.
+PASS: event=62510018 flag=0 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=62510018 flag=1 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=62510019 flag=0 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=62510019 flag=1 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=f0000071 flag=0 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=f0000071 flag=1 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=f2000084 flag=0 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=f2000084 flag=1 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=f2000000 flag=0 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: event=f2000000 flag=1 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: USB-out flag=0 cached-presence=0 stops before 4038d764(0); state, flag, cold RAM and all image/globals unchanged; log calls=3.
+PASS: event=f0000045 flag=0 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+PASS: USB-out flag=1 cached-presence=0 stops before 4038d764(0); state, flag, cold RAM and all image/globals unchanged; log calls=3.
+PASS: event=f0000045 flag=1 cached-presence=1 returned; log calls=2; image/global RAM unchanged over 40000000..413fffff.
+Excludes queue/filter execution, diagnostic wrappers, other UI substates, peripherals and physical session/USB lifetime.
+USB-out disconnected cases stop before disconnect API; teardown and re-entry are not modeled as successful returns.

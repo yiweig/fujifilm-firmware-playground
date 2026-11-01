@@ -10,6 +10,9 @@ ARM runtime coordinates, base `0x40000000`.
 Follow-up: [boot USB latch and producer audit](boot-usb-latch-and-start-producers.md)
 identifies the runtime bit's source, reproduces its use without substituting
 a pointer, and audits the diagnostic prefix and initial-setup producers.
+The [PTP-state controls](ptp-ui-state-and-exit.md) subsequently show that
+`StartMain` and idle/refresh events do not reproduce this state-1 behavior
+while the modeled UI remains in ordinary PTP state `0x8000`.
 
 A UI-group transition is not required for every loader-selection path.
 In state `0x0001`, event `0xf2000000` reaches the startup handler's

@@ -43,6 +43,10 @@ OpenSession always executes the factory callback.
 
 ## USB disconnect is distinct from session close
 
+Follow-up: [PTP UI state and exit](ptp-ui-state-and-exit.md) tests the main
+dispatcher through the disconnect boundary and maps teardown, remounting and
+the return-mode decision. Its complete physical effects remain unqualified.
+
 The ordinary USB UI handler `0x404d665c` recognizes event `0xf0000045`, with
 shipped log `MSG_USB_OUT`. At `0x404d68bc..e8`, it checks `0x40123bf8` and
 returns early if USB still appears plugged in. Its unplug branch then:

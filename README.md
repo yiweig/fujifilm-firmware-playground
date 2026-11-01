@@ -46,6 +46,9 @@ state are intentionally excluded from version control.
 - [`analysis/cold-buffer-lifetime.md`](analysis/cold-buffer-lifetime.md) —
   conditional shared-buffer reloads, failed-read save-attempt boundary,
   cold-data checksum behavior and remaining lifetime qualification.
+- [`analysis/ptp-ui-state-and-exit.md`](analysis/ptp-ui-state-and-exit.md) —
+  PTP-state refresh controls through the application dispatcher, USB-out
+  boundary, teardown/remount order and camera-mode return decision.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.
