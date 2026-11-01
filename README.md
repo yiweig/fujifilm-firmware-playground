@@ -34,6 +34,9 @@ state are intentionally excluded from version control.
 - [`analysis/service-mode-button-candidate.md`](analysis/service-mode-button-candidate.md)
   — PLAY/MOVIE/flash startup candidate, input-to-event mapping, offline ARM
   emulation, and the remaining DisableTest and calibration-safety gates.
+- [`analysis/disabletest-override-assessment.md`](analysis/disabletest-override-assessment.md)
+  — existing SD marker override, persistent `clbt entest` alternative, and
+  the post-entry safety question that remains before testing.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`

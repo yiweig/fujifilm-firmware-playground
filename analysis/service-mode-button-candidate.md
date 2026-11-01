@@ -123,6 +123,10 @@ The camera's live field value is unknown. The hardware combination passes the
 outer mask check without requiring a rewrite of `FgBootType`/`FgUsbMode`, but
 does not bypass `DisableTest`. No marker-file test is recommended here.
 
+Follow-up: [the override assessment](disabletest-override-assessment.md)
+confirms the marker's size-only check and distinguishes it from `clbt entest`,
+which persistently clears the saved flag. Post-entry safety remains unresolved.
+
 ## Bounded execution of the original ARM code
 
 [`scripts/ReproduceServiceBootSelection.java`](scripts/ReproduceServiceBootSelection.java)
