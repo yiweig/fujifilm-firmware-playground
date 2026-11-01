@@ -46,6 +46,9 @@ state are intentionally excluded from version control.
 - [`analysis/ptp-reader-and-session-audit.md`](analysis/ptp-reader-and-session-audit.md)
   — restricted protocol client and simulation, session/USB-out traces,
   registration lifetime, and requirements for a future live transport.
+- [`analysis/usb-transport-qualification.md`](analysis/usb-transport-qualification.md)
+  — bounded bulk adapter, offline notification checks, cached registry inspection,
+  and the remaining native-library/device-ownership requirements.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`

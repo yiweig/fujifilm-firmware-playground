@@ -152,3 +152,8 @@ source establishes a successful file read; repeated equal data is insufficient.
 The original project objective is still RAM execution plus a verified recovery
 path. A factory-record capture would inform safe service entry; it would not
 establish recovery or make firmware flashing safe.
+
+Follow-up: [transport preparation and notification reproduction](usb-transport-qualification.md)
+adds original-code checks for both session notifications in state `0x8000`,
+a bounded bulk adapter, and a cached-registry inspection tool. Native I/O,
+device identity/ownership and the full physical lifecycle remain unqualified.
