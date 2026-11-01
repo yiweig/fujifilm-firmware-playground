@@ -40,6 +40,9 @@ state are intentionally excluded from version control.
 - [`analysis/calibration-entry-safety.md`](analysis/calibration-entry-safety.md)
   — automatic confirmation sequence, offline execution to a calibration
   worker, persistent factory-data operations, and remaining live-test barriers.
+- [`analysis/ptp-cold-data-read-assessment.md`](analysis/ptp-cold-data-read-assessment.md)
+  — ordinary-PTP candidate for reading factory flags, exact read/write direction,
+  offline chunk-read reproduction, and the ignored file-read-status limitation.
 - [`analysis/raw-support-assessment.md`](analysis/raw-support-assessment.md) —
   production RAW support versus engineering sensor dumps.
 - [`analysis/rcaraw-handler.md`](analysis/rcaraw-handler.md) — internal `rcaraw`

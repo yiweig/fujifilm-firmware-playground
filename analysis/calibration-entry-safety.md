@@ -144,6 +144,11 @@ No such retail-accessible route has been established yet. Merely arranging
 to send a USB command quickly after enumeration would introduce a race and
 does not resolve this safety question.
 
+Follow-up (2026-11-01): [ordinary PTP factory-data reading](ptp-cold-data-read-assessment.md)
+is now a stronger candidate. Its read callback has been reproduced offline
+without calibration entry, but live reachability, lifecycle and read freshness
+remain unverified.
+
 Removing the marker can prevent a later marker-dependent entry; it cannot
 undo calibration data already written. Safe shutdown/normal restart and the
 remaining entry callees still require investigation. This service loader

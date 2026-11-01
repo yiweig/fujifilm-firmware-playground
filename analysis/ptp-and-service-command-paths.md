@@ -74,8 +74,8 @@ with:
 | `0x1023` | Serial/barcode-related read | inferred; exact schema unresolved |
 | `0x1024` | Serial-number setting write | derived from code and log strings |
 | `0x1025` | Cold-data read/write, including `A:\\RO_RES\\COLDDATA.BIN` | derived from code and path string |
-| `0x1026` | Status/response operation | inferred; exact meaning unresolved |
-| `0x1027` | Chunked cold-data transfer, apparently in 16-byte pieces | inferred from buffer and offset handling |
+| `0x1026` | Parameter 0 returns three zeros; does not report file-read status | follow-up instruction trace |
+| `0x1027` | 16-byte RAM chunks; direction encoded in parameter 1's high halfword | follow-up instruction trace and offline read reproduction |
 
 The handler uses normal PTP responses including `0x2001` and `0x200A`. Those
 numeric observations are stronger than any interpretation of their meaning in
@@ -86,6 +86,12 @@ this vendor context.
 Do not create `EnablePTPAP.txt` on a camera card merely to explore this path.
 The enabled interface includes serial and calibration/cold-data writes. A bad
 request could change persistent factory data even without flashing firmware.
+
+Follow-up: [the focused cold-data assessment](ptp-cold-data-read-assessment.md)
+now establishes `0x1025` parameter 0 as the file-read branch and `0x1027`
+with high halfword zero as the chunk-read branch. Offline execution reproduces
+all 64 chunks. The file-read result is ignored by the callback, so success
+does not establish freshness. A live procedure remains unqualified.
 
 ## RCA/EUC shell-forwarding path
 
