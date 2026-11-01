@@ -172,3 +172,9 @@ The next bounded investigation is the alternate UI substate/wakeup route and
 its preceding/following callees, rather than a live factory PTP write. A read-only
 factory snapshot could qualify the starting state but does not resolve this
 transition. Independent cold recovery remains unproved.
+
+Follow-up: [alternate refresh audit](alternate-usb-refresh.md) expands the
+emulation to enter through the UI dispatcher and run the full `0x0301` event
+branch, with graphics operations simulated and prerequisites supplied. It
+bypasses the known RTC cleanup, but entry into that state and the subsequent
+connection transition are still unqualified.

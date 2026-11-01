@@ -25,6 +25,9 @@ state are intentionally excluded from version control.
 - [`analysis/temporary-usb-override.md`](analysis/temporary-usb-override.md) —
   offline RAM-staging/flag-refresh composition, cached-state controls, SD export
   distinction and the broader UI path's RTC-write barrier.
+- [`analysis/alternate-usb-refresh.md`](analysis/alternate-usb-refresh.md) —
+  full alternate event-handler execution with explicit display/readiness
+  prerequisites and controls; real entry and connection transitions remain open.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

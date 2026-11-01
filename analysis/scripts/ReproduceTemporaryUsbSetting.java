@@ -82,6 +82,39 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             }
             throw new Exception("Refresh instruction limit");
         }
+        int alternateRefresh(boolean displayHidden, boolean ready, int uiState) throws Exception {
+            // Supply the prerequisite substate and readiness; neither is a live entry recipe.
+            put(0x40e66958L,2,uiState);put(0x40f129c8L,1,ready?1:0);
+            put(0x40e66975L,1,1); // +1025: route the 0300 control to the broader cleanup.
+            bytes(0x412c2000L,new byte[0x2000]);
+            put(0x412c281cL,1,displayHidden?1:0);
+            put(0x412c26e4L,4,0x10000000);
+            start(0x404db31cL,0xf2000084L);int objectCalls=0;
+            for(int n=0;n<1000;n++) {
+                monitor.checkCancelled();long p=thread.getCounter().getOffset();
+                if(p==END)return objectCalls;
+                if(!ready && p==0x4000f458L)return -2;
+                if(uiState==0x300 && p==0x405c7ff8L)return -3;
+                // Display-active control stops at its first unqualified callee.
+                if(!displayHidden && p==0x40004064L)return -1;
+                if(p==0x401d86b0L) {
+                    if(reg("r0")!=0x10000014L-objectCalls || reg("r1")!=0)
+                        throw new Exception("Unexpected display/object call");
+                    objectCalls++;returned();continue;
+                }
+                if(!((p>=0x404db31cL && p<0x404db3dcL) ||
+                     (p>=0x404d51b0L && p<0x404d55bcL) ||
+                     (p>=0x401575a4L && p<0x401575e4L) ||
+                     (p>=0x40530b50L && p<0x40530b68L) ||
+                     (p>=0x401fe6bcL && p<0x401fe718L) ||
+                     (p>=0x40200a34L && p<0x40200a64L) ||
+                     (p>=0x401fcf64L && p<0x401fcfc0L) ||
+                     (p>=0x40125284L && p<0x401252b0L)))
+                    throw new Exception("Unqualified alternate-refresh callee "+Long.toHexString(p));
+                thread.stepInstruction();
+            }
+            throw new Exception("Alternate refresh instruction limit");
+        }
         boolean loaderBoundary() throws Exception {
             put(0x40e66958L,2,0x8000);put(0x40e6696bL,1,1);
             start(0x404db31cL,0xf0000044L);
@@ -121,8 +154,19 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             a.stage(Arrays.copyOfRange(original,0x60,0x70));a.refresh();
             if(!Arrays.equals(original,a.bytes(COLD,1024)) || a.get(FLAG,1)!=1 || a.loaderBoundary())throw new Exception("Restore failed");
             out.println("PASS: restoring synthetic RAM block and refreshing restores original cold-data bytes and ordinary event result.");
+            a.stage(block);
+            if(a.alternateRefresh(true,true,0x301)!=5 || a.get(FLAG,1)!=0 || a.get(0x40e66958L,2)!=1 ||
+               !Arrays.equals(expected,a.bytes(COLD,1024)))throw new Exception("Alternate refresh mismatch");
+            out.println("PASS: full supplied 0301 UI event path returns, refreshes flag to 0 and preserves staged cold RAM; only five display/object calls stubbed.");
+            if(a.alternateRefresh(false,true,0x301)!=-1)throw new Exception("Display-active control did not reach unaudited display path");
+            out.println("PASS: display-active control reaches display cleanup; stopped at log before unqualified display callees.");
+            if(a.alternateRefresh(true,false,0x301)!=-2)throw new Exception("Readiness control failed");
+            out.println("PASS: resource-not-ready control reaches initialization/wait path; stopped before execution.");
+            if(a.alternateRefresh(true,true,0x300)!=-3)throw new Exception("0300 control failed");
+            out.println("PASS: 0300 control with +1025 set reaches broader cleanup 405c7ff8; stopped before execution.");
             out.println("No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.");
             out.println("Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.");
+            out.println("Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.");
             out.println("Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.");
         }
     }
