@@ -58,6 +58,9 @@ state are intentionally excluded from version control.
 - [`analysis/retail-ptp-command-boundaries.md`](analysis/retail-ptp-command-boundaries.md)
   — operation/callback registrations, property and reset-code limits, and
   command-arrival notification controls in the ordinary PTP UI state.
+- [`analysis/retail-usb-control-routing.md`](analysis/retail-usb-control-routing.md)
+  — retail class/vendor control routing, null vendor callback, class-reset
+  effects, assertion hang hazard and original-code routing controls.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

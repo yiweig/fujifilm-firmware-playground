@@ -1,0 +1,3 @@
+4038d738 -> 401b9fcc BL preceding_prologue=4038d6d0
+401ba258 pointer occurrences: ['401bd050', '401e2140', '402e0e8c', '402e0f6c', '402e6364', '402e652c']
+401b9fcc pointer occurrences: []

@@ -7,6 +7,10 @@ ARMv7 little-endian runtime base `0x40000000`.
 
 ## Result
 
+Follow-up: [retail USB control routing](retail-usb-control-routing.md)
+separates control-endpoint requests from PTP packets, verifies the empty retail
+vendor slot, and traces the distinct class-reset and assertion paths.
+
 The inspected ordinary PTP command/property surface does not supply a route
 to debug shell `DPC` or the cached USB-selection refresh. The direct-call
 registration census identifies only the seven previously known factory

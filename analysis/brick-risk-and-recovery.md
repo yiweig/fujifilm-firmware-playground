@@ -29,6 +29,13 @@ shows why changing a shared settings buffer in RAM is not yet a qualified
 RAM-only procedure. Conditional reloads and later whole-buffer save attempts
 must be accounted for separately from the initial staging operation.
 
+Follow-up on USB experiments: [retail control routing](retail-usb-control-routing.md)
+finds that unknown class requests reaching the registered SIDC handler call an
+assertion routine with a terminal self-loop after MMIO/diagnostic work. This
+can hang the running software; it is not evidence of a permanent brick or a
+tested recovery method. Arbitrary control-request scans are therefore not a
+qualified low-risk alternative to flashing. All associated checks were offline.
+
 ## Safeguards observed in the official updater
 
 The package starts with a 665,280-byte ARMv7 card updater (package offset
