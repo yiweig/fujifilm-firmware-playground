@@ -1,0 +1,34 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline synthetic RAM composition; refresh slice and event delivery explicitly supplied.
+PASS: RAM staging changes only synthetic cold-data byte +6a; cached USB flag stays 1; supplied event returns without loader.
+PASS: supplied original refresh slice changes cached flag to 0; supplied USB event reaches mode-4 boundary.
+PASS: restoring synthetic RAM block and refreshing restores original cold-data bytes and ordinary event result.
+PASS: full supplied 0301 UI event path returns, refreshes flag to 0 and preserves staged cold RAM; only five display/object calls stubbed.
+PASS: subsequent supplied USB event in resulting state 0001 reaches charging-control boundary 40124b74, not direct loader selection; stopped before control, cold RAM and cached flag unchanged.
+PASS: modeled charging path returns to caller without loader; exactly one Power IC masked-write and one indicator request; staged cold RAM, USB flag and UI state preserved.
+PASS: USB-presence-zero control in state 0001 returns before charging control.
+PASS: display-active control reaches display cleanup; stopped at log before unqualified display callees.
+PASS: resource-not-ready control reaches initialization/wait path; stopped before execution.
+PASS: 0300 control with +1025 set reaches broader cleanup 405c7ff8; stopped before execution.
+PASS: +102d=1 control suppresses the idle-timeout queue post and leaves the USB flag unchanged.
+PASS: supplied MSG_KEY_IDLE_TIME_OUT in UI state 0001 and +102d=0 posts F2000084 with three zero arguments; state, cold RAM and flag unchanged.
+PASS: supplied F2000084 in UI state 0001 refreshes flag with zero display/object calls; display-active input and staged cold RAM preserved, state remains 0001.
+PASS: subsequent USB event with presence=1 and status=1 returns without loader or charging-control entry; state, cold RAM and refreshed flag unchanged.
+PASS: supplied StartMain after idle refresh reaches mode-4 boundary in unchanged UI state 0001, with runtime bit 0 set; cold RAM and flag unchanged.
+PASS: four StartMain flag/runtime-bit controls select mode 4 only for flag=0 and runtime bit=1; other cases post F2000010 and return.
+PASS: four initial-bit/presence controls execute original boot sampler using image pointer 40e6bc84; USB-present sets bit 0 and clears byte-1 bit 4, absent preserves prior bit; all other boot bytes/cold RAM preserved.
+PASS: StartMain consumes the sampled boot-state bit after raw presence is changed to zero; mode-4 result follows the latch, not current presence, under supplied power-class/callback prerequisites.
+PASS: unrelated +3b4 field writer reaches whole-1024-byte write boundary after both successful and failed modeled reload; failure leaves staged USB byte in outgoing buffer, success replaces it; storage writer not executed.
+PASS: charging callback with counter=0 and pending=1 attempts reload; successful modeled read replaces staged cold RAM while cached flag stays 0; failed read leaves staged RAM and flag unchanged; stopped before charging work.
+PASS: charging counter=2 control decrements to 1 and returns without reload; staged cold RAM unchanged.
+PASS: charging pending=0 control reaches alternate status helper without reload; stopped before helper execution.
+No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.
+Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.
+Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.
+Continuity test supplies USB-presence MMIO and connection/charging status; 300-unit delay stubbed; stops before charging control.
+Additional completion test models Power IC read/write and indicator API; delays stubbed; no physical peripheral effects or asynchronous callbacks validated.
+State-0001 test captures the idle-timeout queue post, then explicitly supplies its event to the dispatcher; actual timer, queue scheduling and readiness remain unverified.
+StartMain test explicitly delivers F2000000; supplies runtime pointer/bit, power-class low bits 0 and null optional callback table; stubs 400410bc prefix, clock/log and resource setup; stops before mode setter.
+Boot-sampler tests retain the image pointer, supply 32 boot-state bytes and MMIO presence/GPIO values, stub only final sampler log, then use unchanged sampled RAM for StartMain; full early startup and later bit writers not modeled.
+Lifetime tests model file-read success/failure without real storage; field writer stops before persistence; charging callback supplies presence/GPIO/counter/pending and stubs initial 4015b170 housekeeping, stops before charging APIs; later scheduling and housekeeping effects not qualified.
+Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.

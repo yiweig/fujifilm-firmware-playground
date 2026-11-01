@@ -43,6 +43,9 @@ state are intentionally excluded from version control.
 - [`analysis/boot-usb-latch-and-start-producers.md`](analysis/boot-usb-latch-and-start-producers.md)
   — boot-time USB latch source and controls, initial-setup event producers,
   and RAM diagnostic prefix audit.
+- [`analysis/cold-buffer-lifetime.md`](analysis/cold-buffer-lifetime.md) —
+  conditional shared-buffer reloads, failed-read save-attempt boundary,
+  cold-data checksum behavior and remaining lifetime qualification.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

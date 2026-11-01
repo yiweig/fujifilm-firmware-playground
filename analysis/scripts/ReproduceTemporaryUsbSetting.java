@@ -209,6 +209,50 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             put(0x40e66958L,2,0x8000);put(0x40e6696bL,1,1);
             return usbEventAtCurrentState();
         }
+        void coldFieldWriteBoundary(byte[] disk, boolean readSuccess) throws Exception {
+            start(0x4029de10L,0x2345);boolean read=false;
+            for(int n=0;n<100;n++) {
+                long p=thread.getCounter().getOffset();
+                if(p==0x40125d94L || p==0x40125e4cL) {
+                    if(reg("r0")!=0x40b32dc5L || reg("r1")!=0 ||
+                       reg("r2")!=1024 || reg("r3")!=COLD)
+                        throw new Exception("Unexpected cold field I/O arguments");
+                    if(p==0x40125e4cL) {if(!read)throw new Exception("Write before read");return;}
+                    if(read)throw new Exception("Repeated cold field read");
+                    read=true;if(readSuccess)bytes(COLD,disk);
+                    long lr=reg("lr");reg("r0",readSuccess?0:1);pc(lr);continue;
+                }
+                if(p<0x4029de10L || p>=0x4029de54L)
+                    throw new Exception("Unexpected cold field callee "+Long.toHexString(p));
+                thread.stepInstruction();
+            }
+            throw new Exception("Cold field instruction limit");
+        }
+        int chargingReloadBoundary(byte[] disk, boolean readSuccess, int counter, boolean pending) throws Exception {
+            put(0x1000517aL,1,1);put(0x40e4ae71L,1,0);put(0x100003a3L,1,0);
+            put(0x413acad8L,4,counter);put(0x40e06660L,4,pending?1:0);
+            start(0x40407398L,0);boolean read=false;
+            for(int n=0;n<250;n++) {
+                long p=thread.getCounter().getOffset();
+                if(p==END) {if(read)throw new Exception("Unexpected post-read return");return 0;}
+                if(p==0x40407540L) {if(!read)throw new Exception("No charging reload");return 1;}
+                if(p==0x40124f3cL) {if(read)throw new Exception("Unexpected alternate charging path");return 2;}
+                if(p==0x4015b170L) {returned();continue;}
+                if(p==0x4015ba48L) {
+                    if(read || reg("r0")!=0x40b000b5L || reg("r1")!=0 ||
+                       reg("r2")!=1024 || reg("r3")!=COLD)
+                        throw new Exception("Unexpected charging reload arguments");
+                    read=true;if(readSuccess)bytes(COLD,disk);
+                    long lr=reg("lr");reg("r0",readSuccess?0:1);pc(lr);continue;
+                }
+                if(!((p>=0x40407398L && p<0x40407694L) ||
+                     (p>=0x40123d44L && p<0x40123d54L) ||
+                     (p>=0x40125d94L && p<0x40125db4L)))
+                    throw new Exception("Unqualified charging reload callee "+Long.toHexString(p));
+                thread.stepInstruction();
+            }
+            throw new Exception("Charging reload instruction limit");
+        }
         boolean usbEventAtCurrentState() throws Exception {
             return usbEventAtCurrentState(false);
         }
@@ -354,6 +398,33 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             }
             out.println("PASS: four initial-bit/presence controls execute original boot sampler using image pointer 40e6bc84; USB-present sets bit 0 and clears byte-1 bit 4, absent preserves prior bit; all other boot bytes/cold RAM preserved.");
             out.println("PASS: StartMain consumes the sampled boot-state bit after raw presence is changed to zero; mode-4 result follows the latch, not current presence, under supplied power-class/callback prerequisites.");
+            for(boolean success:new boolean[]{true,false}) {
+                Arm field=new Arm();field.bytes(COLD,expected);field.put(FLAG,1,0);
+                field.coldFieldWriteBoundary(original,success);
+                byte[] want=(success?original:expected).clone();want[0x3b4]=0x45;want[0x3b5]=0x23;
+                if(!Arrays.equals(want,field.bytes(COLD,1024)) || field.get(FLAG,1)!=0)
+                    throw new Exception("Cold field preservation mismatch");
+            }
+            out.println("PASS: unrelated +3b4 field writer reaches whole-1024-byte write boundary after both successful and failed modeled reload; failure leaves staged USB byte in outgoing buffer, success replaces it; storage writer not executed.");
+            for(boolean success:new boolean[]{true,false}) {
+                Arm poll=new Arm();poll.bytes(COLD,expected);poll.put(FLAG,1,0);
+                int outcome=poll.chargingReloadBoundary(original,success,0,true);
+                if(outcome!=1 ||
+                   !Arrays.equals(success?original:expected,poll.bytes(COLD,1024)) || poll.get(FLAG,1)!=0)
+                    throw new Exception("Charging reload preservation mismatch success="+success+
+                        " outcome="+outcome+" flag="+poll.get(FLAG,1)+" usb="+poll.get(COLD+0x6a,1)+
+                        " counter="+poll.get(0x413acad8L,4)+" pending="+poll.get(0x40e06660L,4));
+            }
+            out.println("PASS: charging callback with counter=0 and pending=1 attempts reload; successful modeled read replaces staged cold RAM while cached flag stays 0; failed read leaves staged RAM and flag unchanged; stopped before charging work.");
+            Arm pollControl=new Arm();pollControl.bytes(COLD,expected);pollControl.put(FLAG,1,0);
+            if(pollControl.chargingReloadBoundary(original,true,2,true)!=0 ||
+               pollControl.get(0x413acad8L,4)!=1 || !Arrays.equals(expected,pollControl.bytes(COLD,1024)))
+                throw new Exception("Charging countdown control mismatch");
+            out.println("PASS: charging counter=2 control decrements to 1 and returns without reload; staged cold RAM unchanged.");
+            if(pollControl.chargingReloadBoundary(original,true,0,false)!=2 ||
+               !Arrays.equals(expected,pollControl.bytes(COLD,1024)))
+                throw new Exception("Charging pending control mismatch");
+            out.println("PASS: charging pending=0 control reaches alternate status helper without reload; stopped before helper execution.");
             out.println("No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.");
             out.println("Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.");
             out.println("Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.");
@@ -362,6 +433,7 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             out.println("State-0001 test captures the idle-timeout queue post, then explicitly supplies its event to the dispatcher; actual timer, queue scheduling and readiness remain unverified.");
             out.println("StartMain test explicitly delivers F2000000; supplies runtime pointer/bit, power-class low bits 0 and null optional callback table; stubs 400410bc prefix, clock/log and resource setup; stops before mode setter.");
             out.println("Boot-sampler tests retain the image pointer, supply 32 boot-state bytes and MMIO presence/GPIO values, stub only final sampler log, then use unchanged sampled RAM for StartMain; full early startup and later bit writers not modeled.");
+            out.println("Lifetime tests model file-read success/failure without real storage; field writer stops before persistence; charging callback supplies presence/GPIO/counter/pending and stubs initial 4015b170 housekeeping, stops before charging APIs; later scheduling and housekeeping effects not qualified.");
             out.println("Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.");
         }
     }

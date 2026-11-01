@@ -24,6 +24,11 @@ The safest order is:
 Until at least an independent cold-boot recovery path is proven, assume a failed
 flash may require board-level access or manufacturer service.
 
+Follow-up on volatile experiments: [shared cold-data lifetime](cold-buffer-lifetime.md)
+shows why changing a shared settings buffer in RAM is not yet a qualified
+RAM-only procedure. Conditional reloads and later whole-buffer save attempts
+must be accounted for separately from the initial staging operation.
+
 ## Safeguards observed in the official updater
 
 The package starts with a 665,280-byte ARMv7 card updater (package offset

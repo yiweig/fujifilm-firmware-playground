@@ -8,6 +8,11 @@ Runtime base `0x40000000`, little-endian ARMv7.
 
 ## Finding
 
+Follow-up: [cold-buffer lifetime](cold-buffer-lifetime.md) reproduces two
+concrete hazards: a callback can replace staged RAM without refreshing the UI
+flag, and an unrelated field updater can reach a whole-buffer save attempt
+with staged bytes after a failed reload. No actual save was performed.
+
 The existing factory PTP RAM-staging branch can change the **in-memory**
 `FgUsbMode` field without executing its separate save-to-storage operation.
 An offline composition of that staging branch, an explicitly supplied flag
