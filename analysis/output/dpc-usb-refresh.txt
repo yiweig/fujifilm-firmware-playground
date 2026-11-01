@@ -1,0 +1,10 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Supplied DPC handler 4051d24c and parsed-argument pointer r2; shell parser and transport NOT executed.
+Only diagnostic print 40004064 modeled as return; strict original-code PC allowlist; no camera access.
+PASS: selector=31 FgUsbMode=0114 flag=1->0 boundary=43000000 logs=3; exact global RAM comparison passed.
+PASS: selector=31 FgUsbMode=0118 flag=0->1 boundary=43000000 logs=3; exact global RAM comparison passed.
+PASS: selector=30 FgUsbMode=0114 flag=1->1 boundary=43000000 logs=2; exact global RAM comparison passed.
+PASS: selector=32 FgUsbMode=0114 flag=1->1 boundary=40125d94 logs=1; exact global RAM comparison passed.
+For selector 31 only global changes allowed: cached USB flag 40e6696d and getter side-effect byte 40e7ae50.
+All cases preserve the full 1024-byte cold fixture; selector 32 stops before its file-read helper.
+This supplies a shell invocation; it does not establish retail USB access or recovery.

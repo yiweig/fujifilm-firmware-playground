@@ -52,6 +52,9 @@ state are intentionally excluded from version control.
 - [`analysis/usb-return-mode-reentry.md`](analysis/usb-return-mode-reentry.md) —
   shooting USB-entry and playback gate controls: both use the cached flag;
   changing cold-data RAM alone does not change the tested branch decisions.
+- [`analysis/usb-cache-refresh-reachability.md`](analysis/usb-cache-refresh-reachability.md)
+  — DPC debug-shell refresh, reset-completion producer and RTC writes,
+  original-code controls, and the known cache-writer reachability inventory.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

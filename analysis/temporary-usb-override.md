@@ -61,6 +61,11 @@ requests. No live PTP request was made here.
 
 ## Refresh sources and their limitations
 
+Follow-up: [cache-refresh reachability](usb-cache-refresh-reachability.md)
+identifies the factory-related refresh as internal shell `DPC` selector 31,
+tests its selected behavior, and traces the reset-completion event producer
+through preceding RTC writes. Neither establishes retail transport/entry.
+
 The instruction slice `0x404d53b8..0x404d53d0` calls the getter and stores its
 inverse in the cached byte. Within that slice, no file read, file write or RTC
 write occurs. However, starting execution at that interior address in an
