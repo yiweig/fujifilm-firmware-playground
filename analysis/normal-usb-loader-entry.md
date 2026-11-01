@@ -19,6 +19,12 @@ was established. Changing the saved setting would modify factory data; it is
 not an appropriate first experiment. This path still requires the working main
 application and does not establish independent recovery.
 
+Follow-up: [temporary USB selection](temporary-usb-override.md) reproduces
+RAM-only cold-data staging plus an explicitly supplied refresh slice and event.
+It also finds RTC writes in the broader UI path, so this remains an offline
+mechanism rather than a qualified live entry sequence. The power/event handler's
+verified entry is `0x40517b18`, before the push at `0x40517b1c`.
+
 ## Event, gate and saved setting
 
 Dispatcher `0x404db31c` routes UI group `0x8000` to `0x404d665c`. That handler

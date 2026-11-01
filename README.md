@@ -22,6 +22,9 @@ state are intentionally excluded from version control.
 - [`analysis/normal-usb-loader-entry.md`](analysis/normal-usb-loader-entry.md) —
   calibration-free UI loader path, saved USB-setting gate, caller census and
   offline ARM reproduction; temporary retail activation remains unresolved.
+- [`analysis/temporary-usb-override.md`](analysis/temporary-usb-override.md) —
+  offline RAM-staging/flag-refresh composition, cached-state controls, SD export
+  distinction and the broader UI path's RTC-write barrier.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

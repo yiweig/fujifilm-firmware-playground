@@ -1,0 +1,8 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline synthetic RAM composition; refresh slice and event delivery explicitly supplied.
+PASS: RAM staging changes only synthetic cold-data byte +6a; cached USB flag stays 1; supplied event returns without loader.
+PASS: supplied original refresh slice changes cached flag to 0; supplied USB event reaches mode-4 boundary.
+PASS: restoring synthetic RAM block and refreshing restores original cold-data bytes and ordinary event result.
+No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.
+Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.
+Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.
