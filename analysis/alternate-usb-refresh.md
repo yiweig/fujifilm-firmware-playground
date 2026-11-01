@@ -136,3 +136,8 @@ Focused Ghidra exports are retained locally at
 `/private/tmp/usb-refresh-state-writers.txt`. The existing local Ghidra 12.1.4
 ARMv7 project was used after the previously documented REA mapping issue.
 No live runtime or fresh REA evidence is asserted.
+
+Follow-up: [sequence continuity](usb-loader-sequence-continuity.md) supplies the
+USB event in the actual resulting state 1, rather than replacing it with
+`0x8000`. The tested path reaches charging/status control, not direct loader
+selection; entry and subsequent asynchronous transitions remain unresolved.

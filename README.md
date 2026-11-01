@@ -28,6 +28,9 @@ state are intentionally excluded from version control.
 - [`analysis/alternate-usb-refresh.md`](analysis/alternate-usb-refresh.md) —
   full alternate event-handler execution with explicit display/readiness
   prerequisites and controls; real entry and connection transitions remain open.
+- [`analysis/usb-loader-sequence-continuity.md`](analysis/usb-loader-sequence-continuity.md)
+  — continuous post-refresh event test, charging/status boundary, and missing
+  state transitions between the separately demonstrated loader-entry pieces.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.

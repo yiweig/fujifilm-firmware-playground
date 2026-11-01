@@ -19,6 +19,7 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
         PcodeEmulator machine=new PcodeEmulator((SleighLanguage)currentProgram.getLanguage());
         AddressSpace ram=currentProgram.getLanguage().getDefaultSpace();
         PcodeThread<byte[]> thread;
+        boolean chargingBoundary;
         Arm() {
             bytes(BASE,image);bytes(COLD,new byte[1024]);
             bytes(0x40e65950L,new byte[0x1100]);bytes(0x413e32d8L,new byte[0x80]);
@@ -117,16 +118,32 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
         }
         boolean loaderBoundary() throws Exception {
             put(0x40e66958L,2,0x8000);put(0x40e6696bL,1,1);
+            return usbEventAtCurrentState();
+        }
+        boolean usbEventAtCurrentState() throws Exception {
+            chargingBoundary=false;
             start(0x404db31cL,0xf0000044L);
             for(int n=0;n<600;n++) {
                 long p=thread.getCounter().getOffset();
                 if(p==END)return false;
+                if(p==0x40124b74L) {chargingBoundary=true;return false;}
+                if(p==0x4006a074L) {
+                    if(reg("r0")!=3 || reg("r1")!=300)throw new Exception("Unexpected connection delay");
+                    returned();continue;
+                }
                 if(p==0x4038d6d0L) {
                     if(reg("r0")!=4)throw new Exception("Wrong mode");return true;
                 }
                 if(p==0x40004064L || p==0x405cbb84L) {returned();continue;}
                 if(p==0x40123bf8L) {long lr=reg("lr");reg("r0",1);pc(lr);continue;}
-                if(!((p>=0x404db31cL && p<0x404db3dcL) || (p>=0x404d665cL && p<0x404d6f90L)))
+                if(!((p>=0x404db31cL && p<0x404db3dcL) ||
+                     (p>=0x404d665cL && p<0x404d6f90L) ||
+                     (p>=0x404d51b0L && p<0x404d55bcL) ||
+                     (p>=0x40517b18L && p<0x4051858cL) ||
+                     (p>=0x40123d44L && p<0x40123d54L) ||
+                     (p>=0x401250e4L && p<0x401250ecL) ||
+                     (p>=0x40124b08L && p<0x40124b28L) ||
+                     (p>=0x40124eecL && p<0x40124f34L)))
                     throw new Exception("Unexpected UI callee "+Long.toHexString(p));
                 thread.stepInstruction();
             }
@@ -158,6 +175,13 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             if(a.alternateRefresh(true,true,0x301)!=5 || a.get(FLAG,1)!=0 || a.get(0x40e66958L,2)!=1 ||
                !Arrays.equals(expected,a.bytes(COLD,1024)))throw new Exception("Alternate refresh mismatch");
             out.println("PASS: full supplied 0301 UI event path returns, refreshes flag to 0 and preserves staged cold RAM; only five display/object calls stubbed.");
+            a.put(0x1000517aL,1,1);a.put(0x40e7ae40L,1,0);
+            if(a.usbEventAtCurrentState() || !a.chargingBoundary || a.get(0x40e66958L,2)!=1 || a.get(FLAG,1)!=0 ||
+               !Arrays.equals(expected,a.bytes(COLD,1024)))throw new Exception("Continuous event control mismatch");
+            out.println("PASS: subsequent supplied USB event in resulting state 0001 reaches charging-control boundary 40124b74, not direct loader selection; stopped before control, cold RAM and cached flag unchanged.");
+            a.put(0x1000517aL,1,0);
+            if(a.usbEventAtCurrentState() || a.chargingBoundary)throw new Exception("Disconnected continuity control mismatch");
+            out.println("PASS: USB-presence-zero control in state 0001 returns before charging control.");
             if(a.alternateRefresh(false,true,0x301)!=-1)throw new Exception("Display-active control did not reach unaudited display path");
             out.println("PASS: display-active control reaches display cleanup; stopped at log before unqualified display callees.");
             if(a.alternateRefresh(true,false,0x301)!=-2)throw new Exception("Readiness control failed");
@@ -167,6 +191,7 @@ public class ReproduceTemporaryUsbSetting extends GhidraScript {
             out.println("No file read/write, RTC write, mode setter, USB lifecycle or calibration code executed.");
             out.println("Stubs: log, memcpy/memset, PTP response, cable getter and descriptor setup.");
             out.println("Full alternate path additionally supplies UI=0301, resource-ready=1, display-already-hidden=1, and stubs 401d86b0 five times.");
+            out.println("Continuity test supplies USB-presence MMIO and connection/charging status; 300-unit delay stubbed; stops before charging control.");
             out.println("Does not prove live registration, freshness, safe refresh reachability, buffer lifetime, later saves, or recovery.");
         }
     }
