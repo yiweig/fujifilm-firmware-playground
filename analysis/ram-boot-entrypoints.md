@@ -108,6 +108,11 @@ operations to the X-half receiver remains the next device-specific step.
 
 No ready-to-run upload command or bootable SD layout has been established.
 
+Follow-up: [the recovery entry review](recovery-entry-review.md) traces the
+`sdboot` state to the eSD reserved-storage header and identifies an early
+UART-shell startup branch. Both still depend on the main image; neither proves
+a removable-card boot recipe or independent recovery.
+
 ## Reproduce and sources
 
 The REA/Ghidra cross-check completed auto-analysis but failed to resolve the

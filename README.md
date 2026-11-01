@@ -16,6 +16,9 @@ state are intentionally excluded from version control.
 - [`analysis/ram-boot-entrypoints.md`](analysis/ram-boot-entrypoints.md) —
   `sdboot` argument/error hazards, the `usbt` transition, and vendor USB-loader
   protocol leads toward RAM execution and independent recovery.
+- [`analysis/recovery-entry-review.md`](analysis/recovery-entry-review.md) —
+  early shell startup conditions, eSD firmware-slot header provenance, and why
+  neither yet establishes independent SD/USB recovery.
 - [`analysis/vendor-usb-loader.md`](analysis/vendor-usb-loader.md) — traced
   iCatch host-library RAM copy/upload/run paths, active connection setup, and
   the remaining X-half receiver and loader-side-effect questions.
