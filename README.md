@@ -126,6 +126,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/ui-bulk-writer-review.md`](analysis/ui-bulk-writer-review.md)
+  — date/time property copy bounds exclude the cached USB flag; selected
+  Ghidra coverage remains sparse and does not close the bulk-writer gap.
 - [`analysis/usb-selection-writer-search.md`](analysis/usb-selection-writer-search.md)
   — wider cached-flag store search reproduces the five known writers;
   bulk-copy coverage remains partial and no new retail entry is established.

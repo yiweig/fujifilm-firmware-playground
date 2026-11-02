@@ -1,0 +1,34 @@
+{
+  "image_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "database_selection_header": [
+    "PROGRAM firmware-main.bin UI-reference-functions=29 bulk-reference-functions=6 intersection=5",
+    "SHA-256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923; unowned original-byte UI-load candidates=1426 bulk-branch candidates=11572"
+  ],
+  "selected_function_entries": [
+    "404d7058",
+    "404d7e7c",
+    "405c9efc",
+    "405ca274",
+    "405ca67c"
+  ],
+  "decompile_failures": 0,
+  "skipped_oversized_bodies": 0,
+  "local_pseudocode_export_sha256": "632df682dde9baaebca4aed71d599f55eaeeee7663bdb1b28b1e4fec645db93e",
+  "original_literal_checks": {
+    "405ca0a0": "0x40e139dc",
+    "405ca0a4": "0x40e65950",
+    "405ca3f4": "0x40e139dc",
+    "4040c02c": "0x413b9d54",
+    "4040dedc": "0x413b9d54"
+  },
+  "date_time_copy": {
+    "destination": "0x40e139e3",
+    "length_source": "unsigned byte at 0x40e139e2",
+    "shipped_length_byte": 16,
+    "maximum_length": 255,
+    "maximum_end_exclusive": "0x40e13ae2",
+    "target_flag": "0x40e6696d",
+    "overlap": false
+  },
+  "limitations": "Selected candidates and specific original-instruction checks only. Sparse database ownership and heuristic raw encodings leave many sites unclassified. No camera access, callback execution, or complete bulk-writer exclusion."
+}

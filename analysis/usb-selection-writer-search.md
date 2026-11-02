@@ -77,6 +77,12 @@ Recheck the actual writer instructions with `fw.py disasm` at
 
 ## Consequence
 
+Follow-up: [UI-related bulk-copy review](ui-bulk-writer-review.md) checks a
+dynamic-length property copy and its paired getter against original literal
+addresses. Their buffers do not provide the missing flag writer. It also
+records sparse local Ghidra function ownership; this is not a complete
+bulk-copy exclusion.
+
 The underlying entry problem is unchanged. Factory PTP staging changes the
 shared cold-data setting, while USB-entry decisions use the cached flag.
 Known refreshes still require startup-state reachability, reset side effects
