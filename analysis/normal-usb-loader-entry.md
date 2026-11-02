@@ -77,6 +77,12 @@ demonstrated startup race or button recipe. Initialization order and external
 event reachability in that interval remain unproved. The camera's actual saved
 word and runtime byte were not read in this pass.
 
+Follow-up [startup ordering audit](startup-usb-flag-ordering.md) places the clear
+and saved-setting refresh in the same internal startup-event handler. State-zero
+USB/StartMain controls return immediately, and the known synchronous posting
+filter does not dispatch UI work. This narrows the timing hypothesis without
+proving all concurrent or indirect paths impossible.
+
 The writer search checked every aligned ARM `MOVW` immediate `0x101d` in the
 first `0xab0000` image bytes: 26 matches, including a diagnostic line-number
 coincidence. Surrounding instructions and base pointers identify the writes

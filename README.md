@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/startup-usb-flag-ordering.md`](analysis/startup-usb-flag-ordering.md)
+  — same-event initialization/refresh ordering, state-zero event rejection,
+  known synchronous queue filter and 80 offline startup/queue controls.
 - [`analysis/mass-storage-exit-loader-selection.md`](analysis/mass-storage-exit-loader-selection.md)
   — unconditional mode-4 cleanup call, mass-storage ownership and 16 original-ARM
   controls distinguishing mode selection from a loader connection.

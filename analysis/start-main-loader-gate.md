@@ -58,6 +58,11 @@ to zero; a populated callback table remains outside this reproduction.
 
 ## Event provenance and timing limit
 
+Follow-up: [startup flag ordering](startup-usb-flag-ordering.md) traces the
+initializer and refresh inside the same application event, reproduces the
+state-zero rejection and startup refresh prefix, and checks the known queue
+filter. No usable early-flag timing sequence is established.
+
 This is an internal UI event, not a PTP request to send from a computer.
 The startup routine at `0x40517454` explicitly sets UI state 1 at
 `0x40517488`, refreshes the USB flag from the shared cold-data getter at

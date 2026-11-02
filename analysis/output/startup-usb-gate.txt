@@ -1,0 +1,22 @@
+Main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline original ARM. Independent supplied-state controls, not a full boot or timing experiment.
+PASS UI-state=0 flag=0 event=f0000044: full app dispatcher returns, UI unchanged, no modeled callees.
+PASS UI-state=0 flag=0 event=f2000000: full app dispatcher returns, UI unchanged, no modeled callees.
+PASS UI-state=0 flag=1 event=f0000044: full app dispatcher returns, UI unchanged, no modeled callees.
+PASS UI-state=0 flag=1 event=f2000000: full app dispatcher returns, UI unchanged, no modeled callees.
+PASS 64 startup-prefix controls: 16 saved low nibbles x 2 old flags x 2 boot-predicate results; state becomes 1, flag becomes (nibble==8), supplied cold bytes unchanged.
+PASS filter=0 event=f0000044: queue submissions=1; no UI dispatch.
+PASS filter=0 event=f2000000: queue submissions=1; no UI dispatch.
+PASS filter=0 event=6251000e: queue submissions=1; no UI dispatch.
+PASS filter=0 event=6251000f: queue submissions=1; no UI dispatch.
+PASS filter=0 event=6251001a: queue submissions=1; no UI dispatch.
+PASS filter=0 event=6251001b: queue submissions=1; no UI dispatch.
+PASS filter=1 event=f0000044: queue submissions=1; no UI dispatch.
+PASS filter=1 event=f2000000: queue submissions=1; no UI dispatch.
+PASS filter=1 event=6251000e: queue submissions=0; no UI dispatch.
+PASS filter=1 event=6251000f: queue submissions=0; no UI dispatch.
+PASS filter=1 event=6251001a: queue submissions=0; no UI dispatch.
+PASS filter=1 event=6251001b: queue submissions=0; no UI dispatch.
+80 controls passed. No USB mode setter, connection API, filesystem or RTC helper executes.
+Modeled: startup clock/log/profile calls, boot predicate, conditional 4006f3e8 side effects and successful RTOS enqueue. Original queue wrapper, known filter, getter, flag assignment and early dispatch execute.
+Unknown callbacks, other tasks/interrupts, all intervening initialization, full event-loop timing and live loader/recovery reachability remain unqualified.
