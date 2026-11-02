@@ -153,3 +153,7 @@ The acquisition gap remains: establish a reachable read-only path to the
 persistent archive, with explicit errors and a verified source. Existing
 factory reads can return cached bytes; existing saves can mask persistence
 failures. Normal media download does not resolve that gap on this evidence.
+
+Follow-up: [factory-read logging](factory-read-log-routing.md) traces another
+possible observation source. Start/end profiling notices occur even on failure;
+errors use a distinct output path, and no safe retail retrieval is established.

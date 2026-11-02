@@ -23,6 +23,7 @@ public class ReproducePtpColdRead extends GhidraScript {
         int reads=0; long responseCode=-1; List<Long> response=new ArrayList<>();
         boolean realReader=false; int fileCase=0, lowerReads=0, closes=0;
         long readStatus=-1; byte[] disk;
+        List<Long> readErrorFormats=new ArrayList<>(), noticeFormats=new ArrayList<>();
         Arm() {
             machine.getSharedState().setVar(ram,0x40000000L,code.length,true,code);
             thread=machine.newThread();thread.overrideContextWithDefault();
@@ -54,7 +55,10 @@ public class ReproducePtpColdRead extends GhidraScript {
                 monitor.checkCancelled();long pc=thread.getCounter().getOffset();
                 if(pc==END)return pc;
                 long r0=reg("r0"),r1=reg("r1"),r2=reg("r2"),r3=reg("r3");
-                if(pc==0x40004064L) {reg("pc",reg("lr"));continue;}
+                if(pc==0x40004064L) {
+                    if(realReader && reg("lr")>=0x4015ba48L && reg("lr")<0x4015bb38L)readErrorFormats.add(r0);
+                    reg("pc",reg("lr"));continue;
+                }
                 if(pc==0x40125d94L) {
                     if(r1!=0 || r2!=1024 || r3!=COLD || get(r0,4)!=0x525c3a41L)
                         throw new Exception("Unexpected file read arguments");
@@ -63,6 +67,10 @@ public class ReproducePtpColdRead extends GhidraScript {
                 }
                 if(realReader && pc==0x405cac48L)readStatus=r0;
                 if(realReader && (pc==0x400410ccL || pc==0x4015b5f8L)) {
+                    if(pc==0x400410ccL) {
+                        if(r0!=0)throw new Exception("Unexpected notice channel");
+                        noticeFormats.add(r1);
+                    }
                     reg("r0",0);reg("pc",reg("lr"));continue;
                 }
                 if(realReader && pc==0x4013f4acL) {
@@ -167,17 +175,22 @@ public class ReproducePtpColdRead extends GhidraScript {
             }
             int expectedReads=kind==1 || kind==2?0:2;
             if(a.reads!=2 || a.lowerReads!=expectedReads || a.closes!=(kind==1?0:2))throw new Exception("API counts mismatch");
+            if(!a.noticeFormats.equals(List.of(0x40b06dddL,0x40b06df8L,0x40b06dddL,0x40b06df8L)))
+                throw new Exception("Start/end notice mismatch");
+            long error=kind==1?0x40b06d16L:kind==2?0x40b06cf8L:kind==3?0x40b06ce6L:0;
+            if(!a.readErrorFormats.equals(error==0?List.of():List.of(error,error)))throw new Exception("Error log mismatch");
             if(kind==0)successfulOld=wire.toString();
             if((kind==1 || kind==2) && !successfulOld.equals(wire.toString()))throw new Exception("Unexpected failure signal");
             if(kind==3 && (Arrays.equals(expected,old) || Arrays.equals(expected,changed)))throw new Exception("Not a mixed record");
             out.printf("PASS freshness case=%d: wrapper status=%d; 2 matching checksum-valid records; lower reads=%d closes=%d.%n",
                 kind,a.readStatus,a.lowerReads,a.closes);
+            out.printf("  Log calls: same start/end notices on both reads; error format=%08x (0 means no error call).%n",error);
         }
         out.println("Cases: 0=success(old), 1=open failure, 2=short file, 3=16-byte short read, 4=success(changed).");
         out.println("Cases 1/2 return exactly the same response codes/parameters as case 0 despite different modeled disk data.");
         out.println("Case 3 returns a checksum-valid mixture of new prefix and old suffix, distinct from either full record.");
         out.println("Freshness controls execute original 40125d94/4015ba48 wrapper and callback; lower file APIs, logs, copy/zero and response are modeled.");
-        out.println("Also stubbed in freshness controls: first-use helper 4015b5f8 and log helper 400410cc. Their transitive effects are not qualified here.");
+        out.println("Log-call formats/channels are checked; actual formatting, output and retention are not executed here. First-use helper 4015b5f8 remains stubbed.");
     }
     void seal(byte[] data) {
         int sum=0;for(int i=0;i<1022;i++)sum=(sum+(data[i]&255))&255;

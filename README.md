@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/factory-read-log-routing.md`](analysis/factory-read-log-routing.md)
+  — distinct character-output errors and RAM profiling notices, log-call and
+  enqueue controls, dump effects and unresolved retail retrieval.
 - [`analysis/retail-ptp-file-acquisition.md`](analysis/retail-ptp-file-acquisition.md)
   — normal storage lists, media filtering and object-ID controls; no direct
   cold-archive download established through the inspected retail file path.

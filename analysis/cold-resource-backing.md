@@ -182,3 +182,7 @@ Follow-up: [save-error propagation](cold-save-error-propagation.md) confirms
 that archive-backed saves can report success despite physical open/short-write
 failures. The full cold-data save wrapper explicitly selects mode 0, so the
 separate deferred flush mechanism must not be assumed to protect it.
+
+The [logging follow-up](factory-read-log-routing.md) traces the start/end
+notices and error messages separately. Neither establishes a successful
+physical archive read or a safe retail USB log retrieval method.
