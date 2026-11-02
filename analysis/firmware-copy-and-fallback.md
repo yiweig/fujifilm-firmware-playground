@@ -11,6 +11,12 @@ The [resident file-update controls](resident-file-update-path.md) now execute
 the real parser with official package bytes and confirm its Firmware2-enable
 field remains zero at the resident-engine call boundary.
 
+Follow-up: [installed image checks in the complete updater](updater-installed-image-checks.md)
+shows how its named Firmware2 load obtains a length and combines map checksum
+halfwords `+0x46`/`+0x48`. Firmware1 combines `+0x42`/`+0x44`, connecting the
+transaction below to an actual installed-image load/check path. The earlier
+cold selector and installed Firmware2 contents are still unknown.
+
 ## Bottom line
 
 The official update path is deliberately transactional around Firmware1:

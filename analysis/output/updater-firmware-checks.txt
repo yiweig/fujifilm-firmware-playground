@@ -1,0 +1,14 @@
+Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Offline original ARM; synthetic metadata/data. NAND getter state helper modeled. No storage I/O, MMIO, task creation, image handoff or camera access.
+PASS getter 400264f8 index=c -> 12345; supplied map lengths and halfwords, including 16-bit sum wrap.
+PASS getter 400264f8 index=d -> 6789a; supplied map lengths and halfwords, including 16-bit sum wrap.
+PASS getter 400264f8 index=e -> 3; supplied map lengths and halfwords, including 16-bit sum wrap.
+PASS getter 400264f8 index=f -> 68ac; supplied map lengths and halfwords, including 16-bit sum wrap.
+PASS getter 4002dee0 index=c -> 12345; supplied map lengths and halfwords, including 16-bit sum wrap.
+PASS getter 4002dee0 index=d -> 6789a; supplied map lengths and halfwords, including 16-bit sum wrap.
+PASS getter 4002dee0 index=e -> 3; supplied map lengths and halfwords, including 16-bit sum wrap.
+PASS getter 4002dee0 index=f -> 68ac; supplied map lengths and halfwords, including 16-bit sum wrap.
+PASS Firmware2 late gate read-return=0 expected-sum=261 -> stop 4000fb24; actual byte sum=261. Stop before status write or error log.
+PASS Firmware2 late gate read-return=0 expected-sum=262 -> stop 4000fafc; actual byte sum=261. Stop before status write or error log.
+PASS Firmware2 late gate read-return=1 expected-sum=261 -> stop 4000fb14; actual byte sum=261. Stop before status write or error log.
+11 controls passed. No installed image, successful boot, cold selector or whole-loader safety established.

@@ -9,6 +9,10 @@ All addresses below are updater addresses unless explicitly marked main.
 
 ## Finding
 
+Follow-up: [installed image checks](updater-installed-image-checks.md) resolves
+the metadata queries, storage-region read and split checksum fields, with 11
+original-ARM controls. Actual installed Firmware2 contents remain unknown.
+
 The running updater contains a registered boot-selection callback that examines
 six rawC configuration records and, if its loop finishes, requests `:DEF_FW2`.
 Its loader also explicitly distinguishes Firmware1 and Firmware2 and writes
