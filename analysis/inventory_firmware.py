@@ -232,6 +232,16 @@ def main() -> None:
                     cursor += 1
 
             main_size = hdr3 - main_start
+            updater_start = 0x200
+            reset_word = struct.unpack_from("<I", data, updater_start)[0]
+            if reset_word & 0xFF000000 != 0xEA000000:
+                raise SystemExit("Updater does not begin with the expected ARM B vector")
+            reset_delta = reset_word & 0xFFFFFF
+            if reset_delta & 0x800000:
+                reset_delta -= 0x1000000
+            reset_offset = 8 + reset_delta * 4
+            if not 0 <= reset_offset < hdr1 - updater_start:
+                raise SystemExit("Updater reset vector leaves its package region")
             report = {
                 "artifact": {
                     "path": str(args.firmware),
@@ -253,6 +263,17 @@ def main() -> None:
                     "drampar3": f"0x{drampar:08x}",
                 },
                 "hdr2_resource_images": [resource_a, resource_b],
+                "card_updater": {
+                    "start": f"0x{updater_start:08x}",
+                    "end_exclusive": f"0x{hdr1:08x}",
+                    "size": hdr1 - updater_start,
+                    "runtime_base": "0x40000000",
+                    "reset_vector_word": f"0x{reset_word:08x}",
+                    "reset_target_image_offset": f"0x{reset_offset:08x}",
+                    "reset_target_package_offset": f"0x{updater_start + reset_offset:08x}",
+                    "reset_target_runtime_address": f"0x{0x40000000 + reset_offset:08x}",
+                    "sha256": sha256_range(data, updater_start, hdr1 - updater_start),
+                },
                 "firstburn_manifest": {
                     "kernel_size": kernel_size,
                     "rootfs_size": rootfs_size,

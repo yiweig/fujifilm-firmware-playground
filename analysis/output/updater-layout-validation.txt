@@ -1,0 +1,14 @@
+PASS official 2.00 package identity
+PASS full updater [0x200,0xa2c00), 666112 bytes, SHA-256 checked
+PASS historical extract is exactly full updater minus its first 832 bytes
+PASS reset branch: runtime 40000000 -> 40000340, package 200 -> 540
+PASS startup builds 40000000 then writes CP15 VBAR
+PASS literal 40016c08 -> 4009451a: exact diagnostic
+PASS negative mapping control: shortened image at 40000000 fails diagnostic 4009451a
+PASS literal 40017b80 -> 40094799: exact diagnostic
+PASS negative mapping control: shortened image at 40000000 fails diagnostic 40094799
+PASS literal 400193c0 -> 400949c7: exact diagnostic
+PASS negative mapping control: shortened image at 40000000 fails diagnostic 400949c7
+PASS HDR1 has 25 nonzero bytes, none after offset 83
+PASS HDR1 nonzero control words match reported values
+Static bytes/hash/coordinate checks only. No firmware instructions, USB or storage operation executed.

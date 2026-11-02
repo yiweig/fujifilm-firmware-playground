@@ -55,8 +55,9 @@ samples.
 
 ### X half integrity control-flow trace
 
-Static ARM control flow now confirms that the checksum is enforced by the X
-half's embedded card updater:
+Static ARM control flow confirms that the checksum is enforced by the X half's
+main-image updater library (the addresses below belong to that image, not the
+separate small updater executable):
 
 - card-update orchestration begins at runtime address `0x405efddc` in the main
   image's copy of the updater;
@@ -125,7 +126,7 @@ version.
 
 | Slot | Public Akaso role | X half role | Confidence |
 |---:|---|---|---|
-| 0 | ISP/card-update bootloader | package header plus ARM card updater; code begins at `0x540` | strong structural match |
+| 0 | ISP/card-update bootloader | package header plus complete ARM updater at `0x200`; reset body at `0x540` | strong structural match; see [mapping correction](updater-image-layout.md) |
 | 1 | unknown | `SUNP BURN HDR 1` | role unknown |
 | 2 | FAT A/B resource images | HDR2 plus FAT16 A/B resource images | confirmed |
 | 3 | main firmware mapped at `0x40000000` | SPCA6500 `DRAM CODE` mapped at `0x40000000` | confirmed |

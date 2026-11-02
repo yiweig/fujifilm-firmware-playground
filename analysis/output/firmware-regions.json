@@ -58,6 +58,17 @@
       "sha256": "b8827f21b399642484767a357ba0dfb67403bc6b5eb4ed40aceb73ada65eba89"
     }
   ],
+  "card_updater": {
+    "start": "0x00000200",
+    "end_exclusive": "0x000a2c00",
+    "size": 666112,
+    "runtime_base": "0x40000000",
+    "reset_vector_word": "0xea0000ce",
+    "reset_target_image_offset": "0x00000340",
+    "reset_target_package_offset": "0x00000540",
+    "reset_target_runtime_address": "0x40000340",
+    "sha256": "4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976"
+  },
   "firstburn_manifest": {
     "kernel_size": 2084976,
     "rootfs_size": 9497344,

@@ -44,9 +44,11 @@ out treating that setting alone as making the button-entry route read-only.
 
 ## Safeguards observed in the official updater
 
-The package starts with a 665,280-byte ARMv7 card updater (package offset
-`0x540`; SHA-256
-`e65576cadbd4db737e0dd2cfcff7395265ed4087fced6d267108f1af2718df51`).
+The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`
+(SHA-256 `4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976`).
+Its reset body starts at package `0x540`. The older 665,280-byte extraction
+omitted the vector/header prefix; see the [layout correction](updater-image-layout.md)
+before using historical small-updater addresses.
 REA/Ghidra string evidence shows that it has paths for:
 
 - rejecting package checksum, size, and storage-type mismatches;
@@ -110,7 +112,7 @@ The X half has three relevant preflight stages:
    an RSA-style signature.
 2. Its nominal whole-file checksum function at `0x405ae61c` is a no-op in this
    build: it reads the file, prints a zero sum, and returns success.
-3. The embedded card updater at `0x405efddc` independently adds all 32-bit words
+3. The main-image updater library at `0x405efddc` independently adds all 32-bit words
    through the header's declared end and aborts unless the modulo-2^32 result is
    zero. This is the real package integrity gate before its write machinery.
 

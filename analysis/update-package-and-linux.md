@@ -22,6 +22,11 @@ The machine-readable region inventory, including per-region hashes, is
 [`output/firmware-regions.json`](output/firmware-regions.json). It is generated
 by [`inventory_firmware.py`](inventory_firmware.py).
 
+Follow-up: [complete updater layout](updater-image-layout.md) separates the
+512-byte outer header from the full updater at `0x200`, linked at `0x40000000`.
+Its reset body at package `0x540` was previously mistaken for the extraction
+start, omitting a `0x340`-byte prefix. The inventory now records the full image.
+
 ## Verified package regions
 
 | File range | Size | Interpretation | Verification |

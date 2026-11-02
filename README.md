@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/updater-image-layout.md`](analysis/updater-image-layout.md)
+  — recovered updater vector/header prefix, corrected complete-image mapping,
+  historical coordinate caveats and remaining earlier-stage recovery gap.
 - [`analysis/early-usb-startup-dependencies.md`](analysis/early-usb-startup-dependencies.md)
   — loader registration versus deferred USB setup, early-shell initialization
   gap, and null-initializer controls; independent recovery remains unproved.

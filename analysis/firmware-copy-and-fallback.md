@@ -4,6 +4,10 @@ This note asks whether the X half's second firmware region protects against a
 bad Firmware1 update. It is based on static ARM analysis of the official 2.00
 package. No camera command was sent and no flash operation was attempted.
 
+Coordinate correction (2026-11-02): routine addresses in this note refer to
+the updater library inside `firmware-main.bin`. The separately packaged small
+updater has a different layout; see [the extraction/mapping correction](updater-image-layout.md).
+
 ## Bottom line
 
 The official update path is deliberately transactional around Firmware1:
@@ -17,8 +21,8 @@ The official update path is deliberately transactional around Firmware1:
 This is strong evidence that Firmware2 is intended to preserve a bootable or
 recoverable firmware while Firmware1 is replaced. It is **not yet proof of
 automatic cold-boot fallback**. The code that runs before either installed
-firmware and chooses between them is not present in `FPUPDATE.DAT` or the
-extracted main application. It is likely in the internal-flash boot stage or
+firmware and chooses between them has not been identified in `FPUPDATE.DAT`
+or the extracted main application. It may be in an internal-flash boot stage or
 mask ROM, neither of which we have dumped.
 
 Current confidence:
@@ -132,9 +136,17 @@ We should not test fallback by corrupting Firmware1.
 
 ## Reproducibility
 
-- All runtime addresses above are in the extracted card updater, linked at
-  `0x40000000`; absolute string pointers confirm this. [`card.py`](card.py)
-  provides address-aware read-only disassembly helpers for it.
-- REA evidence for the corrected card-updater mapping and relevant strings is
+- **Coordinate correction, 2026-11-02:** the `0x405e...`/`0x405f...` routine
+  addresses above identify the updater library in **firmware-main.bin**, not
+  addresses in the separately extracted small card updater. Reproduce those
+  ranges with `fw.py`, not `card.py`. The independent update-executable claim
+  must not be inferred merely from these main-image addresses.
+- [Updater image layout](updater-image-layout.md) identifies the complete
+  updater at package `0x200..0xa2bff`, base `0x40000000`, entry
+  `0x40000340`. The earlier `card-updater.bin` omitted its first `0x340` bytes;
+  mapping that shortened extract at `0x40000000` shifts addresses incorrectly.
+  [`card.py`](card.py) now uses the complete, hash-checked image.
+- Historical REA output for the shortened extract and its former mapping is
   saved in
   [`output/rea-card-updater-linked-base-evidence.json`](output/rea-card-updater-linked-base-evidence.json).
+  It is retained for provenance, not accepted as corrected runtime coordinates.

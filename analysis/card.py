@@ -1,10 +1,12 @@
 """Read-only helpers for the extracted card updater.
 
-Addresses are runtime addresses.  The updater is linked at 0x40000000; this is
-confirmed by its absolute pointers to strings and data in the extracted image.
+Addresses are runtime addresses. The complete updater starts at package offset
+0x200 and is linked at 0x40000000. The legacy extract starting at 0x540 omits
+0x340 bytes and cannot be mapped at that same base. See updater-image-layout.md.
 """
 
 from pathlib import Path
+import hashlib
 import re
 import struct
 import subprocess
@@ -12,7 +14,24 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA = (ROOT / "analysis/output/card-updater.bin").read_bytes()
+IMAGE = ROOT / "analysis/output/card-updater-full.bin"
+EXPECTED_SHA256 = "4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976"
+if IMAGE.exists():
+    DATA = IMAGE.read_bytes()
+else:
+    with (ROOT / "FPUPDATE.DAT").open("rb") as handle:
+        header = handle.read(512)
+        if header[:14] != b"SUNP BURN FILE":
+            raise SystemExit("Not a SUNP BURN FILE package")
+        end = struct.unpack_from("<I", header, 0x14)[0]
+        if end != 0xa2c00:
+            raise SystemExit("Unexpected updater boundary; this helper targets official 2.00")
+        DATA = handle.read(end - 512)
+    if hashlib.sha256(DATA).hexdigest() != EXPECTED_SHA256:
+        raise SystemExit("Wrong full updater image hash")
+    IMAGE.write_bytes(DATA)
+if hashlib.sha256(DATA).hexdigest() != EXPECTED_SHA256:
+    raise SystemExit("Wrong full updater image hash")
 BASE = 0x40000000
 
 
@@ -41,7 +60,7 @@ def prologue(address: int) -> int:
 
 
 def ensure_elf() -> Path:
-    output = ROOT / "analysis/output/card-updater.elf"
+    output = ROOT / "analysis/output/card-updater-full.elf"
     if output.exists():
         return output
     names = b"\0.text\0.shstrtab\0"
