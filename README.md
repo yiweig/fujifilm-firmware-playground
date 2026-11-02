@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/mass-storage-exit-loader-selection.md`](analysis/mass-storage-exit-loader-selection.md)
+  — unconditional mode-4 cleanup call, mass-storage ownership and 16 original-ARM
+  controls distinguishing mode selection from a loader connection.
 - [`analysis/loader-memory-read-boundary.md`](analysis/loader-memory-read-boundary.md)
   — confirmed loader memory-to-host scheduling, parser bounds/state hazards,
   selected PTP alternatives and the unresolved temporary-entry gate.

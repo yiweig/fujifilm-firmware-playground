@@ -126,6 +126,12 @@ not evidence that a same-named SD marker executes this command. Likewise,
 `0x405c88c4` is called by `LeaveUIGroups` (`0x404d5b9c`) for a departing
 `0x7000` group; it is not a generic external mode-entry event.
 
+Follow-up [mass-storage exit audit](mass-storage-exit-loader-selection.md)
+traces that unconditional helper: it selects mode 4 without requesting a
+connection. The neighboring `UIMode_UsbMassCreate` callback selects mode 2 before
+connecting. Sixteen offline controls confirm those request sequences with
+supplied context; retail reachability remains unresolved.
+
 Some routines begin one instruction before their push prologue, including
 `0x404d4f9c` and `0x4031d548`. Starting at the push omits a literal load or
 condition-code setup. Prologue-search labels are not verified function entries.

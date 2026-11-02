@@ -1,0 +1,21 @@
+Main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline original ARM: exit helper 405c88c4, then explicitly supplied callback 405c8918/event fb000001. Not a demonstrated UI transition.
+PASS cached=0 flag=0 cable=0 gpio-bit5=0: [mode(4), event(f2000030)]
+PASS cached=0 flag=0 cable=0 gpio-bit5=1: [mode(4), event(f2000030)]
+PASS cached=0 flag=0 cable=1 gpio-bit5=0: [mode(4), mode(2), connect(1,mode=2), connect(1,mode=2)]
+PASS cached=0 flag=0 cable=1 gpio-bit5=1: [mode(4), mode(2), connect(1,mode=2), connect(1,mode=2)]
+PASS cached=0 flag=1 cable=0 gpio-bit5=0: [mode(4), event(f2000030)]
+PASS cached=0 flag=1 cable=0 gpio-bit5=1: [mode(4), event(f2000030)]
+PASS cached=0 flag=1 cable=1 gpio-bit5=0: [mode(4), mode(2), connect(1,mode=2), connect(1,mode=2)]
+PASS cached=0 flag=1 cable=1 gpio-bit5=1: [mode(4), mode(2), connect(1,mode=2), connect(1,mode=2)]
+PASS cached=1 flag=0 cable=0 gpio-bit5=0: [connect(0,mode=2), mode(4), event(f2000030)]
+PASS cached=1 flag=0 cable=0 gpio-bit5=1: [connect(0,mode=2), mode(4), event(f2000030)]
+PASS cached=1 flag=0 cable=1 gpio-bit5=0: [connect(0,mode=2), mode(4), mode(2), connect(1,mode=2), connect(1,mode=2)]
+PASS cached=1 flag=0 cable=1 gpio-bit5=1: [connect(0,mode=2), mode(4), mode(2), connect(1,mode=2), connect(1,mode=2)]
+PASS cached=1 flag=1 cable=0 gpio-bit5=0: [connect(0,mode=2), mode(4), event(f2000030)]
+PASS cached=1 flag=1 cable=0 gpio-bit5=1: [connect(0,mode=2), mode(4), event(f2000030)]
+PASS cached=1 flag=1 cable=1 gpio-bit5=0: [connect(0,mode=2), mode(4), mode(2), connect(1,mode=2), connect(1,mode=2)]
+PASS cached=1 flag=1 cable=1 gpio-bit5=1: [connect(0,mode=2), mode(4), mode(2), connect(1,mode=2), connect(1,mode=2)]
+16 controls passed. Mode 4 is selected by exit, but no connect(1) request occurs until mode 2 is selected by the supplied mass-create callback.
+Modeled: mode setter, connect/disconnect, cable getter, USB configuration, environment helper 4000cd00, logging, delays and event posting. GPIO byte supplied; no MMIO executes.
+No full startup, event delivery, filesystem behavior, USB transfer, physical disconnect, temporary loader entry or recovery proof.
