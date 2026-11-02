@@ -45,7 +45,9 @@ FPUPDATE.DAT                    Official 2.00 package (local, ignored)
 firmware-main.bin               Extracted 2.00 application/DRAM image (local, ignored)
 firmware-code.bin               Historical partial extract (local, ignored; not the main target)
 firmware/
-  {1.01,1.20,1.30}/FPUPDATE.DAT   Historical official packages (local, ignored)
+  {1.01,1.20,1.30,2.00}/
+    FPUPDATE.DAT                Official versioned packages (local, ignored)
+    SHA256SUMS                  Tracked SHA-256 manifest for each version
 analysis/
   *.md                          Findings, provenance, limitations and reproduction instructions
   *.py                          Offline parsers, searches, protocol models and checks
@@ -59,6 +61,18 @@ analysis/
 Root `*.gpr`/`*.rep` files, when present, are also ignored local Ghidra state.
 Some working projects and comparison corpora were created under `/private/tmp`;
 those paths in reports are provenance, not files available in a fresh clone.
+
+Each version directory has a `SHA256SUMS` file in standard checksum format.
+All four packages were rehashed and matched their previously recorded SHA-256
+and size on 2026-11-02. To verify a local copy, run inside its version directory:
+
+```sh
+cd firmware/2.00
+shasum -a 256 -c SHA256SUMS
+```
+
+The root-level 2.00 package remains the default input for existing analysis tools;
+the versioned copy is `firmware/2.00/FPUPDATE.DAT`.
 
 | Tool or file group | Purpose / boundary |
 | --- | --- |

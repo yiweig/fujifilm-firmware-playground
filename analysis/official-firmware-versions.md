@@ -3,11 +3,18 @@
 This note records official download provenance for X-half firmware used in the
 project. Firmware binaries are intentionally ignored by Git.
 
+Each local version directory contains a tracked `SHA256SUMS` manifest. On
+2026-11-02, all four versioned packages were rehashed and matched both the
+previously recorded SHA-256 values and sizes in the version-comparison table.
+Verify from the desired directory with `shasum -a 256 -c SHA256SUMS`.
+
 ## Version 2.00
 
 - Official URL:
   `https://dl.fujifilm-x.com/support/firmware/x-hf1-200-in9f30gq/FPUPDATE.DAT`
 - Directory token: `in9f30gq`
+- Local ignored path: `firmware/2.00/FPUPDATE.DAT`; the root-level copy remains
+  available for existing analysis-tool defaults.
 - SHA-256:
   `3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68`
 
