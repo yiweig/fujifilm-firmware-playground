@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/updater-dram-handoff-and-register-writers.md`](analysis/updater-dram-handoff-and-register-writers.md)
+  — application-to-updater DRAM parameter handoff, nine offline restore controls,
+  software-written BootInfo status and limits of the filename-register search.
 - [`analysis/updater-boot-register-consumer.md`](analysis/updater-boot-register-consumer.md)
   — packaged-updater boot-register/pathname consumer, eight original-ARM
   boundary controls and the distinction between BootInfo diagnostics and fallback.

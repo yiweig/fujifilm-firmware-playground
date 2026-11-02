@@ -1,0 +1,13 @@
+Full updater SHA-256: 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Original ARM slice 40001298..40001388; synthetic memory only. Starts after preceding startup; stops before 40068d7c.
+PASS gate nonzero: copied=false diagnostic-dump=false; SRAM bytes verified, executable image unchanged.
+PASS existing header: copied=false diagnostic-dump=false; SRAM bytes verified, executable image unchanged.
+PASS restore 8 range: copied=true diagnostic-dump=true; SRAM bytes verified, executable image unchanged.
+PASS restore a range: copied=true diagnostic-dump=true; SRAM bytes verified, executable image unchanged.
+PASS zero size: copied=false diagnostic-dump=true; SRAM bytes verified, executable image unchanged.
+PASS oversize: copied=false diagnostic-dump=true; SRAM bytes verified, executable image unchanged.
+PASS unaligned: copied=false diagnostic-dump=true; SRAM bytes verified, executable image unchanged.
+PASS wrong address range: copied=false diagnostic-dump=true; SRAM bytes verified, executable image unchanged.
+PASS wrong magic: copied=false diagnostic-dump=true; SRAM bytes verified, executable image unchanged.
+9 controls passed. Compare/copy/clear/log/dump helpers modeled. Original gate, header/size/address/alignment branches and helper arguments execute.
+Not physical RAM alias validation, DRAM register programming, full startup, USB reachability, payload safety or recovery evidence. No camera access.

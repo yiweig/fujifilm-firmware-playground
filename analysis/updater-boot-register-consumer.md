@@ -120,6 +120,10 @@ No new REA or live result is claimed.
 
 ## What the BootInfo message actually shows
 
+Follow-up: [register writers and SRAM handoff](updater-dram-handoff-and-register-writers.md)
+identifies running updater code that writes these BootInfo status bits. The
+automatic filename/configuration-register producer is still unidentified.
+
 Command-table entry `0x4009d9d8` contains the name `dkboot`, handler
 `0x4000e098`, and help pointer `0x40092d22`. With no arguments the handler:
 

@@ -116,7 +116,10 @@ state, disables interrupts, writes a parameter block at `0x3f00d000`, then
 branches into the prepared stub.
 
 The parameter block contains source pointer, rounded-even length, destination,
-and two saved values. The stub at `0x401ed070` translates source/destination
+and a saved DRAM-parameter buffer pointer/size. The latter two fields now have
+a matching [packaged-updater startup consumer](updater-dram-handoff-and-register-writers.md);
+this is an offline dataflow match, not a demonstrated launch.
+The stub at `0x401ed070` translates source/destination
 addresses, programs MMIO at `0x10003000` to copy data in chunks of at most
 `0x100000` bytes, performs a low-address helper call at `0x00000b34`, and jumps
 to the destination. Destination `0x40000000` gets an additional call through
