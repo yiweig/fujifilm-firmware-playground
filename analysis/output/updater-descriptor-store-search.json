@@ -1,0 +1,8 @@
+{
+  "artifact_sha256": "4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976",
+  "target": "3f00c518",
+  "target_size": 36,
+  "candidate_store_encodings": 17826,
+  "store_hits": [],
+  "scope": "Updater aligned ARM direct store candidates only. Fixed main-image copy/clear helper addresses are inapplicable to this image and their bulk results are deliberately excluded. Indirect and DMA writers remain unqualified."
+}

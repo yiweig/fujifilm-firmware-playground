@@ -27,6 +27,7 @@ The user excludes opening the camera, wiring UART or sending it to a repair lab.
 | Optional `9601` hook | Wider offline search found only its known setter; neither registration nor completion appears in the ten known wrapper call sites. A nearby copy cannot reach it. An unused SDK hook is a hypothesis; live pointer state remains unknown. | [Hook review](analysis/ptp-9601-hook-review.md) |
 | Startup RAM initialization | Stage worker requests hardware zero fills through `0x414fb780`, including the optional PTP hook's RAM. Six original-instruction controls validate request construction; actual hardware success remains unobserved. | [Staged RAM initialization](analysis/staged-boot-ram-initialization.md) |
 | Earlier-stage storage handoff | A 36-byte SRAM descriptor supplies primitive pointers; the application translates six recognized values to NAND routines. Staged 16-bit checksums and an early CPU clear are identified. The provider's bytes and recovery selectors remain unknown. | [Storage handoff](analysis/staged-loader-storage-handoff.md) |
+| Updater firmware selection | A conditional callback tries six rawC configurations and can request Firmware2 afterward. Named FW1/FW2 selections control boot-status bit 1. This requires an executing updater; independent cold entry remains unknown. | [Selection trace](analysis/updater-firmware-selection.md) |
 | RAM loader | Device-side USB transfer and copy/execute code identified. Temporary retail entry, full handoff effects and payload safety remain unqualified. | [Receiver](analysis/xhalf-usb-ram-receiver.md), [handoff](analysis/ram-handoff-copy-boundary.md) |
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
@@ -176,6 +177,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-boot-register-consumer.md`](analysis/updater-boot-register-consumer.md)
   — packaged-updater boot-register/pathname consumer, eight original-ARM
   boundary controls and the distinction between BootInfo diagnostics and fallback.
+- [`analysis/updater-firmware-selection.md`](analysis/updater-firmware-selection.md)
+  — conditional storage callback, rawC configuration loop and final Firmware2
+  request inside the executing updater; named selections and boot-status bit 1.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

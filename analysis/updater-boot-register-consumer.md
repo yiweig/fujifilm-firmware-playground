@@ -8,6 +8,12 @@ not the main camera firmware. No camera access or card preparation occurred.
 
 ## Finding
 
+Follow-up: [updater firmware selection](updater-firmware-selection.md) traces a
+different conditional startup branch that registers a storage callback. That
+callback can request `:DEF_FW2` after examining six rawC configurations. This
+is fallback logic inside an executing updater, not the missing cold-loader
+selector or an independent recovery procedure.
+
 The packaged updater has an automatic startup consumer of boot-register data:
 it can construct a pathname and choose between ISP/update setup and a separate
 file/rawC boot helper. This is more concrete than a filename string or shell

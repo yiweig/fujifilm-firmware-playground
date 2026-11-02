@@ -122,6 +122,11 @@ branches encode values 1 through 6 in that flag field. These are the same
 status bits that the `dkboot` no-argument diagnostic extracts and prints
 minus one. Later code also uses the setter with mask `0x82`.
 
+The [selection follow-up](updater-firmware-selection.md) resolves that `0x82`
+write: it sets bit 7, setting bit 1 for the named Firmware2 type and clearing
+bit 1 otherwise. It also traces a conditional callback that ultimately requests
+`:DEF_FW2` if its rawC loop finishes. Both actions belong to the running updater.
+
 This establishes that running updater code can populate the diagnostic
 field. It does not exclude an earlier writer, establish when a real camera
 took this branch, or equate the six rawC entries with Firmware1/Firmware2.

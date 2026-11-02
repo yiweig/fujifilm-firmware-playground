@@ -1,0 +1,18 @@
+{
+  "image_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "target": "0x3f00c518",
+  "target_size": 36,
+  "window_instructions": 256,
+  "scan_end_exclusive": "0x40ab0000",
+  "candidate_store_encodings": 346146,
+  "hits": [],
+  "bulk_call_statistics": {
+    "direct_branch_encodings": 11595,
+    "resolved_destination_and_size": 786,
+    "register_branch_encodings": 51463,
+    "resolved_register_bulk_targets": 229
+  },
+  "bulk_overlap_hits": [],
+  "nearby_bulk_destinations_with_unknown_size": [],
+  "limitations": "Aligned ARM STR/STRB/STRH/STRD/STM and direct B/BL or constant-resolved BX/BLX to two known copy/clear helpers, including possible data encodings; bounded backward constant resolution; no CFG, Thumb, exclusive/VFP stores, other/unresolved indirect bulk helpers, mutable-pointer dereference or runtime evidence. Manually validate every hit; missed writes remain possible."
+}

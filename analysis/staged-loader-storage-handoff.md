@@ -175,3 +175,9 @@ The next remaining boundary is the earlier stage that produces this descriptor
 and chooses how the main image is entered. Its bytes and external recovery
 selectors are still unavailable; this application-side contract cannot supply
 them by itself. No camera connection is required for the findings above.
+
+Follow-up: [updater selection and descriptor search](updater-firmware-selection.md)
+ties named FW1/FW2 selections to status bit 1 in the running updater. Bounded
+store searches of both images found no resolved producer of the SRAM descriptor;
+their scope and missed-writer limits are recorded there. This does not prove
+the producer is absent or identify the cold-start selection policy.
