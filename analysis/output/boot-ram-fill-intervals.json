@@ -13,6 +13,13 @@
   ],
   "first_iteration_skips_fill": true,
   "callback": "4136b664",
+  "initial_cpu_clear": {
+    "entry_slice": "40000684..400006c4",
+    "cpu_start": "40e37c00",
+    "cpu_end_exclusive": "40e68880",
+    "length": 199808,
+    "scope": "CPU stores on the loader-facing 40000338 path, after SRAM-code copy; not established for every possible entry route."
+  },
   "fills": [
     {
       "stage": 11,

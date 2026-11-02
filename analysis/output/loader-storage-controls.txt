@@ -1,0 +1,19 @@
+Image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline original slices only; fixtures and stop boundaries below. No storage primitive, actual MMIO, DMA, flash, low-address provider or complete boot executes.
+PASS initial CPU clear: [40e37c00,40e68880), length=30c80, guards preserved; starts after prior SRAM code copy; stops before storage-register action at 40000724.
+PASS pointer mapping: 00003cd0->40028dc4, 000037e8->400294f0; stop before MMIO branch 400293c8.
+PASS pointer mapping: 00003cd0->40028dc4, 00003a30->40029468; stop before MMIO branch 400293c8.
+PASS pointer mapping: 00003cd0->40028dc4, 0000421c->40029b9c; stop before MMIO branch 400293c8.
+PASS pointer mapping: 00004aac->400299d0, 000037e8->400294f0; stop before MMIO branch 400293c8.
+PASS pointer mapping: 00004aac->400299d0, 00003a30->40029468; stop before MMIO branch 400293c8.
+PASS pointer mapping: 00004aac->400299d0, 0000421c->40029b9c; stop before MMIO branch 400293c8.
+PASS pointer mapping: 00004654->40029578, 000037e8->400294f0; stop before MMIO branch 400293c8.
+PASS pointer mapping: 00004654->40029578, 00003a30->40029468; stop before MMIO branch 400293c8.
+PASS pointer mapping: 00004654->40029578, 0000421c->40029b9c; stop before MMIO branch 400293c8.
+PASS checksum: input=00001234 current=abcd1234 total=00007777 supplied-boot-status=0 -> return=0; only log modeled; MMIO read served by fixture.
+PASS checksum: input=00001234 current=00001235 total=00007777 supplied-boot-status=0 -> return=1; only log modeled; MMIO read served by fixture.
+PASS checksum: input=88888888 current=00009999 total=00007777 supplied-boot-status=0 -> return=0; only log modeled; MMIO read served by fixture.
+PASS checksum: input=ffffffff current=00009999 total=00004321 supplied-boot-status=0 -> return=0; only log modeled; MMIO read served by fixture.
+PASS checksum: input=ffffffff current=00009999 total=00007654 supplied-boot-status=2 -> return=0; only log modeled; MMIO read served by fixture.
+PASS checksum: input=ffffffff current=00009999 total=00004321 supplied-boot-status=2 -> return=1; only log modeled; MMIO read served by fixture.
+16 controls passed. Sentinel acceptance is local callback behavior, not evidence about package authentication, a safe patch, a boot selector or independent recovery.

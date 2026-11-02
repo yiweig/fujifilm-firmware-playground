@@ -63,8 +63,11 @@ The final boundary word at `0x40000b7c` is `0x014fb780`, agreeing with the
 separately identified allocator boundary `0x414fb780`. This gives that address
 an additional concrete role: **end of the staged RAM-fill intervals**. It
 still does not identify physical DRAM capacity or make the region a safe
-payload/scratch destination. The gap from file-backed image end `0x40e38400`
-to the first interval above is not explained by these five fills.
+payload/scratch destination. Follow-up [storage/entry analysis](staged-loader-storage-handoff.md)
+identifies a preceding CPU clear on the loader-facing path:
+`[0x40e37c00,0x40e68880)`. It covers the initial gap and overlaps the tail of
+the file-backed image after the SRAM code has been copied from that location.
+That path has not been established for every possible image-entry route.
 
 Reproducible table extraction:
 [inspect_boot_ram_fills.py](inspect_boot_ram_fills.py), with retained

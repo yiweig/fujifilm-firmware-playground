@@ -22,6 +22,13 @@ def inspect():
     if table[0] != 6 or len(stages) != table[0]:
         raise ValueError('Unexpected stage count/mask')
     previous = (table[11] + 63) & ~63
+    initial_clear = {
+        'entry_slice': '40000684..400006c4',
+        'cpu_start': f'{BASE + table[7]:08x}',
+        'cpu_end_exclusive': f'{BASE + previous:08x}',
+        'length': previous - table[7],
+        'scope': 'CPU stores on the loader-facing 40000338 path, after SRAM-code copy; not established for every possible entry route.',
+    }
     fills = []
     for ordinal, stage in enumerate(stages):
         if ordinal == 0:
@@ -44,6 +51,7 @@ def inspect():
         'image_sha256': EXPECTED, 'table': '40000b00', 'worker': '4000f064',
         'stage_mask': f'{table[1]:08x}', 'stage_ids': stages,
         'first_iteration_skips_fill': True, 'callback': f'{CALLBACK:08x}',
+        'initial_cpu_clear': initial_clear,
         'fills': fills,
         'scope': 'Static table/argument derivation, not observed hardware writes; address translation, DMA completion and later mutations remain separate qualifications.',
     }

@@ -95,7 +95,12 @@ the initialization task. It requests five zero-fill intervals spanning
 Original-instruction controls validate interval/descriptor construction,
 not actual DMA success. The worker does not enforce every hardware error
 result. This resolves a substantial part of the initialization-path question,
-but not complete BSS ownership or the gap before `0x40e68880`.
+but not complete BSS ownership. A further [loader-facing entry review](staged-loader-storage-handoff.md)
+identifies a CPU clear of `0x40e37c00..0x40e68880` after the SRAM code copy,
+covering that initial gap on the inspected path. The staged-loader storage
+callbacks also consume a 36-byte earlier-stage SRAM descriptor and translate
+six recognized low-address primitive values into application NAND routines;
+the earlier provider itself is not recovered.
 The allocator boundary remains unsuitable as a presumed safe write or
 RAM-firmware upload boundary without ownership/runtime qualification.
 

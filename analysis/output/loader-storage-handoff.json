@@ -1,0 +1,30 @@
+{
+  "image_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "source_descriptor": {
+    "source": "3f00c518",
+    "destination": "40000e80",
+    "length": 36,
+    "copy_site": "4000089c"
+  },
+  "worker_callback_table": "40000bc0",
+  "installed_at": "40000918",
+  "callbacks": {
+    "00": "40029dbc",
+    "04": "40029314",
+    "08": "40029e04",
+    "0c": "4002a174"
+  },
+  "primitive_translation": {
+    "descriptor_offset_1c": {
+      "00003cd0": "40028dc4",
+      "00004aac": "400299d0",
+      "00004654": "40029578"
+    },
+    "descriptor_offset_20": {
+      "000037e8": "400294f0",
+      "00003a30": "40029468",
+      "0000421c": "40029b9c"
+    }
+  },
+  "scope": "Static application-side handoff contract. Earlier provider bytes, physical backing, actual descriptor contents and populated NAND variant are not recovered."
+}
