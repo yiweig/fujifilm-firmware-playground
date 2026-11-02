@@ -126,6 +126,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/sd-command-reader-reachability.md`](analysis/sd-command-reader-reachability.md)
+  — SD reader still lacks a known caller; original command-copy controls show
+  an unchecked stack boundary, and optional shell startup is identified as Wdg.
 - [`analysis/ui-bulk-writer-review.md`](analysis/ui-bulk-writer-review.md)
   — date/time property copy bounds exclude the cached USB flag; selected
   Ghidra coverage remains sparse and does not close the bulk-writer gap.

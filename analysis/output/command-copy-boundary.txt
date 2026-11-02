@@ -1,0 +1,9 @@
+Main SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original command wrapper 401efd50 and copy helper 40008d10; stop before parser 401efacc. Synthetic dummy strings, no command executes.
+PASS dummy text length=0: complete NUL-terminated copy verified; saved return slot unchanged; stopped before parser; image unchanged.
+PASS dummy text length=7: complete NUL-terminated copy verified; saved return slot unchanged; stopped before parser; image unchanged.
+PASS dummy text length=131: complete NUL-terminated copy verified; saved return slot unchanged; stopped before parser; image unchanged.
+PASS dummy text length=132: complete NUL-terminated copy verified; saved return slot changed by terminating NUL; stopped before parser; image unchanged.
+4 controls passed. No helpers modeled, no file operations, no shell parser, command handler, corrupted return or camera access executes.
+Whole-image bounded raw scan: outside aligned ARM B/BL candidates into reader body=0; aligned entry/entry+1 pointer words=0; MOVW low-address candidates=0.
+Negative scans do not exclude computed/interior pointers, Thumb calls, transformed tables, earlier stages or other indirect reachability. No retail SD autoexec entry established.

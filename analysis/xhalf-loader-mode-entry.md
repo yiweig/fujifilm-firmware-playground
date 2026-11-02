@@ -107,6 +107,11 @@ The `usb` and `usbmode` names must not be treated as interchangeable.
 
 ## Another possible entry lead: command-file reader
 
+Follow-up: [reader reachability and copy boundary](sd-command-reader-reachability.md)
+widens the caller search to the full main image without finding an entry,
+reproduces an unchecked stack-copy boundary before shell parsing, and
+identifies the optional shell-startup task as a watchdog rather than autoexec.
+
 Function `0x40475d8c` logs the embedded name `Audio_ReadCmdFromFile` and uses
 the literal `D:\CMD_LIST.TXT` (pointer at `0x40475ff0`). It reads the file,
 interprets delimiters including `@`, `#`, and `*`, and sends selected text

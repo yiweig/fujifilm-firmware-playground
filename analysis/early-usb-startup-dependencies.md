@@ -54,7 +54,12 @@ registration function only stores seven callback words in arrays rooted at
 `0x40fc7b8c`. Registration controls now supply targets 0 and 2 **before**
 registration and verify that it preserves the chosen target.
 
-The early shell's complete task and optional command-file behavior are not
+Follow-up: [shell-startup watchdog and SD reader](sd-command-reader-reachability.md)
+identifies the optional call from `cmdTaskInit` to `0x401ef13c` as creating
+task `Wdg`, not as an SD command-file reader. The separate SD reader still
+lacks a known retail caller.
+
+The early shell's complete task and any other command-file behavior are not
 audited in this pass. No claim is made about actual retained callback-table
 contents, undocumented earlier registrations or whether a shell user could
 explicitly initialize missing subsystems. UART access remains outside the
