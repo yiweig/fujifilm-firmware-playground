@@ -10,6 +10,11 @@ qualified by image. No camera commands, card preparation or firmware changes.
 
 ## Result
 
+Follow-up: [copy boundary and special-entry gate writers](ram-handoff-copy-boundary.md)
+shows that the updater's special `+0x200` entry writes a nonzero gate. If it
+persists, that skips the restore branch below. The matching handoff fields
+must not be taken as proof that this USB launch executes the restore branch.
+
 The main application's USB loader writes a parameter-buffer pointer and size
 into an SRAM handoff block. The packaged updater contains startup code that
 reads those exact fields and restores a `DRAMPAR3` buffer into SRAM. This

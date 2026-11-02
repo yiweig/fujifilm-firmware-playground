@@ -101,6 +101,11 @@ reachability and transport are still unverified.
 
 ## Upload/run completion and RAM stub
 
+Follow-up: [copy boundary and special entry](ram-handoff-copy-boundary.md)
+qualifies the address conversion and copy-command metadata with eleven offline
+controls. The low helper remains unresolved, and the updater's special entry
+writes a gate that can permit later automatic file handling.
+
 State 6 reaches `0x401e1f40`. It invokes an optional callback, supplies default
 destination `0x40000000` if `+0x3c` is zero, performs a storage/header read
 through an indirect storage interface, copies `0x4000` bytes of header data to

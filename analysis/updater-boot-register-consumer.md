@@ -123,6 +123,9 @@ No new REA or live result is claimed.
 Follow-up: [register writers and SRAM handoff](updater-dram-handoff-and-register-writers.md)
 identifies running updater code that writes these BootInfo status bits. The
 automatic filename/configuration-register producer is still unidentified.
+The [later handoff trace](ram-handoff-copy-boundary.md) also identifies gate
+`0x10001300` writes in both images' special `+0x200` entries; it does not
+identify the earlier cold loader or filename-register writer.
 
 Command-table entry `0x4009d9d8` contains the name `dkboot`, handler
 `0x4000e098`, and help pointer `0x40092d22`. With no arguments the handler:

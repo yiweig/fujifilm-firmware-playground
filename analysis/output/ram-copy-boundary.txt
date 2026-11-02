@@ -1,0 +1,16 @@
+Main SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Updater SHA-256: 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Relocated original stub at synthetic 42000000; original address guards and capacity-register getter execute. Capacity fixture 256 MiB, cache helpers modeled.
+PASS zero at base -> stop=400070d8 commands=[]; loaded image unchanged.
+PASS zero interior -> stop=00000b34 commands=[]; loaded image unchanged.
+PASS one -> stop=00000b34 commands=[01000000->00000000:1]; loaded image unchanged.
+PASS one MiB -> stop=00000b34 commands=[01000000->00000000:100000]; loaded image unchanged.
+PASS MiB plus two -> stop=00000b34 commands=[01000000->00000000:100000, 01100000->00100000:2]; loaded image unchanged.
+PASS unaligned source -> stop=400070d8 commands=[]; loaded image unchanged.
+PASS source at capacity -> stop=400070d8 commands=[]; loaded image unchanged.
+PASS unaligned destination -> stop=400070d8 commands=[]; loaded image unchanged.
+PASS A-range source -> stop=400070d8 commands=[]; loaded image unchanged.
+PASS main +200 entry writes gate 12345678, stops before 40000338.
+PASS updater +200 entry writes gate 88888888 and returns, with supplied readiness bit.
+11 controls passed. DMA completion supplied; no data-copy engine, cache/MMU hardware, low helper 00000b34, payload entry or persistent operation executes.
+Not an actual RAM launch or recovery path. Zero-length acceptance is a supplied-state boundary observation, not permission to issue requests.

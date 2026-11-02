@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/ram-handoff-copy-boundary.md`](analysis/ram-handoff-copy-boundary.md)
+  — original copy-stub/address-guard controls, special-entry gate writers,
+  and why the updater handoff still cannot be treated as a harmless RAM test.
 - [`analysis/updater-dram-handoff-and-register-writers.md`](analysis/updater-dram-handoff-and-register-writers.md)
   — application-to-updater DRAM parameter handoff, nine offline restore controls,
   software-written BootInfo status and limits of the filename-register search.
