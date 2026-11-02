@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/public-boot-artifact-review.md`](analysis/public-boot-artifact-review.md)
+  — bounded V50 artifact audit, missing LFS payloads, different-chip recovery
+  reports and why none yet supplies the X-half low-helper implementation.
 - [`analysis/low-address-loader-helper.md`](analysis/low-address-loader-helper.md)
   — second caller of low helper `0xb34`, stable earlier-stage API leads,
   and four original-ARM SRAM-copy controls across official firmware versions.

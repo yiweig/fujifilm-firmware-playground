@@ -131,6 +131,11 @@ and `40e37c00..40e38274`; updater helper via
 
 ## What this changes for recovery
 
+Follow-up: [public boot-artifact review](public-boot-artifact-review.md) audits
+selected retained V50 files and additional primary recovery resources. It does
+not locate matching X-half helper bytes; external-flash and different-chip
+artifacts remain separate from an authenticated CPU ROM dump.
+
 There is now a stronger reason to investigate an earlier-stage low-address
 service interface, and a precise, stable set of addresses to compare against
 an authentic ROM/stage dump if one becomes available. But the entry and call

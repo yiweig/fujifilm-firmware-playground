@@ -1,0 +1,108 @@
+{
+  "repository": "https://github.com/Linouth/iCatch-V50-Playground",
+  "retained_revision": "dc437ced8fdc9564e39ca550af6a1d53b1037714",
+  "scope": "Selected retained files only; offsets are file coordinates. Exact byte absence is not implementation absence.",
+  "files": [
+    {
+      "path": "reversing/v50ProSE/winbond_dump.bin",
+      "size": 16777216,
+      "sha256": "ef8ee75f9cd5a59c633b6b79ea0130c9605d3a86bfe2b9bbfc1498e51587fbf8",
+      "kind": "Raw file byte search; no ROM or load-address classification",
+      "prefix_hex": "4e414e4420525356efbe00000010000088130000880500000000000000f88e00",
+      "little_endian_pointer_occurrences": {
+        "0xb24": [],
+        "0xb34": [],
+        "0x4e34": [],
+        "0x1d406": [
+          "0xb1f618",
+          "0xb1f840"
+        ]
+      },
+      "marker_occurrences": {
+        "NAND RSV": [
+          "0x0",
+          "0x4000",
+          "0xde528e",
+          "0xf1b8b2"
+        ],
+        "DRAM CODE": [
+          "0x58804e"
+        ],
+        "SPCA6500": [
+          "0x588040",
+          "0xdf5939",
+          "0xf2b896"
+        ],
+        "SPBoot": [],
+        "SP-Boot": [],
+        "cpuinv": [],
+        "cpuwb": []
+      }
+    },
+    {
+      "path": "reversing/v50ProSE/AKASO_V50 Pro SE_190315_V1/SPHOST.BRN",
+      "size": 15740152,
+      "sha256": "1f9db54f710d26af1be9f96a317f838fa52e0ca90225f602c45b287e93f2a2f9",
+      "kind": "Raw file byte search; no ROM or load-address classification",
+      "prefix_hex": "53554e50204255524e2046494c450000f82cf000001009000020090020216100",
+      "little_endian_pointer_occurrences": {
+        "0xb24": [],
+        "0xb34": [],
+        "0x4e34": [],
+        "0x1d406": [
+          "0x854",
+          "0xba9588",
+          "0xba97b0"
+        ]
+      },
+      "marker_occurrences": {
+        "NAND RSV": [
+          "0x83c9c",
+          "0xe6f186"
+        ],
+        "DRAM CODE": [
+          "0x4ec",
+          "0x61216e"
+        ],
+        "SPCA6500": [
+          "0x612160",
+          "0xe7f831"
+        ],
+        "SPBoot": [],
+        "SP-Boot": [],
+        "cpuinv": [
+          "0x7f37c"
+        ],
+        "cpuwb": [
+          "0x7f383"
+        ]
+      }
+    },
+    {
+      "path": "drivers/Reflash_V2.6.zip",
+      "size": 8790842,
+      "sha256": "88fdb53627ff7c347f2a060e50a4de04b43b78516e83144c072de0d926a64969",
+      "soc_isp_binary_members": [
+        {
+          "name": "Reflash_V2.6/Download/spca6350isp.bin",
+          "size": 626048
+        }
+      ],
+      "kind": "ZIP inventory only; members not executed"
+    },
+    {
+      "path": "fw/RunCam5_Firmware_V1.2.2.zip",
+      "size": 132,
+      "sha256": "381ce2af1719e6f274172dcf6f9822e73ae7577aed155023a42ce6dff7cfec1e",
+      "kind": "Git LFS pointer; payload not present or searched",
+      "pointer_text": "version https://git-lfs.github.com/spec/v1\noid sha256:74c83f8bfffec3f866da58f7dadf95012b50a04fca18ebb66c43bf60843979fa\nsize 7023730"
+    },
+    {
+      "path": "reversing/offset3.gzf",
+      "size": 133,
+      "sha256": "4006f8195f0ad4591c22dd4a729ac38334d56c921fb643dfb997e37d860a7fa3",
+      "kind": "Git LFS pointer; payload not present or searched",
+      "pointer_text": "version https://git-lfs.github.com/spec/v1\noid sha256:11256ff4229e5c09743d5d1bd72babb19bc2b6e2b9c303e7f629dae2a6a84e3c\nsize 43385627"
+    }
+  ]
+}
