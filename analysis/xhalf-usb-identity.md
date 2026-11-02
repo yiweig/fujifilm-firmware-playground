@@ -148,3 +148,9 @@ the previously physically confirmed identity, not a new unplug/replug test.
 A new host-side lead is [ImageCaptureCore PTP access](macos-imagecapture-ptp-route.md).
 Only its documentation and installed SDK headers were inspected; the framework
 was not started against the camera.
+
+Subsequent follow-up: the discovery-only ImageCaptureCore application **was**
+started and identified one `X-HF1`, `04cb:030a`, with PTP-command capability and
+no open client session. See that note's follow-up for the successful application
+launch context and failed command-line attempts. No PTP request was sent by
+our client; incidental framework wire activity was not measured.
