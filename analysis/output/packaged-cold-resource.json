@@ -1,0 +1,39 @@
+{
+  "source": "Official firmware package; NOT a camera capture",
+  "FPUPDATE_DAT_sha256": "3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68",
+  "FAT_offset": "0xa3d20",
+  "path": "/RO_RES/COLD.BIN",
+  "size": 1216,
+  "sha256": "b878272f4cb92ded7aa31850d3f17fd8be16304b85982fbd0b03acbfe04f4f69",
+  "header_hex": "0000f6130000b8044649463103000000",
+  "members": [
+    {
+      "name": "CLBTAF.BIN",
+      "offset_in_COLD_BIN": 64,
+      "size": 64,
+      "sha256": "854ff8df680f77bcbac607459a4e6f5e1b58c41b888a6d031072d24597b9352b"
+    },
+    {
+      "name": "COLDDATA.BIN",
+      "offset_in_COLD_BIN": 128,
+      "size": 1024,
+      "sha256": "b307b6df3c8dd5feb449bd4c937a840fcccdcf2d264d02a0772bfc7c726c19fb",
+      "hce_version_fields": [
+        0,
+        0,
+        0
+      ],
+      "DisableTest_low_byte": 0,
+      "FgAutoClbt": 24,
+      "automatic_confirmation_0x168": 0,
+      "checksum_stored": 0,
+      "checksum_computed": 241
+    },
+    {
+      "name": "COLDDATF.BIN",
+      "offset_in_COLD_BIN": 1152,
+      "size": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+    }
+  ]
+}

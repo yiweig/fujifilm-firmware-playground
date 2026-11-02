@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/cold-resource-backing.md`](analysis/cold-resource-backing.md)
+  — packaged cold-data archive, RAM-backed logical files, first-use loader
+  controls and the distinction between record reads and physical storage reads.
 - [`analysis/factory-read-failure-controls.md`](analysis/factory-read-failure-controls.md)
   — original wrapper/callback failure controls: old or mixed checksum-valid
   data can arrive with success replies; repeated reads cannot prove freshness.

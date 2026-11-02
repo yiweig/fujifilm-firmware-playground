@@ -1,0 +1,13 @@
+Main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Packaged COLD.BIN SHA-256: b878272f4cb92ded7aa31850d3f17fd8be16304b85982fbd0b03acbfe04f4f69
+Offline original loader/header/member instructions; modeled cache lookup, file APIs, allocation, log and string comparison.
+PASS loader case=0 result=42030000 opens=0 reads=0 closes=0.
+PASS loader case=1 result=00000000 opens=0 reads=0 closes=0.
+PASS loader case=2 result=42040000 opens=1 reads=1 closes=1.
+PASS loader case=3 result=00000000 opens=1 reads=0 closes=0.
+PASS loader case=4 result=42040000 opens=1 reads=1 closes=1.
+PASS first-use resource-open result=00000000: latch remains 1, second call skips opener.
+PASS first-use resource-open result=f0000000: latch remains 1, second call skips opener.
+Cases: 0=cached valid, 1=cached invalid, 2=cache miss/full file read, 3=file open fails, 4=cache miss/64-byte short read.
+Case 4 accepts the header/table despite a short read; member points to untouched a5 allocation bytes.
+Not camera evidence, persistence proof, default/live identity proof, or full resource-manager/USB lifecycle qualification.

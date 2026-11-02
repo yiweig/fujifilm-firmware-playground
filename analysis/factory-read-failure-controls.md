@@ -111,3 +111,8 @@ The next useful qualification is an independent read-success signal or a
 separate acquisition path with explicit error reporting. The first-use
 resource helper, native USB ownership and activation/exit still need review.
 No independently verified recovery path has been established.
+
+Follow-up: [cold-resource backing](cold-resource-backing.md) traces the
+first-use helper and finds `COLDDATA.BIN` inside `COLD.BIN`. Even a successful
+logical-file read can copy from a retained RAM archive without rereading
+physical storage. The one record is not a complete factory-data backup.

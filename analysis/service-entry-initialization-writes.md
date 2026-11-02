@@ -24,6 +24,11 @@ would make entry read-only. The earlier conditional worker hazards remain;
 they are additional to this initialization write. Successful persistence on
 hardware has not been observed. All six new offline controls passed.
 
+Follow-up: [cold-resource backing](cold-resource-backing.md) refines the
+physical-write interpretation. `COLDDATA.BIN` can be an archive member; its
+1,024-byte logical save can reach an archive-file write. The request size
+alone does not identify the physical write unit or prove persistence.
+
 ## Ordering relative to USB and automatic work
 
 The inspected `EnterCalibrationMode` path (`0x405dd4f0`) has this order:
