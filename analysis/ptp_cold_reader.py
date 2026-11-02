@@ -65,20 +65,31 @@ class Capture:
     data: bytes
 
     def __post_init__(self):
-        if len(self.data) != SIZE:
+        if not isinstance(self.data, bytes) or len(self.data) != SIZE:
             raise ProtocolError('Factory record must contain exactly 1024 bytes')
+        if self.data in (bytes(SIZE), b'\xff' * SIZE):
+            raise ProtocolError('Uniform zero/ff record; result rejected')
+        # Original ARM 4015bd58 sums bytes modulo 256. The full cold-data
+        # writer 40125e4c stores that value as LE16 at +3fe, including zero high byte.
+        expected = sum(self.data[:0x3fe]) & 0xff
+        if struct.unpack_from('<H', self.data, 0x3fe)[0] != expected:
+            raise ProtocolError('Factory record checksum mismatch; result rejected')
 
     def summary(self) -> dict:
         auto, confirm = (struct.unpack_from('<H', self.data, n)[0] for n in (0x6c, 0x168))
         return {
             'bytes': SIZE,
             'sha256': hashlib.sha256(self.data).hexdigest(),
+            'checksum_valid': True,
+            'checksum_scope': 'weak byte sum; not authenticity or freshness',
             'freshness': 'unknown: firmware ignores file-read errors',
+            'hce_version_fields': list(struct.unpack_from('<3H', self.data, 4)),
+            'firmware_identity': 'not established by this record or Hce version fields',
             'DisableTest_low_byte': self.data[0x0a],
             'FgAutoClbt': auto,
             'ordinary_auto_scheduler_enabled': (auto & 15) == 8,
             'automatic_confirmation_setting_0x168': confirm,
-            'service_entry_safe': 'not established; other startup branches/items remain',
+            'service_entry_safe': 'not established; initialization itself attempts a whole-buffer save',
         }
 
 
@@ -120,11 +131,11 @@ class ColdReader:
         second = self._record()
         if first != second:
             raise ProtocolError('Repeated records differ; result rejected')
-        # Detect obvious invalid captures; passing this is not a freshness test.
-        if first in (bytes(SIZE), b'\xff' * SIZE):
-            raise ProtocolError('Uniform zero/ff record; result rejected')
+        # Validate before closing: invalid acquisition follows the same no-further-I/O
+        # policy as other errors. A valid checksum still cannot establish freshness.
+        capture = Capture(first)
         self._request(0x1003, (), 0)
-        return Capture(first)
+        return capture
 
 
 class SimulatedCamera:
@@ -154,8 +165,10 @@ def main():
     args = parser.parse_args()
     if args.simulate:
         fixture = bytearray((i * 37 + 11) % 256 for i in range(SIZE))
+        struct.pack_into('<3H', fixture, 4, 2, 0, 6)
         struct.pack_into('<H', fixture, 0x6c, 4)
         struct.pack_into('<H', fixture, 0x168, 0)
+        struct.pack_into('<H', fixture, 0x3fe, sum(fixture[:0x3fe]) & 0xff)
         transport = SimulatedCamera(bytes(fixture))
         result = ColdReader(transport).acquire().summary()
         result.update(source='SYNTHETIC SIMULATION, not camera evidence', requests=len(transport.requests))

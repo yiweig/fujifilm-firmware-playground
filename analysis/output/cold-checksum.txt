@@ -1,0 +1,7 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Execute checksum leaf 4015bd58 with length 1022; no stubs, files, USB or writer calls.
+PASS: vector=0 sum=0; excluded tail a5/5a; input unchanged.
+PASS: vector=1 sum=2; excluded tail a5/5a; input unchanged.
+PASS: vector=2 sum=3; excluded tail a5/5a; input unchanged.
+PASS: vector=3 sum=128; excluded tail a5/5a; input unchanged.
+A matching byte sum is weak integrity evidence; it does not establish device identity or freshness.

@@ -76,7 +76,9 @@ class TransportTests(unittest.TestCase):
         self.assertEqual((len(pipe.writes), pipe.reads), (1, 0))
 
     def test_full_reader_through_bulk_framing(self):
-        fixture = bytes((i*37+11) % 256 for i in range(1024))
+        fixture = bytearray((i*37+11) % 256 for i in range(1024))
+        struct.pack_into('<H', fixture, 0x3fe, sum(fixture[:0x3fe]) & 0xff)
+        fixture = bytes(fixture)
         camera = SimulatedCamera(fixture)
 
         class CameraPipe:

@@ -161,3 +161,8 @@ Follow-up: [transport preparation and notification reproduction](usb-transport-q
 adds original-code checks for both session notifications in state `0x8000`,
 a bounded bulk adapter, and a cached-registry inspection tool. Native I/O,
 device identity/ownership and the full physical lifecycle remain unqualified.
+
+Follow-up: [factory-record validation](factory-record-validation.md) adds the
+firmware's checksum check before accepting a capture, with original ARM
+controls and 22 passing host tests. A valid checksum still cannot establish
+freshness or a safe service-entry procedure.

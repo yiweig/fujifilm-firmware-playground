@@ -158,3 +158,7 @@ Do not create `EnablePTPAP.txt` or `EnableTest.txt` for that metadata check.
 Factory-read freshness, registration revocation/reset and physical error recovery
 remain limitations described in the earlier reports. No firmware flash or
 service-mode experiment is implied by this transport preparation.
+
+Follow-up: [factory-record validation](factory-record-validation.md) adds
+checksum rejection to the reader and updates the synthetic transport fixture.
+There are now 22 passing host tests; no live acquisition backend was added.

@@ -7,7 +7,14 @@ from ptp_cold_reader import (
 )
 
 
-FIXTURE = bytes((i * 37 + 11) % 256 for i in range(SIZE))
+def sealed_fixture(data):
+    """Checksum only synthetic test data; never repair an inspected record."""
+    data = bytearray(data)
+    struct.pack_into('<H', data, 0x3fe, sum(data[:0x3fe]) & 0xff)
+    return bytes(data)
+
+
+FIXTURE = sealed_fixture(bytes((i * 37 + 11) % 256 for i in range(SIZE)))
 
 
 class AlteredCamera(SimulatedCamera):
@@ -113,6 +120,35 @@ class ReaderTests(unittest.TestCase):
             ColdReader(camera).acquire()
         self.assertEqual(len(camera.requests), 132)
 
+    def test_matching_invalid_checksums_abort_before_close(self):
+        for offset in (0x20, 0x3fe, 0x3ff):
+            invalid = bytearray(FIXTURE)
+            invalid[offset] ^= 1
+            camera = SimulatedCamera(bytes(invalid))
+            reader = ColdReader(camera)
+            with self.subTest(offset=offset), self.assertRaisesRegex(ProtocolError, 'checksum'):
+                reader.acquire()
+            self.assertEqual(len(camera.requests), 131)
+            with self.assertRaises(ProtocolError):
+                reader.acquire()
+            self.assertEqual(len(camera.requests), 131)
+
+    def test_valid_checksum_does_not_attest_freshness_or_authenticity(self):
+        # Compensating byte changes preserve the weak checksum without recomputing it.
+        changed = bytearray(FIXTURE)
+        changed[0] += 1
+        changed[1] -= 1
+        capture = ColdReader(SimulatedCamera(bytes(changed))).acquire()
+        self.assertNotEqual(capture.data, FIXTURE)
+        self.assertTrue(capture.summary()['checksum_valid'])
+        self.assertIn('unknown', capture.summary()['freshness'])
+        self.assertIn('not established', capture.summary()['firmware_identity'])
+
+    def test_capture_rejects_mutable_uniform_or_invalid_data(self):
+        for data in (bytearray(FIXTURE), bytes(SIZE), b'\xff' * SIZE, FIXTURE[:-1] + b'\x01'):
+            with self.subTest(kind=type(data)), self.assertRaises(ProtocolError):
+                Capture(data)
+
     def test_decoder_size_and_flags(self):
         for length in [0, 1023, 1025]:
             with self.assertRaises(ProtocolError):
@@ -120,7 +156,7 @@ class ReaderTests(unittest.TestCase):
         data = bytearray(FIXTURE)
         struct.pack_into('<H', data, 0x6c, 0x18)
         struct.pack_into('<H', data, 0x168, 1)
-        summary = Capture(bytes(data)).summary()
+        summary = Capture(sealed_fixture(data)).summary()
         self.assertTrue(summary['ordinary_auto_scheduler_enabled'])
         self.assertEqual(summary['automatic_confirmation_setting_0x168'], 1)
 

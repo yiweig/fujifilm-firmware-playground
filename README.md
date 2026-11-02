@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/factory-record-validation.md`](analysis/factory-record-validation.md)
+  — original ARM checksum controls, restricted-reader integrity checks, and
+  remaining freshness, identity and recovery limits before a live acquisition.
 - [`analysis/lever-provia-findings.md`](analysis/lever-provia-findings.md) — film
   simulation shown on the secondary display during lever playback.
 - [`analysis/auto-iso-findings.md`](analysis/auto-iso-findings.md) — Auto ISO
