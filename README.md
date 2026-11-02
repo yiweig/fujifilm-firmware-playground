@@ -140,6 +140,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/macos-imagecapture-ptp-route.md`](analysis/macos-imagecapture-ptp-route.md)
+  — possible PTP route through Apple's camera service; SDK/session catalog
+  boundary inspected, with no framework session or camera request performed.
 - [`analysis/sd-command-reader-reachability.md`](analysis/sd-command-reader-reachability.md)
   — SD reader still lacks a known caller; original command-copy controls show
   an unchecked stack boundary, and optional shell startup is identified as Wdg.

@@ -125,3 +125,26 @@ The exact bytes passed `Endpoints.from_configuration(raw, 1)`, producing
 details were decoded from its final seven-byte descriptor. No endpoint transfer
 was attempted; ownership and native bulk transport remain unqualified. No
 service mode, SD markers, factory reads, or camera storage writes were used.
+
+## Cached-registry observation, 2026-11-02
+
+After the user connected and normally powered on the camera, the existing
+registry inventory found exactly one `04cb:030a` device. It has active
+configuration 1 and one interface numbered 0, alternate 0, class/subclass/
+protocol `6/1/1`, three endpoints, and user-client owner `ptpcamerad`.
+`bcdUSB` and `bcdDevice` are both `0x0200`; the latter does not independently
+attest the installed firmware version. Cached endpoint descriptor bytes were
+not exposed by this inventory, so the measured 2026-11-01 descriptor above
+was not revalidated on this connection.
+
+This check ran only `ioreg` through `usb_registry_inventory.py`. The restricted
+environment initially returned `ioreg: error: can't open file`; the same
+metadata-only check succeeded with host access. No device/interface open,
+session, USB command, daemon termination, reset, detach or camera-setting
+change was performed. Raw serials, serial-derived hashes and transient
+port/address/registry IDs are not retained in this note. This is a match to
+the previously physically confirmed identity, not a new unplug/replug test.
+
+A new host-side lead is [ImageCaptureCore PTP access](macos-imagecapture-ptp-route.md).
+Only its documentation and installed SDK headers were inspected; the framework
+was not started against the camera.
