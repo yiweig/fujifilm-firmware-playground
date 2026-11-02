@@ -36,6 +36,12 @@ can hang the running software; it is not evidence of a permanent brick or a
 tested recovery method. Arbitrary control-request scans are therefore not a
 qualified low-risk alternative to flashing. All associated checks were offline.
 
+Follow-up on service entry: [initialization writes](service-entry-initialization-writes.md)
+finds that calibration initialization attempts to save all of `COLDDATA.BIN`
+for version bookkeeping even with automatic calibration disabled. This is
+not proof of harmful calibration changes or a firmware flash, but it rules
+out treating that setting alone as making the button-entry route read-only.
+
 ## Safeguards observed in the official updater
 
 The package starts with a 665,280-byte ARMv7 card updater (package offset

@@ -1,0 +1,14 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+InitClbtData starts at actual entry 405daa2c; standalone fixture, not full service/button/USB startup.
+Modeled display/capture callees: [401f6fd0, 401fd800, 4023db2c, 402a5790, 40584e20, 40584e28]
+Also modeled: printf, battery query 40122460, stack-only memset, cold-file read 40125d94; stop BEFORE save helper 40125e4c.
+PASS: FgAutoClbt=0 modeled-read=success -> save boundary; version fields 2,0,6; byte+300=aa; full cold comparison passed.
+PASS: FgAutoClbt=0 modeled-read=failure -> save boundary; version fields 2,0,6; byte+300=55; full cold comparison passed.
+PASS: FgAutoClbt=8 modeled-read=success -> save boundary; version fields 2,0,6; byte+300=aa; full cold comparison passed.
+PASS: FgAutoClbt=8 modeled-read=failure -> save boundary; version fields 2,0,6; byte+300=55; full cold comparison passed.
+RTC controls start at 40126800 with r0=0 and supplied init-ready byte; lock/IRQ/unlock helpers modeled.
+RTC writer 40057484 is intercepted to record intent and return success; no RTC register writes executed.
+PASS: wakeup-disable delay=0 -> modeled RTC intents [d0=00, c0=00]; exact global comparison passed.
+PASS: wakeup-disable delay=255 -> modeled RTC intents [d0=00, c0=00]; exact global comparison passed.
+Six controls passed. Save attempt is not successful persistence; read-failure leaves stale RAM available to the attempted whole-buffer save.
+No camera commands, live RTC/file writes, calibration workers or actual USB transition executed.

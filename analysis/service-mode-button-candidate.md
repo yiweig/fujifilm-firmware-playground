@@ -173,6 +173,11 @@ locally; the source script and this curated finding are tracked.
 
 ## What happens after entry: audit remains partial
 
+Follow-up: [service initialization writes](service-entry-initialization-writes.md)
+traces a version-bookkeeping save of the whole cold-data buffer even with
+automatic calibration disabled, plus pre-USB RTC wakeup control. These are
+additional effects beyond the conditional worker scheduling described below.
+
 Calibration event `0xf2000012` reaches `0x405183fc` and tail-calls
 `EnterCalibrationMode` at `0x405dd4f0`. Before selecting USB mode, it changes
 capture/display state, requests 16-bit raw data and installs preview callbacks.

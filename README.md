@@ -85,6 +85,9 @@ state are intentionally excluded from version control.
 - [`analysis/calibration-entry-safety.md`](analysis/calibration-entry-safety.md)
   — automatic confirmation sequence, offline execution to a calibration
   worker, persistent factory-data operations, and remaining live-test barriers.
+- [`analysis/service-entry-initialization-writes.md`](analysis/service-entry-initialization-writes.md)
+  — initialization attempts a whole cold-data save even with automatic
+  calibration off; RTC wakeup control and before/after-USB ordering.
 - [`analysis/ptp-cold-data-read-assessment.md`](analysis/ptp-cold-data-read-assessment.md)
   — ordinary-PTP candidate for reading factory flags, exact read/write direction,
   offline chunk-read reproduction, and the ignored file-read-status limitation.

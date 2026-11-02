@@ -7,6 +7,12 @@ and bounded offline emulation only. No camera access or SD marker creation.
 
 ## Result
 
+Follow-up: [initialization writes](service-entry-initialization-writes.md)
+finds a whole-buffer `COLDDATA.BIN` save attempt in `InitClbtData`, independent
+of automatic calibration being enabled, after USB connection and before the
+later scheduling decision. The conditional worker hazards below are additional;
+turning automatic work off would not make entry read-only.
+
 The `EnableTest.txt` override is understood, but service entry is **not yet a
 safe live experiment**. It can schedule confirmation events that reach a
 calibration worker without a person pressing SET. Calibration handlers include
