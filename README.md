@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/retail-ptp-file-acquisition.md`](analysis/retail-ptp-file-acquisition.md)
+  — normal storage lists, media filtering and object-ID controls; no direct
+  cold-archive download established through the inspected retail file path.
 - [`analysis/cold-save-error-propagation.md`](analysis/cold-save-error-propagation.md)
   — original save/flush controls: archive write errors can be masked by logical
   success; cold saves force immediate mode and need independent persistence checks.

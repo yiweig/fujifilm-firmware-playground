@@ -129,3 +129,8 @@ For a future restore, an independent persistence check would be required;
 the same logical-file read can simply return the modified resident bytes.
 No live write/read-back experiment, mode toggle, factory command or service
 entry is justified as a test of recovery by these offline results.
+
+Follow-up: [normal PTP file acquisition](retail-ptp-file-acquisition.md)
+examines an ordinary-filesystem read candidate. Its storage list omits `A:`,
+the media filter excludes the cold-resource names in tested contexts, and
+GetObject resolves database IDs rather than accepting arbitrary paths.

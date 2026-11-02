@@ -1,0 +1,21 @@
+Main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline original normal-PTP code; no USB, camera or actual filesystem access.
+PASS StorageIDs: original enumerator supplies [0,1,2,6]; output includes 1/2/6 and excludes slot 0 (A:) despite its supplied ID.
+PASS filter directory=1 name=RO_RES parent=A: returned=1 (0 permits, 1 excludes).
+PASS filter directory=1 name=USER_RES parent=B: returned=1 (0 permits, 1 excludes).
+PASS filter directory=1 name=DCIM parent=D: returned=0 (0 permits, 1 excludes).
+PASS filter directory=1 name=DCIM parent=A: returned=0 (0 permits, 1 excludes).
+PASS filter directory=1 name=FPATR parent=D: returned=0 (0 permits, 1 excludes).
+PASS filter directory=1 name=100_FUJI parent=DCIM returned=0 (0 permits, 1 excludes).
+PASS filter directory=0 name=COLD.BIN parent=RO_RES returned=1 (0 permits, 1 excludes).
+PASS filter directory=0 name=COLDDATA.BIN parent=RO_RES returned=1 (0 permits, 1 excludes).
+PASS filter directory=0 name=COLD.BIN parent=DCIM returned=1 (0 permits, 1 excludes).
+PASS filter directory=0 name=DSCF0001.JPG parent=100_FUJI returned=0 (0 permits, 1 excludes).
+PASS filter directory=0 name=DSCF0001.AVI parent=100_FUJI returned=1 (0 permits, 1 excludes).
+PASS filter directory=0 name=NOTDCF.BIN parent=100_FUJI returned=1 (0 permits, 1 excludes).
+PASS GetObject handle=40e4df02 absent from synthetic database: response 2009, zero bytes, no file preparation.
+PASS GetObject handle=444c4f43 absent from synthetic database: response 2009, zero bytes, no file preparation.
+PASS GetObject handle=0000007b absent from synthetic database: response 2009, zero bytes, no file preparation.
+PASS GetObject known synthetic ID 77: resolves database node; stopped before file preparation.
+Modeled: strlen, media availability, allocation/zero/free and response setter. Filter string comparisons/name validators and lookup queue execute original instructions.
+Not a complete scanner/transfer emulation, actual device enumeration, reachability proof, exhaustive security audit or recovery qualification.

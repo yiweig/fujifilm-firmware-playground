@@ -7,6 +7,10 @@ ARMv7 little-endian runtime base `0x40000000`.
 
 ## Result
 
+Follow-up: [retail file acquisition](retail-ptp-file-acquisition.md) traces
+the normal download surface, storage enumeration and media filtering, with
+17 offline controls. It establishes no direct cold-archive acquisition route.
+
 Follow-up: [retail USB control routing](retail-usb-control-routing.md)
 separates control-endpoint requests from PTP packets, verifies the empty retail
 vendor slot, and traces the distinct class-reset and assertion paths.
