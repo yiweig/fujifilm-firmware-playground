@@ -1,0 +1,9 @@
+Offline original ARM slice 400005f0..4000063c; starts after earlier setup/validation, stops before low helper 00000b34.
+PASS 1.01 SHA-256=64ca08d346075907bbec2dde2db50bc3a5507a93e5d7b2e5024d4a59599125f9; source=40d77a00 -> 3f000000 length=674; helper arguments r0=3f000000 r1=674; destination/guards/image verified.
+PASS 1.20 SHA-256=85d6d280605148d131c28f71b3560742310878340c6de5d1c05faf00d02a2c8f; source=40d7ee80 -> 3f000000 length=674; helper arguments r0=3f000000 r1=674; destination/guards/image verified.
+PASS 1.30 SHA-256=34034d7d1314485fbbd8167669a83dbea4d3dc80cc9ba3c87c7ded2c96aa9df6; source=40d87400 -> 3f000000 length=674; helper arguments r0=3f000000 r1=674; destination/guards/image verified.
+PASS 2.00 SHA-256=80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923; source=40e37c00 -> 3f000000 length=674; helper arguments r0=3f000000 r1=674; destination/guards/image verified.
+Shared loader body [338,790) SHA-256: d545a151267c4916addd3e73dc7bee8d53fe0671cb13c689ef6a3cf4bf4dbc65
+Shared SRAM blob SHA-256: d84750d2654065b9908e6d7651af2bc1aa9ac517e7561b563e5cb97008b79a6b
+4 controls passed. No helpers modeled or executed, no copied SRAM code executed, no hardware accesses in this slice.
+Does not identify low-helper bytes/semantics, prove earlier-stage reachability, establish immutable ROM or validate a recovery procedure.

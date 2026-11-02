@@ -25,6 +25,11 @@ executable, read-only, or one real hardware segment.
 
 ## Address-space overview
 
+Follow-up: [low-address service interface](low-address-loader-helper.md)
+identifies deliberately managed low-address access and several early-loader
+call targets, including `0xb34`. Their backing memory and implementation are
+unrecovered; these addresses are not a qualified ROM dump range.
+
 Follow-up [updater boot-register analysis](updater-boot-register-consumer.md)
 identifies uses of `0x10001300`, `0x10004054` and filename/configuration fields
 `0x100040b4..0x100040c3` in the separately packaged updater. These are consumer

@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/low-address-loader-helper.md`](analysis/low-address-loader-helper.md)
+  — second caller of low helper `0xb34`, stable earlier-stage API leads,
+  and four original-ARM SRAM-copy controls across official firmware versions.
 - [`analysis/ram-handoff-copy-boundary.md`](analysis/ram-handoff-copy-boundary.md)
   — original copy-stub/address-guard controls, special-entry gate writers,
   and why the updater handoff still cannot be treated as a harmless RAM test.

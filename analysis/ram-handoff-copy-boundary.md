@@ -167,6 +167,11 @@ use `card.py disasm 40000200 40000248` for the updater's different special entry
 
 ## Remaining barrier
 
+Follow-up: [low-address helper and second caller](low-address-loader-helper.md)
+finds the same call immediately after an early SRAM executable copy, stable
+across four main-image versions. Synchronization is a working hypothesis;
+the helper implementation and independent entry remain unavailable.
+
 We now know the argument convention, conversion guards, copy-command format
 and special-entry markers. Still missing are the actual low-helper bytes,
 qualified cache/mapping behavior and buffer ownership across the overwrite,
