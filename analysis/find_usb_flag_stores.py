@@ -22,7 +22,10 @@ def ror(value, shift):
     return ((value >> shift) | (value << ((32-shift) % 32))) & 0xffffffff
 
 
-def scan(data, window):
+def scan(data, window, target=TARGET, target_size=1):
+    if target_size < 1 or not 0 <= target < target + target_size <= 0x100000000:
+        raise ValueError('Target must be a nonempty 32-bit address interval')
+    target_end = target + target_size
     def word(p):
         return struct.unpack_from('<I', data, p)[0]
 
@@ -129,28 +132,39 @@ def scan(data, window):
         return None
 
     hits, candidates, bulk_hits, bulk_near = [], 0, [], []
-    bulk_stats = {'direct_branch_encodings': 0, 'resolved_destination_and_size': 0}
+    bulk_stats = {'direct_branch_encodings': 0, 'resolved_destination_and_size': 0,
+                  'register_branch_encodings': 0, 'resolved_register_bulk_targets': 0}
     for p in range(0, min(len(data)-3, 0xab0000), 4):
         w = word(p)
         if w >> 28 == 15:
             continue
         floor = max(0, p-window*4)
+        branch_target, branch_kind = None, None
         if w & 0x0e000000 == 0x0a000000:
             displacement = w & 0xffffff
             if displacement & 0x800000:
                 displacement -= 0x1000000
-            target = (BASE+p+8+4*displacement) & 0xffffffff
-            if target in (0x40008b8c, 0x4000cdf0):
+            branch_target = (BASE+p+8+4*displacement) & 0xffffffff
+            branch_kind = 'B/BL'
+            if branch_target in (0x40008b8c, 0x4000cdf0):
                 bulk_stats['direct_branch_encodings'] += 1
-                dst, size = resolve(0, p, floor), resolve(2, p, floor)
-                row = {'instruction': f'0x{BASE+p:08x}', 'helper': f'0x{target:08x}',
-                       'destination': None if dst is None else f'0x{dst:08x}', 'size': size}
-                if dst is not None and size is not None:
-                    bulk_stats['resolved_destination_and_size'] += 1
-                    if dst <= TARGET < dst+size and dst+size <= 0x100000000:
-                        bulk_hits.append(row)
-                elif dst is not None and TARGET-0x2000 <= dst <= TARGET:
-                    bulk_near.append(row)
+        elif w & 0x0ffffff0 in (0x012fff10, 0x012fff30):
+            bulk_stats['register_branch_encodings'] += 1
+            branch_target = resolve(w & 15, p, floor)
+            branch_kind = 'BX/BLX constant register'
+            if branch_target in (0x40008b8c, 0x4000cdf0):
+                bulk_stats['resolved_register_bulk_targets'] += 1
+        if branch_target in (0x40008b8c, 0x4000cdf0):
+            dst, size = resolve(0, p, floor), resolve(2, p, floor)
+            row = {'instruction': f'0x{BASE+p:08x}', 'helper': f'0x{branch_target:08x}',
+                   'branch_kind': branch_kind,
+                   'destination': None if dst is None else f'0x{dst:08x}', 'size': size}
+            if dst is not None and size is not None:
+                bulk_stats['resolved_destination_and_size'] += 1
+                if size > 0 and dst < target_end and target < dst+size and dst+size <= 0x100000000:
+                    bulk_hits.append(row)
+            elif dst is not None and target-0x2000 <= dst < target_end:
+                bulk_near.append(row)
         rn, rd = (w >> 16) & 15, (w >> 12) & 15
         kind = None
         if w & 0x0c100000 == 0x04000000:
@@ -176,7 +190,7 @@ def scan(data, window):
             address = (base + (4 if w & (1 << 24) else 0)) if w & (1 << 23) else (base-width+(0 if w & (1 << 24) else 4))
         elif w & (1 << 24):
             address = (base + (delta if w & (1 << 23) else -delta)) & 0xffffffff
-        if address <= TARGET < address+width:
+        if address < target_end and target < address+width:
             hits.append({"instruction": f"0x{BASE+p:08x}", "word": f"0x{w:08x}",
                          "kind": kind, "address": f"0x{address:08x}", "width": width,
                          "value": resolve(rd, p, floor) if kind != 'STM' else None, "condition": w >> 28})
@@ -187,20 +201,26 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--image', type=Path, default=Path('firmware-main.bin'))
     parser.add_argument('--window', type=int, default=96)
+    parser.add_argument('--target', type=lambda value: int(value, 0), default=TARGET,
+                        help='Offline target address; defaults to the cached USB flag')
+    parser.add_argument('--size', type=int, default=1, help='Target interval size in bytes')
     args = parser.parse_args()
     if not 1 <= args.window <= 256:
         parser.error('window must be 1..256 instructions')
+    if args.size < 1 or not 0 <= args.target < args.target + args.size <= 0x100000000:
+        parser.error('target/size must define a nonempty 32-bit interval')
     data = args.image.read_bytes()
     if hashlib.sha256(data).hexdigest() != IMAGE_SHA256:
         parser.error('This target address/helper profile requires the official 2.00 main-image hash')
-    candidates, hits, bulk_stats, bulk_hits, bulk_near = scan(data, args.window)
+    candidates, hits, bulk_stats, bulk_hits, bulk_near = scan(data, args.window, args.target, args.size)
     print(json.dumps({"image_sha256": hashlib.sha256(data).hexdigest(),
-                      "target": f"0x{TARGET:08x}", "window_instructions": args.window,
+                      "target": f"0x{args.target:08x}", "target_size": args.size,
+                      "window_instructions": args.window,
                       "scan_end_exclusive": f"0x{BASE+min(len(data),0xab0000):08x}",
                       "candidate_store_encodings": candidates, "hits": hits,
                       "bulk_call_statistics": bulk_stats, "bulk_overlap_hits": bulk_hits,
                       "nearby_bulk_destinations_with_unknown_size": bulk_near,
-                      "limitations": "Aligned ARM STR/STRB/STRH/STRD/STM and direct B/BL to two known copy/clear helpers, including possible data encodings; bounded backward constant resolution; no CFG, Thumb, exclusive/VFP stores, other/indirect bulk helpers, mutable-pointer dereference or runtime evidence. Manually validate every hit; missed writes remain possible."}, indent=2))
+                      "limitations": "Aligned ARM STR/STRB/STRH/STRD/STM and direct B/BL or constant-resolved BX/BLX to two known copy/clear helpers, including possible data encodings; bounded backward constant resolution; no CFG, Thumb, exclusive/VFP stores, other/unresolved indirect bulk helpers, mutable-pointer dereference or runtime evidence. Manually validate every hit; missed writes remain possible."}, indent=2))
 
 
 if __name__ == '__main__':

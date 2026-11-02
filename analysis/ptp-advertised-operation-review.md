@@ -141,3 +141,8 @@ PTP operation name. The inspected `9601` optional callback and dynamic
 registration contexts are the remaining qualifications within this map;
 the advertising list alone does not resolve them. Further live work should
 have a specific expected read result and bounded handler evidence first.
+
+Follow-up: [optional 9601 hook review](ptp-9601-hook-review.md) broadens the
+writer search, accounts for a nearby transport copy and the completion API,
+and inspects startup/teardown. It supports an unused-hook interpretation but
+does not prove a zero live callback or establish loader entry. No camera needed.

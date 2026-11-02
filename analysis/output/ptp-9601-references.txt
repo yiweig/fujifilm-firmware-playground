@@ -1,0 +1,89 @@
+PROGRAM firmware-main.bin functions=29262
+
+ADDRESS 4136b650
+DATA null
+REF 402e68e4 WRITE function=none
+REF 402e6e8c READ function=none
+REF 402e6740 READ function=none
+REF 402e784c PARAM function=none
+
+ADDRESS 4136b664
+DATA null
+REF 402e6928 WRITE function=none
+REF 402e7bc4 READ function=none
+  REF 402e7a0c CONDITIONAL_JUMP function=none
+REF 402e7bf0 READ function=none
+
+ADDRESS 402e6924
+DATA null
+REF 405e6e54 UNCONDITIONAL_CALL function=none
+
+ADDRESS 402e6934
+DATA null
+REF 405e6c3c UNCONDITIONAL_CALL function=none
+
+ADDRESS 402e6368
+DATA null
+REF 406016cc UNCONDITIONAL_CALL function=none
+REF 40234acc UNCONDITIONAL_CALL function=none
+
+FUNCTION 402e6924 FUN_402e6924
+
+void FUN_402e6924(undefined4 param_1)
+
+{
+  *(undefined4 *)(DAT_402e6930 + 0x14) = param_1;
+  return;
+}
+
+
+
+FUNCTION 402e6934 FUN_402e6934
+
+void FUN_402e6934(undefined4 param_1,undefined4 param_2,undefined4 param_3)
+
+{
+  int iVar1;
+  
+  iVar1 = DAT_402e6980;
+  if (*(int *)(DAT_402e6980 + 0x18) != 0) {
+    (*DAT_402e6984)(0xa601,3,param_1,param_2,param_3,param_2);
+    (*DAT_402e6988)(*(undefined4 *)(iVar1 + 0x18),1,0);
+  }
+  return;
+}
+
+
+
+FUNCTION 402e6368 FUN_402e6368
+
+undefined8 FUN_402e6368(undefined4 param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  int iVar1;
+  code *pcVar2;
+  undefined4 uStack_14;
+  
+  iVar1 = DAT_402e6440;
+  uStack_14 = param_4;
+  if (*(int *)(DAT_402e6440 + 0x68) != 0) {
+    (*DAT_402e6444)(*(undefined4 *)(DAT_402e6440 + 0x34),2,0);
+    pcVar2 = DAT_402e6448;
+    (*DAT_402e6448)(*(undefined4 *)(iVar1 + 0x34),1,1,&uStack_14,0xffffffff);
+    (*pcVar2)(*(undefined4 *)(iVar1 + 0x34),4,0,&uStack_14,100);
+    (**(code **)(iVar1 + 0x40))(*(undefined4 *)(DAT_402e644c + 8));
+    param_1 = 0xffffffff;
+    (*pcVar2)(*(undefined4 *)(iVar1 + 0x34),4,1,&uStack_14);
+    (*DAT_402e6450)(*(undefined4 *)(iVar1 + 0x68));
+    (*DAT_402e6454)(*(undefined4 *)(iVar1 + 0x34));
+    (*DAT_402e6458)(0,0);
+    FUN_402e4f80();
+    (*DAT_402e645c)();
+    FUN_402e6314();
+    *(undefined4 *)(iVar1 + 0x68) = 0;
+  }
+  (*DAT_402e6460)();
+  return CONCAT44(param_2,param_1);
+}
+
+

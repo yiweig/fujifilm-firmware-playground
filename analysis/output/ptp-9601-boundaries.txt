@@ -1,0 +1,100 @@
+$ python3 analysis/fw.py disasm 0x402e5a44 0x402e5a8c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+402e5a44: e1d830b0     	ldrh	r3, [r8]
+402e5a48: e735f314     	udiv	r5, r4, r3
+402e5a4c: e0654593     	mls	r5, r3, r5, r4
+402e5a50: e355000c     	cmp	r5, #12
+402e5a54: 0a000004     	beq	0x402e5a6c <.text+0x2e5a6c> @ imm = #0x10
+402e5a58: e59f0118     	ldr	r0, [pc, #0x118]        @ 0x402e5b78 <.text+0x2e5b78>
+402e5a5c: e59f1118     	ldr	r1, [pc, #0x118]        @ 0x402e5b7c <.text+0x2e5b7c>
+402e5a60: e3a02d09     	mov	r2, #576
+402e5a64: e59f3114     	ldr	r3, [pc, #0x114]        @ 0x402e5b80 <.text+0x2e5b80>
+402e5a68: e12fff33     	blx	r3
+402e5a6c: e0861007     	add	r1, r6, r7
+402e5a70: e59f0118     	ldr	r0, [pc, #0x118]        @ 0x402e5b90 <.text+0x2e5b90>
+402e5a74: e0651001     	rsb	r1, r5, r1
+402e5a78: e1a02005     	mov	r2, r5
+402e5a7c: e59f30f0     	ldr	r3, [pc, #0xf0]         @ 0x402e5b74 <.text+0x2e5b74>
+402e5a80: e12fff33     	blx	r3
+402e5a84: e0654004     	rsb	r4, r5, r4
+402e5a88: e5885058     	str	r5, [r8, #0x58]
+
+$ python3 analysis/fw.py disasm 0x401c04e0 0x401c051c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+401c04e0: e92d4008     	push	{r3, lr}
+401c04e4: e1a0c001     	mov	r12, r1
+401c04e8: e1a0e000     	mov	lr, r0
+401c04ec: e1a03002     	mov	r3, r2
+401c04f0: e59f0018     	ldr	r0, [pc, #0x18]         @ 0x401c0510 <.text+0x1c0510>
+401c04f4: e1a0200c     	mov	r2, r12
+401c04f8: e1a0100e     	mov	r1, lr
+401c04fc: e59fc010     	ldr	r12, [pc, #0x10]        @ 0x401c0514 <.text+0x1c0514>
+401c0500: e12fff3c     	blx	r12
+401c0504: e59f300c     	ldr	r3, [pc, #0xc]          @ 0x401c0518 <.text+0x1c0518>
+401c0508: e12fff33     	blx	r3
+401c050c: eafffffe     	b	0x401c050c <.text+0x1c050c> @ imm = #-0x8
+401c0510: 40b13e0d     	adcsmi	r3, r1, sp, lsl #28
+401c0514: 40004064     	andmi	r4, r0, r4, rrx
+401c0518: 40021a08     	andmi	r1, r2, r8, lsl #20
+
+$ python3 analysis/fw.py disasm 0x402e6934 0x402e698c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+402e6934: e92d4013     	push	{r0, r1, r4, lr}
+402e6938: e59f4040     	ldr	r4, [pc, #0x40]         @ 0x402e6980 <.text+0x2e6980>
+402e693c: e1a03001     	mov	r3, r1
+402e6940: e5941018     	ldr	r1, [r4, #0x18]
+402e6944: e1a0c000     	mov	r12, r0
+402e6948: e3510000     	cmp	r1, #0
+402e694c: 0a00000a     	beq	0x402e697c <.text+0x2e697c> @ imm = #0x28
+402e6950: e58d2000     	str	r2, [sp]
+402e6954: e30a0601     	movw	r0, #0xa601
+402e6958: e1a0200c     	mov	r2, r12
+402e695c: e3a01003     	mov	r1, #3
+402e6960: e59fc01c     	ldr	r12, [pc, #0x1c]        @ 0x402e6984 <.text+0x2e6984>
+402e6964: e12fff3c     	blx	r12
+402e6968: e5940018     	ldr	r0, [r4, #0x18]
+402e696c: e3a01001     	mov	r1, #1
+402e6970: e3a02000     	mov	r2, #0
+402e6974: e59f300c     	ldr	r3, [pc, #0xc]          @ 0x402e6988 <.text+0x2e6988>
+402e6978: e12fff33     	blx	r3
+402e697c: e8bd801c     	pop	{r2, r3, r4, pc}
+402e6980: 4136b650     	teqmi	r6, r0, asr r6
+402e6984: 40334f34     	eorsmi	r4, r3, r4, lsr pc
+402e6988: 4002a790     	mulmi	r2, r0, r7
+
+$ python3 analysis/fw.py disasm 0x406016a0 0x406016d8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+406016a0: e3500000     	cmp	r0, #0
+406016a4: e92d4008     	push	{r3, lr}
+406016a8: 0a000006     	beq	0x406016c8 <.text+0x6016c8> @ imm = #0x18
+406016ac: ebee2ec9     	bl	0x4018d1d8 <.text+0x18d1d8> @ imm = #-0x4744dc
+406016b0: ebf39692     	bl	0x402e7100 <.text+0x2e7100> @ imm = #-0x31a5b8
+406016b4: ebf396bb     	bl	0x402e71a8 <.text+0x2e71a8> @ imm = #-0x31a514
+406016b8: e3a00001     	mov	r0, #1
+406016bc: ebf38d22     	bl	0x402e4b4c <.text+0x2e4b4c> @ imm = #-0x31cb78
+406016c0: e8bd4008     	pop	{r3, lr}
+406016c4: eaf39379     	b	0x402e64b0 <.text+0x2e64b0> @ imm = #-0x31b21c
+406016c8: ebf38d1f     	bl	0x402e4b4c <.text+0x2e4b4c> @ imm = #-0x31cb84
+406016cc: ebf39325     	bl	0x402e6368 <.text+0x2e6368> @ imm = #-0x31b36c
+406016d0: e8bd4008     	pop	{r3, lr}
+406016d4: eaee2ecb     	b	0x4018d208 <.text+0x18d208> @ imm = #-0x4744d4

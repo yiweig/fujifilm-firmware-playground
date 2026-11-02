@@ -1,0 +1,48 @@
+{
+  "scope": "Ten aligned ARM B/BL callers found below 40ab0000; selector constants manually checked in original bytes. Indirect/computed calls remain outside this census.",
+  "wrapper": "405e6bc4",
+  "registration_selector": 11,
+  "completion_selector": 1,
+  "callers": [
+    {
+      "site": "404d6dec",
+      "selector": 2
+    },
+    {
+      "site": "4057ac54",
+      "selector": 2
+    },
+    {
+      "site": "4057acf0",
+      "selector": 2
+    },
+    {
+      "site": "405b99a4",
+      "selector": 12
+    },
+    {
+      "site": "405b9b08",
+      "selector": 14
+    },
+    {
+      "site": "405ca4fc",
+      "selector": 9
+    },
+    {
+      "site": "405ca514",
+      "selector": 7
+    },
+    {
+      "site": "405ca52c",
+      "selector": 8
+    },
+    {
+      "site": "405ca5b0",
+      "selector": 12
+    },
+    {
+      "site": "406088b4",
+      "selector": 2
+    }
+  ]
+}

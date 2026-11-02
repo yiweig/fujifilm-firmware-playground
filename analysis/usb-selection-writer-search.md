@@ -95,3 +95,9 @@ attempting a write. Relevant future targets are unresolved dynamic/bulk
 writers or an actual retail route into a known refresh context, with the
 entire intervening buffer lifetime accounted for. Independent cold recovery
 is still a separate gap. No fresh REA or device-runtime evidence is claimed.
+
+Later tooling extension: the [9601 hook review](ptp-9601-hook-review.md) adds
+`--target`/`--size` and constant-resolved BX/BLX copy/clear calls to the scanner.
+The historical results above predate that extension. The default byte-store
+result was rechecked and still returns the same five stores; statistics from
+a new run can include the additional register-call candidates.
