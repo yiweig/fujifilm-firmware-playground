@@ -183,6 +183,11 @@ after REA's raw-image mapping issue; no new REA result or live behavior is claim
 
 ## Next question
 
+Follow-up: [wider writer search](usb-selection-writer-search.md) checks split
+address calculations, wider overlapping stores and some direct bulk-helper
+calls. It reproduces the five known writers without establishing an additional
+entry route; unresolved dynamic/bulk writes remain outside the negative result.
+
 Search for a temporary retail-accessible writer/input that changes USB selection
 without saving `COLDDATA.BIN`. Current direct commands (`usbms`, `sys 4`,
 `clbt usb`) require shell access; known USB shell transports require a different

@@ -1,0 +1,61 @@
+{
+  "image_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "target": "0x40e6696d",
+  "window_instructions": 256,
+  "scan_end_exclusive": "0x40ab0000",
+  "candidate_store_encodings": 346146,
+  "hits": [
+    {
+      "instruction": "0x404d4e7c",
+      "word": "0xe7c46003",
+      "kind": "STRB",
+      "address": "0x40e6696d",
+      "width": 1,
+      "value": 0,
+      "condition": 14
+    },
+    {
+      "instruction": "0x404d53cc",
+      "word": "0xe7c20003",
+      "kind": "STRB",
+      "address": "0x40e6696d",
+      "width": 1,
+      "value": null,
+      "condition": 14
+    },
+    {
+      "instruction": "0x405174c0",
+      "word": "0xe7c20003",
+      "kind": "STRB",
+      "address": "0x40e6696d",
+      "width": 1,
+      "value": null,
+      "condition": 14
+    },
+    {
+      "instruction": "0x405180b8",
+      "word": "0xe7c20003",
+      "kind": "STRB",
+      "address": "0x40e6696d",
+      "width": 1,
+      "value": null,
+      "condition": 14
+    },
+    {
+      "instruction": "0x4051d608",
+      "word": "0xe7c21003",
+      "kind": "STRB",
+      "address": "0x40e6696d",
+      "width": 1,
+      "value": null,
+      "condition": 14
+    }
+  ],
+  "bulk_call_statistics": {
+    "direct_branch_encodings": 11595,
+    "resolved_destination_and_size": 766
+  },
+  "bulk_overlap_hits": [],
+  "nearby_bulk_destinations_with_unknown_size": [],
+  "limitations": "Aligned ARM STR/STRB/STRH/STRD/STM and direct B/BL to two known copy/clear helpers, including possible data encodings; bounded backward constant resolution; no CFG, Thumb, exclusive/VFP stores, other/indirect bulk helpers, mutable-pointer dereference or runtime evidence. Manually validate every hit; missed writes remain possible."
+}

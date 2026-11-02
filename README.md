@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/usb-selection-writer-search.md`](analysis/usb-selection-writer-search.md)
+  — wider cached-flag store search reproduces the five known writers;
+  bulk-copy coverage remains partial and no new retail entry is established.
 - [`analysis/public-boot-artifact-review.md`](analysis/public-boot-artifact-review.md)
   — bounded V50 artifact audit, missing LFS payloads, different-chip recovery
   reports and why none yet supplies the X-half low-helper implementation.
