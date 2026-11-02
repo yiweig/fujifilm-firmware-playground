@@ -5,6 +5,125 @@ documenting behavior, and evaluating low-risk modifications. Original firmware,
 extracted binaries, camera image dumps, Ghidra databases, and machine-local tool
 state are intentionally excluded from version control.
 
+## Start here: handoff overview
+
+Last overview refresh: **2026-11-02**. This is a research notebook and collection
+of analysis tools, not a firmware patcher or a deployable camera modification.
+Most recent investigations are offline; a connected camera is not required.
+
+The original goals are to fix the secondary display showing Provia during
+lever review, replace Auto ISO 3's ISO-12800 cap with ISO 6400 (and assess a
+fourth preset), and explore RAW feasibility. The current priority is establishing
+RAM execution and a confirmed recovery path before considering a modified flash.
+The user excludes opening the camera, wiring UART or sending it to a repair lab.
+
+| Topic | Current finding | Start with |
+| --- | --- | --- |
+| Lever-review Provia label | Strong evidence of a 2.00 regression: an uninitialized cached selector remains zero, meaning Provia. Original ARM behavior reproduced offline; no camera fix installed. | [Lever findings](analysis/lever-provia-findings.md), [four-version comparison](analysis/firmware-1.30-vs-2.00.md) |
+| Auto ISO | Replacing Auto 3's range code is a narrow candidate; ISO 6400 already exists. Adding another preset affects more settings/UI paths. No firmware bytes patched. | [Auto ISO findings](analysis/auto-iso-findings.md) |
+| RAW | Engineering sensor-dump code exists; it does not establish production RAW/RAF support. | [RAW assessment](analysis/raw-support-assessment.md), [rcaraw handler](analysis/rcaraw-handler.md) |
+| RAM loader | Device-side USB transfer and copy/execute code identified. Temporary retail entry, full handoff effects and payload safety remain unqualified. | [Receiver](analysis/xhalf-usb-ram-receiver.md), [handoff](analysis/ram-handoff-copy-boundary.md) |
+| Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
+| Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
+| Earlier-stage helper | `0x00000b34` has two identified call contexts, but its implementation/backing is unrecovered. Cache synchronization is a hypothesis. Public comparison artifacts did not resolve it. | [Helper investigation](analysis/low-address-loader-helper.md), [public artifact review](analysis/public-boot-artifact-review.md) |
+
+For orientation, read the [hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md)
+and [memory map](analysis/memory-and-hardware-map.md), then the report for the
+specific question. The full index below preserves the investigation history.
+Read follow-up/correction sections before reusing an older conclusion.
+
+## Repository layout
+
+Run the command examples from the repository root. A fresh clone contains the
+tracked documentation, scripts and selected small evidence files; ignored
+binaries and local analysis databases must be supplied or regenerated separately.
+
+```text
+README.md                       Overview, status, report index and tool setup
+.gitignore                      Firmware, dumps, databases, caches and archive exclusions
+FPUPDATE.DAT                    Official 2.00 package (local, ignored)
+firmware-main.bin               Extracted 2.00 application/DRAM image (local, ignored)
+firmware-code.bin               Historical partial extract (local, ignored; not the main target)
+firmware/
+  {1.01,1.20,1.30}/FPUPDATE.DAT   Historical official packages (local, ignored)
+analysis/
+  *.md                          Findings, provenance, limitations and reproduction instructions
+  *.py                          Offline parsers, searches, protocol models and checks
+  hardware-register-blocks.tsv   Curated hardware register-block summary
+  run-ghidra.sh                 Local headless Ghidra/Java launcher
+  scripts/*.java                Ghidra queries, function preparation and ARM emulator controls
+  output/                       Selected tracked evidence plus ignored generated artifacts
+  project/, cache/, settings/   Machine-local Ghidra/tool state (ignored)
+```
+
+Root `*.gpr`/`*.rep` files, when present, are also ignored local Ghidra state.
+Some working projects and comparison corpora were created under `/private/tmp`;
+those paths in reports are provenance, not files available in a fresh clone.
+
+| Tool or file group | Purpose / boundary |
+| --- | --- |
+| [inventory_firmware.py](analysis/inventory_firmware.py) | Package regions, hashes, checksums and embedded filesystem/Linux inventory; emits JSON, not an installation image |
+| [fw.py](analysis/fw.py) | Main-image disassembly, strings, literal pools and bounded caller searches; `--image PATH` selects a historical main image |
+| [card.py](analysis/card.py) | Same style of inspection for the **complete 2.00 updater**; hash-checks it and can carve it from the local package |
+| [fat16_read.py](analysis/fat16_read.py), [squashfs_list.py](analysis/squashfs_list.py) | Read packaged resources and Linux filesystem metadata without mounting them |
+| [map_hardware.py](analysis/map_hardware.py), [find_usb_flag_stores.py](analysis/find_usb_flag_stores.py) | Heuristic address/store searches. Manually validate candidates; stale register tracking and missed dynamic paths limit completeness |
+| [audit_public_boot_candidates.py](analysis/audit_public_boot_candidates.py) | Bounded audit of a separately supplied V50 comparison corpus; distinguishes real files from Git LFS placeholders |
+| [ptp_cold_reader.py](analysis/ptp_cold_reader.py), [ptp_usb_transport.py](analysis/ptp_usb_transport.py) | Restricted read-protocol model and adapter for an already supplied transport. No turnkey live discovery/acquisition client; success/checksum do not attest fresh storage data |
+| [usb_registry_inventory.py](analysis/usb_registry_inventory.py), [read_usb_configuration.c](analysis/read_usb_configuration.c) | macOS USB metadata helpers with different access behavior; read [descriptor API limits](analysis/macos-descriptor-api.md) before considering device access |
+| `analysis/test_*.py` | Offline protocol/transport/registry tests; no camera needed |
+| `analysis/scripts/QueryFirmware.java`, `DecompileTargets.java`, `ExportIndex.java` | Focused database references, pseudocode and index exports; analysis metadata may change, firmware bytes do not |
+| `analysis/scripts/Reproduce*.java` | Original-instruction emulator experiments with explicit fixtures/stubs and stop boundaries; read the owning report for exactly what executes |
+| `analysis/output/*.txt`, `*.json`, `*.tsv` | Curated results, disassembly/pseudocode, inventories and evidence records. Some older REA exports are tracked despite newer ignore rules; presence does not make historical mappings current |
+
+There is no single build command or complete camera emulator. Run only the
+checks relevant to the chosen investigation. Typical offline starting commands:
+
+```sh
+python3 analysis/inventory_firmware.py FPUPDATE.DAT --output /tmp/xhalf-regions.json
+python3 analysis/fw.py disasm 0x4043f078 0x4043f190
+python3 analysis/card.py disasm 0x40000200 0x40000248
+python3 analysis/find_usb_flag_stores.py --window 256
+python3 analysis/ptp_cold_reader.py --simulate
+python3 -m unittest discover -s analysis -p 'test_*.py'
+```
+
+These commands are offline. Disassembly helpers can create ignored ELF wrappers;
+`card.py` can create its ignored binary extract. `fw.py` and `map_hardware.py`
+use a machine-specific Xcode LLVM path. Python tools mainly use the standard
+library; Ghidra experiments additionally need the Java/Ghidra setup below.
+
+## Address conventions and evidence rules
+
+- Always name the **artifact, version, hash and coordinate space**. DAT offsets,
+  extracted-image offsets, CPU addresses and storage offsets are different.
+  Most current runtime addresses refer to the 2.00 main image at `0x40000000`.
+- The complete updater is a **separate executable at the same link base**.
+  For 2.00 it occupies DAT `[0x200,0xa2c00)`, with reset body at image offset
+  `0x340` / DAT `0x540`. The old `card-updater.bin` omitted the first `0x340`
+  bytes; old exports mapping that shortened file at `0x40000000` are unreliable.
+  Use [the mapping correction](analysis/updater-image-layout.md) and current
+  `card.py`. Main-image `0x405e...`/`0x405f...` updater-library routines do not
+  belong to the small updater merely because they perform updates.
+- Confirm findings against original instructions. Ghidra `FUN_*` labels and
+  analyst descriptions are not recovered vendor symbols; diagnostic-derived
+  names should retain their stated provenance. Function entries sometimes
+  precede a push prologue by one instruction.
+- Offline emulator success proves behavior only for the supplied memory,
+  modeled callees and stop boundary. It does not prove live reachability,
+  hardware semantics, persistent-write safety or recovery. Do not stitch
+  separately supplied UI states/events into an asserted camera procedure.
+- Existing REA evidence is retained where useful. Later work uses local Ghidra
+  and original-file LLVM disassembly after a recorded raw-image mapping issue.
+  Check the artifact/mapping before reuse; do not imply a fresh REA or live
+  observation when a result came from the local fallback.
+
+For another AI: choose one bounded unresolved question, read its latest report
+and linked script/output, and document the resulting evidence and limitations.
+The current USB-entry gap concerns actual retail reachability of a flag refresh
+while preserving shared RAM and avoiding incidental saves. Another isolated
+flag/loader fixture or unchanged writer scan does not close it. Work on original
+UI features can continue offline, but deployment remains gated on recovery.
+
 ## Current research notes
 
 - [`analysis/usb-selection-writer-search.md`](analysis/usb-selection-writer-search.md)
@@ -206,6 +325,8 @@ Known identities:
   `3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68`
 - `firmware-main.bin`:
   `80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923`
+- complete updater, `analysis/output/card-updater-full.bin`:
+  `4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976`
 - analysis ELF wrapper:
   `7e5534e40adc45c14ca19b6d1ebd0ea730ccf1d13125eedcc35d802434133755`
 
@@ -216,12 +337,20 @@ ELF is useful for address-aware command-line disassembly, but Ghidra's automatic
 ELF selection currently chooses `ARM:LE:32:v8` and misdecodes some privileged
 ARMv7 startup instructions.
 
+The launcher currently defaults to a Ghidra installation under
+`~/Downloads/ghidra_12.1.4_PUBLIC` and a specific macOS Java installation.
+Inspect [run-ghidra.sh](analysis/run-ghidra.sh) when moving to another machine:
+`GHIDRA_INSTALL_DIR` is configurable, but the Java executable path is hardcoded.
+Create a new project name for a fresh main-image import; do not overwrite an
+existing analysis project just to reproduce this example.
+
 ```sh
-bash analysis/run-ghidra.sh \
+mkdir -p analysis/project
+GHIDRA_PROJECT_NAME=FujiMainHandoff bash analysis/run-ghidra.sh \
   -import firmware-main.bin \
   -processor ARM:LE:32:v7 -cspec default \
   -loader BinaryLoader -loader-baseAddr 0x40000000 \
-  -loader-blockName firmware -overwrite \
+  -loader-blockName firmware \
   -preScript SeedFirmware.java
 ```
 
@@ -229,9 +358,44 @@ bash analysis/run-ghidra.sh \
 override the launcher defaults. Local project files and tool state stay ignored
 by Git.
 
+Previously used working projects include `/private/tmp/fuji-ghidra-v7/FujiV7`
+for the main image and `/private/tmp/fuji-updater-full/FujiUpdaterFull` for the
+complete updater. Reuse them only if present and matched to the expected bytes.
+For example, with the existing main project:
+
+```sh
+GHIDRA_PROJECT_DIR=/private/tmp/fuji-ghidra-v7 GHIDRA_PROJECT_NAME=FujiV7 \
+  bash analysis/run-ghidra.sh -process firmware-main.bin -noanalysis \
+  -postScript ReproduceRamCopyBoundary.java /tmp/ram-copy-boundary.txt \
+  "$PWD/analysis/output/card-updater-full.bin"
+```
+
+The complete updater needs its own raw ARMv7 import/project. Do not apply
+`SeedFirmware.java` to it: that script seeds main-image addresses. Individual
+reports provide the appropriate script arguments, fixtures and expected hashes.
+Inspect both script output and Ghidra logs: a headless process can exit zero
+while reporting a script error.
+
 ## Safety boundary
 
-Static-analysis findings are not proof of runtime behavior. Do not flash a
-modified firmware or send undocumented camera commands without an independently
-validated integrity/recovery procedure. Live USB observations should begin with
-passive enumeration and standard read-only protocol requests.
+Continue offline by default. No verified modified-firmware installation or
+independent recovery procedure has been established. The user excludes camera
+disassembly, UART wiring and repair-lab acquisition. Do not flash, upload/run a
+payload, enter calibration, stage factory settings or try guessed USB commands
+as a routine verification step. Calibration initialization has a traced
+whole-buffer factory-save attempt even when automatic calibration is off.
+RAM-loaded updater code can still write flash later.
+
+Previously measured ordinary USB identity is `04cb:030a`; loader identity
+`2aad:6500` is statically expected, not a confirmed live enumeration. USB port
+locations can change. Do not assume a current connection or identify a device
+only by its port. Live acquisition needs its own qualified scope and transport;
+even a read-looking connection/descriptor operation can have additional effects.
+Use the [identity note](analysis/xhalf-usb-identity.md), transport reports and
+owning handler audit before proposing one.
+
+Keep original/historical firmware and device-specific captures out of git;
+selected small reports and reproducible evidence belong here. Preserve the
+distinction between observed bytes, inferred behavior and unresolved questions.
+Update this overview when priorities or conclusions change, and add corrections
+to older reports when later work changes their interpretation.
