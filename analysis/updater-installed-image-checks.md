@@ -7,6 +7,10 @@ application. Offline only; the camera remained unplugged.
 
 ## Result
 
+Follow-up: [loaded-image handoff](updater-loaded-image-handoff.md) traces the
+boot task, workspace stub, hardware-copy commands and low-helper boundary;
+the extended harness passes 22 controls across the two images.
+
 The `:DEF_FW2` request identified in the
 [selection trace](updater-firmware-selection.md) obtains an installed image's
 length and expected checksum through a storage interface, reads region index

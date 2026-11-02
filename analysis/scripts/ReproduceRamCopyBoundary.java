@@ -33,22 +33,25 @@ public class ReproduceRamCopyBoundary extends GhidraScript {
         void reg(String n,long v){var r=currentProgram.getRegister(n);t.getState().setVar(r,Utils.longToBytes(v,r.getMinimumByteSize(),false));}
         long reg(String n){var r=currentProgram.getRegister(n);return Utils.bytesToLong(t.getState().getVar(r,Reason.INSPECT),r.getMinimumByteSize(),false);}
         void ret(){t.overrideCounter(toAddr(reg("lr")));}
-        long copy(long source,long size,long dest) throws Exception {
-            mem(WORK,Arrays.copyOfRange(main,0x1ed070,0x1ed870));
+        long copy(long source,long size,long dest) throws Exception {return copy(source,size,dest,false);}
+        long copy(long source,long size,long dest,boolean small) throws Exception {
+            byte[] image=small?updater:main;int offset=small?0x123dc:0x1ed070;
+            mem(WORK,Arrays.copyOfRange(image,offset,offset+0x800));
             put(0x3f00d000L,4,source);put(0x3f00d004L,4,size);put(0x3f00d008L,4,dest);
             t.overrideCounter(toAddr(WORK));
             for(int step=0;step<3000;step++) {
                 monitor.checkCancelled();long pc=t.getCounter().getOffset();
-                if(pc==0xb34L||pc==0x400070d8L||pc==0x40007148L)return pc;
+                if(pc==0xb34L||pc==0x400070d8L||pc==0x40007148L||pc==0x40083f20L||pc==0x40083f90L)return pc;
                 // Model cache helpers, not address checks or their return values.
                 if(pc==0x400029c8L||pc==0x400029c0L){ret();continue;}
+                if(small&&(pc==0x40082014L||pc==0x4008201cL)){ret();continue;}
                 if(pc==WORK+0x8c){ // original 401ed0fc, immediately before completion polling
                     long n=word(0x10003050L)+1;counts.add(n);
                     commands.add(String.format("%08x->%08x:%x",word(0x10003048L),word(0x1000304cL),n));
                     // Supplied completion. No DMA implementation or payload copy is modeled.
                     put(0x10003000L,1,1);
                 }
-                if(!((pc>=WORK&&pc<WORK+0x108)||(pc>=0x4002a7bcL&&pc<0x4002a95cL)||(pc>=0x40002b0cL&&pc<0x40002b20L)))throw new Exception("Unexpected execution "+Long.toHexString(pc));
+                if(!((pc>=WORK&&pc<WORK+0x100)||(!small&&((pc>=0x4002a7bcL&&pc<0x4002a95cL)||(pc>=0x40002b0cL&&pc<0x40002b20L)))||(small&&pc>=0x4007e840L&&pc<0x4007e954L)))throw new Exception("Unexpected execution "+Long.toHexString(pc));
                 t.stepInstruction();
             }
             throw new Exception("Instruction limit");
@@ -99,7 +102,38 @@ public class ReproduceRamCopyBoundary extends GhidraScript {
             out.println("PASS main +200 entry writes gate 12345678, stops before 40000338.");
             a=new Arm(updater);a.gate(true);if(a.word(0x10001300L)!=0x88888888L)throw new Exception("Updater gate marker");
             out.println("PASS updater +200 entry writes gate 88888888 and returns, with supplied readiness bit.");
-            out.println("11 controls passed. DMA completion supplied; no data-copy engine, cache/MMU hardware, low helper 00000b34, payload entry or persistent operation executes.");
+            out.println("11 original main-copy/special-entry controls passed.");
+            out.println("Updater-specific relocated stub and original top-two-bit guards follow. The supplied capacity register is NOT consumed by these updater guards.");
+            for(Object[] c:cases){
+                a=new Arm(updater);a.put(0x10003044L,4,0xa5a55a5aL);
+                long stop=a.copy((Long)c[1],(Long)c[2],(Long)c[3],true);
+                boolean capacity=c[0].equals("source at capacity");
+                long expectedStop=capacity?0xb34L:((Long)c[4]==0xb34L?0xb34L:0x40083f20L);
+                long[] counts=capacity?new long[]{32}:(long[])c[5];
+                if(stop!=expectedStop||a.counts.size()!=counts.length)throw new Exception("Updater control failed "+c[0]);
+                long src=(Long)c[1]&~0x40000000L,dst=(Long)c[3]&~0x40000000L;
+                for(int i=0;i<counts.length;i++){
+                    if(!a.commands.get(i).equals(String.format("%08x->%08x:%x",src,dst,counts[i])))throw new Exception("Updater command mismatch");
+                    src+=counts[i];dst+=counts[i];
+                }
+                if(stop==0xb34L&&(a.reg("r0")!=(Long)c[3]||a.reg("r1")!=(Long)c[2]))throw new Exception("Updater low helper arguments");
+                if(!Arrays.equals(updater,a.mem(0x40000000L,updater.length)))throw new Exception("Updater executable changed");
+                // Updater clears only a halfword at +44, unlike the main stub's word write.
+                if(a.word(0x10003044L)!=(stop==0xb34L?0xa5a50000L:0xa5a55a5aL))throw new Exception("Updater control-register access width");
+                out.printf("PASS updater %s -> stop=%08x commands=%s; loaded updater unchanged, +44 halfword/upper guard checked.%n",c[0],stop,a.commands);
+            }
+            for(long size:new long[]{32,33}){
+                a=new Arm(updater);a.put(0x400a2f20L,4,0x81234000L);a.put(0x400a2f24L,4,0x1234);
+                a.reg("r8",0x41000000L);a.reg("r5",size);a.reg("r7",0x40000000L);a.reg("r6",WORK);
+                a.t.overrideCounter(toAddr(0x40012328L));
+                for(int n=0;n<30&&a.t.getCounter().getOffset()!=0x40012358L;n++)a.t.stepInstruction();
+                if(a.t.getCounter().getOffset()!=0x40012358L)throw new Exception("Descriptor instruction bound");
+                long[] expected={0x41000000L,(size+1)&~1L,0x40000000L,0x81234000L,0x1234};
+                for(int i=0;i<5;i++)if(a.word(0x3f00d000L+4*i)!=expected[i])throw new Exception("Updater SRAM descriptor");
+                if(!Arrays.equals(updater,a.mem(0x40000000L,updater.length)))throw new Exception("Updater descriptor executable changed");
+                out.printf("PASS updater descriptor size=%d -> %d, five SRAM words match; stops before workspace call 40012358.%n",size,expected[1]);
+            }
+            out.println("22 controls passed. DMA completion supplied; no data-copy engine, cache/MMU hardware, low helper 00000b34, payload entry or persistent operation executes.");
             out.println("Not an actual RAM launch or recovery path. Zero-length acceptance is a supplied-state boundary observation, not permission to issue requests.");
         }
     }

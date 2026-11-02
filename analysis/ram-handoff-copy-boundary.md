@@ -167,6 +167,12 @@ use `card.py disasm 40000200 40000248` for the updater's different special entry
 
 ## Remaining barrier
 
+Follow-up: [updater-to-loaded-image handoff](updater-loaded-image-handoff.md)
+finds the matching five-word SRAM block and copy/jump convention in the
+complete updater. Its guards omit the main image's capacity-register check;
+the extended script now passes 22 controls while retaining the original 11
+above. The original output remains historical evidence for those 11 cases.
+
 Follow-up: [low-address helper and second caller](low-address-loader-helper.md)
 finds the same call immediately after an early SRAM executable copy, stable
 across four main-image versions. Synchronization is a working hypothesis;

@@ -183,6 +183,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-installed-image-checks.md`](analysis/updater-installed-image-checks.md)
   — two storage backends' installed-map metadata, Firmware2 region read and
   split checksum fields; 11 original-ARM controls stop before status writes.
+- [`analysis/updater-loaded-image-handoff.md`](analysis/updater-loaded-image-handoff.md)
+  — updater boot task, SRAM block, relocated copy/jump stub and broader address
+  guards; 22 combined controls stop before the unresolved low helper or payload.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.
