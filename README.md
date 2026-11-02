@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/factory-read-failure-controls.md`](analysis/factory-read-failure-controls.md)
+  — original wrapper/callback failure controls: old or mixed checksum-valid
+  data can arrive with success replies; repeated reads cannot prove freshness.
 - [`analysis/factory-record-validation.md`](analysis/factory-record-validation.md)
   — original ARM checksum controls, restricted-reader integrity checks, and
   remaining freshness, identity and recovery limits before a live acquisition.

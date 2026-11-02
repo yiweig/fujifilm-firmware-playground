@@ -95,3 +95,8 @@ The transport integration fixture also has a valid synthetic checksum.
 A checksum-valid record must not be described as an authenticated, fresh or
 restorable backup on this evidence. No service buttons or SD markers should
 be tried merely because this validation now passes in simulation.
+
+Follow-up: [file-read failure controls](factory-read-failure-controls.md)
+execute the original file-read wrapper and callback together with modeled
+lower APIs. They confirm indistinguishable success replies for stale data,
+and demonstrate a checksum-valid mixed record after a modeled short read.

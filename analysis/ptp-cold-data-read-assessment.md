@@ -84,6 +84,10 @@ A `0x2001` response therefore does not prove the RAM buffer was refreshed
 from the file. Repeating reads and getting identical bytes alone would not
 exclude stale RAM. No returned read-status value was found in `0x1026`.
 
+Follow-up: [original wrapper/callback failure controls](factory-read-failure-controls.md)
+confirm identical success replies for modeled open/size failures and demonstrate
+a checksum-valid mixture of old and new data after a modeled partial read.
+
 The minimum flags sought are:
 
 | File offset | Interpretation |

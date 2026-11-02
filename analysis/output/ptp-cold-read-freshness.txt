@@ -1,0 +1,16 @@
+Original 2.00 SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline callback test; synthetic file, request, RAM; no real USB or storage.
+Baseline stubs: 40004064 log, 40125d94 read, 4000cdf0 zero, 40008b8c copy, 405e6ac0 response.
+PASS: 1025 parameter 0 reads 1024 bytes; 64 x 1027 read chunks reconstruct fixture exactly; cold RAM unchanged by chunk reads.
+PASS: 1025 parameter 1 reaches persistent writer 40125e4c; stopped before execution.
+PASS freshness case=0: wrapper status=0; 2 matching checksum-valid records; lower reads=2 closes=2.
+PASS freshness case=1: wrapper status=1; 2 matching checksum-valid records; lower reads=0 closes=0.
+PASS freshness case=2: wrapper status=1; 2 matching checksum-valid records; lower reads=0 closes=2.
+PASS freshness case=3: wrapper status=1; 2 matching checksum-valid records; lower reads=2 closes=2.
+PASS freshness case=4: wrapper status=0; 2 matching checksum-valid records; lower reads=2 closes=2.
+Cases: 0=success(old), 1=open failure, 2=short file, 3=16-byte short read, 4=success(changed).
+Cases 1/2 return exactly the same response codes/parameters as case 0 despite different modeled disk data.
+Case 3 returns a checksum-valid mixture of new prefix and old suffix, distinct from either full record.
+Freshness controls execute original 40125d94/4015ba48 wrapper and callback; lower file APIs, logs, copy/zero and response are modeled.
+Also stubbed in freshness controls: first-use helper 4015b5f8 and log helper 400410cc. Their transitive effects are not qualified here.
+Does not verify normal-mode reachability, marker lifecycle, USB transport, actual file-read success, or camera state.
