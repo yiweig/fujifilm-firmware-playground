@@ -19,6 +19,7 @@ FPUPDATE.DAT
 analysis/project/
 analysis/cache/
 analysis/settings/
+analysis/output/macos-device-info/
 
 # Generated logs and transient files
 *.log

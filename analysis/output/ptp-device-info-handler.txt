@@ -1,0 +1,132 @@
+PROGRAM firmware-main.bin
+
+FUNCTION 402e8b94
+
+undefined4 FUN_402e8b94(void)
+
+{
+  code *pcVar1;
+  code *pcVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  int iVar6;
+  uint uVar7;
+  uint uVar8;
+  uint uVar9;
+  short *psVar10;
+  int iStack_40;
+  undefined4 auStack_3c [6];
+  
+  pcVar1 = DAT_402e8d38;
+  auStack_3c[0] = *(undefined4 *)(DAT_402e8d34 + 0x24);
+  iVar5 = 0;
+  auStack_3c[1] = *(undefined4 *)(DAT_402e8d34 + 0x28);
+  auStack_3c[2] = *(undefined4 *)(DAT_402e8d34 + 0x14);
+  auStack_3c[3] = *(undefined4 *)(DAT_402e8d34 + 0x2c);
+  iStack_40 = 0;
+  auStack_3c[4] = *(undefined4 *)(DAT_402e8d34 + 0x30);
+  iVar6 = DAT_402e8d34 + 0x18;
+  iVar3 = *DAT_402e8d3c;
+  uVar7 = *DAT_402e8d40;
+  (*DAT_402e8d38)(iVar3,100);
+  (*DAT_402e8d44)(iVar3 + 2,0);
+  (*pcVar1)(iVar3 + 6,0);
+  (*DAT_402e8d48)(0,iVar3 + 8,&iStack_40);
+  iVar3 = iVar3 + 8 + iStack_40;
+  (*pcVar1)(iVar3,0);
+  iVar3 = iVar3 + 2;
+  do {
+    psVar10 = *(short **)((int)auStack_3c + iVar5 * 2);
+    uVar8 = 0;
+    if (*psVar10 != 0) {
+      uVar8 = (uint)*(ushort *)(iVar5 + iVar6);
+    }
+    (*DAT_402e8d44)(iVar3,uVar8);
+    iVar4 = iVar3 + 4;
+    for (uVar9 = 0; pcVar2 = DAT_402e8d48, uVar9 != uVar8; uVar9 = uVar9 + 1) {
+      (*pcVar1)(iVar4,psVar10[uVar9]);
+      iVar4 = iVar4 + 2;
+    }
+    iVar5 = iVar5 + 2;
+    iVar3 = iVar3 + 4 + uVar9 * 2;
+  } while (iVar5 != 10);
+  uVar8 = 1;
+  do {
+    (*pcVar2)(uVar8 & 0xff,iVar3,&iStack_40);
+    uVar8 = uVar8 + 1;
+    iVar3 = iVar3 + iStack_40;
+  } while (uVar8 != 5);
+  iVar5 = *DAT_402e8d3c;
+  *DAT_402e8d4c = iVar3 - iVar5;
+  if (uVar7 <= (uint)(iVar3 - iVar5)) {
+    (*DAT_402e8d58)(DAT_402e8d50,DAT_402e8d54,0x1d2);
+  }
+  (*DAT_402e8d5c)(&DAT_00002001,0,0,0,0);
+  return 0;
+}
+
+
+
+PROGRAM firmware-main.bin
+
+FUNCTION 401c051c
+
+void FUN_401c051c(uint param_1,undefined1 *param_2,int *param_3)
+
+{
+  int iVar1;
+  int iVar2;
+  
+  if (4 < param_1) {
+    param_1 = FUN_401c04e0(DAT_401c0580,DAT_401c0584,0x7b);
+  }
+  iVar2 = param_1 * 0x90 + DAT_401c0588;
+  iVar1 = FUN_401c03a4(iVar2);
+  *param_2 = (char)iVar1;
+  (*DAT_401c058c)(param_2 + 1,iVar2,iVar1 * 2);
+  *param_3 = iVar1 * 2 + 1;
+  return;
+}
+
+
+
+FUNCTION 401cafa0
+
+void FUN_401cafa0(undefined2 *param_1,undefined4 param_2)
+
+{
+  if (((uint)param_1 & 1) == 0) {
+    *param_1 = (short)param_2;
+  }
+  else {
+    *(char *)param_1 = (char)param_2;
+    *(char *)((int)param_1 + 1) = (char)((uint)param_2 >> 8);
+  }
+  return;
+}
+
+
+
+FUNCTION 401cafb8
+
+void FUN_401cafb8(undefined4 *param_1,undefined4 param_2)
+
+{
+  if (((uint)param_1 & 3) != 0) {
+    if (((uint)param_1 & 1) == 0) {
+      *(short *)param_1 = (short)param_2;
+      *(short *)((int)param_1 + 2) = (short)((uint)param_2 >> 0x10);
+    }
+    else {
+      *(char *)param_1 = (char)param_2;
+      *(short *)((int)param_1 + 1) = (short)((uint)param_2 >> 8);
+      *(char *)((int)param_1 + 3) = (char)((uint)param_2 >> 0x18);
+    }
+    return;
+  }
+  *param_1 = param_2;
+  return;
+}
+
+

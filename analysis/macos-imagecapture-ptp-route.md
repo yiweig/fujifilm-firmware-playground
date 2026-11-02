@@ -147,3 +147,12 @@ that source supplies layout, not Fujifilm capability evidence.
 Next: qualify a session-based, fixed-`0x1001` request and its framework catalog
 activity/exit behavior. Device firmware version and advertised opcode list
 remain unread. Discovery success does not establish RAM loading or recovery.
+
+Later follow-up: [standard information session and macOS authorization](macos-device-info-session.md)
+adds a separate fixed-command client and a bounded firmware handler review.
+Live attempts still stopped at discovery, before session opening or explicit
+PTP traffic. Agent logs show removable-volume authorization requests; the
+successful earlier discovery runs had positive authorization replies. Thus
+the application/event-loop explanation above was incomplete. A stable app
+build is now retained locally, and the user's observation of the access prompt
+is needed before repeating the live read.
