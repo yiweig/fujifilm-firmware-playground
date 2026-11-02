@@ -1,0 +1,47 @@
+{
+  "source": "Live X-HF1 via ImageCaptureCore; serial omitted by decoder",
+  "date": "2026-11-02",
+  "catalog_complete": true,
+  "catalog_items_reported": 43,
+  "client_has_open_session_at_exit": false,
+  "dataset_bytes": 251,
+  "dataset_saved": true,
+  "discovery_callbacks": 1,
+  "explicit_opcode": "1001",
+  "explicit_ptp_command_count": 1,
+  "model_from_discovery": "X-HF1",
+  "response_code": "2001",
+  "returned_transaction_id": 141,
+  "session_closed": true,
+  "session_opened": true,
+  "status": "ok",
+  "usb_identity": "04cb:030a",
+  "wire_traffic_observed": false,
+  "raw_dataset_retained": false,
+  "device_info": {
+    "standard_version": 100,
+    "vendor_extension_id": 0,
+    "vendor_extension_version": 0,
+    "vendor_extension_description": "microsoft.com/deviceservices: ",
+    "functional_mode": 0,
+    "operations": [
+      "1001", "1002", "1003", "1004", "1005", "1006", "1007", "1008",
+      "1009", "100a", "100b", "100c", "100d", "100e", "1014", "1015",
+      "1016", "101b", "9601", "9602", "9812", "9614", "9801", "9802",
+      "9803", "9805"
+    ],
+    "events": ["4002", "4003", "4004", "4005", "4006", "4008", "4009", "400d", "c601"],
+    "device_properties": ["d407", "d406", "5001", "500c", "d303", "d220", "5011"],
+    "capture_formats": ["3801"],
+    "image_formats": ["3000", "3001", "3006", "3008", "300d", "3801", "b802", "b982"],
+    "manufacturer": "FUJIFILM",
+    "model": "X-HF1",
+    "device_version": "01.00"
+  },
+  "limits": [
+    "Framework startup/catalog traffic was not captured on the wire.",
+    "Advertised operations are not evidence that all handlers are enabled or safe.",
+    "PTP device_version is not verified as the Fujifilm release version.",
+    "dataset_saved refers to a private transient file removed after decoding."
+  ]
+}

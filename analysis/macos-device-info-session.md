@@ -117,3 +117,51 @@ firmware version, advertised opcode list or close-session behavior has been
 observed. Do not run repeated attempts until the prompt/authorization state
 has been clarified. A normal reconnect is not yet justified as the cure for
 this host-side boundary, and no camera button experiment is needed here.
+
+## Successful read after user authorization
+
+The user subsequently confirmed allowing macOS access. One retry using the
+unchanged stable app then completed successfully. Sanitized result:
+[xhalf-device-info-2026-11-02.json](output/xhalf-device-info-2026-11-02.json).
+
+Observed callbacks/results:
+
+- One discovered `FUJIFILM` / `X-HF1`, USB identity `04cb:030a`.
+- Session opened and catalog-complete callback received; aggregate count 43
+  reported catalog items. This count is not a verified photo count.
+- Exactly one explicit passthrough operation, `0x1001`, returned success
+  `0x2001` and a 251-byte dataset. The framework-supplied returned transaction
+  ID was 141; this does not count or identify preceding framework requests.
+- The explicit close-session callback completed without error, and the client
+  reported `hasOpenSession=false` at exit.
+- Offline decoding succeeded. The serial field was omitted; the private raw
+  dataset was removed by the wrapper. No raw capture or photo data is retained.
+
+The reply advertises 26 operation codes, nine events and seven device
+properties. The previously identified marker-dependent factory range
+`0x1021..0x1027` is absent from the advertised list. This is consistent with
+ordinary retail operation; advertisement is not proof of hidden-handler
+absence, successful handling, safe semantics, loader entry or recovery.
+No operation from that range or any other advertised code was probed.
+
+The reported device-version string is **`01.00`**. It is not recorded as a
+confirmed installed Fujifilm release. In the inspected 2.00 image,
+`0x4018d4bc..0x4018d4f4` recognizes configuration key
+`PTPIP_DEVICE_VERSION` (literal `0x40b0dacf`) and passes the parsed value to
+string setter `0x401c0590` with index 3. That setter populates the string
+table rooted at `0x40fc7df0`, which the DeviceInfo handler reads through
+`0x401c051c`. Thus the field has a configuration-driven population path;
+its relationship to the camera menu's firmware version is not established.
+The source configuration value itself has not been recovered in this pass.
+Relevant ARM excerpts: [version configuration path](output/ptp-device-version-config.txt).
+
+This demonstrates one successful ordinary framework session/read/close cycle
+on the connected camera after user authorization. No wire capture or complete
+framework traffic audit occurred. No camera-setting command, factory enable,
+RAM write/upload, firmware update, reset or recovery experiment was requested
+by our client. Recovery and temporary firmware loading remain unconfirmed.
+
+Next: correlate the observed operation list against existing static handlers
+and their callback registrations before considering another live request.
+Actual Fujifilm release identity still needs independent confirmation; do not
+treat `01.00`, the host module's `1.0`, or USB `bcdDevice=0x0200` as that proof.

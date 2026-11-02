@@ -9,7 +9,8 @@ state are intentionally excluded from version control.
 
 Last overview refresh: **2026-11-02**. This is a research notebook and collection
 of analysis tools, not a firmware patcher or a deployable camera modification.
-Most recent investigations are offline; a connected camera is not required.
+Most firmware investigations are offline; live observations are explicitly
+identified in their reports. A camera is not required for the static tools.
 
 The original goals are to fix the secondary display showing Provia during
 lever review, replace Auto ISO 3's ISO-12800 cap with ISO 6400 (and assess a
@@ -22,6 +23,7 @@ The user excludes opening the camera, wiring UART or sending it to a repair lab.
 | Lever-review Provia label | Strong evidence of a 2.00 regression: an uninitialized cached selector remains zero, meaning Provia. Original ARM behavior reproduced offline; no camera fix installed. | [Lever findings](analysis/lever-provia-findings.md), [four-version comparison](analysis/firmware-1.30-vs-2.00.md) |
 | Auto ISO | Replacing Auto 3's range code is a narrow candidate; ISO 6400 already exists. Adding another preset affects more settings/UI paths. No firmware bytes patched. | [Auto ISO findings](analysis/auto-iso-findings.md) |
 | RAW | Engineering sensor-dump code exists; it does not establish production RAW/RAF support. | [RAW assessment](analysis/raw-support-assessment.md), [rcaraw handler](analysis/rcaraw-handler.md) |
+| Normal camera communication | After macOS authorization, one standard GetDeviceInfo read and explicit session close succeeded. 26 operations advertised; PTP version `01.00` is not verified as the installed Fujifilm release. | [Session findings](analysis/macos-device-info-session.md), [sanitized result](analysis/output/xhalf-device-info-2026-11-02.json) |
 | RAM loader | Device-side USB transfer and copy/execute code identified. Temporary retail entry, full handoff effects and payload safety remain unqualified. | [Receiver](analysis/xhalf-usb-ram-receiver.md), [handoff](analysis/ram-handoff-copy-boundary.md) |
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
@@ -85,7 +87,7 @@ the versioned copy is `firmware/2.00/FPUPDATE.DAT`.
 | [ptp_cold_reader.py](analysis/ptp_cold_reader.py), [ptp_usb_transport.py](analysis/ptp_usb_transport.py) | Restricted read-protocol model and adapter for an already supplied transport. No turnkey live discovery/acquisition client; success/checksum do not attest fresh storage data |
 | [usb_registry_inventory.py](analysis/usb_registry_inventory.py), [read_usb_configuration.c](analysis/read_usb_configuration.c) | macOS USB metadata helpers with different access behavior; read [descriptor API limits](analysis/macos-descriptor-api.md) before considering device access |
 | [run-imagecapture-inventory.sh](analysis/run-imagecapture-inventory.sh), [imagecapture_inventory.m](analysis/imagecapture_inventory.m) | Builds and launches a discovery-only Mac application; successfully identified the X-HF1 through Apple's service. No session-open or PTP command code; incidental framework traffic is unmeasured |
-| [ptp_device_info.py](analysis/ptp_device_info.py) | Fixed GetDeviceInfo command encoder and offline dataset decoder, with serial omitted. Its module has no live transport; the separate client below remains blocked at discovery, so installed firmware version remains unread |
+| [ptp_device_info.py](analysis/ptp_device_info.py) | Fixed GetDeviceInfo command encoder and offline dataset decoder, with serial omitted. The separate client below successfully read live information; its PTP version field does not independently attest the Fujifilm release |
 | [run-imagecapture-device-info.sh](analysis/run-imagecapture-device-info.sh), [imagecapture_device_info.m](analysis/imagecapture_device_info.m) | Separate standard-information session client; `--build` performs no camera access. See [session/authorization findings](analysis/macos-device-info-session.md) before live use; Apple's catalog traffic is separate from the explicit command allowlist |
 | `analysis/test_*.py` | Offline protocol/transport/registry tests; no camera needed |
 | `analysis/scripts/QueryFirmware.java`, `DecompileTargets.java`, `ExportIndex.java` | Focused database references, pseudocode and index exports; analysis metadata may change, firmware bytes do not |

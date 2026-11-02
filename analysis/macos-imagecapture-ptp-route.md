@@ -156,3 +156,11 @@ successful earlier discovery runs had positive authorization replies. Thus
 the application/event-loop explanation above was incomplete. A stable app
 build is now retained locally, and the user's observation of the access prompt
 is needed before repeating the live read.
+
+After the user confirmed allowing access, the unchanged stable reader
+successfully opened a session, received one explicit GetDeviceInfo reply,
+and completed explicit session closure. See the linked session note's success
+section and [sanitized live result](output/xhalf-device-info-2026-11-02.json).
+The reported PTP version `01.00` is not independently verified as the installed
+Fujifilm release. This resolves the ordinary read transport question for this
+run; it does not resolve RAM loading, recovery or framework wire-traffic scope.
