@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/loader-memory-read-boundary.md`](analysis/loader-memory-read-boundary.md)
+  — confirmed loader memory-to-host scheduling, parser bounds/state hazards,
+  selected PTP alternatives and the unresolved temporary-entry gate.
 - [`analysis/factory-read-log-routing.md`](analysis/factory-read-log-routing.md)
   — distinct character-output errors and RAM profiling notices, log-call and
   enqueue controls, dump effects and unresolved retail retrieval.

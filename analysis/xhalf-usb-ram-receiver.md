@@ -7,6 +7,11 @@ All addresses are ARM runtime addresses with image offset zero at `0x40000000`.
 
 ## Result
 
+Follow-up: [memory-read boundary](loader-memory-read-boundary.md) executes
+the original read parser and queue consumer to the pre-hardware transfer
+boundary. Direction is confirmed; unsafe address/length metadata and short
+commands are accepted in controls. Retail entry remains unresolved.
+
 The X half contains the request family used by the inspected iCatch host DLL,
 including RAM transfer and an upload/copy/execute handoff. This is concrete
 device-side evidence for a RAM-loading lead. The unresolved practical barrier

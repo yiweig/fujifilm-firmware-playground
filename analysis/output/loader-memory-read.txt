@@ -1,0 +1,14 @@
+Main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Offline original loader callback, LE32 parser, transfer-message helper and message constructor. No USB controller/DMA executes.
+PASS index=04f2 address=42050000 length=16 declared-payload=8: queued event=11; phase 2->3->4->2; synthetic source unchanged.
+PASS index=04f4 address=42050000 length=16 declared-payload=8: queued event=11; phase 2->3->4->2; synthetic source unchanged.
+PASS index=04f5 address=42050000 length=16 declared-payload=8: queued event=9; phase 2->3->5->2; synthetic source unchanged.
+PASS index=04f2 address=10005000 length=16 declared-payload=8: queued event=11; phase 2->3->4->2; synthetic source unchanged.
+PASS index=04f2 address=42050000 length=0 declared-payload=8: queued event=11; phase 2->3->4->2; synthetic source unchanged.
+PASS index=04f2 address=fffffff0 length=64 declared-payload=8: queued event=11; phase 2->3->4->2; synthetic source unchanged.
+PASS index=04f2 address=42050000 length=64 declared-payload=4: queued event=11; phase 2->3->4->2; synthetic source unchanged.
+PASS fresh workspace: stops before 0x80000-byte allocation at 401e020c, even for the memory-read request.
+Original queue-0 consumer also runs to boundary: event 11 reaches 40056ac0 (memory to USB); event 9 reaches 40056798 (USB to memory), with exact address/length. Stops before either executes.
+The MMIO/overflow/zero-length cases only create metadata; no referenced bytes are read, written or sent. Four-byte command uses supplied stale second word.
+Modeled: message allocation, queue submission, log calls, control-payload delivery and transfer-completion scheduling.
+Not live reachability, a safe memory allowlist, coherent snapshot, physical storage read, transport recipe or recovery proof.

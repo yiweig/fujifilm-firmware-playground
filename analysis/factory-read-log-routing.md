@@ -131,3 +131,8 @@ Further acquisition work needs an actually reachable read-only interface
 to persistent storage or a bounded RAM snapshot with established provenance.
 Generic end-of-read logs cannot substitute for it. Independent recovery and
 verified restore remain unestablished.
+
+Follow-up: [loader memory-read investigation](loader-memory-read-boundary.md)
+confirms a RAM-to-host branch and its queue-consumer boundary. It belongs to
+the loader personality, whose temporary retail entry remains unqualified;
+the parser supplies no safe address allowlist.
