@@ -1,0 +1,158 @@
+PROGRAM firmware-main.bin
+
+FUNCTION 4000f064
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_4000f064(void)
+
+{
+  byte bVar1;
+  byte bVar2;
+  byte bVar3;
+  byte bVar4;
+  bool bVar5;
+  byte bVar6;
+  undefined4 *puVar7;
+  undefined4 uVar8;
+  uint uVar9;
+  uint uVar10;
+  int iVar11;
+  int iVar12;
+  int iVar13;
+  uint uVar14;
+  int *piVar15;
+  int iVar16;
+  uint uVar17;
+  uint uVar18;
+  int iVar19;
+  uint uVar20;
+  int iVar21;
+  int iStack_58;
+  int *piStack_50;
+  int iStack_4c;
+  int iStack_48;
+  undefined4 uStack_44;
+  undefined4 uStack_30;
+  
+  piVar15 = DAT_4000f374;
+  uVar14 = DAT_4000f374[1];
+  if (*(code **)(DAT_4000f370 + 4) != (code *)0x0) {
+    (**(code **)(DAT_4000f370 + 4))();
+  }
+  iStack_4c = piVar15[9];
+  iStack_48 = piVar15[10];
+  uVar9 = DAT_4000f378 / 0x200;
+  iVar16 = 0;
+  uVar10 = DAT_4000f37c / 0x200;
+  iVar19 = piVar15[8];
+  piStack_50 = piVar15 + *piVar15 * 5;
+  uVar18 = piVar15[0xb] + 0x3fU & 0xffffffc0;
+  bVar6 = 0;
+  uStack_44 = 0;
+  piVar15 = DAT_4000f374;
+  if (uVar14 == 0) {
+    iStack_58 = 0;
+    goto LAB_4000f10c;
+  }
+  do {
+    bVar2 = (byte)uVar14;
+    bVar3 = (byte)(uVar14 >> 8);
+    bVar4 = (byte)(uVar14 >> 0x10);
+    bVar1 = (byte)(uVar14 >> 0x18);
+    iStack_58 = LZCOUNT((uint)(byte)((((((((bVar2 & 1) << 1 | bVar2 >> 1 & 1) << 1 | bVar2 >> 2 & 1)
+                                         << 1 | bVar2 >> 3 & 1) << 1 | bVar2 >> 4 & 1) << 1 |
+                                      bVar2 >> 5 & 1) << 1 | bVar2 >> 6 & 1) << 1 | bVar2 >> 7) <<
+                        0x18 | (uint)(byte)((((((((bVar3 & 1) << 1 | bVar3 >> 1 & 1) << 1 |
+                                                bVar3 >> 2 & 1) << 1 | bVar3 >> 3 & 1) << 1 |
+                                              bVar3 >> 4 & 1) << 1 | bVar3 >> 5 & 1) << 1 |
+                                            bVar3 >> 6 & 1) << 1 | bVar3 >> 7) << 0x10 |
+                        (uint)(byte)((((((((bVar4 & 1) << 1 | bVar4 >> 1 & 1) << 1 | bVar4 >> 2 & 1)
+                                         << 1 | bVar4 >> 3 & 1) << 1 | bVar4 >> 4 & 1) << 1 |
+                                      bVar4 >> 5 & 1) << 1 | bVar4 >> 6 & 1) << 1 | bVar4 >> 7) << 8
+                        | (uint)(byte)((((((((bVar1 & 1) << 1 | bVar1 >> 1 & 1) << 1 |
+                                           bVar1 >> 2 & 1) << 1 | bVar1 >> 3 & 1) << 1 |
+                                         bVar1 >> 4 & 1) << 1 | bVar1 >> 5 & 1) << 1 |
+                                       bVar1 >> 6 & 1) << 1 | bVar1 >> 7));
+LAB_4000f10c:
+    uVar17 = iStack_58 + 1;
+    uVar14 = uVar14 & uVar14 - 1;
+    if (iVar16 == 0) {
+      if (9 < uVar17) {
+        bVar6 = 1;
+      }
+    }
+    else {
+      bVar5 = (bool)(bVar6 ^ 1);
+      if (uVar17 < 10) {
+        bVar5 = false;
+      }
+      if (bVar5) {
+        if (uVar9 < uVar10) {
+          FUN_4000efe4(uVar9,uVar10 - uVar9);
+        }
+        bVar6 = 1;
+      }
+      iVar21 = piVar15[8];
+      iVar12 = piVar15[9];
+      uVar20 = piVar15[0xb] + 0x3fU & 0xffffffc0;
+      iVar13 = piVar15[10];
+      if (uVar18 < uVar20) {
+        uStack_44 = FUN_4002a7bc(uVar18 + 0x40000000,uVar20 - uVar18);
+        uStack_30 = FUN_4002ab54(uStack_44,0,uVar20 - uVar18);
+      }
+      iVar11 = iVar21 - iVar19;
+      FUN_4000efe4(iVar19,iVar11);
+      FUN_40002924(iVar19 * 0x200 + 0x40000000,iVar11 * 0x200);
+      FUN_4000efe4(iStack_4c,iVar12 - iStack_4c);
+      FUN_4000efe4(iStack_48,iVar13 - iStack_48);
+      if (uVar18 < uVar20) {
+        FUN_4002abd0(uStack_30);
+        FUN_4002a9e8(uStack_44,uVar20 - uVar18);
+      }
+      if (*(code **)(DAT_4000f370 + 0xc) == (code *)0x0) {
+        iVar19 = -1;
+LAB_4000f264:
+        FUN_40004064(DAT_4000f380,uVar17);
+        if (iVar19 == DAT_4000f384) {
+          FUN_40004064(DAT_4000f388);
+        }
+        do {
+                    /* WARNING: Do nothing block with infinite loop */
+        } while( true );
+      }
+      iVar19 = (**(code **)(DAT_4000f370 + 0xc))(piStack_50[7]);
+      if (iVar19 != 0) goto LAB_4000f264;
+      uVar8 = FUN_4000cc48();
+      FUN_40004064(DAT_4000f38c,uVar17,uVar8);
+      uVar18 = uVar20;
+      iVar19 = iVar21;
+      iStack_4c = iVar12;
+      iStack_48 = iVar13;
+    }
+    FUN_4000e164(0,DAT_4000f390,uVar17);
+    puVar7 = DAT_4000f394;
+    iVar21 = -1;
+    FUN_4002a790(*DAT_4000f394,0xffffffff >> (0x1fU - iStack_58 & 0xff),0);
+    piStack_50 = piStack_50 + 1;
+    iVar16 = iVar16 + 1;
+    piVar15 = piVar15 + 4;
+    if (uVar14 == 0) {
+      FUN_4002ac00(2);
+      if ((*(code **)(DAT_4000f370 + 0xc) != (code *)0x0) &&
+         (iVar21 = (**(code **)(DAT_4000f370 + 0xc))(0xffffffff), iVar21 == 0)) {
+        FUN_4000c464(puVar7[1]);
+        return;
+      }
+      FUN_40004064(DAT_4000f398);
+      if (iVar21 == DAT_4000f384) {
+        FUN_40004064(DAT_4000f388);
+      }
+      do {
+                    /* WARNING: Do nothing block with infinite loop */
+      } while( true );
+    }
+  } while( true );
+}
+
+

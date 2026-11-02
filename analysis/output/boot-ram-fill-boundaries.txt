@@ -1,0 +1,250 @@
+$ python3 analysis/fw.py disasm 0x4000f168 0x4000f238
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4000f168: e5953020     	ldr	r3, [r5, #0x20]
+4000f16c: e595b02c     	ldr	r11, [r5, #0x2c]
+4000f170: e58d3020     	str	r3, [sp, #0x20]
+4000f174: e5953024     	ldr	r3, [r5, #0x24]
+4000f178: e28bb03f     	add	r11, r11, #63
+4000f17c: e58d3024     	str	r3, [sp, #0x24]
+4000f180: e3cbb03f     	bic	r11, r11, #63
+4000f184: e5953028     	ldr	r3, [r5, #0x28]
+4000f188: e15b0008     	cmp	r11, r8
+4000f18c: e58d3028     	str	r3, [sp, #0x28]
+4000f190: 93a03000     	movls	r3, #0
+4000f194: 9a00000b     	bls	0x4000f1c8 <.text+0xf1c8> @ imm = #0x2c
+4000f198: e068200b     	rsb	r2, r8, r11
+4000f19c: e1a01002     	mov	r1, r2
+4000f1a0: e2880101     	add	r0, r8, #1073741824
+4000f1a4: e58d2004     	str	r2, [sp, #0x4]
+4000f1a8: eb006d83     	bl	0x4002a7bc <.text+0x2a7bc> @ imm = #0x1b60c
+4000f1ac: e3a01000     	mov	r1, #0
+4000f1b0: e59d2004     	ldr	r2, [sp, #0x4]
+4000f1b4: e58d001c     	str	r0, [sp, #0x1c]
+4000f1b8: eb006e65     	bl	0x4002ab54 <.text+0x2ab54> @ imm = #0x1b994
+4000f1bc: e3a03001     	mov	r3, #1
+4000f1c0: e58d0030     	str	r0, [sp, #0x30]
+4000f1c4: eaffffff     	b	0x4000f1c8 <.text+0xf1c8> @ imm = #-0x4
+4000f1c8: e59d1020     	ldr	r1, [sp, #0x20]
+4000f1cc: e1a00009     	mov	r0, r9
+4000f1d0: e0692001     	rsb	r2, r9, r1
+4000f1d4: e1a01002     	mov	r1, r2
+4000f1d8: e58d3000     	str	r3, [sp]
+4000f1dc: e58d2004     	str	r2, [sp, #0x4]
+4000f1e0: ebffff7f     	bl	0x4000efe4 <.text+0xefe4> @ imm = #-0x204
+4000f1e4: e59d2004     	ldr	r2, [sp, #0x4]
+4000f1e8: e1a00489     	lsl	r0, r9, #9
+4000f1ec: e1a01482     	lsl	r1, r2, #9
+4000f1f0: e2800101     	add	r0, r0, #1073741824
+4000f1f4: ebffcdca     	bl	0x40002924 <.text+0x2924> @ imm = #-0xc8d8
+4000f1f8: e59d0014     	ldr	r0, [sp, #0x14]
+4000f1fc: e59d2024     	ldr	r2, [sp, #0x24]
+4000f200: e0601002     	rsb	r1, r0, r2
+4000f204: ebffff76     	bl	0x4000efe4 <.text+0xefe4> @ imm = #-0x228
+4000f208: e59d0018     	ldr	r0, [sp, #0x18]
+4000f20c: e59d2028     	ldr	r2, [sp, #0x28]
+4000f210: e0601002     	rsb	r1, r0, r2
+4000f214: ebffff72     	bl	0x4000efe4 <.text+0xefe4> @ imm = #-0x238
+4000f218: e59d3000     	ldr	r3, [sp]
+4000f21c: e3530000     	cmp	r3, #0
+4000f220: 0a000004     	beq	0x4000f238 <.text+0xf238> @ imm = #0x10
+4000f224: e59d0030     	ldr	r0, [sp, #0x30]
+4000f228: eb006e68     	bl	0x4002abd0 <.text+0x2abd0> @ imm = #0x1b9a0
+4000f22c: e59d001c     	ldr	r0, [sp, #0x1c]
+4000f230: e068100b     	rsb	r1, r8, r11
+4000f234: eb006deb     	bl	0x4002a9e8 <.text+0x2a9e8> @ imm = #0x1b7ac
+
+$ python3 analysis/fw.py disasm 0x4000f2a8 0x4000f314
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4000f2a8: e59d3028     	ldr	r3, [sp, #0x28]
+4000f2ac: e59d9020     	ldr	r9, [sp, #0x20]
+4000f2b0: e58d3018     	str	r3, [sp, #0x18]
+4000f2b4: e59d3024     	ldr	r3, [sp, #0x24]
+4000f2b8: e1a0800b     	mov	r8, r11
+4000f2bc: e58d3014     	str	r3, [sp, #0x14]
+4000f2c0: e1a02007     	mov	r2, r7
+4000f2c4: e59f10c4     	ldr	r1, [pc, #0xc4]         @ 0x4000f390 <.text+0xf390>
+4000f2c8: e3a00000     	mov	r0, #0
+4000f2cc: ebfffba4     	bl	0x4000e164 <.text+0xe164> @ imm = #-0x1170
+4000f2d0: e59d3008     	ldr	r3, [sp, #0x8]
+4000f2d4: e59f70b8     	ldr	r7, [pc, #0xb8]         @ 0x4000f394 <.text+0xf394>
+4000f2d8: e263101f     	rsb	r1, r3, #31
+4000f2dc: e3e0b000     	mvn	r11, #0
+4000f2e0: e5970000     	ldr	r0, [r7]
+4000f2e4: e1a0113b     	lsr	r1, r11, r1
+4000f2e8: e3a02000     	mov	r2, #0
+4000f2ec: eb006d27     	bl	0x4002a790 <.text+0x2a790> @ imm = #0x1b49c
+4000f2f0: e59d3010     	ldr	r3, [sp, #0x10]
+4000f2f4: e3540000     	cmp	r4, #0
+4000f2f8: e2833004     	add	r3, r3, #4
+4000f2fc: e2866001     	add	r6, r6, #1
+4000f300: e58d3010     	str	r3, [sp, #0x10]
+4000f304: e2855010     	add	r5, r5, #16
+4000f308: 1affff7b     	bne	0x4000f0fc <.text+0xf0fc> @ imm = #-0x214
+4000f30c: e3a00002     	mov	r0, #2
+4000f310: eb006e3a     	bl	0x4002ac00 <.text+0x2ac00> @ imm = #0x1b8e8
+
+$ python3 analysis/fw.py disasm 0x4002ab54 0x4002ac00
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4002ab54: e92d4070     	push	{r4, r5, r6, lr}
+4002ab58: e2524000     	subs	r4, r2, #0
+4002ab5c: e24dd018     	sub	sp, sp, #24
+4002ab60: e1a06000     	mov	r6, r0
+4002ab64: e1a05001     	mov	r5, r1
+4002ab68: 1a000001     	bne	0x4002ab74 <.text+0x2ab74> @ imm = #0x4
+4002ab6c: e3e04000     	mvn	r4, #0
+4002ab70: ea000013     	b	0x4002abc4 <.text+0x2abc4> @ imm = #0x4c
+4002ab74: e3a01000     	mov	r1, #0
+4002ab78: e3a02014     	mov	r2, #20
+4002ab7c: e28d0004     	add	r0, sp, #4
+4002ab80: ebff889a     	bl	0x4000cdf0 <.text+0xcdf0> @ imm = #-0x1dd98
+4002ab84: e3a03103     	mov	r3, #-1073741824
+4002ab88: e58d3008     	str	r3, [sp, #0x8]
+4002ab8c: e28d0004     	add	r0, sp, #4
+4002ab90: e3e03000     	mvn	r3, #0
+4002ab94: e58d400c     	str	r4, [sp, #0xc]
+4002ab98: e58d6004     	str	r6, [sp, #0x4]
+4002ab9c: e58d3014     	str	r3, [sp, #0x14]
+4002aba0: ebff8f32     	bl	0x4000e870 <.text+0xe870> @ imm = #-0x1c338
+4002aba4: e3700001     	cmn	r0, #1
+4002aba8: e1a04000     	mov	r4, r0
+4002abac: 0affffee     	beq	0x4002ab6c <.text+0x2ab6c> @ imm = #-0x48
+4002abb0: e1a03280     	lsl	r3, r0, #5
+4002abb4: e2833201     	add	r3, r3, #268435456
+4002abb8: e2833a03     	add	r3, r3, #12288
+4002abbc: e5835058     	str	r5, [r3, #0x58]
+4002abc0: ebff8fb2     	bl	0x4000ea90 <.text+0xea90> @ imm = #-0x1c138
+4002abc4: e1a00004     	mov	r0, r4
+4002abc8: e28dd018     	add	sp, sp, #24
+4002abcc: e8bd8070     	pop	{r4, r5, r6, pc}
+4002abd0: e3700001     	cmn	r0, #1
+4002abd4: e92d4010     	push	{r4, lr}
+4002abd8: e1a04000     	mov	r4, r0
+4002abdc: 08bd8010     	popeq	{r4, pc}
+4002abe0: ebff90b3     	bl	0x4000eeb4 <.text+0xeeb4> @ imm = #-0x1bd34
+4002abe4: e1a00004     	mov	r0, r4
+4002abe8: e8bd4010     	pop	{r4, lr}
+4002abec: eaff8fda     	b	0x4000eb5c <.text+0xeb5c> @ imm = #-0x1c098
+4002abf0: e92d4008     	push	{r3, lr}
+4002abf4: ebffffd6     	bl	0x4002ab54 <.text+0x2ab54> @ imm = #-0xa8
+4002abf8: e8bd4008     	pop	{r3, lr}
+4002abfc: eafffff3     	b	0x4002abd0 <.text+0x2abd0> @ imm = #-0x34
+
+$ python3 analysis/fw.py disasm 0x4000f004 0x4000f064
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4000f004: e92d401f     	push	{r0, r1, r2, r3, r4, lr}
+4000f008: e59f2048     	ldr	r2, [pc, #0x48]         @ 0x4000f058 <.text+0xf058>
+4000f00c: e2403001     	sub	r3, r0, #1
+4000f010: e58d1000     	str	r1, [sp]
+4000f014: e3a01001     	mov	r1, #1
+4000f018: e1a01311     	lsl	r1, r1, r3
+4000f01c: e1a04000     	mov	r4, r0
+4000f020: e28d300c     	add	r3, sp, #12
+4000f024: e5920000     	ldr	r0, [r2]
+4000f028: e3a02000     	mov	r2, #0
+4000f02c: eb006dcb     	bl	0x4002a760 <.text+0x2a760> @ imm = #0x1b72c
+4000f030: e3500000     	cmp	r0, #0
+4000f034: 0a000006     	beq	0x4000f054 <.text+0xf054> @ imm = #0x18
+4000f038: e59f001c     	ldr	r0, [pc, #0x1c]         @ 0x4000f05c <.text+0xf05c>
+4000f03c: e3a010c2     	mov	r1, #194
+4000f040: e59f2018     	ldr	r2, [pc, #0x18]         @ 0x4000f060 <.text+0xf060>
+4000f044: e1a03004     	mov	r3, r4
+4000f048: ebffe022     	bl	0x400070d8 <.text+0x70d8> @ imm = #-0x7f78
+4000f04c: e3a00000     	mov	r0, #0
+4000f050: ebffe03c     	bl	0x40007148 <.text+0x7148> @ imm = #-0x7f10
+4000f054: e8bd801f     	pop	{r0, r1, r2, r3, r4, pc}
+4000f058: 40e49190     	smlalmi	r9, r4, r0, r1
+4000f05c: 40adc45e     	adcmi	r12, sp, lr, asr r4
+4000f060: 40adc478     	adcmi	r12, sp, r8, ror r4
+
+$ python3 analysis/fw.py disasm 0x400036d0 0x4000374c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+400036d0: e3a00017     	mov	r0, #23
+400036d4: eb002f90     	bl	0x4000f51c <.text+0xf51c> @ imm = #0xbe40
+400036d8: e59f10ac     	ldr	r1, [pc, #0xac]         @ 0x4000378c <.text+0x378c>
+400036dc: e1a00004     	mov	r0, r4
+400036e0: eb002a9f     	bl	0x4000e164 <.text+0xe164> @ imm = #0xaa7c
+400036e4: e3a00018     	mov	r0, #24
+400036e8: eb002f5a     	bl	0x4000f458 <.text+0xf458> @ imm = #0xbd68
+400036ec: eb01f59e     	bl	0x40080d6c <.text+0x80d6c> @ imm = #0x7d678
+400036f0: e59f1098     	ldr	r1, [pc, #0x98]         @ 0x40003790 <.text+0x3790>
+400036f4: e3a02007     	mov	r2, #7
+400036f8: e1a00004     	mov	r0, r4
+400036fc: eb0003a6     	bl	0x4000459c <.text+0x459c> @ imm = #0xe98
+40003700: eb03d3fb     	bl	0x400f86f4 <.text+0xf86f4> @ imm = #0xf4fec
+40003704: e59f1088     	ldr	r1, [pc, #0x88]         @ 0x40003794 <.text+0x3794>
+40003708: e3a0200a     	mov	r2, #10
+4000370c: e1a00004     	mov	r0, r4
+40003710: eb0003a1     	bl	0x4000459c <.text+0x459c> @ imm = #0xe84
+40003714: e1a00004     	mov	r0, r4
+40003718: eb002fda     	bl	0x4000f688 <.text+0xf688> @ imm = #0xbf68
+4000371c: e3a0001d     	mov	r0, #29
+40003720: eb002f4c     	bl	0x4000f458 <.text+0xf458> @ imm = #0xbd30
+40003724: eb03d47a     	bl	0x400f8914 <.text+0xf8914> @ imm = #0xf51e8
+40003728: e1a00004     	mov	r0, r4
+4000372c: e59f1064     	ldr	r1, [pc, #0x64]         @ 0x40003798 <.text+0x3798>
+40003730: e3a0200c     	mov	r2, #12
+40003734: eb000398     	bl	0x4000459c <.text+0x459c> @ imm = #0xe60
+40003738: e3a00020     	mov	r0, #32
+4000373c: eb002f45     	bl	0x4000f458 <.text+0xf458> @ imm = #0xbd14
+40003740: e3a00020     	mov	r0, #32
+40003744: e8bd4038     	pop	{r3, r4, r5, lr}
+40003748: ea002f73     	b	0x4000f51c <.text+0xf51c> @ imm = #0xbdcc
+
+$ python3 analysis/fw.py literals 0x40000b00 0x40000b80
+40000b00: 00000006 
+40000b04: 98400500 
+40000b08: 000071bd 
+40000b0c: 000071be 
+40000b10: 00000007 
+40000b14: 000049ed 
+40000b18: 00006aeb 
+40000b1c: 00e37c00 
+40000b20: 000005cc 
+40000b24: 00005770 
+40000b28: 00006b32 
+40000b2c: 00e68858 
+40000b30: 0000069d 
+40000b34: 00005791 
+40000b38: 00006b65 
+40000b3c: 00e6a22c 
+40000b40: 00000f69 
+40000b44: 000058c2 
+40000b48: 00006bd6 
+40000b4c: 00fd1138 
+40000b50: 00001fff 
+40000b54: 00005c79 
+40000b58: 0000701e 
+40000b5c: 013ab6ec 
+40000b60: 00003360 
+40000b64: 00006107 
+40000b68: 000070be 
+40000b6c: 014da2a4 
+40000b70: 000049ed 
+40000b74: 00006aeb 
+40000b78: 000071bd 
+40000b7c: 014fb780 

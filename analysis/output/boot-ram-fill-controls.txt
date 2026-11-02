@@ -1,0 +1,8 @@
+Image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original slice f168..f1c8 and fill wrapper 2ab54..2abd0; supplied loop/frame state. Successful address translation and stack-only memset modeled. Stops before 4000e870; no DMA, zero fill, storage or live camera execution.
+PASS ordinal=1: CPU interval [40e68880,40e6a240), length=19c0; physical destination=00e68880; fill argument=0; descriptor source=c0000000; callback sentinel unchanged.
+PASS ordinal=2: CPU interval [40e6a240,40fd1140), length=166f00; physical destination=00e6a240; fill argument=0; descriptor source=c0000000; callback sentinel unchanged.
+PASS ordinal=3: CPU interval [40fd1140,413ab700), length=3da5c0; physical destination=00fd1140; fill argument=0; descriptor source=c0000000; callback sentinel unchanged.
+PASS ordinal=4: CPU interval [413ab700,414da2c0), length=12ebc0; physical destination=013ab700; fill argument=0; descriptor source=c0000000; callback sentinel unchanged.
+PASS ordinal=5: CPU interval [414da2c0,414fb780), length=214c0; physical destination=014da2c0; fill argument=0; descriptor source=c0000000; callback sentinel unchanged.
+PASS equal-bound control: no mapping or fill descriptor requested.

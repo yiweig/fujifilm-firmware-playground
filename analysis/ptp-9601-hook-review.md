@@ -146,3 +146,9 @@ The proposed callback investigation is **partially resolved**: its two API
 ends and the newly found nearby copy are accounted for, and no installer or
 loader target emerged. Complete absence and live pointer state remain unknown.
 The useful recovery barrier is still entry to the separate loader personality.
+
+Follow-up: [staged boot RAM initialization](staged-boot-ram-initialization.md)
+finds the previously missed hardware zero-fill request covering this slot.
+It strengthens intended-zero initialization for successful ordinary boot;
+it does not observe a live zero or prove later writes absent. The CPU-store
+search above did not cover hardware fill engines.

@@ -1,0 +1,64 @@
+{
+  "image_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "table": "40000b00",
+  "worker": "4000f064",
+  "stage_mask": "98400500",
+  "stage_ids": [
+    9,
+    11,
+    23,
+    28,
+    29,
+    32
+  ],
+  "first_iteration_skips_fill": true,
+  "callback": "4136b664",
+  "fills": [
+    {
+      "stage": 11,
+      "table_end_field": "40000b3c",
+      "cpu_start": "40e68880",
+      "cpu_end_exclusive": "40e6a240",
+      "length": 6592,
+      "requested_fill_value": 0,
+      "contains_callback_word": false
+    },
+    {
+      "stage": 23,
+      "table_end_field": "40000b4c",
+      "cpu_start": "40e6a240",
+      "cpu_end_exclusive": "40fd1140",
+      "length": 1470208,
+      "requested_fill_value": 0,
+      "contains_callback_word": false
+    },
+    {
+      "stage": 28,
+      "table_end_field": "40000b5c",
+      "cpu_start": "40fd1140",
+      "cpu_end_exclusive": "413ab700",
+      "length": 4040128,
+      "requested_fill_value": 0,
+      "contains_callback_word": true
+    },
+    {
+      "stage": 29,
+      "table_end_field": "40000b6c",
+      "cpu_start": "413ab700",
+      "cpu_end_exclusive": "414da2c0",
+      "length": 1240000,
+      "requested_fill_value": 0,
+      "contains_callback_word": false
+    },
+    {
+      "stage": 32,
+      "table_end_field": "40000b7c",
+      "cpu_start": "414da2c0",
+      "cpu_end_exclusive": "414fb780",
+      "length": 136384,
+      "requested_fill_value": 0,
+      "contains_callback_word": false
+    }
+  ],
+  "scope": "Static table/argument derivation, not observed hardware writes; address translation, DMA completion and later mutations remain separate qualifications."
+}

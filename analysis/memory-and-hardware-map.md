@@ -88,12 +88,16 @@ The image therefore begins at a genuine runtime entry point, not merely at an
 arbitrary function boundary. This is the application/DRAM-stage entry point,
 however—not necessarily the first instruction executed after power-on.
 
-No conventional whole-BSS zeroing loop or copy table has yet been found on
-this primary reset path. Either an earlier loader prepares the unbacked static
-storage, or the relevant table/loop is behind an initialization routine not yet
-identified. Consequently, the newly confirmed allocator ceiling still should
-not be treated as a safe write or RAM-firmware upload boundary without runtime
-confirmation of the intervening region's owners.
+Follow-up: [staged RAM initialization](staged-boot-ram-initialization.md)
+identifies a table-driven hardware-fill worker at `0x4000f064`, launched by
+the initialization task. It requests five zero-fill intervals spanning
+`0x40e68880..0x414fb780`; the stage-28 interval includes the PTP callback.
+Original-instruction controls validate interval/descriptor construction,
+not actual DMA success. The worker does not enforce every hardware error
+result. This resolves a substantial part of the initialization-path question,
+but not complete BSS ownership or the gap before `0x40e68880`.
+The allocator boundary remains unsuitable as a presumed safe write or
+RAM-firmware upload boundary without ownership/runtime qualification.
 
 ## On-chip SRAM (`0x3f...`)
 
