@@ -7,6 +7,9 @@ package. No camera command was sent and no flash operation was attempted.
 Coordinate correction (2026-11-02): routine addresses in this note refer to
 the updater library inside `firmware-main.bin`. The separately packaged small
 updater has a different layout; see [the extraction/mapping correction](updater-image-layout.md).
+The [resident file-update controls](resident-file-update-path.md) now execute
+the real parser with official package bytes and confirm its Firmware2-enable
+field remains zero at the resident-engine call boundary.
 
 ## Bottom line
 

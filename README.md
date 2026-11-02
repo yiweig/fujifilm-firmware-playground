@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
+  — actual file-wrapper/parser controls reach the resident update engine;
+  packaged updater bytes remain data, and cold recovery is still separate.
 - [`analysis/updater-image-layout.md`](analysis/updater-image-layout.md)
   — recovered updater vector/header prefix, corrected complete-image mapping,
   historical coordinate caveats and remaining earlier-stage recovery gap.

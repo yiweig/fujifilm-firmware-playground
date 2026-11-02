@@ -1,0 +1,11 @@
+Main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Official package SHA-256: 3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68
+PASS cap=200000: resident engine boundary 405efddc, package-buffer=44200000 parser-state=44338000 window=138000; FW1 offset=08fe3d20, FW2 enable=0; reads=[offset=00000000 count=138000, offset=09e1c120 count=20, offset=09e1c120 count=aa0]
+PASS cap=400000: resident engine boundary 405efddc, package-buffer=44200000 parser-state=44478000 window=278000; FW1 offset=08fe3d20, FW2 enable=0; reads=[offset=00000000 count=278000, offset=09e1c120 count=20, offset=09e1c120 count=aa0]
+PASS fault=open: returns fffffffe, closes=0, resident engine not reached.
+PASS fault=short: returns fffffffe, closes=1, resident engine not reached.
+PASS fault=hdr1: returns fffffffe, closes=1, resident engine not reached.
+5 controls passed. Original file wrapper and package parser execute; packaged updater bytes are read as data, never executed on these paths.
+Modeled: read-only file operations, allocator policy, memory helpers, formatting and logs. Actual RAM drive getter/setter execute.
+Stops BEFORE 405efddc: no update-engine checksum pass, storage interface, flash/RTC/hardware operation, packaged reset vector or updater startup executes.
+Not a full UI update simulation, independently bootable updater, live recovery procedure, or proof about every indirect callee of the update engine.

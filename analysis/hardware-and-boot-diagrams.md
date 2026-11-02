@@ -138,13 +138,17 @@ flowchart TD
   linuxboot -. "exact activation path incomplete" .-> linux
 
   updatecard["SD card: official FPUPDATE.DAT"]:::observed
-  updater["Embedded ARMv7 card updater<br/>execution entry/loading path unresolved"]:::observed
+  updater["Resident update engine in main firmware<br/>normal file-update call traced"]:::observed
+  packaged["Packaged ARMv7 updater executable<br/>separate boot consumer unresolved"]:::observed
   checks["Package size / checksum / storage checks"]:::observed
   backup["Keep Firmware2 + invalidate FW1 checksum before write<br/>restore only on success"]:::observed
   writes["Write + read-back verify<br/>ordinary path: FW1 + package resources<br/>generic updater can also write FW2"]:::critical
   finish["Success: restore FW1 checksum<br/>failure: leave FW1 invalid"]:::observed
 
-  updatecard -. "boot/update chord and loader boundary unknown" .-> updater
+  camera -->|"normal update UI / file parser"| updater
+  updatecard -->|"package read as data"| updater
+  updatecard -. "contains executable; no normal-path launch established" .-> packaged
+  early -. "independent launch unknown" .-> packaged
   updater --> checks
   checks --> backup
   backup --> writes

@@ -146,3 +146,9 @@ control to this complete updater: which bytes it loads, where it places them,
 and what initialization it supplies. That can define the updater's prerequisites
 and distinguish a main-assisted launch from a genuinely independent cold-boot
 entry. Automatic Firmware2 fallback and removable-SD recovery remain unproved.
+
+Follow-up: [resident file-update path](resident-file-update-path.md) executes
+the actual file wrapper/parser with official package bytes. It reaches the
+resident main-image update engine, not the packaged executable's entry, before
+any update-engine instruction executes. The premise of a normal-path handoff
+to the packaged updater was not supported; earlier-stage consumers remain open.
