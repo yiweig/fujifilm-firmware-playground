@@ -165,3 +165,7 @@ Next: correlate the observed operation list against existing static handlers
 and their callback registrations before considering another live request.
 Actual Fujifilm release identity still needs independent confirmation; do not
 treat `01.00`, the host module's `1.0`, or USB `bcdDevice=0x0200` as that proof.
+
+Follow-up: [advertised-operation review](ptp-advertised-operation-review.md)
+maps all 26 codes offline and checks selected handler bodies/routing across
+four versions. No additional live operations were performed.

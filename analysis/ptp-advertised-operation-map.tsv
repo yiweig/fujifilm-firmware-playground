@@ -1,0 +1,27 @@
+opcode	conventional_name_or_observed_role	default_dispatch_site_2_00	handler_or_boundary_2_00	review_note
+1001	GetDeviceInfo	402e7a74	402e8b94	Only explicit operation exercised live; success and explicit session close observed
+1002	OpenSession	402e7a7c	402e8d60	Framework-managed session; RAM allocation/state plus application notification
+1003	CloseSession	402e7ab4	402e8e80	Framework-managed session; RAM cleanup plus application notification
+1004	GetStorageIDs	402e7ae0	402e8f30	Previously reviewed storage enumeration
+1005	GetStorageInfo	402e7ae8	402e90a4	Storage metadata; not raw storage access
+1006	GetNumObjects	402e7970	402e99f4	Object database count
+1007	GetObjectHandles	402e7af0	402e93bc	Previously reviewed filtered media database
+1008	GetObjectInfo	402e7af8	402e9a38	Previously reviewed object metadata
+1009	GetObject	402e7b10	402eae10	Object preparation followed by 403313b0; not arbitrary path or pointer
+100a	GetThumb	402e7b00	402ea1d0	Image-object surface; no new full handler audit
+100b	DeleteObject	402e7c70	402ebf54	Mutating operation; not a candidate read
+100c	SendObjectInfo	402e7b34	402ebdb8	Receive preparation; alias conversion is evaluated before this default branch
+100d	SendObject	402e7c9c	402eb870	Receive preparation; alias conversion is evaluated before this default branch
+100e	InitiateCapture	402e7b3c	callback_at_4136b65c	Optional capture callback; not a candidate read
+1014	GetDevicePropDesc	402e7cf4	40331cb8	Property descriptions and application callback
+1015	GetDevicePropValue	402e7ccc	40331e6c	Default; d212 selects 40331414 and d220 selects 40331cb8
+1016	SetDevicePropValue	402e7cb4	402ebd54	Mutating property path; previously reviewed WB/date-time callbacks
+101b	GetPartialObject	402e7c7c	402eb058	Object-based file preparation followed by 403313b0
+9601	Optional_host_response_callback	402e7bc4	callback_at_4136b664	Requires callback; allocates/waits on HostRespEvt; no live callback value established
+9602	Image_object_processing	402e7b08	402ea6f4	Shared with 9812; object lookup and image-file processing
+9812	MTP_UpdateDeviceFirmware_name_only	402e7b08	402ea6f4	Observed implementation is shared image-object path; name is not recovery evidence
+9614	Bulk_device_property_descriptions	402e7d24	40331bac	Loops advertised property table through 40331b18
+9801	MTP_GetObjectPropsSupported	402e7d04	402e3ce0	Format-based object-property list
+9802	MTP_GetObjectPropDesc	402e7d0c	402e2fe4	Object-property descriptor serialization
+9803	MTP_GetObjectPropValue	402e7d14	40331d28	Requires media-database object and parent; serializes property value
+9805	MTP_GetObjPropList	402e7d1c	402e3940	Object-property enumeration with object/depth/group selectors; transitive traversal not fully audited

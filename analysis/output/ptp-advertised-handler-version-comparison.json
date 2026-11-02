@@ -1,0 +1,117 @@
+{
+  "scope": "Exact instruction-body matches; literal pools and transitive callees excluded except for the two explicitly checked dispatch pointers. No camera access.",
+  "versions": {
+    "1.01": {
+      "sha256": "64ca08d346075907bbec2dde2db50bc3a5507a93e5d7b2e5024d4a59599125f9",
+      "regions": {
+        "dispatcher": {
+          "address": "402abed0",
+          "bytes": 1604,
+          "body_sha256": "5fe9fec8a30f75122b7c0c47fd0c14665e676b912a543c9a3b2916ced89cbf02"
+        },
+        "image_handler": {
+          "address": "402aee38",
+          "bytes": 968,
+          "body_sha256": "2be63d0106fd8477243ea86a88ad9a9c04b322da13faa3262f99e259cade5e3b"
+        },
+        "bulk_description_handler": {
+          "address": "402f6300",
+          "bytes": 248,
+          "body_sha256": "3c704c004fec1d6ccfa555c3cbb5e4a630288b0ef54e0a202e04efdaa2f65ae9"
+        }
+      },
+      "9602_9812": {
+        "pointer_location": "402ac568",
+        "target": "402aee38"
+      },
+      "9614": {
+        "pointer_location": "402ac5c8",
+        "target": "402f6300"
+      }
+    },
+    "1.20": {
+      "sha256": "85d6d280605148d131c28f71b3560742310878340c6de5d1c05faf00d02a2c8f",
+      "regions": {
+        "dispatcher": {
+          "address": "402abf68",
+          "bytes": 1604,
+          "body_sha256": "5fe9fec8a30f75122b7c0c47fd0c14665e676b912a543c9a3b2916ced89cbf02"
+        },
+        "image_handler": {
+          "address": "402aeed0",
+          "bytes": 968,
+          "body_sha256": "2be63d0106fd8477243ea86a88ad9a9c04b322da13faa3262f99e259cade5e3b"
+        },
+        "bulk_description_handler": {
+          "address": "402f6398",
+          "bytes": 248,
+          "body_sha256": "3c704c004fec1d6ccfa555c3cbb5e4a630288b0ef54e0a202e04efdaa2f65ae9"
+        }
+      },
+      "9602_9812": {
+        "pointer_location": "402ac600",
+        "target": "402aeed0"
+      },
+      "9614": {
+        "pointer_location": "402ac660",
+        "target": "402f6398"
+      }
+    },
+    "1.30": {
+      "sha256": "34034d7d1314485fbbd8167669a83dbea4d3dc80cc9ba3c87c7ded2c96aa9df6",
+      "regions": {
+        "dispatcher": {
+          "address": "402acbf0",
+          "bytes": 1604,
+          "body_sha256": "5fe9fec8a30f75122b7c0c47fd0c14665e676b912a543c9a3b2916ced89cbf02"
+        },
+        "image_handler": {
+          "address": "402afb58",
+          "bytes": 968,
+          "body_sha256": "2be63d0106fd8477243ea86a88ad9a9c04b322da13faa3262f99e259cade5e3b"
+        },
+        "bulk_description_handler": {
+          "address": "402f7020",
+          "bytes": 248,
+          "body_sha256": "3c704c004fec1d6ccfa555c3cbb5e4a630288b0ef54e0a202e04efdaa2f65ae9"
+        }
+      },
+      "9602_9812": {
+        "pointer_location": "402ad288",
+        "target": "402afb58"
+      },
+      "9614": {
+        "pointer_location": "402ad2e8",
+        "target": "402f7020"
+      }
+    },
+    "2.00": {
+      "sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+      "regions": {
+        "dispatcher": {
+          "address": "402e778c",
+          "bytes": 1604,
+          "body_sha256": "5fe9fec8a30f75122b7c0c47fd0c14665e676b912a543c9a3b2916ced89cbf02"
+        },
+        "image_handler": {
+          "address": "402ea6f4",
+          "bytes": 968,
+          "body_sha256": "2be63d0106fd8477243ea86a88ad9a9c04b322da13faa3262f99e259cade5e3b"
+        },
+        "bulk_description_handler": {
+          "address": "40331bac",
+          "bytes": 248,
+          "body_sha256": "3c704c004fec1d6ccfa555c3cbb5e4a630288b0ef54e0a202e04efdaa2f65ae9"
+        }
+      },
+      "9602_9812": {
+        "pointer_location": "402e7e24",
+        "target": "402ea6f4"
+      },
+      "9614": {
+        "pointer_location": "402e7e84",
+        "target": "40331bac"
+      }
+    }
+  }
+}
