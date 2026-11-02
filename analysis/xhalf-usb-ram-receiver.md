@@ -51,6 +51,11 @@ handler (`0x401e1280`) through `0x401ba258`. The registration is reached by
 handler is dispatched through the callback arrays rooted at `0x40fc7b78`.
 This ties the loader request handler to the target selected by mode 4.
 
+Follow-up: [early startup dependencies](early-usb-startup-dependencies.md)
+separates that pointer registration from deferred task setup and connection,
+and finds an initialization gap in the early-shell alternative. Registration
+alone is not an early-boot USB service or independent recovery.
+
 ## Matched vendor requests
 
 `0x401e1280` is a state machine using byte `0x40d79b21` and state object

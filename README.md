@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/early-usb-startup-dependencies.md`](analysis/early-usb-startup-dependencies.md)
+  — loader registration versus deferred USB setup, early-shell initialization
+  gap, and null-initializer controls; independent recovery remains unproved.
 - [`analysis/startup-usb-flag-ordering.md`](analysis/startup-usb-flag-ordering.md)
   — same-event initialization/refresh ordering, state-zero event rejection,
   known synchronous queue filter and 80 offline startup/queue controls.

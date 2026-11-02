@@ -1,0 +1,26 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original registrations 401e2104 and 402e6314 executed; selected target byte supplied, initializers/mode switch NOT executed.
+Original setup classifier and 8-byte queue copy execute; allocator and enqueue modeled; queue consumer delivery supplied.
+PASS: reset/init event 0, target=0 registered=false -> boundary=401bd278; table/globals unchanged, no fallback registration.
+PASS: reset/init event 0, target=0 registered=true -> boundary=401e122c; table/globals unchanged, no fallback registration.
+PASS: reset/init event 0, target=2 registered=false -> boundary=401bd278; table/globals unchanged, no fallback registration.
+PASS: reset/init event 0, target=2 registered=true -> boundary=402e4f80; table/globals unchanged, no fallback registration.
+PASS: target=2 type=40 request=70 event=15 -> null callback return; image/globals unchanged.
+PASS: target=2 type=40 request=fa event=15 -> null callback return; image/globals unchanged.
+PASS: target=2 type=40 request=fd event=15 -> null callback return; image/globals unchanged.
+PASS: target=2 type=c0 request=70 event=15 -> null callback return; image/globals unchanged.
+PASS: target=2 type=c0 request=fa event=15 -> null callback return; image/globals unchanged.
+PASS: target=2 type=c0 request=fd event=15 -> null callback return; image/globals unchanged.
+PASS: target=0 type=40 request=70 event=15 -> loader entry boundary 401e1280 (not executed); image/globals unchanged.
+PASS: target=0 type=40 request=fa event=15 -> loader entry boundary 401e1280 (not executed); image/globals unchanged.
+PASS: target=0 type=40 request=fd event=15 -> loader entry boundary 401e1280 (not executed); image/globals unchanged.
+PASS: target=0 type=c0 request=70 event=15 -> loader entry boundary 401e1280 (not executed); image/globals unchanged.
+PASS: target=0 type=c0 request=fa event=15 -> loader entry boundary 401e1280 (not executed); image/globals unchanged.
+PASS: target=0 type=c0 request=fd event=15 -> loader entry boundary 401e1280 (not executed); image/globals unchanged.
+PASS: target=2 class request=64 event=14 -> boundary=4005714c; image/globals unchanged; USB selection/cache/cold RAM preserved.
+PASS: target=2 class request=66 event=14 -> boundary=400560a0; only protocol-state byte and session word change; USB selection/cache/cold RAM preserved.
+PASS: target=2 class request=67 event=14 -> boundary=401cafa0; image/globals unchanged; USB selection/cache/cold RAM preserved.
+PASS: target=2 class request=fd event=14 -> boundary=401bd278; image/globals unchanged; USB selection/cache/cold RAM preserved.
+Reset case models zero-length status transfer and stops BEFORE USB MMIO helper 400560a0(3,1).
+Other class controls stop BEFORE cancellation helper, status encoding, or unknown-request diagnostic.
+No camera I/O, loader, shell, RTC/file calls, hardware setup/reset, real queue/allocator or response transfer executed.

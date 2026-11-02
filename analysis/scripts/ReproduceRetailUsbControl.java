@@ -63,6 +63,7 @@ public class ReproduceRetailUsbControl extends GhidraScript {
                      (pc>=0x401e941cL && pc<0x401e9550L) ||
                      (pc>=0x401b9ae8L && pc<0x401b9b90L) ||
                      (pc>=0x401ba030L && pc<0x401ba144L) ||
+                     (pc>=0x401b9ebcL && pc<0x401b9f44L) ||
                      (pc>=0x4033555cL && pc<0x40335690L) ||
                      (pc>=0x401dfcccL && pc<0x401dfcd8L) ||
                      (pc>=0x402e62d8L && pc<0x402e6308L) ||
@@ -73,11 +74,12 @@ public class ReproduceRetailUsbControl extends GhidraScript {
             throw new Exception("Instruction limit");
         }
         void register(int target) throws Exception {
+            put(TABLE+0x14,target,1); // selected personality supplied BEFORE registration
             run(0x401e2104L,0,END);run(0x402e6314L,0,END);
             if(get(TABLE+0x54,4)!=0x401e1280L || get(TABLE+0x54+8,4)!=0 ||
-               get(TABLE+0x40+8,4)!=0x4033555cL || get(TABLE+8,4)!=0x402e4f80L)
+               get(TABLE+0x40+8,4)!=0x4033555cL || get(TABLE+8,4)!=0x402e4f80L ||
+               get(TABLE+0x14,1)!=target)
                 throw new Exception("Unexpected original registration result");
-            put(TABLE+0x14,target,1); // supplied selected personality; mode switch not executed
         }
         void classify(int type,int request) throws Exception {
             byte[] packet={(byte)type,(byte)request,0x34,0x12,(byte)0xf7,4,3,0};bytes(INPUT,packet);
@@ -95,6 +97,17 @@ public class ReproduceRetailUsbControl extends GhidraScript {
             out.println("Original main-image SHA-256: "+hash);
             out.println("Original registrations 401e2104 and 402e6314 executed; selected target byte supplied, initializers/mode switch NOT executed.");
             out.println("Original setup classifier and 8-byte queue copy execute; allocator and enqueue modeled; queue consumer delivery supplied.");
+            for(int target:new int[]{0,2})for(boolean registered:new boolean[]{false,true}) {
+                Arm a=new Arm();a.put(TABLE+0x14,target,1);
+                if(registered)a.register(target);
+                a.put(MSG,0,2);byte[] expected=a.bytes(BASE,LENGTH);
+                long boundary=registered?(target==0?0x401e122cL:0x402e4f80L):0x401bd278L;
+                a.run(0x401ba030L,MSG,boundary);
+                if(!Arrays.equals(expected,a.bytes(BASE,LENGTH)) || a.allocations!=0 || a.queues!=0 ||
+                    (!registered && a.reg("r2")!=0xb3))throw new Exception("Initializer dependency control");
+                out.printf("PASS: reset/init event 0, target=%d registered=%s -> boundary=%08x; table/globals unchanged, no fallback registration.%n",
+                    target,registered,boundary);
+            }
             for(int target:new int[]{2,0})for(int type:new int[]{0x40,0xc0})for(int request:new int[]{0x70,0xfa,0xfd}) {
                 Arm a=new Arm();a.register(target);byte[] expected=a.bytes(BASE,LENGTH);
                 a.classify(type,request);a.run(0x401ba030L,MSG,target==2?END:0x401e1280L);

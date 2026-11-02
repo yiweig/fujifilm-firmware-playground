@@ -23,6 +23,12 @@ Neither lead currently provides a safe RAM-boot procedure or independent
 recovery. The normal USB endpoint observation is useful transport preparation,
 but it does not resolve either of these entry conditions.
 
+Follow-up: [early USB startup dependencies](early-usb-startup-dependencies.md)
+shows that the early-shell branch skips the normal routine containing loader
+callback registration. Original dispatcher controls with a supplied empty
+table reach a null-initializer assertion, not automatic fallback registration.
+Actual early-shell table contents and optional task behavior remain unknown.
+
 ```mermaid
 flowchart TD
     A[Power-on: earlier ROM / storage loader<br/>implementation unavailable] --> B[Load main firmware into RAM]
