@@ -162,3 +162,8 @@ The missing evidence is a separate earlier-stage consumer: who can load the
 packaged executable without the normal application, with which boot conditions
 and DRAM setup. No independent recovery entry or new camera experiment follows
 from this file-update trace.
+
+Follow-up: [packaged updater boot-register consumer](updater-boot-register-consumer.md)
+finds its own automatic pathname/action logic and identifies the BootInfo
+diagnostic's source. Eight supplied-register controls execute that consumer;
+the writer and earlier loader still remain unknown.

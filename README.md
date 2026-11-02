@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/updater-boot-register-consumer.md`](analysis/updater-boot-register-consumer.md)
+  — packaged-updater boot-register/pathname consumer, eight original-ARM
+  boundary controls and the distinction between BootInfo diagnostics and fallback.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

@@ -1,0 +1,14 @@
+Full updater SHA-256: 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Offline original startup 400009c4; MMIO addresses contain supplied emulator bytes, no hardware access.
+PASS enabled=false name= ext= file-check=0 -> pathname=null, boundary=40069374; loaded image unchanged.
+PASS enabled=true name= ext= file-check=0 -> pathname=D:\firmware.brn, boundary=4000f270; loaded image unchanged.
+PASS enabled=true name=TEST ext= file-check=0 -> pathname=D:\TEST.brn, boundary=40009ca0; loaded image unchanged.
+PASS enabled=true name=TEST ext=bin file-check=0 -> pathname=D:\TEST.bin, boundary=4000f270; loaded image unchanged.
+PASS enabled=true name=TEST ext=BRN file-check=0 -> pathname=D:\TEST.BRN, boundary=4000f270; loaded image unchanged.
+PASS enabled=true name=FPUPDATE ext=DAT file-check=0 -> pathname=D:\FPUPDATE.DAT, boundary=4000f270; loaded image unchanged.
+PASS enabled=true name=TEST ext=brn file-check=1 -> pathname=D:\TEST.brn, boundary=40075ea4; loaded image unchanged.
+PASS enabled=true name=firmware ext=brn file-check=0 -> pathname=D:\firmware.brn, boundary=40009ca0; loaded image unchanged.
+8 controls passed. Same default/custom pathname can take different branches because basename-length context also participates.
+Modeled: copy, configuration setters, storage readiness, drive probe, file-check result and logs. Original boot-status getter and path/branch logic execute.
+Stops before ISP task/setup 40009ca0, file/rawC boot 4000f270, shutdown 40075ea4 or continuation 40069374. None executes.
+Not full updater boot, a physical button recipe, a demonstrated register writer, immutable recovery, file-format validation or a card-preparation instruction.

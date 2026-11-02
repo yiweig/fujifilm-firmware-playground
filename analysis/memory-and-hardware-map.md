@@ -25,6 +25,11 @@ executable, read-only, or one real hardware segment.
 
 ## Address-space overview
 
+Follow-up [updater boot-register analysis](updater-boot-register-consumer.md)
+identifies uses of `0x10001300`, `0x10004054` and filename/configuration fields
+`0x100040b4..0x100040c3` in the separately packaged updater. These are consumer
+semantics, not verified hardware register names or physical button mappings.
+
 | Address range | Present interpretation | Confidence |
 |---|---|---|
 | `0x10000000..0x1001efff` (sparse) | SPCA6500 SoC peripheral registers | observed |
