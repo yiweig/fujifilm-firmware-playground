@@ -7,6 +7,9 @@ state are intentionally excluded from version control.
 
 ## Current research notes
 
+- [`analysis/cold-save-error-propagation.md`](analysis/cold-save-error-propagation.md)
+  — original save/flush controls: archive write errors can be masked by logical
+  success; cold saves force immediate mode and need independent persistence checks.
 - [`analysis/cold-resource-backing.md`](analysis/cold-resource-backing.md)
   — packaged cold-data archive, RAM-backed logical files, first-use loader
   controls and the distinction between record reads and physical storage reads.

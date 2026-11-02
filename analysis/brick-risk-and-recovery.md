@@ -239,3 +239,11 @@ For each arrow we need its storage location, validation rule, overwrite scope,
 and fallback behavior. In parallel, an X half recovery recipe needs evidence
 for the boot-ROM SD filenames/format and an entry marker that can be tested
 without writing internal storage.
+
+Follow-up (2026-11-01): [service initialization](service-entry-initialization-writes.md)
+attempts a factory-data save even with automatic calibration disabled.
+[Archive backing](cold-resource-backing.md) and
+[save-error controls](cold-save-error-propagation.md) show why a successful
+logical read/write reply does not establish persistent backup or restore:
+reads can use resident RAM, and archive write failures can be masked. An
+independent persistence check and a separate recovery path remain necessary.

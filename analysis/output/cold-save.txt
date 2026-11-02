@@ -1,0 +1,18 @@
+Main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Packaged archive SHA-256: b878272f4cb92ded7aa31850d3f17fd8be16304b85982fbd0b03acbfe04f4f69
+Offline original checksum/save wrapper, write adapter, archive write/flush and physical-write wrapper; lower I/O is modeled.
+PASS wrapper initial-mode=0 outcome=0: save returned 0; forced mode 0; opens=1 writes=1 closes=1; no dirty retry; disk matches new archive=true.
+PASS wrapper initial-mode=0 outcome=1: save returned 0; forced mode 0; opens=1 writes=0 closes=0; no dirty retry; disk matches new archive=false.
+PASS wrapper initial-mode=0 outcome=2: save returned 0; forced mode 0; opens=1 writes=1 closes=1; no dirty retry; disk matches new archive=false.
+PASS wrapper initial-mode=1 outcome=0: save returned 0; forced mode 0; opens=1 writes=1 closes=1; no dirty retry; disk matches new archive=true.
+PASS wrapper initial-mode=1 outcome=1: save returned 0; forced mode 0; opens=1 writes=0 closes=0; no dirty retry; disk matches new archive=false.
+PASS wrapper initial-mode=1 outcome=2: save returned 0; forced mode 0; opens=1 writes=1 closes=1; no dirty retry; disk matches new archive=false.
+PASS lower adapter mode=1 outcome=0: returned 1024 before I/O; after flush dirty=0; disk matches new archive=true.
+PASS lower adapter mode=1 outcome=1: returned 1024 before I/O; after flush dirty=1; disk matches new archive=false.
+PASS lower adapter mode=1 outcome=2: returned 1024 before I/O; after flush dirty=1; disk matches new archive=false.
+PASS initially dirty mode 1/open failures: preflush and save both attempted open; save returned 0, mode became 0, dirty remains 1, later flush does not retry.
+Outcomes: 0=full write, 1=physical open failure, 2=200-byte short write of 1216-byte archive.
+The cold save wrapper forces mode 0 through environment selector 20; physical-write errors are masked and no dirty retry is recorded.
+Separate lower-adapter controls bypass that wrapper: mode 1 defers writes, then flush preserves dirty on failure.
+Modeled: selector-20 dispatch to original mode setter; other environment calls, delay, init, path compare, logical open/seek/close, handle classification, copy, raw open/size/write/close and logging.
+No camera/storage access. Conditional archive-backed path only; no live reachability, durability, recovery, or normal-mode selection proof.

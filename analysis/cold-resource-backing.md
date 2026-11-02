@@ -177,3 +177,8 @@ validated full archive would still cover only the identified members; it
 would not supply independent boot recovery or prove a complete calibration
 backup. No SD marker, service-button experiment or RAM-write freshness
 challenge is justified by these findings.
+
+Follow-up: [save-error propagation](cold-save-error-propagation.md) confirms
+that archive-backed saves can report success despite physical open/short-write
+failures. The full cold-data save wrapper explicitly selects mode 0, so the
+separate deferred flush mechanism must not be assumed to protect it.

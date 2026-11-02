@@ -29,6 +29,10 @@ physical-write interpretation. `COLDDATA.BIN` can be an archive member; its
 1,024-byte logical save can reach an archive-file write. The request size
 alone does not identify the physical write unit or prove persistence.
 
+The [save-error controls](cold-save-error-propagation.md) further show that
+the full cold-data writer selects immediate mode and can mask archive-write
+errors. A success result or same-cache read-back would not verify a restore.
+
 ## Ordering relative to USB and automatic work
 
 The inspected `EnterCalibrationMode` path (`0x405dd4f0`) has this order:
