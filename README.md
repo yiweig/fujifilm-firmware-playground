@@ -199,6 +199,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-usb-resource-bringup.md`](analysis/updater-usb-resource-bringup.md)
   — error-path helper acquires USB resources and programs the PHY/PLL block;
   eight original-ARM controls and main-image corroboration, without live USB proof.
+- [`analysis/updater-command-task.md`](analysis/updater-command-task.md)
+  — corrects "ISP task" to the `Cmd` interpreter; separates table registration,
+  storage-worker startup and explicit update commands from automatic file updating.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

@@ -101,7 +101,7 @@ Startup `0x4000125c` calls its boot-register consumer at `0x40001390`, then
 tail-calls continuation `0x400007f4` at `0x40001398`, if the consumer returns.
 The continuation:
 
-1. Calls ISP task setup `0x40009ca0`.
+1. Calls command-task setup `0x40009ca0`; see the [task identification](updater-command-task.md).
 2. Selects USB target 0 through `0x40010c70(0)`.
 3. Calls `0x4000f1ac`, a tail wrapper for registration `0x40012100`.
 4. Calls wrapper `0x4000f028`, which tail-calls USB setup `0x4001111c`.
@@ -121,9 +121,10 @@ them to dispatcher `0x40010cc0`. These static edges connect the handler to
 service machinery. No scheduler, USB controller, host enumeration, endpoint
 transfer, or successful upload has been observed or emulated in this pass.
 
-The startup continuation includes ISP task creation, and the same executable
-contains flash-writing update functions. Its USB machinery must not be used
-to conclude that launching the stock updater from RAM would be flash-free.
+The startup continuation creates the `Cmd` interpreter, which registers update
+commands and starts a storage worker. That is separate from the outer automatic
+file-update branch. Its USB machinery still does not establish that launching
+the stock updater from RAM would be flash-free.
 
 ## Evidence and limits
 

@@ -71,7 +71,7 @@ At `0x40001094`, the consumer calls `0x40075ea4`. Original code afterward:
 
 The startup caller's next instructions `0x40001394..0x40001398` restore
 its saved frame and tail-call `0x400007f4`. As previously traced, that
-continuation sets up an ISP task, selects USB target 0, registers the receiver,
+continuation sets up a [command interpreter task](updater-command-task.md), selects USB target 0, registers the receiver,
 creates USB tasks/queues and performs controller setup. None of that continuation
 executes in the new controls; it is their final boundary.
 

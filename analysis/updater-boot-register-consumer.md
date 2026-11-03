@@ -8,6 +8,11 @@ not the main camera firmware. No camera access or card preparation occurred.
 
 ## Finding
 
+Correction: [command-task identification](updater-command-task.md) resolves
+`0x40009ca0` as setup for the `Cmd` interpreter task. The following explicit
+file-update wrapper call is separate. Historical "ISP task/setup" labels in
+control logs refer to that same stop address, not a proven flash task.
+
 Correction/follow-up: [file-failure continuation](updater-file-failure-continuation.md)
 shows that `0x40075ea4`, previously called a shutdown boundary, has a return
 path. With modeled platform returns, failed file actions reach the USB-startup
@@ -31,7 +36,7 @@ of a status-register field. It is not a recovered automatic Firmware1/Firmware2
 fallback selector. Six rawC boot-configuration entries also must not be equated
 with the two firmware slots merely because both concern booting.
 
-Eight supplied-state controls pass, stopping before ISP task/setup, boot loading
+Eight supplied-state controls pass, stopping before command-task setup, boot loading
 or a platform helper. **There is still no independent cold-recovery procedure.**
 
 ## Startup consumer and register inputs
@@ -71,7 +76,7 @@ path. The file-check implementation itself is modeled, not audited here.
 At `0x4000100c..0x40001038`, selection checks for lowercase `.brn` using a
 pointer derived from the basename-length context:
 
-- Matching branch calls ISP task/setup `0x40009ca0`, then wrapper `0x4000fc70`.
+- Matching branch calls command-task setup `0x40009ca0`, then file-update wrapper `0x4000fc70`.
 - Other branches call file/rawC boot helper `0x4000f270` with destination
   argument zero, which that helper replaces with `0x40000000`.
 
@@ -99,12 +104,12 @@ refer to synthetic memory, with boot-status bit 7 set, configuration byte
 | --- | --- | --- | --- | --- |
 | 0 | empty / empty | unused | none | `0x40069374`, continuation |
 | 1 | empty / empty | 0 | `D:\firmware.brn` | `0x4000f270`, file/rawC boot |
-| 1 | `TEST` / empty | 0 | `D:\TEST.brn` | `0x40009ca0`, ISP setup |
+| 1 | `TEST` / empty | 0 | `D:\TEST.brn` | `0x40009ca0`, command-task setup |
 | 1 | `TEST` / `bin` | 0 | `D:\TEST.bin` | `0x4000f270` |
 | 1 | `TEST` / `BRN` | 0 | `D:\TEST.BRN` | `0x4000f270` |
 | 1 | `FPUPDATE` / `DAT` | 0 | `D:\FPUPDATE.DAT` | `0x4000f270` |
 | 1 | `TEST` / `brn` | 1 | `D:\TEST.brn` | `0x40075ea4`, platform helper; see correction above |
-| 1 | `firmware` / `brn` | 0 | `D:\firmware.brn` | `0x40009ca0`, ISP setup |
+| 1 | `firmware` / `brn` | 0 | `D:\firmware.brn` | `0x40009ca0`, command-task setup |
 
 The original status getter, register reads, pathname loops and branch logic
 execute. Copy, logging, configuration setters, storage readiness, drive probe

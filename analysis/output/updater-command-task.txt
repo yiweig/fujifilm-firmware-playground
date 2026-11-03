@@ -1,0 +1,618 @@
+Official 2.00 complete updater; static original-byte evidence
+SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Base 0x40000000; end-exclusive ranges. No camera or command execution.
+
+COMMAND python3 analysis/card.py disasm 0x40009ca0 0x40009d20
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40009ca0: e92d4037     	push	{r0, r1, r2, r4, r5, lr}
+40009ca4: e59f5060     	ldr	r5, [pc, #0x60]         @ 0x40009d0c <.text+0x9d0c>
+40009ca8: e59f0060     	ldr	r0, [pc, #0x60]         @ 0x40009d10 <.text+0x9d10>
+40009cac: e5953050     	ldr	r3, [r5, #0x50]
+40009cb0: e3a0100e     	mov	r1, #14
+40009cb4: e58d3000     	str	r3, [sp]
+40009cb8: e59f2054     	ldr	r2, [pc, #0x54]         @ 0x40009d14 <.text+0x9d14>
+40009cbc: e3a03001     	mov	r3, #1
+40009cc0: eb01e1eb     	bl	0x40082474 <.text+0x82474> @ imm = #0x787ac
+40009cc4: e2504000     	subs	r4, r0, #0
+40009cc8: 1a000005     	bne	0x40009ce4 <.text+0x9ce4> @ imm = #0x14
+40009ccc: e59f0044     	ldr	r0, [pc, #0x44]         @ 0x40009d18 <.text+0x9d18>
+40009cd0: e30014d8     	movw	r1, #0x4d8
+40009cd4: e1a02004     	mov	r2, r4
+40009cd8: eb01e890     	bl	0x40083f20 <.text+0x83f20> @ imm = #0x7a240
+40009cdc: e1a00004     	mov	r0, r4
+40009ce0: eb01e8aa     	bl	0x40083f90 <.text+0x83f90> @ imm = #0x7a2a8
+40009ce4: e5d53000     	ldrb	r3, [r5]
+40009ce8: e3530000     	cmp	r3, #0
+40009cec: 0a000002     	beq	0x40009cfc <.text+0x9cfc> @ imm = #0x8
+40009cf0: e59f3014     	ldr	r3, [pc, #0x14]         @ 0x40009d0c <.text+0x9d0c>
+40009cf4: e5930004     	ldr	r0, [r3, #0x4]
+40009cf8: ebfffce3     	bl	0x4000908c <.text+0x908c> @ imm = #-0xc74
+40009cfc: e59f0018     	ldr	r0, [pc, #0x18]         @ 0x40009d1c <.text+0x9d1c>
+40009d00: eb004cd5     	bl	0x4001d05c <.text+0x1d05c> @ imm = #0x13354
+40009d04: e1a00004     	mov	r0, r4
+40009d08: e8bd803e     	pop	{r1, r2, r3, r4, r5, pc}
+40009d0c: 4009d6b0     	strhmi	sp, [r9], -r0
+40009d10: 400954ef     	andmi	r5, r9, pc, ror #9
+40009d14: 40009c48     	andmi	r9, r0, r8, asr #24
+40009d18: 40091b5c     	andmi	r1, r9, r12, asr r11
+40009d1c: 40009abc     	strhmi	r9, [r0], -r12
+
+COMMAND python3 analysis/card.py disasm 0x40009c28 0x40009c80
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40009c28: e92d4010     	push	{r4, lr}
+40009c2c: e59f4010     	ldr	r4, [pc, #0x10]         @ 0x40009c44 <.text+0x9c44>
+40009c30: e1a01000     	mov	r1, r0
+40009c34: e5940004     	ldr	r0, [r4, #0x4]
+40009c38: ebffffd8     	bl	0x40009ba0 <.text+0x9ba0> @ imm = #-0xa0
+40009c3c: e5840004     	str	r0, [r4, #0x4]
+40009c40: e8bd8010     	pop	{r4, pc}
+40009c44: 400a29ac     	andmi	r2, r10, r12, lsr #19
+40009c48: e59f0020     	ldr	r0, [pc, #0x20]         @ 0x40009c70 <.text+0x9c70>
+40009c4c: e92d4008     	push	{r3, lr}
+40009c50: ebfffff4     	bl	0x40009c28 <.text+0x9c28> @ imm = #-0x30
+40009c54: ebffdd3d     	bl	0x40001150 <.text+0x1150> @ imm = #-0x8b0c
+40009c58: e59f0014     	ldr	r0, [pc, #0x14]         @ 0x40009c74 <.text+0x9c74>
+40009c5c: e59f1014     	ldr	r1, [pc, #0x14]         @ 0x40009c78 <.text+0x9c78>
+40009c60: e59f2014     	ldr	r2, [pc, #0x14]         @ 0x40009c7c <.text+0x9c7c>
+40009c64: eb01d3fe     	bl	0x4007ec64 <.text+0x7ec64> @ imm = #0x74ff8
+40009c68: ebffffa7     	bl	0x40009b0c <.text+0x9b0c> @ imm = #-0x164
+40009c6c: eafffffd     	b	0x40009c68 <.text+0x9c68> @ imm = #-0xc
+40009c70: 4009d6c0     	andmi	sp, r9, r0, asr #13
+40009c74: 40009058     	andmi	r9, r0, r8, asr r0
+40009c78: 40009b58     	andmi	r9, r0, r8, asr r11
+40009c7c: 40008d28     	andmi	r8, r0, r8, lsr #26
+
+COMMAND python3 analysis/card.py disasm 0x40001150 0x400011b8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40001150: e92d4010     	push	{r4, lr}
+40001154: e59f4054     	ldr	r4, [pc, #0x54]         @ 0x400011b0 <.text+0x11b0>
+40001158: e1a00004     	mov	r0, r4
+4000115c: eb01e6a8     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x79aa0
+40001160: e59f004c     	ldr	r0, [pc, #0x4c]         @ 0x400011b4 <.text+0x11b4>
+40001164: eb01e6a6     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x79a98
+40001168: e1a00004     	mov	r0, r4
+4000116c: eb01e6a4     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x79a90
+40001170: eb00049d     	bl	0x400023ec <.text+0x23ec> @ imm = #0x1274
+40001174: eb0008d4     	bl	0x400034cc <.text+0x34cc> @ imm = #0x2350
+40001178: eb0007ba     	bl	0x40003068 <.text+0x3068> @ imm = #0x1ee8
+4000117c: eb0029c9     	bl	0x4000b8a8 <.text+0xb8a8> @ imm = #0xa724
+40001180: eb000c8a     	bl	0x400043b0 <.text+0x43b0> @ imm = #0x3228
+40001184: eb0029c4     	bl	0x4000b89c <.text+0xb89c> @ imm = #0xa710
+40001188: eb00233b     	bl	0x40009e7c <.text+0x9e7c> @ imm = #0x8cec
+4000118c: eb001d01     	bl	0x40008598 <.text+0x8598> @ imm = #0x7404
+40001190: eb00160f     	bl	0x400069d4 <.text+0x69d4> @ imm = #0x583c
+40001194: eb001ee0     	bl	0x40008d1c <.text+0x8d1c> @ imm = #0x7b80
+40001198: e30f0fff     	movw	r0, #0xffff
+4000119c: eb0034f4     	bl	0x4000e574 <.text+0xe574> @ imm = #0xd3d0
+400011a0: eb0043e6     	bl	0x40012140 <.text+0x12140> @ imm = #0x10f98
+400011a4: e3a00001     	mov	r0, #1
+400011a8: e8bd4010     	pop	{r4, lr}
+400011ac: ea0022b3     	b	0x40009c80 <.text+0x9c80> @ imm = #0x8acc
+400011b0: 4009afc4     	andmi	r10, r9, r4, asr #31
+400011b4: 4008f115     	andmi	pc, r8, r5, lsl r1
+
+COMMAND python3 analysis/card.py disasm 0x40009b0c 0x40009b58
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40009b0c: e92d4010     	push	{r4, lr}
+40009b10: e59f4034     	ldr	r4, [pc, #0x34]         @ 0x40009b4c <.text+0x9b4c>
+40009b14: ebffff8a     	bl	0x40009944 <.text+0x9944> @ imm = #-0x1d8
+40009b18: e3500000     	cmp	r0, #0
+40009b1c: 08bd8010     	popeq	{r4, pc}
+40009b20: ebffffe5     	bl	0x40009abc <.text+0x9abc> @ imm = #-0x6c
+40009b24: e5943290     	ldr	r3, [r4, #0x290]
+40009b28: e3530000     	cmp	r3, #0
+40009b2c: 1a000001     	bne	0x40009b38 <.text+0x9b38> @ imm = #0x4
+40009b30: e59f0018     	ldr	r0, [pc, #0x18]         @ 0x40009b50 <.text+0x9b50>
+40009b34: eb01c432     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x710c8
+40009b38: e3a01000     	mov	r1, #0
+40009b3c: e3a02080     	mov	r2, #128
+40009b40: e59f000c     	ldr	r0, [pc, #0xc]          @ 0x40009b54 <.text+0x9b54>
+40009b44: eb01f9b9     	bl	0x40088230 <.text+0x88230> @ imm = #0x7e6e4
+40009b48: eafffff1     	b	0x40009b14 <.text+0x9b14> @ imm = #-0x3c
+40009b4c: 400a29ac     	andmi	r2, r10, r12, lsr #19
+40009b50: 4009d6b8     	strhmi	sp, [r9], -r8
+40009b54: 400a2bbc     	strhmi	r2, [r10], -r12
+
+COMMAND python3 analysis/card.py disasm 0x40009abc 0x40009b0c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40009abc: e52de004     	str	lr, [sp, #-0x4]!
+40009ac0: e24dd06c     	sub	sp, sp, #108
+40009ac4: e28d1004     	add	r1, sp, #4
+40009ac8: e28d2008     	add	r2, sp, #8
+40009acc: ebfffe06     	bl	0x400092ec <.text+0x92ec> @ imm = #-0x7e8
+40009ad0: e59d0004     	ldr	r0, [sp, #0x4]
+40009ad4: e3500000     	cmp	r0, #0
+40009ad8: 0a000007     	beq	0x40009afc <.text+0x9afc> @ imm = #0x1c
+40009adc: e59f2020     	ldr	r2, [pc, #0x20]         @ 0x40009b04 <.text+0x9b04>
+40009ae0: e59f3020     	ldr	r3, [pc, #0x20]         @ 0x40009b08 <.text+0x9b08>
+40009ae4: e592c2b0     	ldr	r12, [r2, #0x2b0]
+40009ae8: e28d1008     	add	r1, sp, #8
+40009aec: e35c0000     	cmp	r12, #0
+40009af0: e5922004     	ldr	r2, [r2, #0x4]
+40009af4: 03a03000     	moveq	r3, #0
+40009af8: ebffffbc     	bl	0x400099f0 <.text+0x99f0> @ imm = #-0x110
+40009afc: e28dd06c     	add	sp, sp, #108
+40009b00: e8bd8000     	ldm	sp!, {pc}
+40009b04: 400a29ac     	andmi	r2, r10, r12, lsr #19
+40009b08: 400011b8     	strhmi	r1, [r0], -r8
+
+COMMAND python3 analysis/card.py disasm 0x400099f0 0x40009abc
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+400099f0: e92d41f0     	push	{r4, r5, r6, r7, r8, lr}
+400099f4: e2508000     	subs	r8, r0, #0
+400099f8: e1a06001     	mov	r6, r1
+400099fc: e1a04002     	mov	r4, r2
+40009a00: e1a07003     	mov	r7, r3
+40009a04: 11a05002     	movne	r5, r2
+40009a08: 08bd81f0     	popeq	{r4, r5, r6, r7, r8, pc}
+40009a0c: ea00000e     	b	0x40009a4c <.text+0x9a4c> @ imm = #0x38
+40009a10: e5960000     	ldr	r0, [r6]
+40009a14: e5951000     	ldr	r1, [r5]
+40009a18: eb01fa41     	bl	0x40088324 <.text+0x88324> @ imm = #0x7e904
+40009a1c: e3500000     	cmp	r0, #0
+40009a20: aa000002     	bge	0x40009a30 <.text+0x9a30> @ imm = #0x8
+40009a24: e3570000     	cmp	r7, #0
+40009a28: 1a00000a     	bne	0x40009a58 <.text+0x9a58> @ imm = #0x28
+40009a2c: ea00000d     	b	0x40009a68 <.text+0x9a68> @ imm = #0x34
+40009a30: 1a000004     	bne	0x40009a48 <.text+0x9a48> @ imm = #0x10
+40009a34: e5953004     	ldr	r3, [r5, #0x4]
+40009a38: e2480001     	sub	r0, r8, #1
+40009a3c: e2861004     	add	r1, r6, #4
+40009a40: e12fff33     	blx	r3
+40009a44: e8bd81f0     	pop	{r4, r5, r6, r7, r8, pc}
+40009a48: e595500c     	ldr	r5, [r5, #0xc]
+40009a4c: e3550000     	cmp	r5, #0
+40009a50: 1affffee     	bne	0x40009a10 <.text+0x9a10> @ imm = #-0x48
+40009a54: eafffff2     	b	0x40009a24 <.text+0x9a24> @ imm = #-0x38
+40009a58: e1a00008     	mov	r0, r8
+40009a5c: e1a01006     	mov	r1, r6
+40009a60: e12fff37     	blx	r7
+40009a64: e8bd81f0     	pop	{r4, r5, r6, r7, r8, pc}
+40009a68: e5961000     	ldr	r1, [r6]
+40009a6c: e59f0038     	ldr	r0, [pc, #0x38]         @ 0x40009aac <.text+0x9aac>
+40009a70: eb01c463     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x7118c
+40009a74: e59f0034     	ldr	r0, [pc, #0x34]         @ 0x40009ab0 <.text+0x9ab0>
+40009a78: eb01c461     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x71184
+40009a7c: e59f5030     	ldr	r5, [pc, #0x30]         @ 0x40009ab4 <.text+0x9ab4>
+40009a80: ea000006     	b	0x40009aa0 <.text+0x9aa0> @ imm = #0x18
+40009a84: e5942008     	ldr	r2, [r4, #0x8]
+40009a88: e5941000     	ldr	r1, [r4]
+40009a8c: e3520000     	cmp	r2, #0
+40009a90: e59f0020     	ldr	r0, [pc, #0x20]         @ 0x40009ab8 <.text+0x9ab8>
+40009a94: 01a02005     	moveq	r2, r5
+40009a98: eb01c459     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x71164
+40009a9c: e594400c     	ldr	r4, [r4, #0xc]
+40009aa0: e3540000     	cmp	r4, #0
+40009aa4: 1afffff6     	bne	0x40009a84 <.text+0x9a84> @ imm = #-0x28
+40009aa8: e8bd81f0     	pop	{r4, r5, r6, r7, r8, pc}
+40009aac: 40091c3a     	andmi	r1, r9, r10, lsr r12
+40009ab0: 40091c55     	andmi	r1, r9, r5, asr r12
+40009ab4: 40091c09     	andmi	r1, r9, r9, lsl #24
+40009ab8: 40091c70     	andmi	r1, r9, r0, ror r12
+
+COMMAND python3 analysis/card.py disasm 0x40009ba0 0x40009c28
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40009ba0: e92d4010     	push	{r4, lr}
+40009ba4: e2514000     	subs	r4, r1, #0
+40009ba8: 1a000007     	bne	0x40009bcc <.text+0x9bcc> @ imm = #0x1c
+40009bac: e8bd8010     	pop	{r4, pc}
+40009bb0: e3500000     	cmp	r0, #0
+40009bb4: 0584000c     	streq	r0, [r4, #0xc]
+40009bb8: 01a00004     	moveq	r0, r4
+40009bbc: 0a000001     	beq	0x40009bc8 <.text+0x9bc8> @ imm = #0x4
+40009bc0: e1a01004     	mov	r1, r4
+40009bc4: ebfffd5a     	bl	0x40009134 <.text+0x9134> @ imm = #-0xa98
+40009bc8: e2844010     	add	r4, r4, #16
+40009bcc: e5943000     	ldr	r3, [r4]
+40009bd0: e3530000     	cmp	r3, #0
+40009bd4: 1afffff5     	bne	0x40009bb0 <.text+0x9bb0> @ imm = #-0x2c
+40009bd8: e8bd8010     	pop	{r4, pc}
+40009bdc: e59f2040     	ldr	r2, [pc, #0x40]         @ 0x40009c24 <.text+0x9c24>
+40009be0: e2501000     	subs	r1, r0, #0
+40009be4: e92d4010     	push	{r4, lr}
+40009be8: e5923004     	ldr	r3, [r2, #0x4]
+40009bec: e1a04002     	mov	r4, r2
+40009bf0: 0a000009     	beq	0x40009c1c <.text+0x9c1c> @ imm = #0x24
+40009bf4: e5912000     	ldr	r2, [r1]
+40009bf8: e3520000     	cmp	r2, #0
+40009bfc: 0a000006     	beq	0x40009c1c <.text+0x9c1c> @ imm = #0x18
+40009c00: e3530000     	cmp	r3, #0
+40009c04: 0581300c     	streq	r3, [r1, #0xc]
+40009c08: 01a03001     	moveq	r3, r1
+40009c0c: 0a000002     	beq	0x40009c1c <.text+0x9c1c> @ imm = #0x8
+40009c10: e1a00003     	mov	r0, r3
+40009c14: ebfffd46     	bl	0x40009134 <.text+0x9134> @ imm = #-0xae8
+40009c18: e1a03000     	mov	r3, r0
+40009c1c: e5843004     	str	r3, [r4, #0x4]
+40009c20: e8bd8010     	pop	{r4, pc}
+40009c24: 400a29ac     	andmi	r2, r10, r12, lsr #19
+
+COMMAND python3 analysis/card.py disasm 0x40009134 0x400091e0
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40009134: e92d41f0     	push	{r4, r5, r6, r7, r8, lr}
+40009138: e1a07000     	mov	r7, r0
+4000913c: e3a00000     	mov	r0, #0
+40009140: e1a04001     	mov	r4, r1
+40009144: eb01d253     	bl	0x4007da98 <.text+0x7da98> @ imm = #0x7494c
+40009148: e1a05007     	mov	r5, r7
+4000914c: e1a06000     	mov	r6, r0
+40009150: e3a08000     	mov	r8, #0
+40009154: ea000000     	b	0x4000915c <.text+0x915c> @ imm = #0x0
+40009158: e1a05003     	mov	r5, r3
+4000915c: e5940000     	ldr	r0, [r4]
+40009160: e5951000     	ldr	r1, [r5]
+40009164: eb01fc6e     	bl	0x40088324 <.text+0x88324> @ imm = #0x7f1b8
+40009168: e3500000     	cmp	r0, #0
+4000916c: 1a000005     	bne	0x40009188 <.text+0x9188> @ imm = #0x14
+40009170: e1a00006     	mov	r0, r6
+40009174: eb01d247     	bl	0x4007da98 <.text+0x7da98> @ imm = #0x7491c
+40009178: e5941000     	ldr	r1, [r4]
+4000917c: e59f0058     	ldr	r0, [pc, #0x58]         @ 0x400091dc <.text+0x91dc>
+40009180: eb01c69f     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x71a7c
+40009184: ea000012     	b	0x400091d4 <.text+0x91d4> @ imm = #0x48
+40009188: aa000005     	bge	0x400091a4 <.text+0x91a4> @ imm = #0x14
+4000918c: e3580000     	cmp	r8, #0
+40009190: e584500c     	str	r5, [r4, #0xc]
+40009194: 01a07004     	moveq	r7, r4
+40009198: 1588400c     	strne	r4, [r8, #0xc]
+4000919c: e1a00006     	mov	r0, r6
+400091a0: ea00000a     	b	0x400091d0 <.text+0x91d0> @ imm = #0x28
+400091a4: e1a00006     	mov	r0, r6
+400091a8: eb01d23a     	bl	0x4007da98 <.text+0x7da98> @ imm = #0x748e8
+400091ac: e3a00000     	mov	r0, #0
+400091b0: eb01d238     	bl	0x4007da98 <.text+0x7da98> @ imm = #0x748e0
+400091b4: e595300c     	ldr	r3, [r5, #0xc]
+400091b8: e1a06000     	mov	r6, r0
+400091bc: e3530000     	cmp	r3, #0
+400091c0: e1a08005     	mov	r8, r5
+400091c4: 1affffe3     	bne	0x40009158 <.text+0x9158> @ imm = #-0x74
+400091c8: e584300c     	str	r3, [r4, #0xc]
+400091cc: e585400c     	str	r4, [r5, #0xc]
+400091d0: eb01d230     	bl	0x4007da98 <.text+0x7da98> @ imm = #0x748c0
+400091d4: e1a00007     	mov	r0, r7
+400091d8: e8bd81f0     	pop	{r4, r5, r6, r7, r8, pc}
+400091dc: 40091beb     	andmi	r1, r9, r11, ror #23
+
+COMMAND python3 analysis/card.py disasm 0x4000e574 0x4000e5a4
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4000e574: e92d4008     	push	{r3, lr}
+4000e578: e30f3fff     	movw	r3, #0xffff
+4000e57c: e1500003     	cmp	r0, r3
+4000e580: 1a000003     	bne	0x4000e594 <.text+0xe594> @ imm = #0xc
+4000e584: e3e00000     	mvn	r0, #0
+4000e588: eb003117     	bl	0x4001a9ec <.text+0x1a9ec> @ imm = #0xc45c
+4000e58c: e3a00000     	mov	r0, #0
+4000e590: e8bd8008     	pop	{r3, pc}
+4000e594: eb0037b2     	bl	0x4001c464 <.text+0x1c464> @ imm = #0xdec8
+4000e598: e2900000     	adds	r0, r0, #0
+4000e59c: 13a00001     	movne	r0, #1
+4000e5a0: e8bd8008     	pop	{r3, pc}
+
+COMMAND python3 analysis/card.py disasm 0x4001a9ec 0x4001aa2c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001a9ec: e92d4013     	push	{r0, r1, r4, lr}
+4001a9f0: e1a04000     	mov	r4, r0
+4001a9f4: e59f102c     	ldr	r1, [pc, #0x2c]         @ 0x4001aa28 <.text+0x1aa28>
+4001a9f8: e3a00000     	mov	r0, #0
+4001a9fc: e1a02004     	mov	r2, r4
+4001aa00: eb01a2e0     	bl	0x40083588 <.text+0x83588> @ imm = #0x68b80
+4001aa04: e3740001     	cmn	r4, #1
+4001aa08: 1a000005     	bne	0x4001aa24 <.text+0x1aa24> @ imm = #0x14
+4001aa0c: eb00066d     	bl	0x4001c3c8 <.text+0x1c3c8> @ imm = #0x19b4
+4001aa10: e3a03004     	mov	r3, #4
+4001aa14: e3a0000e     	mov	r0, #14
+4001aa18: e1a0100d     	mov	r1, sp
+4001aa1c: e88d0018     	stm	sp, {r3, r4}
+4001aa20: eb012d1f     	bl	0x40065ea4 <.text+0x65ea4> @ imm = #0x4b47c
+4001aa24: e8bd801c     	pop	{r2, r3, r4, pc}
+4001aa28: 40095050     	andmi	r5, r9, r0, asr r0
+
+COMMAND python3 analysis/card.py disasm 0x4001c3c8 0x4001c464
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001c3c8: e92d4013     	push	{r0, r1, r4, lr}
+4001c3cc: e59f4078     	ldr	r4, [pc, #0x78]         @ 0x4001c44c <.text+0x1c44c>
+4001c3d0: e3a0000e     	mov	r0, #14
+4001c3d4: eb012674     	bl	0x40065dac <.text+0x65dac> @ imm = #0x499d0
+4001c3d8: e5943004     	ldr	r3, [r4, #0x4]
+4001c3dc: e3530000     	cmp	r3, #0
+4001c3e0: 1a000017     	bne	0x4001c444 <.text+0x1c444> @ imm = #0x5c
+4001c3e4: e3a02c1f     	mov	r2, #7936
+4001c3e8: e58d2000     	str	r2, [sp]
+4001c3ec: e59f005c     	ldr	r0, [pc, #0x5c]         @ 0x4001c450 <.text+0x1c450>
+4001c3f0: e3a01010     	mov	r1, #16
+4001c3f4: e59f2058     	ldr	r2, [pc, #0x58]         @ 0x4001c454 <.text+0x1c454>
+4001c3f8: eb01981d     	bl	0x40082474 <.text+0x82474> @ imm = #0x66074
+4001c3fc: e3500000     	cmp	r0, #0
+4001c400: e5840004     	str	r0, [r4, #0x4]
+4001c404: 1a00000b     	bne	0x4001c438 <.text+0x1c438> @ imm = #0x2c
+4001c408: e3a02074     	mov	r2, #116
+4001c40c: e59f0044     	ldr	r0, [pc, #0x44]         @ 0x4001c458 <.text+0x1c458>
+4001c410: e59f1044     	ldr	r1, [pc, #0x44]         @ 0x4001c45c <.text+0x1c45c>
+4001c414: eb0179fa     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x5e7e8
+4001c418: e5942004     	ldr	r2, [r4, #0x4]
+4001c41c: e3520000     	cmp	r2, #0
+4001c420: 1a000004     	bne	0x4001c438 <.text+0x1c438> @ imm = #0x10
+4001c424: e59f0034     	ldr	r0, [pc, #0x34]         @ 0x4001c460 <.text+0x1c460>
+4001c428: e3a01075     	mov	r1, #117
+4001c42c: eb019ebb     	bl	0x40083f20 <.text+0x83f20> @ imm = #0x67aec
+4001c430: e5940004     	ldr	r0, [r4, #0x4]
+4001c434: eb019ed5     	bl	0x40083f90 <.text+0x83f90> @ imm = #0x67b54
+4001c438: e59f300c     	ldr	r3, [pc, #0xc]          @ 0x4001c44c <.text+0x1c44c>
+4001c43c: e3a02001     	mov	r2, #1
+4001c440: e5832000     	str	r2, [r3]
+4001c444: e3a00000     	mov	r0, #0
+4001c448: e8bd801c     	pop	{r2, r3, r4, pc}
+4001c44c: 400a3a64     	andmi	r3, r10, r4, ror #20
+4001c450: 4009531b     	andmi	r5, r9, r11, lsl r3
+4001c454: 4001c23c     	andmi	r12, r1, r12, lsr r2
+4001c458: 4009505c     	andmi	r5, r9, r12, asr r0
+4001c45c: 4008b418     	andmi	r11, r8, r8, lsl r4
+4001c460: 40095325     	andmi	r5, r9, r5, lsr #6
+
+COMMAND python3 analysis/card.py disasm 0x4001c23c 0x4001c274
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001c23c: e92d407f     	push	{r0, r1, r2, r3, r4, r5, r6, lr}
+4001c240: e59f616c     	ldr	r6, [pc, #0x16c]        @ 0x4001c3b4 <.text+0x1c3b4>
+4001c244: e3a04002     	mov	r4, #2
+4001c248: e28d1008     	add	r1, sp, #8
+4001c24c: e3a0000e     	mov	r0, #14
+4001c250: e5864000     	str	r4, [r6]
+4001c254: eb01274e     	bl	0x40065f94 <.text+0x65f94> @ imm = #0x49d38
+4001c258: e3500000     	cmp	r0, #0
+4001c25c: 159f0154     	ldrne	r0, [pc, #0x154]        @ 0x4001c3b8 <.text+0x1c3b8>
+4001c260: 159d1008     	ldrne	r1, [sp, #0x8]
+4001c264: 1a00004f     	bne	0x4001c3a8 <.text+0x1c3a8> @ imm = #0x13c
+4001c268: e59d1008     	ldr	r1, [sp, #0x8]
+4001c26c: e3510001     	cmp	r1, #1
+4001c270: 1a000014     	bne	0x4001c2c8 <.text+0x1c2c8> @ imm = #0x50
+
+COMMAND python3 analysis/card.py disasm 0x4001c39c 0x4001c3c8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001c39c: e3510004     	cmp	r1, #4
+4001c3a0: 0affffa8     	beq	0x4001c248 <.text+0x1c248> @ imm = #-0x160
+4001c3a4: e59f000c     	ldr	r0, [pc, #0xc]          @ 0x4001c3b8 <.text+0x1c3b8>
+4001c3a8: e59d200c     	ldr	r2, [sp, #0xc]
+4001c3ac: eb017a14     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x5e850
+4001c3b0: eaffffa4     	b	0x4001c248 <.text+0x1c248> @ imm = #-0x170
+4001c3b4: 400a3a64     	andmi	r3, r10, r4, ror #20
+4001c3b8: 400952e5     	andmi	r5, r9, r5, ror #5
+4001c3bc: 4009505c     	andmi	r5, r9, r12, asr r0
+4001c3c0: 4008b40a     	andmi	r11, r8, r10, lsl #8
+4001c3c4: 40095308     	andmi	r5, r9, r8, lsl #6
+
+COMMAND python3 analysis/card.py disasm 0x40009de4 0x40009e7c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40009de4: e92d4038     	push	{r3, r4, r5, lr}
+40009de8: e2505000     	subs	r5, r0, #0
+40009dec: e1a04001     	mov	r4, r1
+40009df0: 1a000002     	bne	0x40009e00 <.text+0x9e00> @ imm = #0x8
+40009df4: e59f006c     	ldr	r0, [pc, #0x6c]         @ 0x40009e68 <.text+0x9e68>
+40009df8: e8bd4038     	pop	{r3, r4, r5, lr}
+40009dfc: ea01c380     	b	0x4007ac04 <.text+0x7ac04> @ imm = #0x70e00
+40009e00: e59f0064     	ldr	r0, [pc, #0x64]         @ 0x40009e6c <.text+0x9e6c>
+40009e04: e5911000     	ldr	r1, [r1]
+40009e08: eb01c37d     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x70df4
+40009e0c: e3550001     	cmp	r5, #1
+40009e10: da000010     	ble	0x40009e58 <.text+0x9e58> @ imm = #0x40
+40009e14: e3a01000     	mov	r1, #0
+40009e18: e5940004     	ldr	r0, [r4, #0x4]
+40009e1c: e1a02001     	mov	r2, r1
+40009e20: eb01c3a2     	bl	0x4007acb0 <.text+0x7acb0> @ imm = #0x70e88
+40009e24: e3100001     	tst	r0, #1
+40009e28: e1a05000     	mov	r5, r0
+40009e2c: 0a000003     	beq	0x40009e40 <.text+0x9e40> @ imm = #0xc
+40009e30: e59f0038     	ldr	r0, [pc, #0x38]         @ 0x40009e70 <.text+0x9e70>
+40009e34: eb01c372     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x70dc8
+40009e38: e3a00001     	mov	r0, #1
+40009e3c: eb003926     	bl	0x400182dc <.text+0x182dc> @ imm = #0xe498
+40009e40: e3150002     	tst	r5, #2
+40009e44: 0a000003     	beq	0x40009e58 <.text+0x9e58> @ imm = #0xc
+40009e48: e59f0024     	ldr	r0, [pc, #0x24]         @ 0x40009e74 <.text+0x9e74>
+40009e4c: eb01c36c     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x70db0
+40009e50: e3a00001     	mov	r0, #1
+40009e54: eb003928     	bl	0x400182fc <.text+0x182fc> @ imm = #0xe4a0
+40009e58: e5940000     	ldr	r0, [r4]
+40009e5c: e59f1014     	ldr	r1, [pc, #0x14]         @ 0x40009e78 <.text+0x9e78>
+40009e60: e8bd4038     	pop	{r3, r4, r5, lr}
+40009e64: ea001781     	b	0x4000fc70 <.text+0xfc70> @ imm = #0x5e04
+40009e68: 400902c9     	andmi	r0, r9, r9, asr #5
+40009e6c: 40091cb0     	strhmi	r1, [r9], -r0
+40009e70: 40091cbd     	strhmi	r1, [r9], -sp
+40009e74: 40091cc8     	andmi	r1, r9, r8, asr #25
+40009e78: 40009d6c     	andmi	r9, r0, r12, ror #26
+
+COMMAND python3 analysis/card.py disasm 0x400023ec 0x400023f8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+400023ec: e59f0000     	ldr	r0, [pc]                @ 0x400023f4 <.text+0x23f4>
+400023f0: ea001e0c     	b	0x40009c28 <.text+0x9c28> @ imm = #0x7830
+400023f4: 4009ce38     	andmi	r12, r9, r8, lsr lr
+
+COMMAND python3 analysis/card.py disasm 0x400034cc 0x400034d8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+400034cc: e59f0000     	ldr	r0, [pc]                @ 0x400034d4 <.text+0x34d4>
+400034d0: ea0019d4     	b	0x40009c28 <.text+0x9c28> @ imm = #0x6750
+400034d4: 4009d108     	andmi	sp, r9, r8, lsl #2
+
+COMMAND python3 analysis/card.py disasm 0x40003068 0x40003074
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40003068: e59f0000     	ldr	r0, [pc]                @ 0x40003070 <.text+0x3070>
+4000306c: ea001aed     	b	0x40009c28 <.text+0x9c28> @ imm = #0x6bb4
+40003070: 4009ced8     	ldrdmi	r12, sp, [r9], -r8
+
+COMMAND python3 analysis/card.py disasm 0x4000b8a8 0x4000b8b4
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4000b8a8: e59f0000     	ldr	r0, [pc]                @ 0x4000b8b0 <.text+0xb8b0>
+4000b8ac: eafff8dd     	b	0x40009c28 <.text+0x9c28> @ imm = #-0x1c8c
+4000b8b0: 4009d928     	andmi	sp, r9, r8, lsr #18
+
+COMMAND python3 analysis/card.py disasm 0x400043b0 0x400043bc
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+400043b0: e59f0000     	ldr	r0, [pc]                @ 0x400043b8 <.text+0x43b8>
+400043b4: ea00161b     	b	0x40009c28 <.text+0x9c28> @ imm = #0x586c
+400043b8: 4009d148     	andmi	sp, r9, r8, asr #2
+
+COMMAND python3 analysis/card.py disasm 0x4000b89c 0x4000b8a8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4000b89c: e59f0000     	ldr	r0, [pc]                @ 0x4000b8a4 <.text+0xb8a4>
+4000b8a0: eafff8e0     	b	0x40009c28 <.text+0x9c28> @ imm = #-0x1c80
+4000b8a4: 4009d738     	andmi	sp, r9, r8, lsr r7
+
+COMMAND python3 analysis/card.py disasm 0x40009e7c 0x40009e88
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40009e7c: e59f0000     	ldr	r0, [pc]                @ 0x40009e84 <.text+0x9e84>
+40009e80: eaffff68     	b	0x40009c28 <.text+0x9c28> @ imm = #-0x260
+40009e84: 4009d708     	andmi	sp, r9, r8, lsl #14
+
+COMMAND python3 analysis/card.py disasm 0x40008598 0x400085a4
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40008598: e59f0000     	ldr	r0, [pc]                @ 0x400085a0 <.text+0x85a0>
+4000859c: ea0005a1     	b	0x40009c28 <.text+0x9c28> @ imm = #0x1684
+400085a0: 4009d51c     	andmi	sp, r9, r12, lsl r5
+
+COMMAND python3 analysis/card.py disasm 0x400069d4 0x400069e0
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+400069d4: e59f0000     	ldr	r0, [pc]                @ 0x400069dc <.text+0x69dc>
+400069d8: ea000c92     	b	0x40009c28 <.text+0x9c28> @ imm = #0x3248
+400069dc: 4009d2ec     	andmi	sp, r9, r12, ror #5
+
+COMMAND python3 analysis/card.py disasm 0x40008d1c 0x40008d28
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40008d1c: e59f0000     	ldr	r0, [pc]                @ 0x40008d24 <.text+0x8d24>
+40008d20: ea0003c0     	b	0x40009c28 <.text+0x9c28> @ imm = #0xf00
+40008d24: 4009d64c     	andmi	sp, r9, r12, asr #12
+
+Actual embedded strings:
+0x400954ef b'Cmd'
+0x40091b5c b'private/cmd_parse.c'
+0x4009d6b8 b'cmd>'
+0x4009531b b'diskMount'
+0x40093cea b'|  iCatch ISP Version [%s.%s]  |\n'
+0x40093d0c b'6500'
+0x40093d11 b'0057'
+
+Selected actual 16-byte command records (name,handler,help,link):
+0x4009d6c0 b'help' handler=0x40008e58 help=0x40091c81 initial-link=0x0
+0x4009d6d0 b'ver' handler=0x40008dfc help=0x0 initial-link=0x0
+0x4009d6e0 b'hwver' handler=0x40008e2c help=0x0 initial-link=0x0
+0x4009d708 b'isp' handler=0x40009de4 help=0x40091cd3 initial-link=0x0
+0x4009d718 b'boot' handler=0x40009d84 help=0x40091d16 initial-link=0x0

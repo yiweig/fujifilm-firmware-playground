@@ -73,7 +73,7 @@ public class ReproduceUpdaterBootMailbox extends GhidraScript {
             }
             out.println("8 controls passed. Same default/custom pathname can take different branches because basename-length context also participates.");
             out.println("Modeled: copy, configuration setters, storage readiness, drive probe, file-check result and logs. Original boot-status getter and path/branch logic execute.");
-            out.println("Original eight controls stop before ISP task/setup 40009ca0, file/rawC boot 4000f270, platform helper 40075ea4 or continuation 40069374. None executes.");
+            out.println("Original eight controls stop before command-task setup 40009ca0, file/rawC boot 4000f270, platform helper 40075ea4 or continuation 40069374. None executes.");
             out.println("Not full updater boot, a physical button recipe, a demonstrated register writer, immutable recovery, file-format validation or a card-preparation instruction.");
             Object[][] returns={{false,"","",0,null,0,0},{true,"TEST","bin",1,"D:\\TEST.bin",0,1},{true,"TEST","bin",0,"D:\\TEST.bin",1,1}};
             out.println("Follow-return controls start at original startup call 40001390. Loader returns failure; platform cleanup/continuation are modeled as returning, not executed. Registers are synthetic memory.");

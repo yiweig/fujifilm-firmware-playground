@@ -54,6 +54,12 @@ that helper as reference-counted USB-resource acquisition with PHY/PLL bring-up,
 supported by eight original-ARM controls and main-image USB code. Actual
 controller availability and independent recovery entry remain unverified.
 
+The [command-task identification](updater-command-task.md) also corrects the
+earlier "ISP task" label: that task is the `Cmd` interpreter, whose creation
+does not itself request flashing. The earlier automatic card-file update path,
+registered write commands and incompletely audited storage-worker effects still
+prevent treating stock-updater RAM execution as proven write-free.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`
