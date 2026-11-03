@@ -1,0 +1,7 @@
+Main image SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original main handoff prefix -> stop before 4000186c MMU helper; separate later USB-control helper slice. Logging and IRQ helper modeled. Synthetic MMIO and counters only.
+PASS resource17 initial=0 -> 1; prefix writes boot fields 03/34/02, USB refs/PHY preserved; separate USB+104 08 -> 38.
+PASS resource17 initial=0 -> 1; prefix writes boot fields 03/34/02, USB refs/PHY preserved; separate USB+104 ff -> bf.
+PASS resource17 initial=2 -> 3; prefix writes boot fields 03/34/02, USB refs/PHY preserved; separate USB+104 08 -> 38.
+PASS resource17 initial=2 -> 3; prefix writes boot fields 03/34/02, USB refs/PHY preserved; separate USB+104 ff -> bf.
+4 controls passed. Two separate slices, not full handoff. No actual IRQ/MMU/cache shutdown, DMA, loader callback, copied payload, low helper, USB hardware, flash or camera executes. Initial enabled USB state is supplied, not observed.

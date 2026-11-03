@@ -224,6 +224,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-startup-phy-gate.md`](analysis/updater-startup-phy-gate.md)
   — the gate-zero path also bypasses identified PHY acquisition; four controls
   and a bounded register-writer search, with inherited hardware state unresolved.
+- [`analysis/main-handoff-usb-state.md`](analysis/main-handoff-usb-state.md)
+  — retail preparation getters/resource acquisition and a separate controller
+  helper preserve supplied PHY state; four controls, with full handoff unresolved.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

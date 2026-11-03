@@ -111,6 +111,13 @@ hardware state remains unknown; storage bypass is not a sufficient USB launch
 procedure. A bounded writer search found only the known PHY sequence, without
 proving other writers absent.
 
+The [retail handoff audit](main-handoff-usb-state.md) narrows the upstream
+state question: the inspected early preparation acquires resource 17 and
+preserves supplied USB PHY/count state, while a separate later helper changes
+controller byte `0x10005104`. Four controls cover those two slices only.
+An earlier optional callback, IRQ/GIC changes, the copy/execute transition and
+unresolved low helper prevent inferring preserved physical USB or a safe return.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

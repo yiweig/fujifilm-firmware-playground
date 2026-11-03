@@ -30,14 +30,19 @@ behavior harmless. No payload or live-test recipe is proposed.
 
 ## Preparation before the copied stub
 
+Follow-up: [main handoff USB state](main-handoff-usb-state.md) resolves the
+early platform calls below as boot-field getters/write-back and resource-17
+acquisition. Four controls preserve supplied USB PHY/resource state in two
+separate slices; the full transition and earlier optional callback are unaudited.
+
 Main `0x401eb1ec` prepares the handoff; its receiver caller supplies fifth
 argument 2. Relevant operations, in instruction order:
 
 | Call/site | Observed operation |
 | --- | --- |
 | `0x4000c30c(0)` | Changes CPSR interrupt-mask state and saves the prior state |
-| `0x40046ca0`, `0x4001d45c`, `0x40057dcc`, `0x40046c44` | Platform operations not fully audited here; do not assume complete core/task shutdown |
-| `0x4000b608(0x20000,0x20000)` | Calls common helper `0x4000b48c` with selector 0; full semantics outside this pass |
+| `0x40046ca0(-1)`, `0x4001d45c`, `0x40057dcc`, `0x40046c44` | Read boot/configuration fields, then write bytes at `0x10004071`, `0x10004070`, `0x1000407b`; not identified core/task shutdown |
+| `0x4000b608(0x20000,0x20000)` | Acquire resource 17 through common helper `0x4000b48c`, separate from USB bits 9/19 |
 | `0x4000186c` | Stores `0x0001d406` at translation-table location `0x3f004000`, then performs barriers and CP15 maintenance |
 | `0x4002a890(workspace,0x800)` | Destination address guard/cache operation; returns address with bit 30 cleared |
 | `0x4002a964(stub & ~63)` | Aligned source-address guard and bit-30 clearing |

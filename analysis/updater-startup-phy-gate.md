@@ -7,6 +7,11 @@ All addresses belong to this updater. No camera access or firmware changes.
 
 ## Finding
 
+Follow-up: [retail handoff USB state](main-handoff-usb-state.md) finds that
+the inspected main preparation prefix and a separate controller helper preserve
+supplied PHY/resource state. Four controls pass, but the earlier optional
+callback and complete copy/execute transition remain unqualified.
+
 The gate-zero path through startup consumer `0x400009c4` bypasses not only
 its storage/file handling, but also the identified USB PHY/resource acquisition
 helper `0x40075ea4`. That helper runs on the separate file-action return path
