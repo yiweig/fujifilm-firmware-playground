@@ -28,6 +28,11 @@ setting as a power-save timeout, resolves all six candidate non-idle exit
 pointers, and adds 15 bounded controls. Shared cleanup and deeper clock/sensor
 effects remain open; provider installation and live state remain unobserved.
 
+Follow-up: [clock-switch preparation](idle-clock-switch-and-callbacks.md) identifies
+API selector 6 for the callback pair, table gating and a display-event wait.
+Fifteen controls stop/model the hardware core; actual callbacks and clock hardware
+requirements remain unresolved.
+
 ## Wrapper, mode mapping and asynchronous request
 
 Mode-ID table `0x40b0c90a` contains seven bytes:

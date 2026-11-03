@@ -189,3 +189,7 @@ The next useful handoff-specific target is the idle clock-switch routine and its
 registered callbacks. This pass narrows the playback cleanup mystery without
 turning task closure into proof of a globally stopped or write-free system.
 Camera reconnection is not needed for that offline work.
+
+Follow-up: [idle clock preparation](idle-clock-switch-and-callbacks.md) resolves
+the callback setter and synchronization wrapper. Fifteen controls cover guards,
+wait failure and returned-result cleanup; the hardware core is still unexecuted.

@@ -310,6 +310,12 @@ ownership and reaches a task-resume helper; ten offline controls stop before
 scheduling. Task cleanup therefore does not establish global quiescence or what
 other tasks might do after their locks become available.
 
+The [idle clock audit](idle-clock-switch-and-callbacks.md) adds a display-event
+wait and assertion boundary before hardware clock work. Returned core results
+restore event/semaphore state in modeled controls; they do not prove physical
+clock rollback. The real parameter table, callbacks and lower clock core remain
+unqualified for a temporary RAM launch.
+
 ## Required safety gates before flashing
 
 Treat each item as a gate, not merely a convenience:

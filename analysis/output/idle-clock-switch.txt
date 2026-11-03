@@ -1,0 +1,18 @@
+MAIN SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original variadic API selector 6, idle entry, table lookup and clock wrapper. Synthetic table/rates/MMIO bytes; synchronization/event calls modeled. Stop before hardware clock core or assertion/callback boundaries unless explicitly modeled. No physical clock/IRQ/display/storage/camera execution.
+PASS API selector 6 clear=false -> both callback slots match supplied arguments
+PASS API selector 6 clear=true -> both callback slots match supplied arguments
+PASS idle requested=0 cached=100 current=200 -> skips callbacks/core
+PASS idle requested=100 cached=100 current=200 -> skips callbacks/core
+PASS idle requested=200 cached=100 current=200 -> skips callbacks/core
+PASS idle callback boundary=42101800 args=(100,400) cache still 100; modeledCalls=[guard]
+PASS idle callback boundary=42101900 args=(100,400) cache still 100; modeledCalls=[guard, pre, core:400,1, unguard]
+PASS missing synthetic target table entry -> return 1 before event/core calls
+PASS clock wrapper selected channel=0 -> stop before core(400,1); modeledCalls=[core:400,1]
+PASS clock wrapper selected channel=3 -> stop before core(400,1); modeledCalls=[semCreate, eventRemove:3, eventInstall:3:401a7c98, semWait:0, core:400,1]
+PASS clock wrapper selected channel=11 -> stop before core(400,1); modeledCalls=[semCreate, eventRemove:11, eventInstall:11:401a7c98, semWait:0, core:400,1]
+PASS modeled wait failure -> assertion boundary before core; handle retained; modeledCalls=[semCreate, eventRemove:3, eventInstall:3:401a7c98, semWait:17]
+PASS modeled core result=0 -> prior event restored and semaphore slot cleared; modeledCalls=[semCreate, eventRemove:3, eventInstall:3:401a7c98, semWait:0, core:400,1, eventRemove:3, eventInstall:3:42101a00, semDelete]
+PASS modeled core result=1 -> prior event restored and semaphore slot cleared; modeledCalls=[semCreate, eventRemove:3, eventInstall:3:401a7c98, semWait:0, core:400,1, eventRemove:3, eventInstall:3:42101a00, semDelete]
+PASS idle modeled core failure -> assertion before post callback/cache update; modeledCalls=[guard, core:400,1]
+15 controls passed. Loaded-image bytes unchanged after fixture setup; source binaries unchanged. Real callbacks, display event, semaphore behavior, assertion, hardware clock core, IRQ/cache/SRAM routines, USB/NAND/SD, payload and camera remain unexecuted. Rate values/table addresses are synthetic, not supported camera clock settings.

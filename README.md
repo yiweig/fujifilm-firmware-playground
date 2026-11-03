@@ -245,6 +245,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/termination-synchronization-hooks.md`](analysis/termination-synchronization-hooks.md)
   — mutex construction installs the termination hook; queue/event wait cleanup
   and ownership transfer reach scheduler boundaries in ten bounded controls.
+- [`analysis/idle-clock-switch-and-callbacks.md`](analysis/idle-clock-switch-and-callbacks.md)
+  — callback API, clock-table gate, display-event wait and error/cleanup order;
+  15 bounded controls, with physical clock work and runtime callbacks unresolved.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

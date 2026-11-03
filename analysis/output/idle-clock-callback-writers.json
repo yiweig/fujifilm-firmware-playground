@@ -1,0 +1,48 @@
+{
+  "image_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "target": "0x40f80d30",
+  "target_size": 8,
+  "window_instructions": 256,
+  "scan_end_exclusive": "0x40ab0000",
+  "candidate_store_encodings": 346146,
+  "hits": [
+    {
+      "instruction": "0x40183a5c",
+      "word": "0xe5834008",
+      "kind": "STR",
+      "address": "0x40f80d30",
+      "width": 4,
+      "value": null,
+      "condition": 14
+    },
+    {
+      "instruction": "0x40183a60",
+      "word": "0xe583200c",
+      "kind": "STR",
+      "address": "0x40f80d34",
+      "width": 4,
+      "value": null,
+      "condition": 14
+    }
+  ],
+  "bulk_call_statistics": {
+    "direct_branch_encodings": 11595,
+    "resolved_destination_and_size": 786,
+    "register_branch_encodings": 51463,
+    "resolved_register_bulk_targets": 229
+  },
+  "bulk_overlap_hits": [],
+  "nearby_bulk_destinations_with_unknown_size": [],
+  "limitations": "Aligned ARM STR/STRB/STRH/STRD/STM and direct B/BL or constant-resolved BX/BLX to two known copy/clear helpers, including possible data encodings; bounded backward constant resolution; no CFG, Thumb, exclusive/VFP stores, other/unresolved indirect bulk helpers, mutable-pointer dereference or runtime evidence. Manually validate every hit; missed writes remain possible.",
+  "validated_positive": {
+    "api_entry": "0x40183944",
+    "selector": 6,
+    "pre_store": "0x40183a5c",
+    "post_store": "0x40183a60",
+    "slots": [
+      "0x40f80d30",
+      "0x40f80d34"
+    ],
+    "limit": "Setter identified; no live callback values or concrete installed callback function established in this pass."
+  }
+}
