@@ -227,6 +227,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/main-handoff-usb-state.md`](analysis/main-handoff-usb-state.md)
   — retail preparation getters/resource acquisition and a separate controller
   helper preserve supplied PHY state; four controls, with full handoff unresolved.
+- [`analysis/main-handoff-optional-callback.md`](analysis/main-handoff-optional-callback.md)
+  — calibration-path registration of the pre-handoff callback; backlight/lens/idle
+  call edges and five controls, with actual retail callback state unresolved.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

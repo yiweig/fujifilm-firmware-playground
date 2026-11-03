@@ -8,6 +8,12 @@ updater. No camera access or firmware changes.
 
 ## Finding
 
+Follow-up: [optional handoff callback](main-handoff-optional-callback.md)
+identifies calibration-path registration of callback `0x405da53c` through USB
+API selector `0x600`. It calls backlight-related, lens-close and idle helpers;
+five bounded controls establish registration/dispatch without running those
+helpers. Ordinary retail callback state remains unobserved.
+
 Main USB loader preparation `0x401eb1ec` is not an identified full USB power-down
 sequence. Its inspected early helpers retrieve boot/configuration fields and
 write them back; its explicit resource request acquires bit 17, separate from

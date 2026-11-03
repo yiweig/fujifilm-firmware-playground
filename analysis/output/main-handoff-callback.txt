@@ -1,0 +1,8 @@
+Main image SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original main calibration registration wrapper, complete variadic API entry, setter and optional receiver-call branch. No calibration startup, USB transport or callback subhelper runs.
+PASS registration wrapper -> API selector 600 -> callback RAM 40fd0d90 = 405da53c.
+PASS optional receiver branch -> installed callback boundary; stop before callback instruction.
+PASS API selector 600 argument 0 -> callback RAM cleared (emulator only).
+PASS null optional callback -> skip to 401e1f58; no callback runs.
+PASS callback wrapper calls 40205fc4(0), 405e6fa0, then tail-calls 4015bf04, with all three modeled as returning.
+5 controls passed. No actual pre-handoff helper, lens operation, idle transition, controller, NAND/SD, firmware write, scheduler, payload or camera executes. Production callback presence and safe entry remain unknown.

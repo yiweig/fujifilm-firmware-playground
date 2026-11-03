@@ -118,6 +118,13 @@ controller byte `0x10005104`. Four controls cover those two slices only.
 An earlier optional callback, IRQ/GIC changes, the copy/execute transition and
 unresolved low helper prevent inferring preserved physical USB or a safe return.
 
+The [optional handoff callback investigation](main-handoff-optional-callback.md)
+identifies a calibration-path producer through USB API selector `0x600`.
+Its callback performs backlight-related, lens-close and idle preparation through
+deeper helpers whose complete storage/USB effects are unaudited. Five controls
+verify registration, optional dispatch/skip and modeled call order; ordinary
+retail callback presence remains unknown. These are not live calibration tests.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`
