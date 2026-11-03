@@ -162,6 +162,15 @@ Sources: [PTP review](ptp-advertised-operation-review.md),
 [recovery review](recovery-entry-review.md),
 [comparison review](public-boot-artifact-review.md).
 
+## R2 update: bounded mapping pass reached its stopping point
+
+The [backing audit](low-helper-backing-boundary.md) checks table construction,
+low-entry clear/enable and the known SRAM copy. Six controls narrow the mapping:
+low `0xb34` conditionally remains physical `0xb34`, distinct from known SRAM/main
+bytes. No implementation was recovered. R2 now needs authentic provider bytes
+with mapping/provenance, or a genuinely new access/mapping lead. Repeating this
+completed hypothesis is not the next task; the artifact requirements are recorded.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically
@@ -170,9 +179,9 @@ corpus above have already had bounded reviews; repeating the same searches is
 not new progress.
 
 Before a new deep trace, name the specific unexamined caller, mapping edge or
-new artifact, and state which blocker it could close. For R2, the question is
-whether a remaining mapping/copy path can identify the actual low-helper backing;
-its two known callers and four-version stability are already documented. If
+new artifact, and state which blocker it could close. For R2, the known
+table/copy hypothesis has now been checked; its two callers and four-version stability were already documented. Only a specific
+new mapping edge or provider artifact warrants reopening that trace. If
 required bytes are absent, record the exact artifact needed instead of replacing
 the helper with a guess. New authentic earlier-stage/service documentation could
 be more valuable than further detail about unrelated application cleanup.

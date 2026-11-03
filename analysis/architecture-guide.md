@@ -85,6 +85,10 @@ An address without its image/version is ambiguous. Nor is an in-range RAM
 address proof that an upload can overwrite it safely: stacks, live code, DMA
 buffers and other cores may still use it.
 
+The [bounded backing audit](low-helper-backing-boundary.md) further distinguishes
+low physical memory from known SRAM copies: it does not recover the helper bytes,
+and records the provider artifact needed to proceed.
+
 Sources: [memory map](memory-and-hardware-map.md),
 [hardware/boot diagrams](hardware-and-boot-diagrams.md),
 [low-address helper](low-address-loader-helper.md).

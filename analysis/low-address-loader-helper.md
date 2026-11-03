@@ -16,6 +16,11 @@ versions examined. This strengthens evidence of a stable earlier-stage ABI;
 it does not show that those helpers are immutable ROM or accessible when the
 installed main image is corrupt. This pass does not establish a recovery path.
 
+Follow-up: [mapping/backing boundary](low-helper-backing-boundary.md) decodes
+the constructed tables and checks six original-instruction slices. Low `0xb34`
+does not alias the known SRAM blob/main-image bytes under that configuration.
+The implementation remains unavailable; required provider artifacts are specified.
+
 ## Second caller: a code copy into SRAM
 
 In main image 2.00, the special `+0x200` entry branches to early loading

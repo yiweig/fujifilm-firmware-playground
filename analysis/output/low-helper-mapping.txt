@@ -1,0 +1,10 @@
+MAIN SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+UPDATER SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Original table construction and selected mapping/copy slices. CP15/barriers recorded and skipped. Conditional ARM short-descriptor address arithmetic only, not MMU/hardware execution or a memory dump.
+PASS main map stage=0 L1[0]=3f006001 low-b34=physical-00000b34 SRAM-3f000b34=3f000b34 maintenance=[]
+PASS main map stage=1 L1[0]=00000000 low-b34=fault-entry SRAM-3f000b34=3f000b34 maintenance=[barrier:40001840, barrier:40001850, CP15:40001854 value=00000000, CP15:40001858 value=00000000, barrier:4000185c, barrier:40001860]
+PASS main map stage=2 L1[0]=0001d406 low-b34=physical-00000b34 SRAM-3f000b34=3f000b34 maintenance=[barrier:4000186c, barrier:4000187c, CP15:40001884 value=00000000, CP15:40001888 value=00000000, barrier:4000188c, barrier:40001890]
+PASS main original MOV/MCR slice supplies TTBCR=00000021; EAE=0 N=1 PD0=0 PD1=1 under architectural interpretation; write recorded, not applied.
+PASS early original copy writes [3f000000,3f000674), stops before low helper, leaves SRAM+0xb34 sentinel unchanged; copied SHA256=d84750d2654065b9908e6d7651af2bc1aa9ac517e7561b563e5cb97008b79a6b
+PASS complete updater low-map helper stores 0001d406 -> conditional physical 00000b34; barriers/CP15 recorded only.
+6 controls passed. No low-address code bytes recovered or synthesized. Source binaries unchanged; no physical MMU/cache maintenance, low-helper instruction, storage/USB operation, payload or camera executes. Descriptor interpretation does not identify SoC physical backing or prove live translation/security/remap state.

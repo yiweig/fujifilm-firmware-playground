@@ -50,7 +50,7 @@ for those access/earlier-stage gaps before automatically expanding another calle
 | Handoff preparation | Optional callback lifetime, sensor timeout, candidate mode exits, playback cleanup, mutex/wait cleanup and clock synchronization traced in bounded controls. Close errors can be ignored; lock release can reach task-resume work. Real callbacks, concurrent effects and the hardware clock core remain unresolved. | [Architecture guide](analysis/architecture-guide.md), [clock audit](analysis/idle-clock-switch-and-callbacks.md) |
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
-| Earlier-stage helper | `0x00000b34` has two identified call contexts, but its implementation/backing is unrecovered. Cache synchronization is a hypothesis. Public comparison artifacts did not resolve it. | [Helper investigation](analysis/low-address-loader-helper.md), [public artifact review](analysis/public-boot-artifact-review.md) |
+| Earlier-stage helper | Known table/copy paths do not recover `0x00000b34`; conditional mappings point to low physical memory, not the known SRAM blob/main-image offset. Authentic provider bytes/mapping are still needed; six controls narrow this boundary. | [Backing/artifact gap](analysis/low-helper-backing-boundary.md), [earlier helper trace](analysis/low-address-loader-helper.md) |
 
 For orientation, read the [hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md)
 and [memory map](analysis/memory-and-hardware-map.md), then the report for the
@@ -270,6 +270,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/idle-clock-switch-and-callbacks.md`](analysis/idle-clock-switch-and-callbacks.md)
   — callback API, clock-table gate, display-event wait and error/cleanup order;
   15 bounded controls, with physical clock work and runtime callbacks unresolved.
+- [`analysis/low-helper-backing-boundary.md`](analysis/low-helper-backing-boundary.md)
+  — six mapping/copy controls distinguish low physical memory from known SRAM
+  copies; records the missing provider artifact and a stopping point for this lead.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

@@ -1,0 +1,64 @@
+{
+  "main_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "complete_updater_sha256": "4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976",
+  "result": "Identified table/copy paths do not recover low-helper implementation; missing provider artifact remains required. Not proof of absence from all opaque package content.",
+  "architectural_assumptions": [
+    "ARMv7 short-descriptor stage-1 address arithmetic",
+    "TTBR0 table base 0x3f004000 with TTBCR=0x21 as programmed by inspected main setup",
+    "No additional unobserved FCSE, stage-2 or SoC physical-remap inference; access permissions and live TLB state not evaluated"
+  ],
+  "states": [
+    {
+      "stage": "main initial table",
+      "l1_at_3f004000": "0x3f006001",
+      "l2_base": "0x3f006000",
+      "first_16_l2_words": "0x00005615",
+      "low_helper_conditional_output": "0x00000b34"
+    },
+    {
+      "stage": "main low-entry clear",
+      "l1_at_3f004000": "0x00000000",
+      "low_helper_conditional_output": "fault entry"
+    },
+    {
+      "stage": "main handoff / updater low-entry enable",
+      "l1_at_3f004000": "0x0001d406",
+      "low_helper_conditional_output": "0x00000b34"
+    }
+  ],
+  "known_copies": [
+    {
+      "source": "main 0x40e37c00",
+      "destination": "[0x3f000000,0x3f000674)",
+      "sha256": "d84750d2654065b9908e6d7651af2bc1aa9ac517e7561b563e5cb97008b79a6b",
+      "contains_sram_offset_b34": false,
+      "low_helper_bytes_recovered": false
+    },
+    {
+      "source": "runtime interface/header workspace, not supplied captured bytes",
+      "destination": "[0x3f000000,0x3f004000)",
+      "contains_sram_offset_b34": true,
+      "limit": "High SRAM copy; inspected CPU low mapping does not alias it. Actual source bytes/provider and SoC remaps remain unobserved."
+    }
+  ],
+  "minimum_missing_evidence": {
+    "preferred": "Authentic X-HF1 low-address provider bytes, preferably at least [0x00000000,0x00010000), together with acquisition provenance, boot/USB state, address interpretation, exact body/firmware identity and SHA256. More may be needed to cover dependencies.",
+    "mapping_metadata": [
+      "SCTLR",
+      "TTBR0",
+      "TTBR1",
+      "TTBCR",
+      "relevant first/second-level entries",
+      "processor/security context and any relevant additional translation or SoC remap state"
+    ],
+    "alternative": "Authentic earlier-stage image plus validated load/link mapping identifying implementation and dependencies of 0x00000b34.",
+    "not_established": "A safe transport or procedure for obtaining this evidence; no live read/experiment is proposed."
+  },
+  "references": [
+    {
+      "title": "ARMv7-A/R Architecture Reference Manual, B3.5 and B4.1 TTBCR",
+      "url": "https://documentation-service.arm.com/static/5f8daeb7f86e16515cdb8c4e",
+      "use": "Architectural descriptor semantics, not camera-specific backing or recovered instructions."
+    }
+  ]
+}
