@@ -1,0 +1,12 @@
+Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Offline supplied messages, mapping and read results. No driver initialization, mount callback, erase callback or actual I/O executes.
+RAM fixture overrides record-base global 4009de2c before execution; loaded bytes must remain unchanged thereafter. Original source file is untouched.
+PASS worker type=4 mapping=0 -> boundary=40065f94 posts=[]; stop before storage or next queue receive.
+PASS worker type=1 mapping=1 -> boundary=4001a89c posts=[]; stop before storage or next queue receive.
+PASS worker type=2 mapping=1 -> boundary=4002bc1c posts=[channel=1 type=202 id=1]; stop before storage or next queue receive.
+PASS worker type=2 mapping=0 -> boundary=40065f94 posts=[channel=1 type=204 id=1]; stop before storage or next queue receive.
+PASS original NAND profile installer places 4003f740 in record +34. No installed driver state or actual erase.
+PASS modeled spare-read result=0 -> boundary=4002a398 logs=0; erase target never executes.
+PASS modeled spare-read result=1 -> boundary=4003f740 logs=2; erase target never executes.
+PASS modeled spare-read result=2 -> boundary=4002a398 logs=0; erase target never executes.
+8 controls passed. No complete startup/mount, flash, real storage, scheduler or recovery behavior established.

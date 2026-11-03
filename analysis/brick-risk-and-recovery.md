@@ -60,6 +60,13 @@ does not itself request flashing. The earlier automatic card-file update path,
 registered write commands and incompletely audited storage-worker effects still
 prevent treating stock-updater RAM execution as proven write-free.
 
+The [storage activation follow-up](updater-mount-write-risk.md) identifies a
+concrete additional risk: a NAND table-construction branch can attempt block
+erase after a specific spare-read error, without an explicit update command.
+The startup type-4 worker message avoids that work, but other activation paths
+can reach it. Eight offline controls stop before initialization or erase;
+the branch has not been observed on the camera.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

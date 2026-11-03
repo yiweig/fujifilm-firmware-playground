@@ -1,0 +1,805 @@
+Official 2.00 complete updater; base 0x40000000; length 0xa2a00
+SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Offline original ARM disassembly. Ranges end-exclusive. Literal data inside ranges is not executable evidence.
+No target execution or storage operations.
+
+RANGE 4001c23c..4001c3c8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001c23c: e92d407f     	push	{r0, r1, r2, r3, r4, r5, r6, lr}
+4001c240: e59f616c     	ldr	r6, [pc, #0x16c]        @ 0x4001c3b4 <.text+0x1c3b4>
+4001c244: e3a04002     	mov	r4, #2
+4001c248: e28d1008     	add	r1, sp, #8
+4001c24c: e3a0000e     	mov	r0, #14
+4001c250: e5864000     	str	r4, [r6]
+4001c254: eb01274e     	bl	0x40065f94 <.text+0x65f94> @ imm = #0x49d38
+4001c258: e3500000     	cmp	r0, #0
+4001c25c: 159f0154     	ldrne	r0, [pc, #0x154]        @ 0x4001c3b8 <.text+0x1c3b8>
+4001c260: 159d1008     	ldrne	r1, [sp, #0x8]
+4001c264: 1a00004f     	bne	0x4001c3a8 <.text+0x1c3a8> @ imm = #0x13c
+4001c268: e59d1008     	ldr	r1, [sp, #0x8]
+4001c26c: e3510001     	cmp	r1, #1
+4001c270: 1a000014     	bne	0x4001c2c8 <.text+0x1c2c8> @ imm = #0x50
+4001c274: e59d500c     	ldr	r5, [sp, #0xc]
+4001c278: e28d1004     	add	r1, sp, #4
+4001c27c: e1a00005     	mov	r0, r5
+4001c280: ebfff96f     	bl	0x4001a844 <.text+0x1a844> @ imm = #-0x1a44
+4001c284: e3500000     	cmp	r0, #0
+4001c288: 0a000003     	beq	0x4001c29c <.text+0x1c29c> @ imm = #0xc
+4001c28c: e59f0128     	ldr	r0, [pc, #0x128]        @ 0x4001c3bc <.text+0x1c3bc>
+4001c290: e59f1128     	ldr	r1, [pc, #0x128]        @ 0x4001c3c0 <.text+0x1c3c0>
+4001c294: e3a020a2     	mov	r2, #162
+4001c298: ea000015     	b	0x4001c2f4 <.text+0x1c2f4> @ imm = #0x54
+4001c29c: e59d0004     	ldr	r0, [sp, #0x4]
+4001c2a0: ebfff97d     	bl	0x4001a89c <.text+0x1a89c> @ imm = #-0x1a0c
+4001c2a4: e3500000     	cmp	r0, #0
+4001c2a8: 1afffff7     	bne	0x4001c28c <.text+0x1c28c> @ imm = #-0x24
+4001c2ac: e59d0004     	ldr	r0, [sp, #0x4]
+4001c2b0: e58d4008     	str	r4, [sp, #0x8]
+4001c2b4: ebfffac3     	bl	0x4001adc8 <.text+0x1adc8> @ imm = #-0x14f4
+4001c2b8: e5903000     	ldr	r3, [r0]
+4001c2bc: e3a0000e     	mov	r0, #14
+4001c2c0: e58d300c     	str	r3, [sp, #0xc]
+4001c2c4: ea000031     	b	0x4001c390 <.text+0x1c390> @ imm = #0xc4
+4001c2c8: e3510002     	cmp	r1, #2
+4001c2cc: 1a000032     	bne	0x4001c39c <.text+0x1c39c> @ imm = #0xc8
+4001c2d0: e59d500c     	ldr	r5, [sp, #0xc]
+4001c2d4: e28d1004     	add	r1, sp, #4
+4001c2d8: e1a00005     	mov	r0, r5
+4001c2dc: ebfff958     	bl	0x4001a844 <.text+0x1a844> @ imm = #-0x1aa0
+4001c2e0: e3500000     	cmp	r0, #0
+4001c2e4: 0a000007     	beq	0x4001c308 <.text+0x1c308> @ imm = #0x1c
+4001c2e8: e59f00cc     	ldr	r0, [pc, #0xcc]         @ 0x4001c3bc <.text+0x1c3bc>
+4001c2ec: e59f10cc     	ldr	r1, [pc, #0xcc]         @ 0x4001c3c0 <.text+0x1c3c0>
+4001c2f0: e3a020b1     	mov	r2, #177
+4001c2f4: eb017a42     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x5e908
+4001c2f8: e3a03f81     	mov	r3, #516
+4001c2fc: e58d3008     	str	r3, [sp, #0x8]
+4001c300: e58d500c     	str	r5, [sp, #0xc]
+4001c304: ea000020     	b	0x4001c38c <.text+0x1c38c> @ imm = #0x80
+4001c308: e3003202     	movw	r3, #0x202
+4001c30c: e59d0004     	ldr	r0, [sp, #0x4]
+4001c310: e58d3008     	str	r3, [sp, #0x8]
+4001c314: ebfffaab     	bl	0x4001adc8 <.text+0x1adc8> @ imm = #-0x1554
+4001c318: e5903000     	ldr	r3, [r0]
+4001c31c: e28d1008     	add	r1, sp, #8
+4001c320: e3a00001     	mov	r0, #1
+4001c324: e58d300c     	str	r3, [sp, #0xc]
+4001c328: eb0126dd     	bl	0x40065ea4 <.text+0x65ea4> @ imm = #0x49b74
+4001c32c: e59d0004     	ldr	r0, [sp, #0x4]
+4001c330: ebfffaa4     	bl	0x4001adc8 <.text+0x1adc8> @ imm = #-0x1570
+4001c334: e590303c     	ldr	r3, [r0, #0x3c]
+4001c338: e1a05000     	mov	r5, r0
+4001c33c: e12fff33     	blx	r3
+4001c340: e3500000     	cmp	r0, #0
+4001c344: a3003203     	movwge	r3, #0x203
+4001c348: aa00000a     	bge	0x4001c378 <.text+0x1c378> @ imm = #0x28
+4001c34c: e59f106c     	ldr	r1, [pc, #0x6c]         @ 0x4001c3c0 <.text+0x1c3c0>
+4001c350: e3a020c0     	mov	r2, #192
+4001c354: e59f0060     	ldr	r0, [pc, #0x60]         @ 0x4001c3bc <.text+0x1c3bc>
+4001c358: eb017a29     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x5e8a4
+4001c35c: e595305c     	ldr	r3, [r5, #0x5c]
+4001c360: e12fff33     	blx	r3
+4001c364: e1a01000     	mov	r1, r0
+4001c368: e59f0054     	ldr	r0, [pc, #0x54]         @ 0x4001c3c4 <.text+0x1c3c4>
+4001c36c: eb017a24     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x5e890
+4001c370: e3a03f81     	mov	r3, #516
+4001c374: eaffffff     	b	0x4001c378 <.text+0x1c378> @ imm = #-0x4
+4001c378: e59d0004     	ldr	r0, [sp, #0x4]
+4001c37c: e58d3008     	str	r3, [sp, #0x8]
+4001c380: ebfffa90     	bl	0x4001adc8 <.text+0x1adc8> @ imm = #-0x15c0
+4001c384: e5903000     	ldr	r3, [r0]
+4001c388: e58d300c     	str	r3, [sp, #0xc]
+4001c38c: e3a00001     	mov	r0, #1
+4001c390: e28d1008     	add	r1, sp, #8
+4001c394: eb0126c2     	bl	0x40065ea4 <.text+0x65ea4> @ imm = #0x49b08
+4001c398: eaffffaa     	b	0x4001c248 <.text+0x1c248> @ imm = #-0x158
+4001c39c: e3510004     	cmp	r1, #4
+4001c3a0: 0affffa8     	beq	0x4001c248 <.text+0x1c248> @ imm = #-0x160
+4001c3a4: e59f000c     	ldr	r0, [pc, #0xc]          @ 0x4001c3b8 <.text+0x1c3b8>
+4001c3a8: e59d200c     	ldr	r2, [sp, #0xc]
+4001c3ac: eb017a14     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x5e850
+4001c3b0: eaffffa4     	b	0x4001c248 <.text+0x1c248> @ imm = #-0x170
+4001c3b4: 400a3a64     	andmi	r3, r10, r4, ror #20
+4001c3b8: 400952e5     	andmi	r5, r9, r5, ror #5
+4001c3bc: 4009505c     	andmi	r5, r9, r12, asr r0
+4001c3c0: 4008b40a     	andmi	r11, r8, r10, lsl #8
+4001c3c4: 40095308     	andmi	r5, r9, r8, lsl #6
+
+RANGE 4001c464..4001c594
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001c464: e92d407f     	push	{r0, r1, r2, r3, r4, r5, r6, lr}
+4001c468: e28d1004     	add	r1, sp, #4
+4001c46c: e1a06000     	mov	r6, r0
+4001c470: ebfff8f3     	bl	0x4001a844 <.text+0x1a844> @ imm = #-0x1c34
+4001c474: e2505000     	subs	r5, r0, #0
+4001c478: 13a03f81     	movne	r3, #516
+4001c47c: 158d3008     	strne	r3, [sp, #0x8]
+4001c480: 158d600c     	strne	r6, [sp, #0xc]
+4001c484: 1a000030     	bne	0x4001c54c <.text+0x1c54c> @ imm = #0xc0
+4001c488: e59d0004     	ldr	r0, [sp, #0x4]
+4001c48c: ebfffa4d     	bl	0x4001adc8 <.text+0x1adc8> @ imm = #-0x16cc
+4001c490: e3560000     	cmp	r6, #0
+4001c494: e1a04000     	mov	r4, r0
+4001c498: 1a000009     	bne	0x4001c4c4 <.text+0x1c4c4> @ imm = #0x24
+4001c49c: e3500000     	cmp	r0, #0
+4001c4a0: 0a000003     	beq	0x4001c4b4 <.text+0x1c4b4> @ imm = #0xc
+4001c4a4: e5903060     	ldr	r3, [r0, #0x60]
+4001c4a8: e1a01005     	mov	r1, r5
+4001c4ac: e3a00009     	mov	r0, #9
+4001c4b0: e12fff33     	blx	r3
+4001c4b4: e3003203     	movw	r3, #0x203
+4001c4b8: e58d3008     	str	r3, [sp, #0x8]
+4001c4bc: e3a03000     	mov	r3, #0
+4001c4c0: ea00000a     	b	0x4001c4f0 <.text+0x1c4f0> @ imm = #0x28
+4001c4c4: e3560007     	cmp	r6, #7
+4001c4c8: 1a00000b     	bne	0x4001c4fc <.text+0x1c4fc> @ imm = #0x2c
+4001c4cc: e3500000     	cmp	r0, #0
+4001c4d0: 0a000003     	beq	0x4001c4e4 <.text+0x1c4e4> @ imm = #0xc
+4001c4d4: e5903060     	ldr	r3, [r0, #0x60]
+4001c4d8: e1a01006     	mov	r1, r6
+4001c4dc: e3a00009     	mov	r0, #9
+4001c4e0: e12fff33     	blx	r3
+4001c4e4: e3003203     	movw	r3, #0x203
+4001c4e8: e58d3008     	str	r3, [sp, #0x8]
+4001c4ec: e3a03007     	mov	r3, #7
+4001c4f0: e58d300c     	str	r3, [sp, #0xc]
+4001c4f4: e3a00001     	mov	r0, #1
+4001c4f8: ea00001e     	b	0x4001c578 <.text+0x1c578> @ imm = #0x78
+4001c4fc: e59d0004     	ldr	r0, [sp, #0x4]
+4001c500: ebfff92b     	bl	0x4001a9b4 <.text+0x1a9b4> @ imm = #-0x1b54
+4001c504: e3500000     	cmp	r0, #0
+4001c508: 03a03001     	moveq	r3, #1
+4001c50c: 0a000013     	beq	0x4001c560 <.text+0x1c560> @ imm = #0x4c
+4001c510: e594303c     	ldr	r3, [r4, #0x3c]
+4001c514: e3530000     	cmp	r3, #0
+4001c518: 13a03002     	movne	r3, #2
+4001c51c: 1a00000f     	bne	0x4001c560 <.text+0x1c560> @ imm = #0x3c
+4001c520: e59f0064     	ldr	r0, [pc, #0x64]         @ 0x4001c58c <.text+0x1c58c>
+4001c524: e3a01002     	mov	r1, #2
+4001c528: e59f2060     	ldr	r2, [pc, #0x60]         @ 0x4001c590 <.text+0x1c590>
+4001c52c: e3003132     	movw	r3, #0x132
+4001c530: eb0184c7     	bl	0x4007d854 <.text+0x7d854> @ imm = #0x6131c
+4001c534: e3a03f81     	mov	r3, #516
+4001c538: e59d0004     	ldr	r0, [sp, #0x4]
+4001c53c: e58d3008     	str	r3, [sp, #0x8]
+4001c540: ebfffa20     	bl	0x4001adc8 <.text+0x1adc8> @ imm = #-0x1780
+4001c544: e5903000     	ldr	r3, [r0]
+4001c548: e58d300c     	str	r3, [sp, #0xc]
+4001c54c: e3a00001     	mov	r0, #1
+4001c550: e28d1008     	add	r1, sp, #8
+4001c554: eb012652     	bl	0x40065ea4 <.text+0x65ea4> @ imm = #0x49948
+4001c558: e3a05001     	mov	r5, #1
+4001c55c: ea000007     	b	0x4001c580 <.text+0x1c580> @ imm = #0x1c
+4001c560: e59d0004     	ldr	r0, [sp, #0x4]
+4001c564: e58d3008     	str	r3, [sp, #0x8]
+4001c568: ebfffa16     	bl	0x4001adc8 <.text+0x1adc8> @ imm = #-0x17a8
+4001c56c: e5903000     	ldr	r3, [r0]
+4001c570: e3a0000e     	mov	r0, #14
+4001c574: e58d300c     	str	r3, [sp, #0xc]
+4001c578: e28d1008     	add	r1, sp, #8
+4001c57c: eb012648     	bl	0x40065ea4 <.text+0x65ea4> @ imm = #0x49920
+4001c580: e1a00005     	mov	r0, r5
+4001c584: e28dd010     	add	sp, sp, #16
+4001c588: e8bd8070     	pop	{r4, r5, r6, pc}
+4001c58c: 8b060003     	blhi	0x4019c5a0 <.text+0x19c5a0> @ imm = #0x18000c
+4001c590: 40095325     	andmi	r5, r9, r5, lsr #6
+
+RANGE 4001c594..4001c6b0
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001c594: e92d4037     	push	{r0, r1, r2, r4, r5, lr}
+4001c598: e28d1004     	add	r1, sp, #4
+4001c59c: e1a04000     	mov	r4, r0
+4001c5a0: ebfff8a7     	bl	0x4001a844 <.text+0x1a844> @ imm = #-0x1d64
+4001c5a4: e3500000     	cmp	r0, #0
+4001c5a8: 159f00ec     	ldrne	r0, [pc, #0xec]         @ 0x4001c69c <.text+0x1c69c>
+4001c5ac: 13a01002     	movne	r1, #2
+4001c5b0: 159f20e8     	ldrne	r2, [pc, #0xe8]         @ 0x4001c6a0 <.text+0x1c6a0>
+4001c5b4: 1300316f     	movwne	r3, #0x16f
+4001c5b8: 1a000028     	bne	0x4001c660 <.text+0x1c660> @ imm = #0xa0
+4001c5bc: e59d0004     	ldr	r0, [sp, #0x4]
+4001c5c0: ebfffa00     	bl	0x4001adc8 <.text+0x1adc8> @ imm = #-0x1800
+4001c5c4: e3540000     	cmp	r4, #0
+4001c5c8: e1a05000     	mov	r5, r0
+4001c5cc: 1a000007     	bne	0x4001c5f0 <.text+0x1c5f0> @ imm = #0x1c
+4001c5d0: e5903060     	ldr	r3, [r0, #0x60]
+4001c5d4: e1a01004     	mov	r1, r4
+4001c5d8: e3a00009     	mov	r0, #9
+4001c5dc: e12fff33     	blx	r3
+4001c5e0: e3500000     	cmp	r0, #0
+4001c5e4: 03a04004     	moveq	r4, #4
+4001c5e8: 0a000029     	beq	0x4001c694 <.text+0x1c694> @ imm = #0xa4
+4001c5ec: ea00001c     	b	0x4001c664 <.text+0x1c664> @ imm = #0x70
+4001c5f0: e3540007     	cmp	r4, #7
+4001c5f4: 1a000006     	bne	0x4001c614 <.text+0x1c614> @ imm = #0x18
+4001c5f8: e5903060     	ldr	r3, [r0, #0x60]
+4001c5fc: e1a01004     	mov	r1, r4
+4001c600: e3a00009     	mov	r0, #9
+4001c604: e12fff33     	blx	r3
+4001c608: e3500000     	cmp	r0, #0
+4001c60c: 1a000014     	bne	0x4001c664 <.text+0x1c664> @ imm = #0x50
+4001c610: ea00001e     	b	0x4001c690 <.text+0x1c690> @ imm = #0x78
+4001c614: e59d0004     	ldr	r0, [sp, #0x4]
+4001c618: ebfff8e5     	bl	0x4001a9b4 <.text+0x1a9b4> @ imm = #-0x1c6c
+4001c61c: e3500000     	cmp	r0, #0
+4001c620: 1a000007     	bne	0x4001c644 <.text+0x1c644> @ imm = #0x1c
+4001c624: e59d0004     	ldr	r0, [sp, #0x4]
+4001c628: ebfff89b     	bl	0x4001a89c <.text+0x1a89c> @ imm = #-0x1d94
+4001c62c: e3500000     	cmp	r0, #0
+4001c630: 159f006c     	ldrne	r0, [pc, #0x6c]         @ 0x4001c6a4 <.text+0x1c6a4>
+4001c634: 13a01001     	movne	r1, #1
+4001c638: 159f2060     	ldrne	r2, [pc, #0x60]         @ 0x4001c6a0 <.text+0x1c6a0>
+4001c63c: 13003185     	movwne	r3, #0x185
+4001c640: 1a000006     	bne	0x4001c660 <.text+0x1c660> @ imm = #0x18
+4001c644: e595303c     	ldr	r3, [r5, #0x3c]
+4001c648: e3530000     	cmp	r3, #0
+4001c64c: 1a000006     	bne	0x4001c66c <.text+0x1c66c> @ imm = #0x18
+4001c650: e59f0050     	ldr	r0, [pc, #0x50]         @ 0x4001c6a8 <.text+0x1c6a8>
+4001c654: e59f2044     	ldr	r2, [pc, #0x44]         @ 0x4001c6a0 <.text+0x1c6a0>
+4001c658: e3a01002     	mov	r1, #2
+4001c65c: e3a03f63     	mov	r3, #396
+4001c660: eb01847b     	bl	0x4007d854 <.text+0x7d854> @ imm = #0x611ec
+4001c664: e3a04102     	mov	r4, #-2147483648
+4001c668: ea000009     	b	0x4001c694 <.text+0x1c694> @ imm = #0x24
+4001c66c: e12fff33     	blx	r3
+4001c670: e2504000     	subs	r4, r0, #0
+4001c674: aa000006     	bge	0x4001c694 <.text+0x1c694> @ imm = #0x18
+4001c678: e59f002c     	ldr	r0, [pc, #0x2c]         @ 0x4001c6ac <.text+0x1c6ac>
+4001c67c: e3a01001     	mov	r1, #1
+4001c680: e59f2018     	ldr	r2, [pc, #0x18]         @ 0x4001c6a0 <.text+0x1c6a0>
+4001c684: e3003193     	movw	r3, #0x193
+4001c688: eb018471     	bl	0x4007d854 <.text+0x7d854> @ imm = #0x611c4
+4001c68c: ea000000     	b	0x4001c694 <.text+0x1c694> @ imm = #0x0
+4001c690: e3a04001     	mov	r4, #1
+4001c694: e1a00004     	mov	r0, r4
+4001c698: e8bd803e     	pop	{r1, r2, r3, r4, r5, pc}
+4001c69c: 8b060001     	blhi	0x4019c6a8 <.text+0x19c6a8> @ imm = #0x180004
+4001c6a0: 40095325     	andmi	r5, r9, r5, lsr #6
+4001c6a4: 8b06000b     	blhi	0x4019c6d8 <.text+0x19c6d8> @ imm = #0x18002c
+4001c6a8: 8b060003     	blhi	0x4019c6bc <.text+0x19c6bc> @ imm = #0x18000c
+4001c6ac: 8b060004     	blhi	0x4019c6c4 <.text+0x19c6c4> @ imm = #0x180010
+
+RANGE 4001a9ec..4001aa2c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001a9ec: e92d4013     	push	{r0, r1, r4, lr}
+4001a9f0: e1a04000     	mov	r4, r0
+4001a9f4: e59f102c     	ldr	r1, [pc, #0x2c]         @ 0x4001aa28 <.text+0x1aa28>
+4001a9f8: e3a00000     	mov	r0, #0
+4001a9fc: e1a02004     	mov	r2, r4
+4001aa00: eb01a2e0     	bl	0x40083588 <.text+0x83588> @ imm = #0x68b80
+4001aa04: e3740001     	cmn	r4, #1
+4001aa08: 1a000005     	bne	0x4001aa24 <.text+0x1aa24> @ imm = #0x14
+4001aa0c: eb00066d     	bl	0x4001c3c8 <.text+0x1c3c8> @ imm = #0x19b4
+4001aa10: e3a03004     	mov	r3, #4
+4001aa14: e3a0000e     	mov	r0, #14
+4001aa18: e1a0100d     	mov	r1, sp
+4001aa1c: e88d0018     	stm	sp, {r3, r4}
+4001aa20: eb012d1f     	bl	0x40065ea4 <.text+0x65ea4> @ imm = #0x4b47c
+4001aa24: e8bd801c     	pop	{r2, r3, r4, pc}
+4001aa28: 40095050     	andmi	r5, r9, r0, asr r0
+
+RANGE 4001be6c..4001bf30
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4001be6c: e92d4010     	push	{r4, lr}
+4001be70: e59f20a0     	ldr	r2, [pc, #0xa0]         @ 0x4001bf18 <.text+0x1bf18>
+4001be74: e24dd068     	sub	sp, sp, #104
+4001be78: e3a03001     	mov	r3, #1
+4001be7c: e58d203c     	str	r2, [sp, #0x3c]
+4001be80: e59f2094     	ldr	r2, [pc, #0x94]         @ 0x4001bf1c <.text+0x1bf1c>
+4001be84: e58d3004     	str	r3, [sp, #0x4]
+4001be88: e58d3008     	str	r3, [sp, #0x8]
+4001be8c: e59f308c     	ldr	r3, [pc, #0x8c]         @ 0x4001bf20 <.text+0x1bf20>
+4001be90: e58d2040     	str	r2, [sp, #0x40]
+4001be94: e59f2088     	ldr	r2, [pc, #0x88]         @ 0x4001bf24 <.text+0x1bf24>
+4001be98: e58d3060     	str	r3, [sp, #0x60]
+4001be9c: e59f3084     	ldr	r3, [pc, #0x84]         @ 0x4001bf28 <.text+0x1bf28>
+4001bea0: e58d204c     	str	r2, [sp, #0x4c]
+4001bea4: e59f2080     	ldr	r2, [pc, #0x80]         @ 0x4001bf2c <.text+0x1bf2c>
+4001bea8: e58d3034     	str	r3, [sp, #0x34]
+4001beac: e3a01064     	mov	r1, #100
+4001beb0: e3a03000     	mov	r3, #0
+4001beb4: e28d0004     	add	r0, sp, #4
+4001beb8: e58d3038     	str	r3, [sp, #0x38]
+4001bebc: e58d3044     	str	r3, [sp, #0x44]
+4001bec0: e58d3048     	str	r3, [sp, #0x48]
+4001bec4: e58d3050     	str	r3, [sp, #0x50]
+4001bec8: e58d2064     	str	r2, [sp, #0x64]
+4001becc: e58d3024     	str	r3, [sp, #0x24]
+4001bed0: e58d3028     	str	r3, [sp, #0x28]
+4001bed4: e58d302c     	str	r3, [sp, #0x2c]
+4001bed8: e58d300c     	str	r3, [sp, #0xc]
+4001bedc: e58d3010     	str	r3, [sp, #0x10]
+4001bee0: e58d3014     	str	r3, [sp, #0x14]
+4001bee4: e58d3030     	str	r3, [sp, #0x30]
+4001bee8: e58d3018     	str	r3, [sp, #0x18]
+4001beec: e58d301c     	str	r3, [sp, #0x1c]
+4001bef0: e58d3020     	str	r3, [sp, #0x20]
+4001bef4: e58d3054     	str	r3, [sp, #0x54]
+4001bef8: e58d3058     	str	r3, [sp, #0x58]
+4001befc: e58d305c     	str	r3, [sp, #0x5c]
+4001bf00: ebfffb26     	bl	0x4001aba0 <.text+0x1aba0> @ imm = #-0x1368
+4001bf04: e1a04000     	mov	r4, r0
+4001bf08: ebffff8d     	bl	0x4001bd44 <.text+0x1bd44> @ imm = #-0x1cc
+4001bf0c: e1a00004     	mov	r0, r4
+4001bf10: e28dd068     	add	sp, sp, #104
+4001bf14: e8bd8010     	pop	{r4, pc}
+4001bf18: 4001bd44     	andmi	r11, r1, r4, asr #26
+4001bf1c: 4002bc1c     	andmi	r11, r2, r12, lsl r12
+4001bf20: 4001bb6c     	andmi	r11, r1, r12, ror #22
+4001bf24: 4001bd34     	andmi	r11, r1, r4, lsr sp
+4001bf28: 4001bb78     	andmi	r11, r1, r8, ror r11
+4001bf2c: 4001bb80     	andmi	r11, r1, r0, lsl #23
+
+RANGE 4002bc1c..4002bcc0
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4002bc1c: e92d4010     	push	{r4, lr}
+4002bc20: e3a00001     	mov	r0, #1
+4002bc24: eb00116b     	bl	0x400301d8 <.text+0x301d8> @ imm = #0x45ac
+4002bc28: e1a04000     	mov	r4, r0
+4002bc2c: e5900074     	ldr	r0, [r0, #0x74]
+4002bc30: e3500000     	cmp	r0, #0
+4002bc34: 1a00001a     	bne	0x4002bca4 <.text+0x2bca4> @ imm = #0x68
+4002bc38: eb00f9cd     	bl	0x4006a374 <.text+0x6a374> @ imm = #0x3e734
+4002bc3c: e5943058     	ldr	r3, [r4, #0x58]
+4002bc40: e594208c     	ldr	r2, [r4, #0x8c]
+4002bc44: e594000c     	ldr	r0, [r4, #0xc]
+4002bc48: e1a03103     	lsl	r3, r3, #2
+4002bc4c: e0830230     	add	r0, r3, r0, lsr r2
+4002bc50: e1a00080     	lsl	r0, r0, #1
+4002bc54: eb014ea0     	bl	0x4007f6dc <.text+0x7f6dc> @ imm = #0x53a80
+4002bc58: e3500000     	cmp	r0, #0
+4002bc5c: e1a02000     	mov	r2, r0
+4002bc60: e5840074     	str	r0, [r4, #0x74]
+4002bc64: 1a000006     	bne	0x4002bc84 <.text+0x2bc84> @ imm = #0x18
+4002bc68: e59f004c     	ldr	r0, [pc, #0x4c]         @ 0x4002bcbc <.text+0x2bcbc>
+4002bc6c: e300118a     	movw	r1, #0x18a
+4002bc70: eb0160aa     	bl	0x40083f20 <.text+0x83f20> @ imm = #0x582a8
+4002bc74: e5940074     	ldr	r0, [r4, #0x74]
+4002bc78: e2900000     	adds	r0, r0, #0
+4002bc7c: 13a00001     	movne	r0, #1
+4002bc80: eb0160c2     	bl	0x40083f90 <.text+0x83f90> @ imm = #0x58308
+4002bc84: e5942058     	ldr	r2, [r4, #0x58]
+4002bc88: e5943074     	ldr	r3, [r4, #0x74]
+4002bc8c: e1a00004     	mov	r0, r4
+4002bc90: e0833182     	add	r3, r3, r2, lsl #3
+4002bc94: e5843070     	str	r3, [r4, #0x70]
+4002bc98: ebfff96a     	bl	0x4002a248 <.text+0x2a248> @ imm = #-0x1a58
+4002bc9c: e3a00000     	mov	r0, #0
+4002bca0: eb00f9e2     	bl	0x4006a430 <.text+0x6a430> @ imm = #0x3e788
+4002bca4: e3a00001     	mov	r0, #1
+4002bca8: eb0051e7     	bl	0x4004044c <.text+0x4044c> @ imm = #0x1479c
+4002bcac: e3a00001     	mov	r0, #1
+4002bcb0: e3a01000     	mov	r1, #0
+4002bcb4: e8bd4010     	pop	{r4, lr}
+4002bcb8: ea005172     	b	0x40040288 <.text+0x40288> @ imm = #0x145c8
+4002bcbc: 40097754     	andmi	r7, r9, r4, asr r7
+
+RANGE 4002a248..4002a2a8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4002a248: e92d4ff0     	push	{r4, r5, r6, r7, r8, r9, r10, r11, lr}
+4002a24c: e1a04000     	mov	r4, r0
+4002a250: e24dd054     	sub	sp, sp, #84
+4002a254: e3a00001     	mov	r0, #1
+4002a258: eb0017de     	bl	0x400301d8 <.text+0x301d8> @ imm = #0x5f78
+4002a25c: e1a05000     	mov	r5, r0
+4002a260: eb015792     	bl	0x400800b0 <.text+0x800b0> @ imm = #0x55e48
+4002a264: e5943028     	ldr	r3, [r4, #0x28]
+4002a268: e5942074     	ldr	r2, [r4, #0x74]
+4002a26c: e58d3030     	str	r3, [sp, #0x30]
+4002a270: e595308c     	ldr	r3, [r5, #0x8c]
+4002a274: e58d2020     	str	r2, [sp, #0x20]
+4002a278: e3a02001     	mov	r2, #1
+4002a27c: e1a0b312     	lsl	r11, r2, r3
+4002a280: e594300c     	ldr	r3, [r4, #0xc]
+4002a284: e5941070     	ldr	r1, [r4, #0x70]
+4002a288: e2433001     	sub	r3, r3, #1
+4002a28c: e58d101c     	str	r1, [sp, #0x1c]
+4002a290: e083300b     	add	r3, r3, r11
+4002a294: e5941034     	ldr	r1, [r4, #0x34]
+4002a298: e733fb13     	udiv	r3, r3, r11
+4002a29c: e1a02213     	lsl	r2, r3, r2
+4002a2a0: e58d0040     	str	r0, [sp, #0x40]
+4002a2a4: e58d1024     	str	r1, [sp, #0x24]
+
+RANGE 4002a37c..4002a408
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4002a37c: e1a00004     	mov	r0, r4
+4002a380: e1a0100a     	mov	r1, r10
+4002a384: e1a02006     	mov	r2, r6
+4002a388: e59d3030     	ldr	r3, [sp, #0x30]
+4002a38c: e12fff33     	blx	r3
+4002a390: e3500001     	cmp	r0, #1
+4002a394: 0a000005     	beq	0x4002a3b0 <.text+0x2a3b0> @ imm = #0x14
+4002a398: e5d60000     	ldrb	r0, [r6]
+4002a39c: e3a01008     	mov	r1, #8
+4002a3a0: ebfffec9     	bl	0x40029ecc <.text+0x29ecc> @ imm = #-0x4dc
+4002a3a4: e3500001     	cmp	r0, #1
+4002a3a8: 1a000028     	bne	0x4002a450 <.text+0x2a450> @ imm = #0xa0
+4002a3ac: ea000015     	b	0x4002a408 <.text+0x2a408> @ imm = #0x54
+4002a3b0: e5941054     	ldr	r1, [r4, #0x54]
+4002a3b4: e59f051c     	ldr	r0, [pc, #0x51c]        @ 0x4002a8d8 <.text+0x2a8d8>
+4002a3b8: e0851001     	add	r1, r5, r1
+4002a3bc: eb014210     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x50840
+4002a3c0: e59f1514     	ldr	r1, [pc, #0x514]        @ 0x4002a8dc <.text+0x2a8dc>
+4002a3c4: e3002227     	movw	r2, #0x227
+4002a3c8: e59f0510     	ldr	r0, [pc, #0x510]        @ 0x4002a8e0 <.text+0x2a8e0>
+4002a3cc: eb01420c     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x50830
+4002a3d0: e1a00004     	mov	r0, r4
+4002a3d4: e1a0100a     	mov	r1, r10
+4002a3d8: e59d2024     	ldr	r2, [sp, #0x24]
+4002a3dc: e12fff32     	blx	r2
+4002a3e0: e3500000     	cmp	r0, #0
+4002a3e4: 1a00011b     	bne	0x4002a858 <.text+0x2a858> @ imm = #0x46c
+4002a3e8: e1a00004     	mov	r0, r4
+4002a3ec: e1a0100a     	mov	r1, r10
+4002a3f0: e1a02006     	mov	r2, r6
+4002a3f4: e59d3030     	ldr	r3, [sp, #0x30]
+4002a3f8: e12fff33     	blx	r3
+4002a3fc: e3500000     	cmp	r0, #0
+4002a400: 0affffe4     	beq	0x4002a398 <.text+0x2a398> @ imm = #-0x70
+4002a404: ea000113     	b	0x4002a858 <.text+0x2a858> @ imm = #0x44c
+
+RANGE 4002a8d8..4002a8e8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4002a8d8: 40097197     	mulmi	r9, r7, r1
+4002a8dc: 4008b5fb     	strdmi	r11, r12, [r8], -r11
+4002a8e0: 4009505c     	andmi	r5, r9, r12, asr r0
+4002a8e4: 400971b2     	strhmi	r7, [r9], -r2
+
+RANGE 4003d8d8..4003d940
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4003d8d8: e5943084     	ldr	r3, [r4, #0x84]
+4003d8dc: e3530b01     	cmp	r3, #1024
+4003d8e0: 0a00000c     	beq	0x4003d918 <.text+0x3d918> @ imm = #0x30
+4003d8e4: 8a000002     	bhi	0x4003d8f4 <.text+0x3d8f4> @ imm = #0x8
+4003d8e8: e3530c02     	cmp	r3, #512
+4003d8ec: 1a000012     	bne	0x4003d93c <.text+0x3d93c> @ imm = #0x48
+4003d8f0: ea000004     	b	0x4003d908 <.text+0x3d908> @ imm = #0x10
+4003d8f4: e3530b02     	cmp	r3, #2048
+4003d8f8: 0a000006     	beq	0x4003d918 <.text+0x3d918> @ imm = #0x18
+4003d8fc: e3530a01     	cmp	r3, #4096
+4003d900: 1a00000d     	bne	0x4003d93c <.text+0x3d93c> @ imm = #0x34
+4003d904: ea000003     	b	0x4003d918 <.text+0x3d918> @ imm = #0xc
+4003d908: e1a00004     	mov	r0, r4
+4003d90c: eb000429     	bl	0x4003e9b8 <.text+0x3e9b8> @ imm = #0x10a4
+4003d910: e1a00005     	mov	r0, r5
+4003d914: e8bd8038     	pop	{r3, r4, r5, pc}
+4003d918: e5d430a4     	ldrb	r3, [r4, #0xa4]
+4003d91c: e1a00004     	mov	r0, r4
+4003d920: e3130003     	tst	r3, #3
+4003d924: 1a000001     	bne	0x4003d930 <.text+0x3d930> @ imm = #0x4
+4003d928: eb0009aa     	bl	0x4003ffd8 <.text+0x3ffd8> @ imm = #0x26a8
+4003d92c: ea000000     	b	0x4003d934 <.text+0x3d934> @ imm = #0x0
+4003d930: ebffcf64     	bl	0x400316c8 <.text+0x316c8> @ imm = #-0xc270
+4003d934: e3a00002     	mov	r0, #2
+4003d938: e8bd8038     	pop	{r3, r4, r5, pc}
+4003d93c: e3a00001     	mov	r0, #1
+
+RANGE 4003ffd8..40040040
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4003ffd8: e59f3040     	ldr	r3, [pc, #0x40]         @ 0x40040020 <.text+0x40020>
+4003ffdc: e5803028     	str	r3, [r0, #0x28]
+4003ffe0: e59f303c     	ldr	r3, [pc, #0x3c]         @ 0x40040024 <.text+0x40024>
+4003ffe4: e580302c     	str	r3, [r0, #0x2c]
+4003ffe8: e59f3038     	ldr	r3, [pc, #0x38]         @ 0x40040028 <.text+0x40028>
+4003ffec: e5803030     	str	r3, [r0, #0x30]
+4003fff0: e59f3034     	ldr	r3, [pc, #0x34]         @ 0x4004002c <.text+0x4002c>
+4003fff4: e5803034     	str	r3, [r0, #0x34]
+4003fff8: e59f3030     	ldr	r3, [pc, #0x30]         @ 0x40040030 <.text+0x40030>
+4003fffc: e5803038     	str	r3, [r0, #0x38]
+40040000: e59f302c     	ldr	r3, [pc, #0x2c]         @ 0x40040034 <.text+0x40034>
+40040004: e580303c     	str	r3, [r0, #0x3c]
+40040008: e59f3028     	ldr	r3, [pc, #0x28]         @ 0x40040038 <.text+0x40038>
+4004000c: e5803044     	str	r3, [r0, #0x44]
+40040010: e59f3024     	ldr	r3, [pc, #0x24]         @ 0x4004003c <.text+0x4003c>
+40040014: e5803040     	str	r3, [r0, #0x40]
+40040018: e3a00000     	mov	r0, #0
+4004001c: e12fff1e     	bx	lr
+40040020: 4003f7a0     	andmi	pc, r3, r0, lsr #15
+40040024: 4003f7f4     	<unknown>
+40040028: 4003f164     	andmi	pc, r3, r4, ror #2
+4004002c: 4003f740     	andmi	pc, r3, r0, asr #14
+40040030: 4003eecc     	andmi	lr, r3, r12, asr #29
+40040034: 4003ec4c     	andmi	lr, r3, r12, asr #24
+40040038: 4003ea68     	andmi	lr, r3, r8, ror #20
+4004003c: 4003ea54     	andmi	lr, r3, r4, asr r10
+
+RANGE 400316e8..40031728
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+400316e8: e59f30b8     	ldr	r3, [pc, #0xb8]         @ 0x400317a8 <.text+0x317a8>
+400316ec: e5843028     	str	r3, [r4, #0x28]
+400316f0: e59f30b4     	ldr	r3, [pc, #0xb4]         @ 0x400317ac <.text+0x317ac>
+400316f4: e584302c     	str	r3, [r4, #0x2c]
+400316f8: e59f30b0     	ldr	r3, [pc, #0xb0]         @ 0x400317b0 <.text+0x317b0>
+400316fc: e5843030     	str	r3, [r4, #0x30]
+40031700: e59f30ac     	ldr	r3, [pc, #0xac]         @ 0x400317b4 <.text+0x317b4>
+40031704: e5843034     	str	r3, [r4, #0x34]
+40031708: e59f30a8     	ldr	r3, [pc, #0xa8]         @ 0x400317b8 <.text+0x317b8>
+4003170c: e5843038     	str	r3, [r4, #0x38]
+40031710: e59f30a4     	ldr	r3, [pc, #0xa4]         @ 0x400317bc <.text+0x317bc>
+40031714: e584303c     	str	r3, [r4, #0x3c]
+40031718: e59f30a0     	ldr	r3, [pc, #0xa0]         @ 0x400317c0 <.text+0x317c0>
+4003171c: e5843044     	str	r3, [r4, #0x44]
+40031720: e59f309c     	ldr	r3, [pc, #0x9c]         @ 0x400317c4 <.text+0x317c4>
+40031724: e5843040     	str	r3, [r4, #0x40]
+
+RANGE 400317a8..400317c8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+400317a8: 4003109c     	mulmi	r3, r12, r0
+400317ac: 40031224     	andmi	r1, r3, r4, lsr #4
+400317b0: 40030b5c     	andmi	r0, r3, r12, asr r11
+400317b4: 4003f740     	andmi	pc, r3, r0, asr #14
+400317b8: 4003eecc     	andmi	lr, r3, r12, asr #29
+400317bc: 4003ec4c     	andmi	lr, r3, r12, asr #24
+400317c0: 400309e0     	andmi	r0, r3, r0, ror #19
+400317c4: 400309cc     	andmi	r0, r3, r12, asr #19
+
+RANGE 4003e9e8..4003ea54
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4003e9e8: e59f3044     	ldr	r3, [pc, #0x44]         @ 0x4003ea34 <.text+0x3ea34>
+4003e9ec: e3a00000     	mov	r0, #0
+4003e9f0: e5843028     	str	r3, [r4, #0x28]
+4003e9f4: e59f303c     	ldr	r3, [pc, #0x3c]         @ 0x4003ea38 <.text+0x3ea38>
+4003e9f8: e584302c     	str	r3, [r4, #0x2c]
+4003e9fc: e59f3038     	ldr	r3, [pc, #0x38]         @ 0x4003ea3c <.text+0x3ea3c>
+4003ea00: e5843030     	str	r3, [r4, #0x30]
+4003ea04: e59f3034     	ldr	r3, [pc, #0x34]         @ 0x4003ea40 <.text+0x3ea40>
+4003ea08: e5843034     	str	r3, [r4, #0x34]
+4003ea0c: e59f3030     	ldr	r3, [pc, #0x30]         @ 0x4003ea44 <.text+0x3ea44>
+4003ea10: e5843038     	str	r3, [r4, #0x38]
+4003ea14: e59f302c     	ldr	r3, [pc, #0x2c]         @ 0x4003ea48 <.text+0x3ea48>
+4003ea18: e584303c     	str	r3, [r4, #0x3c]
+4003ea1c: e59f3028     	ldr	r3, [pc, #0x28]         @ 0x4003ea4c <.text+0x3ea4c>
+4003ea20: e5843044     	str	r3, [r4, #0x44]
+4003ea24: e59f3024     	ldr	r3, [pc, #0x24]         @ 0x4003ea50 <.text+0x3ea50>
+4003ea28: e5843040     	str	r3, [r4, #0x40]
+4003ea2c: e8bd8038     	pop	{r3, r4, r5, pc}
+4003ea30: 400a8230     	andmi	r8, r10, r0, lsr r2
+4003ea34: 4003e6a8     	andmi	lr, r3, r8, lsr #13
+4003ea38: 4003e46c     	andmi	lr, r3, r12, ror #8
+4003ea3c: 4003e714     	andmi	lr, r3, r4, lsl r7
+4003ea40: 4003e40c     	andmi	lr, r3, r12, lsl #8
+4003ea44: 4003e1a0     	andmi	lr, r3, r0, lsr #3
+4003ea48: 4003df48     	andmi	sp, r3, r8, asr #30
+4003ea4c: 4003dd8c     	andmi	sp, r3, r12, lsl #27
+4003ea50: 4003dd84     	andmi	sp, r3, r4, lsl #27
+
+RANGE 4003f740..4003f7a0
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4003f740: e92d4070     	push	{r4, r5, r6, lr}
+4003f744: e3a00001     	mov	r0, #1
+4003f748: e1a06001     	mov	r6, r1
+4003f74c: ebffc2a1     	bl	0x400301d8 <.text+0x301d8> @ imm = #-0xf57c
+4003f750: e3a01001     	mov	r1, #1
+4003f754: e1a05000     	mov	r5, r0
+4003f758: e3a02000     	mov	r2, #0
+4003f75c: e1a00006     	mov	r0, r6
+4003f760: ebfff8b0     	bl	0x4003da28 <.text+0x3da28> @ imm = #-0x1d40
+4003f764: e3500000     	cmp	r0, #0
+4003f768: 1a00000a     	bne	0x4003f798 <.text+0x3f798> @ imm = #0x28
+4003f76c: e3a04003     	mov	r4, #3
+4003f770: e1a00006     	mov	r0, r6
+4003f774: e3a01001     	mov	r1, #1
+4003f778: e5952090     	ldr	r2, [r5, #0x90]
+4003f77c: e5953084     	ldr	r3, [r5, #0x84]
+4003f780: eb00b70b     	bl	0x4006d3b4 <.text+0x6d3b4> @ imm = #0x2dc2c
+4003f784: e3500000     	cmp	r0, #0
+4003f788: 08bd8070     	popeq	{r4, r5, r6, pc}
+4003f78c: e2544001     	subs	r4, r4, #1
+4003f790: 1afffff6     	bne	0x4003f770 <.text+0x3f770> @ imm = #-0x28
+4003f794: e8bd8070     	pop	{r4, r5, r6, pc}
+4003f798: e3a00001     	mov	r0, #1
+4003f79c: e8bd8070     	pop	{r4, r5, r6, pc}
+
+RANGE 4003e40c..4003e46c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4003e40c: e92d4070     	push	{r4, r5, r6, lr}
+4003e410: e3a00001     	mov	r0, #1
+4003e414: e1a06001     	mov	r6, r1
+4003e418: ebffc76e     	bl	0x400301d8 <.text+0x301d8> @ imm = #-0xe248
+4003e41c: e3a01001     	mov	r1, #1
+4003e420: e1a05000     	mov	r5, r0
+4003e424: e3a02000     	mov	r2, #0
+4003e428: e1a00006     	mov	r0, r6
+4003e42c: ebfffd7d     	bl	0x4003da28 <.text+0x3da28> @ imm = #-0xa0c
+4003e430: e3500000     	cmp	r0, #0
+4003e434: 1a00000a     	bne	0x4003e464 <.text+0x3e464> @ imm = #0x28
+4003e438: e3a04003     	mov	r4, #3
+4003e43c: e1a00006     	mov	r0, r6
+4003e440: e3a01001     	mov	r1, #1
+4003e444: e5952090     	ldr	r2, [r5, #0x90]
+4003e448: e5953084     	ldr	r3, [r5, #0x84]
+4003e44c: eb00bbd8     	bl	0x4006d3b4 <.text+0x6d3b4> @ imm = #0x2ef60
+4003e450: e3500000     	cmp	r0, #0
+4003e454: 08bd8070     	popeq	{r4, r5, r6, pc}
+4003e458: e2544001     	subs	r4, r4, #1
+4003e45c: 1afffff6     	bne	0x4003e43c <.text+0x3e43c> @ imm = #-0x28
+4003e460: e8bd8070     	pop	{r4, r5, r6, pc}
+4003e464: e3a00001     	mov	r0, #1
+4003e468: e8bd8070     	pop	{r4, r5, r6, pc}
+
+RANGE 4006d3b4..4006d428
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4006d3b4: e1a0c4a3     	lsr	r12, r3, #9
+4006d3b8: e92d45f8     	push	{r3, r4, r5, r6, r7, r8, r10, lr}
+4006d3bc: e3530c02     	cmp	r3, #512
+4006d3c0: e2417001     	sub	r7, r1, #1
+4006d3c4: e24c3001     	sub	r3, r12, #1
+4006d3c8: e73efc10     	udiv	lr, r0, r12
+4006d3cc: e087700c     	add	r7, r7, r12
+4006d3d0: e0030000     	and	r0, r3, r0
+4006d3d4: e0877000     	add	r7, r7, r0
+4006d3d8: 93a05020     	movls	r5, #32
+4006d3dc: 83a05040     	movhi	r5, #64
+4006d3e0: e737fc17     	udiv	r7, r7, r12
+4006d3e4: e2477001     	sub	r7, r7, #1
+4006d3e8: e2453001     	sub	r3, r5, #1
+4006d3ec: e003300e     	and	r3, r3, lr
+4006d3f0: e0877005     	add	r7, r7, r5
+4006d3f4: e0877003     	add	r7, r7, r3
+4006d3f8: e737f517     	udiv	r7, r7, r5
+4006d3fc: e2473001     	sub	r3, r7, #1
+4006d400: 92426001     	subls	r6, r2, #1
+4006d404: 82426002     	subhi	r6, r2, #2
+4006d408: e3530003     	cmp	r3, #3
+4006d40c: 9a000005     	bls	0x4006d428 <.text+0x6d428> @ imm = #0x14
+4006d410: e1a01007     	mov	r1, r7
+4006d414: e59f0224     	ldr	r0, [pc, #0x224]        @ 0x4006d640 <.text+0x6d640>
+4006d418: eb0035f9     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0xd7e4
+4006d41c: e3a06001     	mov	r6, #1
+4006d420: eb0059f8     	bl	0x40083c08 <.text+0x83c08> @ imm = #0x167e0
+4006d424: ea000083     	b	0x4006d638 <.text+0x6d638> @ imm = #0x20c
+
+RANGE 4006d60c..4006d64c
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4006d60c: e59f3030     	ldr	r3, [pc, #0x30]         @ 0x4006d644 <.text+0x6d644>
+4006d610: e5d3206c     	ldrb	r2, [r3, #0x6c]
+4006d614: e312000f     	tst	r2, #15
+4006d618: 0a000005     	beq	0x4006d634 <.text+0x6d634> @ imm = #0x14
+4006d61c: e5d3206c     	ldrb	r2, [r3, #0x6c]
+4006d620: e59f0020     	ldr	r0, [pc, #0x20]         @ 0x4006d648 <.text+0x6d648>
+4006d624: e731f514     	udiv	r1, r4, r5
+4006d628: eb003575     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0xd5d4
+4006d62c: e3866001     	orr	r6, r6, #1
+4006d630: eaffffff     	b	0x4006d634 <.text+0x6d634> @ imm = #-0x4
+4006d634: ebfff720     	bl	0x4006b2bc <.text+0x6b2bc> @ imm = #-0x2380
+4006d638: e1a00006     	mov	r0, r6
+4006d63c: e8bd85f8     	pop	{r3, r4, r5, r6, r7, r8, r10, pc}
+4006d640: 4009b0da     	ldrdmi	r11, r12, [r9], -r10
+4006d644: 10004000     	andne	r4, r0, r0
+4006d648: 4009b104     	andmi	r11, r9, r4, lsl #2
+
+RANGE 4002bb6c..4002bbe8
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/card-updater-full.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4002bb6c: e5953034     	ldr	r3, [r5, #0x34]
+4002bb70: e1a00005     	mov	r0, r5
+4002bb74: e1a01614     	lsl	r1, r4, r6
+4002bb78: e12fff33     	blx	r3
+4002bb7c: e3500001     	cmp	r0, #1
+4002bb80: 1a000006     	bne	0x4002bba0 <.text+0x2bba0> @ imm = #0x18
+4002bb84: e1a01004     	mov	r1, r4
+4002bb88: e59f0054     	ldr	r0, [pc, #0x54]         @ 0x4002bbe4 <.text+0x2bbe4>
+4002bb8c: eb013c1c     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x4f070
+4002bb90: e59f0044     	ldr	r0, [pc, #0x44]         @ 0x4002bbdc <.text+0x2bbdc>
+4002bb94: e59f103c     	ldr	r1, [pc, #0x3c]         @ 0x4002bbd8 <.text+0x2bbd8>
+4002bb98: e300214f     	movw	r2, #0x14f
+4002bb9c: eb013c18     	bl	0x4007ac04 <.text+0x7ac04> @ imm = #0x4f060
+4002bba0: e2844001     	add	r4, r4, #1
+4002bba4: e5953080     	ldr	r3, [r5, #0x80]
+4002bba8: e1540003     	cmp	r4, r3
+4002bbac: 3affffee     	blo	0x4002bb6c <.text+0x2bb6c> @ imm = #-0x48
+4002bbb0: e3a00003     	mov	r0, #3
+4002bbb4: ebffbd7c     	bl	0x4001b1ac <.text+0x1b1ac> @ imm = #-0x10a10
+4002bbb8: e3a00003     	mov	r0, #3
+4002bbbc: ebffbd76     	bl	0x4001b19c <.text+0x1b19c> @ imm = #-0x10a28
+4002bbc0: e3a00003     	mov	r0, #3
+4002bbc4: ebffbd76     	bl	0x4001b1a4 <.text+0x1b1a4> @ imm = #-0x10a28
+4002bbc8: e3a00000     	mov	r0, #0
+4002bbcc: eb00fa17     	bl	0x4006a430 <.text+0x6a430> @ imm = #0x3e85c
+4002bbd0: e3a00000     	mov	r0, #0
+4002bbd4: e8bd8070     	pop	{r4, r5, r6, pc}
+4002bbd8: 4008b614     	andmi	r11, r8, r4, lsl r6
+4002bbdc: 4009505c     	andmi	r5, r9, r12, asr r0
+4002bbe0: 40097763     	andmi	r7, r9, r3, ror #14
+4002bbe4: 4009776e     	andmi	r7, r9, lr, ror #14
+
+Embedded diagnostic strings (original bytes, NUL terminated):
+4008b5fb: b'nandTableMake'
+40097197: b'Blk[%03X] spare read fail\n'
+4009b0da: b'Error halNand_AFE() %d Block Erase Fail!\n'
+4008b614: b'nandEraseAll'
+4009776e: b'Block 0x%x Erase Fail\n'

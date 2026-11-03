@@ -8,6 +8,10 @@ command execution, card preparation or firmware changes.
 
 ## Finding and correction
 
+Follow-up: [mount/initialization write risk](updater-mount-write-risk.md)
+distinguishes the no-op startup message from other activation requests and
+traces a conditional NAND erase attempt during mapping-table construction.
+
 Setup function `0x40009ca0`, previously labeled **ISP task/setup**, creates a
 task whose actual name is `Cmd` and entry is `0x40009c48`. Its diagnostics name
 `private/cmd_parse.c`, and its default prompt is `cmd>`. The task registers
