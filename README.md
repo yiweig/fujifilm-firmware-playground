@@ -189,6 +189,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-usb-parameter-producer.md`](analysis/updater-usb-parameter-producer.md)
   — updater USB receiver produces the preserved parameter fields; startup
   registers its handler, tasks and queues, but independent entry is unresolved.
+- [`analysis/updater-usb-identity.md`](analysis/updater-usb-identity.md)
+  — target-0 GET_DESCRIPTOR path, `2aad:6500` template and vendor endpoints;
+  runtime packet-size mutation and offline descriptor extraction.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

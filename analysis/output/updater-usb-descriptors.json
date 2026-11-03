@@ -1,0 +1,207 @@
+{
+  "artifact_sha256": "4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976",
+  "source": "complete official 2.00 updater",
+  "scope": "Stored template only; runtime getters modify packet sizes and fields. No camera measurement.",
+  "device_descriptor_address": "0x4009da30",
+  "device_descriptor_hex": "1201000200000040ad2a0065000101020001",
+  "vid": "2aad",
+  "pid": "6500",
+  "raw_bcdUSB": "0200",
+  "raw_bcdDevice": "0100",
+  "ep0_max_packet_size": 64,
+  "serial_string_index": 0,
+  "configuration": {
+    "address": "0x4009da42",
+    "total_length": 167,
+    "number_of_interfaces": 3,
+    "interfaces": [
+      {
+        "address": "0x4009da4b",
+        "number": 0,
+        "alternate": 0,
+        "declared_endpoints": 1,
+        "class": "0xff",
+        "subclass": 0,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009da54",
+            "address": "0x87",
+            "direction": "IN",
+            "transfer_type": "interrupt",
+            "raw_wMaxPacketSize": 8,
+            "interval": 1
+          }
+        ]
+      },
+      {
+        "address": "0x4009da5b",
+        "number": 2,
+        "alternate": 0,
+        "declared_endpoints": 1,
+        "class": "0xff",
+        "subclass": 0,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009da64",
+            "address": "0x81",
+            "direction": "IN",
+            "transfer_type": "isochronous",
+            "raw_wMaxPacketSize": 0,
+            "interval": 1
+          }
+        ]
+      },
+      {
+        "address": "0x4009da6b",
+        "number": 2,
+        "alternate": 1,
+        "declared_endpoints": 1,
+        "class": "0xff",
+        "subclass": 0,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009da74",
+            "address": "0x81",
+            "direction": "IN",
+            "transfer_type": "isochronous",
+            "raw_wMaxPacketSize": 128,
+            "interval": 1
+          }
+        ]
+      },
+      {
+        "address": "0x4009da7b",
+        "number": 2,
+        "alternate": 2,
+        "declared_endpoints": 1,
+        "class": "0xff",
+        "subclass": 2,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009da84",
+            "address": "0x81",
+            "direction": "IN",
+            "transfer_type": "isochronous",
+            "raw_wMaxPacketSize": 384,
+            "interval": 1
+          }
+        ]
+      },
+      {
+        "address": "0x4009da8b",
+        "number": 2,
+        "alternate": 3,
+        "declared_endpoints": 1,
+        "class": "0xff",
+        "subclass": 2,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009da94",
+            "address": "0x81",
+            "direction": "IN",
+            "transfer_type": "isochronous",
+            "raw_wMaxPacketSize": 512,
+            "interval": 1
+          }
+        ]
+      },
+      {
+        "address": "0x4009da9b",
+        "number": 2,
+        "alternate": 4,
+        "declared_endpoints": 1,
+        "class": "0xff",
+        "subclass": 2,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009daa4",
+            "address": "0x81",
+            "direction": "IN",
+            "transfer_type": "isochronous",
+            "raw_wMaxPacketSize": 2688,
+            "interval": 1
+          }
+        ]
+      },
+      {
+        "address": "0x4009daab",
+        "number": 2,
+        "alternate": 5,
+        "declared_endpoints": 1,
+        "class": "0xff",
+        "subclass": 2,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009dab4",
+            "address": "0x81",
+            "direction": "IN",
+            "transfer_type": "isochronous",
+            "raw_wMaxPacketSize": 2816,
+            "interval": 1
+          }
+        ]
+      },
+      {
+        "address": "0x4009dabb",
+        "number": 2,
+        "alternate": 6,
+        "declared_endpoints": 1,
+        "class": "0xff",
+        "subclass": 2,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009dac4",
+            "address": "0x81",
+            "direction": "IN",
+            "transfer_type": "isochronous",
+            "raw_wMaxPacketSize": 2944,
+            "interval": 1
+          }
+        ]
+      },
+      {
+        "address": "0x4009dacb",
+        "number": 5,
+        "alternate": 0,
+        "declared_endpoints": 3,
+        "class": "0xff",
+        "subclass": 0,
+        "protocol": 0,
+        "endpoints": [
+          {
+            "descriptor_address": "0x4009dad4",
+            "address": "0x82",
+            "direction": "IN",
+            "transfer_type": "bulk",
+            "raw_wMaxPacketSize": 64,
+            "interval": 0
+          },
+          {
+            "descriptor_address": "0x4009dadb",
+            "address": "0x3",
+            "direction": "OUT",
+            "transfer_type": "bulk",
+            "raw_wMaxPacketSize": 64,
+            "interval": 0
+          },
+          {
+            "descriptor_address": "0x4009dae2",
+            "address": "0x84",
+            "direction": "IN",
+            "transfer_type": "interrupt",
+            "raw_wMaxPacketSize": 8,
+            "interval": 1
+          }
+        ]
+      }
+    ]
+  }
+}

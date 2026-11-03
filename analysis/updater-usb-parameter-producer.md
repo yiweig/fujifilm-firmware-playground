@@ -8,6 +8,10 @@ connection, USB requests, card preparation or firmware edits occurred.
 
 ## Finding
 
+Follow-up: [updater USB identity](updater-usb-identity.md) connects its
+GET_DESCRIPTOR path to the `2aad:6500` template and vendor endpoints. Runtime
+packet-size mutation and the lack of observed enumeration remain explicit.
+
 The two globals used as the last words of the updater's SRAM handoff are
 fields of its **own USB download state**. A received-parameter branch writes
 the allocated buffer pointer and received length there. The updater's startup
