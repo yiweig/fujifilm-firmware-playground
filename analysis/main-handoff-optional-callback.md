@@ -8,6 +8,11 @@ No camera access or firmware changes.
 
 ## Finding
 
+Follow-up: [callback lifetime](main-loader-callback-lifetime.md) shows that
+registration and two reset initializations preserve supplied callback values
+under empty auxiliary-state fixtures. Full startup separately requests a
+stage-23 zero fill covering the slot. Actual live value remains unobserved.
+
 A concrete producer of the previously unresolved pre-handoff callback is
 identified. Calibration-entry routine `0x405dd4f0`, whose actual diagnostic
 says `EnterCalibrationMode`, calls wrapper `0x405dd4e0`. That wrapper passes

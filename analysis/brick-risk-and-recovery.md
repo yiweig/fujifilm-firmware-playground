@@ -125,6 +125,13 @@ deeper helpers whose complete storage/USB effects are unaudited. Five controls
 verify registration, optional dispatch/skip and modeled call order; ordinary
 retail callback presence remains unknown. These are not live calibration tests.
 
+The [callback lifetime audit](main-loader-callback-lifetime.md) finds intended
+full-startup clearing through the stage-23 RAM-fill request, while the tested
+loader registration/reset initializer preserves supplied callback values.
+Four controls cover empty auxiliary cleanup state only. This separates full
+boot from USB reinitialization; it does not measure the callback or qualify
+active cleanup branches and deeper mode-transition/storage effects.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

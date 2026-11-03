@@ -1,0 +1,8 @@
+Main image SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original loader registration and initializer, including cleanup with supplied empty 40fc8270 state. IRQ and allocator release helpers modeled; no USB/controller/RTOS or storage runs.
+Initializer changes original loaded RAM-data byte 40d79b21 to receiver state 2; other loaded bytes remain unchanged. Source file is untouched.
+PASS initial-callback=00000000 old-scratch=false -> registration plus two initializations preserve callback=00000000; freed=[]; optional-dispatch-boundary=401e1f58.
+PASS initial-callback=00000000 old-scratch=true -> registration plus two initializations preserve callback=00000000; freed=[1107304448]; optional-dispatch-boundary=401e1f58.
+PASS initial-callback=405da53c old-scratch=false -> registration plus two initializations preserve callback=405da53c; freed=[]; optional-dispatch-boundary=405da53c.
+PASS initial-callback=405da53c old-scratch=true -> registration plus two initializations preserve callback=405da53c; freed=[1107304448]; optional-dispatch-boundary=405da53c.
+4 controls passed. No hardware fill, complete boot, active-state cleanup branches, real bus reset, task scheduling, callback body, NAND/SD, payload or camera executes. Actual callback value remains unobserved.

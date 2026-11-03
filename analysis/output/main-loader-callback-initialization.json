@@ -1,0 +1,32 @@
+{
+  "main_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "callback_word": "[40fd0d90,40fd0d94)",
+  "known_containing_fill_request": {
+    "stage": 23,
+    "table_end_field": "40000b4c",
+    "cpu_start": "40e6a240",
+    "cpu_end_exclusive": "40fd1140",
+    "length": 1470208,
+    "requested_fill_value": 0
+  },
+  "source_interval_artifact": "analysis/output/boot-ram-fill-intervals.json",
+  "hardware_zero_observed": false,
+  "fill_executed_in_this_pass": false,
+  "store_search": {
+    "window_instructions": 256,
+    "candidate_store_encodings": 346146,
+    "resolved_direct_stores": [
+      {
+        "instruction": "0x401e20f8",
+        "word": "0xe5830040",
+        "kind": "STR",
+        "address": "0x40fd0d90",
+        "width": 4,
+        "value": null,
+        "condition": 14
+      }
+    ],
+    "resolved_known_bulk_overlaps": [],
+    "limitations": "Bounded aligned ARM scan, including possible data. No complete CFG, Thumb, runtime values, unresolved stores/copies or hardware fill. Empty bulk hits do not exclude RAM-fill hardware, positively identified separately."
+  }
+}

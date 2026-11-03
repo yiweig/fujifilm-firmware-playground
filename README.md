@@ -230,6 +230,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/main-handoff-optional-callback.md`](analysis/main-handoff-optional-callback.md)
   — calibration-path registration of the pre-handoff callback; backlight/lens/idle
   call edges and five controls, with actual retail callback state unresolved.
+- [`analysis/main-loader-callback-lifetime.md`](analysis/main-loader-callback-lifetime.md)
+  — intended stage-23 startup clearing versus preservation by loader reset
+  initialization; four controls and bounded writer-search limits.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

@@ -6,6 +6,11 @@ operation, settings change or firmware patch.
 
 ## Finding
 
+Additional use: the [loader callback lifetime analysis](main-loader-callback-lifetime.md)
+places the optional pre-handoff callback at `0x40fd0d90` inside the stage-23
+interval below. The same hardware-success/later-writer limits apply; the new
+containment annotation does not execute or observe a RAM fill.
+
 The main image contains a previously unaccounted-for **hardware RAM-fill
 path** that includes the optional `0x9601` callback slot. In the known 2.00
 image, staged loader worker `0x4000f064` requests a zero fill of
