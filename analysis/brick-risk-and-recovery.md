@@ -74,6 +74,13 @@ initialize it, including a possible firmware-selection callback. Avoiding the
 worker's mount request alone does not bypass these earlier actions. Eight
 additional offline controls verify mapping and stop before backend execution.
 
+The [low NAND initializer audit](updater-nand-initialization-risk.md) identifies
+a path through the NAND header parser to the same erase-capable table builder
+for a nonempty reserved region, before a mount request. Five original-parser
+controls reach or avoid that boundary using supplied headers; table construction
+never executes. This connects the risk to conditional startup registration,
+without showing that the camera's actual stored metadata enables the branch.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

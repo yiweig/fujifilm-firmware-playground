@@ -29,7 +29,7 @@ The user excludes opening the camera, wiring UART or sending it to a repair lab.
 | Earlier-stage storage handoff | A 36-byte SRAM descriptor supplies primitive pointers; the application translates six recognized values to NAND routines. Staged 16-bit checksums and an early CPU clear are identified. The provider's bytes and recovery selectors remain unknown. | [Storage handoff](analysis/staged-loader-storage-handoff.md) |
 | Updater firmware selection | A conditional callback can request Firmware2. Its installed-region read checks the image's byte sum against two combined map fields; 11 offline controls pass. Installed Firmware2 contents and independent cold entry remain unknown. | [Selection trace](analysis/updater-firmware-selection.md), [image checks](analysis/updater-installed-image-checks.md) |
 | Updater error path | Returned file errors can continue toward USB startup. The formerly mislabeled shutdown helper acquires USB resources and programs a PHY/PLL block; eight focused controls pass. Live enumeration remains unverified. | [Return path](analysis/updater-file-failure-continuation.md), [resource bring-up](analysis/updater-usb-resource-bringup.md) |
-| Updater storage activation | A NAND mapping-table scan can request block erase after one specific spare-read error. The startup worker message itself avoids that work. Eight offline controls stop before initialization or erase; stock-updater RAM execution is not proven volatile. | [Mount/write risk](analysis/updater-mount-write-risk.md) |
+| Updater storage activation | NAND header parsing during initialization can reach the erase-capable table builder before a mount request. Five parser controls stop before construction; actual installed metadata is unknown. Stock-updater RAM execution is not proven volatile. | [Initialization risk](analysis/updater-nand-initialization-risk.md), [mount/write risk](analysis/updater-mount-write-risk.md) |
 | RAM loader | Device-side USB transfer and copy/execute code identified. Temporary retail entry, full handoff effects and payload safety remain unqualified. | [Receiver](analysis/xhalf-usb-ram-receiver.md), [handoff](analysis/ram-handoff-copy-boundary.md) |
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
@@ -209,6 +209,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-startup-storage-routing.md`](analysis/updater-startup-storage-routing.md)
   — distinguishes NAND logical drive 1 from SD mount paths 2/5; traces immediate
   NAND initialization during startup registration, with eight bounded controls.
+- [`analysis/updater-nand-initialization-risk.md`](analysis/updater-nand-initialization-risk.md)
+  — low NAND initialization can reach erase-capable reserved-region table
+  construction through header parsing; five controls stop before the table builder.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

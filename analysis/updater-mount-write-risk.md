@@ -8,6 +8,11 @@ operation, erase execution or firmware changes.
 
 ## Finding
 
+Additional caller: [NAND initialization risk](updater-nand-initialization-risk.md)
+shows the low initializer's header parser can enter the same table builder for
+a reserved region, before any explicit mount request. The installed header and
+actual on-camera execution remain unknown.
+
 Follow-up: [startup storage routing](updater-startup-storage-routing.md) resolves
 the registered logical identifiers: 1 selects NAND, while 2/5 select the
 shared SD mount routine. It also identifies immediate NAND initialization

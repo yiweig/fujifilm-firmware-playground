@@ -1,0 +1,9 @@
+Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Original NAND header parser, synthetic geometry/header/buffers only. No low initializer, NAND read, table builder, erase, program, MMIO or camera execution.
+Copy/allocation/log/dump helpers modeled. Original state getter executes with preexisting default-header RAM buffer; loaded image bytes remain unchanged.
+PASS signature=0000 tag=32 total=1024 reservedC=4 -> boundary=43000000 allocations=0 dumps=1; table builder never executes.
+PASS signature=beef tag=00 total=1024 reservedC=4 -> boundary=43000000 allocations=0 dumps=1; table builder never executes.
+PASS signature=beef tag=32 total=1023 reservedC=4 -> boundary=43000000 allocations=0 dumps=1; table builder never executes.
+PASS signature=beef tag=32 total=1024 reservedC=0 -> boundary=43000000 allocations=0 dumps=0; table builder never executes.
+PASS signature=beef tag=32 total=1024 reservedC=4 -> boundary=4002a248 allocations=1 dumps=0; table builder never executes.
+5 controls passed. No real NAND metadata observed; chosen headers only demonstrate guarded reachability. No end-to-end startup or recovery proof.

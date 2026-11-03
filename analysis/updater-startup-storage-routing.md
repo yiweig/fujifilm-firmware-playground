@@ -7,6 +7,11 @@ Every address below belongs to that updater. No camera access or firmware change
 
 ## Finding
 
+Follow-up: [NAND initialization risk](updater-nand-initialization-risk.md)
+traces the low initializer through its header parser to the erase-capable table
+builder, before an explicit mount request. Five original-parser controls stop
+before table construction; actual installed metadata remains unobserved.
+
 The automatic-file consumer can activate storage **before** USB startup and
 before the command interpreter's inert type-4 worker message. Its explicit
 file-drive requests select logical drive 2, with fallback to 5. The original
