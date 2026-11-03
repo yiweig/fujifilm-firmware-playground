@@ -103,6 +103,14 @@ call in that path; they model queues and allocation and do not run task loops.
 It also repairs earlier USB queue decoding and reruns those five controls.
 This narrows the asynchronous dependency without validating physical USB or entry.
 
+The [startup PHY/gate controls](updater-startup-phy-gate.md) show that gate zero
+also bypasses the identified USB PHY/resource acquisition inside the consumer.
+Four controls compare that path with the modeled file-error return path, which
+executes the real acquisition instructions against synthetic memory. Inherited
+hardware state remains unknown; storage bypass is not a sufficient USB launch
+procedure. A bounded writer search found only the known PHY sequence, without
+proving other writers absent.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

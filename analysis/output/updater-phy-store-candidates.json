@@ -1,0 +1,78 @@
+{
+  "image": "official 2.00 complete updater",
+  "sha256": "4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976",
+  "base": "0x40000000",
+  "target": "[0x10000380,0x10000388)",
+  "window_instructions": 256,
+  "candidate_store_encodings": 17826,
+  "resolved_direct_stores": [
+    {
+      "instruction": "0x40075e0c",
+      "word": "0xe5c43380",
+      "kind": "STRB",
+      "address": "0x10000380",
+      "width": 1,
+      "value": 16,
+      "condition": 14
+    },
+    {
+      "instruction": "0x40075e1c",
+      "word": "0xe5c43380",
+      "kind": "STRB",
+      "address": "0x10000380",
+      "width": 1,
+      "value": 18,
+      "condition": 14
+    },
+    {
+      "instruction": "0x40075e2c",
+      "word": "0xe5c43380",
+      "kind": "STRB",
+      "address": "0x10000380",
+      "width": 1,
+      "value": 19,
+      "condition": 14
+    },
+    {
+      "instruction": "0x40075e40",
+      "word": "0xe5c45380",
+      "kind": "STRB",
+      "address": "0x10000380",
+      "width": 1,
+      "value": 3,
+      "condition": 14
+    },
+    {
+      "instruction": "0x40075e50",
+      "word": "0xe5c43380",
+      "kind": "STRB",
+      "address": "0x10000380",
+      "width": 1,
+      "value": 1,
+      "condition": 14
+    },
+    {
+      "instruction": "0x40075e58",
+      "word": "0xe5c45383",
+      "kind": "STRB",
+      "address": "0x10000383",
+      "width": 1,
+      "value": 3,
+      "condition": 14
+    },
+    {
+      "instruction": "0x40075e8c",
+      "word": "0xe5c12380",
+      "kind": "STRB",
+      "address": "0x10000380",
+      "width": 1,
+      "value": null,
+      "condition": 14
+    }
+  ],
+  "exact_aligned_pointer_literals": {
+    "0x40075ea4": [],
+    "0x40075dd8": []
+  },
+  "limitations": "Bounded aligned ARM constant-resolution candidates only, including possible data. No complete CFG, Thumb, runtime values, unresolved pointer/register writes, DMA or earlier executables. All seven reported hits are in the already identified PHY helper. Missing other hits does not prove other writers absent. Bulk-helper outputs omitted because scanner helper addresses are main-image specific."
+}

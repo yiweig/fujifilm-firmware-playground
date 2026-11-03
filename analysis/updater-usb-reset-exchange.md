@@ -7,6 +7,11 @@ All addresses belong to the updater. No camera access or firmware changes.
 
 ## Finding
 
+Follow-up: [startup PHY gate](updater-startup-phy-gate.md) shows the path
+that bypasses storage also skips the identified explicit PHY/resource acquire
+inside the consumer. A functioning software reset exchange does not establish
+physical readiness; four additional controls isolate that distinction.
+
 The queued reset can complete a software acknowledgement exchange without a
 NAND/SD call in the inspected target-0 path. Control handler `0x4001a338` gates
 ordinary request dispatch, posts reset work to the target handler, and waits

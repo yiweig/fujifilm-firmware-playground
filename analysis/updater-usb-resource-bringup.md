@@ -10,6 +10,11 @@ unless explicitly labeled main. No camera access or firmware modification.
 
 ## Finding
 
+Follow-up: [startup gate and PHY acquisition](updater-startup-phy-gate.md)
+executes this helper inside the original automatic consumer. Four controls
+confirm that gate zero skips it, while the modeled missing-file return path
+acquires resources. Inherited hardware state and physical USB remain unknown.
+
 Helper `0x40075ea4`, reached after automatic file-action errors, acquires
 reference-counted resources and programs USB-related registers. A main-image
 counterpart participates in USB initialization, and a diagnostic function

@@ -1,0 +1,8 @@
+Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Original automatic startup consumer plus original USB PHY/resource acquire. Synthetic gate, status, registry, file failure, MMIO and counters; stop before 40069374. No camera or real I/O.
+Modeled configuration setters, drive activation, file check, copy, logging, IRQ/delay and 400874e8. Original registry-count getter executes. No backend initialization or mount executes.
+PASS gate=0 initial-PHY-ref=0 -> acquire-calls=0 PHY-ref=0 delay-arguments=[] file-check=null boundary=40069374; source image unchanged.
+PASS gate=0 initial-PHY-ref=2 -> acquire-calls=0 PHY-ref=2 delay-arguments=[] file-check=null boundary=40069374; source image unchanged.
+PASS gate=1 initial-PHY-ref=0 -> acquire-calls=1 PHY-ref=1 delay-arguments=[2, 2, 5, 17, 56, 56] file-check=D:\TEST.bin boundary=40069374; source image unchanged.
+PASS gate=1 initial-PHY-ref=2 -> acquire-calls=1 PHY-ref=3 delay-arguments=[] file-check=D:\TEST.bin boundary=40069374; source image unchanged.
+4 controls passed. Not full startup, clock readiness, safe skip-storage launch, physical USB, an on-camera gate setter or recovery proof.
