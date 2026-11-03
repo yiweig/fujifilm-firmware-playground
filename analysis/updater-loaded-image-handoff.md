@@ -8,6 +8,11 @@ unless explicitly labeled main. The camera remained unplugged.
 
 ## Result
 
+Follow-up: [USB parameter producer](updater-usb-parameter-producer.md)
+identifies the two globals as received-parameter pointer/length fields in the
+updater's own USB state. It also finds the receiver's indirect call to the same
+handoff preparation and its registration in the running updater's startup.
+
 After the [installed-image check](updater-installed-image-checks.md), the
 updater can prepare a task, copy header data into SRAM, relocate a small
 copy-and-jump stub into a workspace, and transfer the loaded image with a
