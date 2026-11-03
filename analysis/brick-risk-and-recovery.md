@@ -49,6 +49,11 @@ hardware effects and live USB availability remain unverified. This is evidence
 inside an executing updater; it does not establish entry when the main firmware
 cannot boot or change the recommendation against modified flashing.
 
+The [subsequent resource trace](updater-usb-resource-bringup.md) identifies
+that helper as reference-counted USB-resource acquisition with PHY/PLL bring-up,
+supported by eight original-ARM controls and main-image USB code. Actual
+controller availability and independent recovery entry remain unverified.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

@@ -1,0 +1,11 @@
+Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Offline original 40075ea4/40075dd8/400662b0/40066134 and 40075ed4; synthetic MMIO and counters. Only delay and IRQ helpers modeled. No camera, real clocks/PHY/USB or flash.
+PASS acquire PLL-ref=0 resource-refs=0 -> refs 1/1, USB+21=3f, sequence=[10000380=10, 10000380=12, 10000380=13, 10000380=03, 10000380=01, 10000383=03], delay-arguments=[2, 2, 5, 17, 56, 56].
+PASS companion resource release -> resource-refs=0, PLL-ref still=1, USB+21=00; executable unchanged.
+PASS acquire PLL-ref=0 resource-refs=2 -> refs 1/3, USB+21=3f, sequence=[10000380=10, 10000380=12, 10000380=13, 10000380=03, 10000380=01, 10000383=03], delay-arguments=[2, 2, 5, 17, 56, 56].
+PASS companion resource release -> resource-refs=2, PLL-ref still=1, USB+21=00; executable unchanged.
+PASS acquire PLL-ref=2 resource-refs=0 -> refs 3/1, USB+21=3f, sequence=[], delay-arguments=[].
+PASS companion resource release -> resource-refs=0, PLL-ref still=3, USB+21=00; executable unchanged.
+PASS acquire PLL-ref=2 resource-refs=2 -> refs 3/3, USB+21=3f, sequence=[], delay-arguments=[].
+PASS companion resource release -> resource-refs=2, PLL-ref still=3, USB+21=00; executable unchanged.
+8 controls passed. Software effects only; delay units/timing, MMIO electrical semantics, hardware lock, host attachment and recovery are not established.

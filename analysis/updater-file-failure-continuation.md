@@ -7,6 +7,11 @@ All routine addresses here belong to that updater. No camera access or changes.
 
 ## Finding and correction
 
+Follow-up: [USB resource bring-up](updater-usb-resource-bringup.md) traces the
+formerly unnamed platform helper through original reference-count and register
+code, with eight focused controls. Main-image USB initialization corroborates
+an acquisition/PHY-clock bring-up role, without proving live USB availability.
+
 The executing updater has a software path from a missing card file or a
 returned file-loader error back toward its USB startup continuation. That
 path calls platform helpers and changes registers; if those helpers return,

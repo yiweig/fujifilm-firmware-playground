@@ -1,5 +1,6 @@
 start	end	classification	confidence	basis
 0x10000000	0x10000fff	global system control and GPIO	observed	GPIO IRQ code directly uses 0x10000008..0x1000001c; startup and many HALs use later offsets
+0x10000380	0x10000387	USB PHY PLL control/divider subrange	inferred	main getter 0x40339a0c reads these fields and references actual halPllUsbPhyGet name; main/updater acquisition code programs +380 and +383; see updater-usb-resource-bringup.md
 0x10001000	0x10001fff	unknown system block	unknown	30 statically resolved accesses; no subsystem attribution yet
 0x10002000	0x10002fff	command-queue/CDSP auxiliary registers	observed	hal_cq command code and hal_cdsp code directly access this range
 0x10003000	0x10003fff	multi-channel transfer/buffer engine	inferred	channel-strided registers contain address and size fields; subsystem name not yet recovered
