@@ -1,0 +1,8 @@
+Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Original updater USB continuation, target registration and task/queue constructor; stop before 4000ffa0 controller bring-up.
+Cmd setup, allocation, task creation, queue creation and event registration modeled. Tasks do not execute. MMIO addresses contain synthetic memory only.
+PASS registry-count=0 initial USB byte=00 -> target=0 initializer=400115ec receiver=40011634 task-entries=[1073849836, 1073811080] queues=3 events=10 boundary=4000ffa0; registry unchanged.
+PASS registry-count=0 initial USB byte=10 -> target=0 initializer=400115ec receiver=40011634 task-entries=[1073849836, 1073811080] queues=3 events=10 boundary=4000ffa0; registry unchanged.
+PASS registry-count=3 initial USB byte=00 -> target=0 initializer=400115ec receiver=40011634 task-entries=[1073849836, 1073811080] queues=3 events=10 boundary=4000ffa0; registry unchanged.
+PASS registry-count=3 initial USB byte=10 -> target=0 initializer=400115ec receiver=40011634 task-entries=[1073849836, 1073811080] queues=3 events=10 boundary=4000ffa0; registry unchanged.
+4 controls passed. Direct supplied entry at 400007f4, not normal startup or demonstrated means to reach it. No controller, task body, USB enumeration, NAND/SD I/O or camera executes.

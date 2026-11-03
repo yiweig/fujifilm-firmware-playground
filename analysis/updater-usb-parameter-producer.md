@@ -8,6 +8,11 @@ connection, USB requests, card preparation or firmware edits occurred.
 
 ## Finding
 
+Follow-up: [USB/storage separation](updater-usb-storage-separation.md) follows
+original target registration and task/queue construction to the controller
+bring-up boundary with an empty storage registry. Four bounded controls pass;
+task bodies, controller and real entry remain unverified.
+
 Follow-up: [updater USB identity](updater-usb-identity.md) connects its
 GET_DESCRIPTOR path to the `2aad:6500` template and vendor endpoints. Runtime
 packet-size mutation and the lack of observed enumeration remain explicit.

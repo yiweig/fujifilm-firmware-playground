@@ -212,6 +212,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-nand-initialization-risk.md`](analysis/updater-nand-initialization-risk.md)
   — low NAND initialization can reach erase-capable reserved-region table
   construction through header parsing; five controls stop before the table builder.
+- [`analysis/updater-usb-storage-separation.md`](analysis/updater-usb-storage-separation.md)
+  — USB target/task/queue construction reaches controller bring-up with an empty
+  storage registry under modeled services; four controls, with real entry unresolved.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

@@ -7,6 +7,11 @@ All addresses belong to that updater. No camera access or firmware changes.
 
 ## Finding
 
+Follow-up: [USB/storage separation](updater-usb-storage-separation.md) shows
+that the later USB constructor reaches controller bring-up with an empty
+registry under modeled services. This does not establish a safe entry or
+bypass the earlier storage work in normal startup.
+
 The low NAND initializer `0x4002b7fc` can reach erase-capable table construction
 through its NAND header parser, **before an explicit mount request**:
 

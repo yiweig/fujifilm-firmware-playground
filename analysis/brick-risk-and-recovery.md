@@ -81,6 +81,14 @@ controls reach or avoid that boundary using supplied headers; table construction
 never executes. This connects the risk to conditional startup registration,
 without showing that the camera's actual stored metadata enables the branch.
 
+The later [USB service constructor](updater-usb-storage-separation.md) has no
+storage-readiness check in its inspected caller/constructor instructions.
+Four controls reach controller bring-up with empty or populated registry state,
+using modeled services and no scheduled tasks. This supports separating USB
+from storage in a future payload; it is not a validated entry or safe runtime.
+The stock updater's special +0x200 entry sets the startup gate nonzero and
+must not be mistaken for a skip-storage mode.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`
