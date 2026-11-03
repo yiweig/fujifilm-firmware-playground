@@ -8,6 +8,11 @@ operation, erase execution or firmware changes.
 
 ## Finding
 
+Follow-up: [startup storage routing](updater-startup-storage-routing.md) resolves
+the registered logical identifiers: 1 selects NAND, while 2/5 select the
+shared SD mount routine. It also identifies immediate NAND initialization
+during registration, before the worker's startup message.
+
 The `diskMount` worker's startup type-4 message does no storage work in the
 inspected branch. A **different type-2 request**, however, can call a NAND
 mount/initialization callback. When it first constructs NAND mapping tables,

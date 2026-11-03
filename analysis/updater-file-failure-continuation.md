@@ -7,6 +7,12 @@ All routine addresses here belong to that updater. No camera access or changes.
 
 ## Finding and correction
 
+Follow-up: [startup storage routing](updater-startup-storage-routing.md) shows
+that the modeled "drive probe" is synchronous activation of logical drive 2,
+with a separate fallback to 5. The modeled storage-readiness getter reads the
+registered-record count. These fixtures bypass unaudited backend initialization;
+they do not establish that mounting is read-only.
+
 Follow-up: [USB resource bring-up](updater-usb-resource-bringup.md) traces the
 formerly unnamed platform helper through original reference-count and register
 code, with eight focused controls. Main-image USB initialization corroborates

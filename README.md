@@ -206,6 +206,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-mount-write-risk.md`](analysis/updater-mount-write-risk.md)
   — storage activation can reach conditional NAND block erase during table
   construction; startup-message distinction and eight controls before storage calls.
+- [`analysis/updater-startup-storage-routing.md`](analysis/updater-startup-storage-routing.md)
+  — distinguishes NAND logical drive 1 from SD mount paths 2/5; traces immediate
+  NAND initialization during startup registration, with eight bounded controls.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

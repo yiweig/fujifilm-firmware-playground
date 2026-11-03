@@ -1,0 +1,13 @@
+Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Offline original registration/routing with supplied three-slot RAM table. No backend initialization, mount, MMIO or storage I/O executes.
+Record-base global 4009de2c overridden before execution; image bytes unchanged thereafter. Copy helper modeled for 100-byte records only.
+PASS register logical=2 index=0 init=4001b354 mount=4001b4dc boundary=43000000
+PASS register logical=5 index=1 init=4001b5b4 mount=4001b73c boundary=43000000
+PASS register logical=1 index=2 init=4001bd44 mount=4002bc1c boundary=4001bd44
+NAND registration stopped before its immediate initializer call. Its record/mapping were already installed; later controls reuse only that RAM state, not a completed NAND initialization.
+PASS synchronous logical=1 initialized=0 -> boundary=4002bc1c; backend callback never executes; logical 1 may execute generic initializer bookkeeping.
+PASS synchronous logical=2 initialized=0 -> boundary=4001a89c; backend callback never executes; logical 1 may execute generic initializer bookkeeping.
+PASS synchronous logical=5 initialized=0 -> boundary=4001a89c; backend callback never executes; logical 1 may execute generic initializer bookkeeping.
+PASS synchronous logical=2 initialized=1 -> boundary=4001b4dc; backend callback never executes; logical 1 may execute generic initializer bookkeeping.
+PASS synchronous logical=5 initialized=1 -> boundary=4001b73c; backend callback never executes; logical 1 may execute generic initializer bookkeeping.
+8 controls passed. Synthetic registration order and status; not complete startup, production camera state, safe RAM launch or recovery.

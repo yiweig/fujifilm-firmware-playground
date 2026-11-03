@@ -67,6 +67,13 @@ The startup type-4 worker message avoids that work, but other activation paths
 can reach it. Eight offline controls stop before initialization or erase;
 the branch has not been observed on the camera.
 
+The [startup routing follow-up](updater-startup-storage-routing.md) separates
+file-drive activation (logical 2/5, shared SD mount routine) from NAND (logical
+1). Earlier conditional startup branches can register NAND and immediately
+initialize it, including a possible firmware-selection callback. Avoiding the
+worker's mount request alone does not bypass these earlier actions. Eight
+additional offline controls verify mapping and stop before backend execution.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`
