@@ -89,6 +89,13 @@ from storage in a future payload; it is not a validated entry or safe runtime.
 The stock updater's special +0x200 entry sets the startup gate nonzero and
 must not be mistaken for a skip-storage mode.
 
+The [USB reset/callback audit](updater-usb-reset-and-callback-state.md) refines
+that boundary to `usbDclBusReset`, which queues work without waiting for it.
+The event registrar keeps occupied callback slots; normal startup clears the
+table's RAM, so calling USB setup directly would need qualified initialization
+and memory ownership. Five offline controls verify those branches without
+executing callbacks, interrupts or tasks. Physical USB readiness remains unknown.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

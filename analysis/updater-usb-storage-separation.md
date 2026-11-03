@@ -7,6 +7,12 @@ All addresses below refer to this updater. No camera access or firmware changes.
 
 ## Finding
 
+Follow-up: [USB reset and callback state](updater-usb-reset-and-callback-state.md)
+identifies boundary `0x4000ffa0` as `usbDclBusReset`: it queues reset work,
+not a completed physical bring-up. Event registration preserves occupied
+handlers; normal startup clears the relevant RAM. Five additional controls
+resolve those branches without executing tasks or interrupts.
+
 There is no storage-registry readiness check in the inspected USB continuation
 and task/queue constructor. With either zero or three registered storage
 interfaces supplied, original code selects USB target 0, registers the download

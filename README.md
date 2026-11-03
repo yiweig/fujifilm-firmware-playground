@@ -215,6 +215,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-usb-storage-separation.md`](analysis/updater-usb-storage-separation.md)
   — USB target/task/queue construction reaches controller bring-up with an empty
   storage registry under modeled services; four controls, with real entry unresolved.
+- [`analysis/updater-usb-reset-and-callback-state.md`](analysis/updater-usb-reset-and-callback-state.md)
+  — refines that boundary to asynchronous `usbDclBusReset`; callback registration
+  preserves occupied handlers, while normal startup clears their RAM; five controls.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.
