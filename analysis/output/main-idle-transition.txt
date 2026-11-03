@@ -1,0 +1,8 @@
+Main image SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original idle wrapper, mode-ID getter, sensor-config dispatch and waiter. Mode state/readiness supplied. Logging/lock/unlock modeled. Stop before sensor setter or wait delay; no mode worker executes.
+PASS idle wrapper mode=88 ready=0 -> immediate return 1; waiter and transition not invoked.
+PASS idle wrapper mode=88 ready=1 -> immediate return 1; waiter and transition not invoked.
+PASS idle wrapper mode=41 ready=0 -> sensor setter boundary 4010e11c(0,100), stopped before setter; no mode request yet.
+PASS standalone waiter mode=88 ready=0 -> boundary=4000c450; no delay executes.
+PASS standalone waiter mode=88 ready=1 -> boundary=43000000; no delay executes.
+5 controls passed. No mode task, sensor write, clock switch, arbitrary callback, real sleep, USB/NAND/SD, persistent write, payload or camera executes. Not a complete idle transition or readiness guarantee.

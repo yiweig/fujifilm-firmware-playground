@@ -131,3 +131,7 @@ storage/USB effects remain unverified. The next useful offline audit is the
 callback's idle-mode transition and its possible persistent-storage operations.
 Independent RAM entry and cold recovery are still unresolved; camera reconnection
 is not needed for these findings.
+
+Follow-up: [idle-mode preparation](main-idle-mode-handoff.md) traces the queued
+transition, current-mode exit and conditional clock-switch dependency. Five
+controls stop before sensor writes/delays; deeper side effects remain unresolved.

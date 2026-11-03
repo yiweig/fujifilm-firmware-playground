@@ -287,6 +287,12 @@ code or parameters required to reach that updater are also damaged. We do not
 yet know where the X half's firmware-update entry point resides relative to the
 regions the updater can overwrite.
 
+The [optional handoff idle transition](main-idle-mode-handoff.md) also depends
+on sensor configuration, asynchronous mode exit/entry and conditional DRAM-clock
+changes. Five offline controls verify only guards and stop boundaries. No new
+persistent write is established by that pass, but the full callback remains
+unqualified for a write-free RAM launch or a guaranteed return.
+
 ## Required safety gates before flashing
 
 Treat each item as a gate, not merely a convenience:

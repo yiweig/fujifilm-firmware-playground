@@ -233,6 +233,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/main-loader-callback-lifetime.md`](analysis/main-loader-callback-lifetime.md)
   — intended stage-23 startup clearing versus preservation by loader reset
   initialization; four controls and bounded writer-search limits.
+- [`analysis/main-idle-mode-handoff.md`](analysis/main-idle-mode-handoff.md)
+  — asynchronous idle transition, mode exits and conditional DRAM-clock changes;
+  five guard/wait controls, with deeper storage/USB effects unresolved.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

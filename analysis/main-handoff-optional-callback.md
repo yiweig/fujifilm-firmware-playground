@@ -43,6 +43,10 @@ flowchart TD
 These are static edges with bounded software controls, not a measured camera
 startup or a way to enter calibration mode.
 
+Follow-up: the [idle transition audit](main-idle-mode-handoff.md) identifies
+asynchronous mode exits and conditional DRAM-clock changes. Five bounded controls
+verify guards/readiness boundaries, not the complete transition or storage safety.
+
 ## Registration route and variadic entry
 
 Original calibration routine `0x405dd4f0` logs the calibration-entry string at
