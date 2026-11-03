@@ -239,6 +239,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/main-sensor-and-mode-exits.md`](analysis/main-sensor-and-mode-exits.md)
   — identifies the sensor power-save timeout and all six candidate non-idle exits;
   15 bounded controls, with shared cleanup and clock effects still unaudited.
+- [`analysis/playback-cleanup-before-handoff.md`](analysis/playback-cleanup-before-handoff.md)
+  — identifies five playback tasks, readiness gates, ignored close errors and
+  a runtime termination hook; 16 controls, with kernel/hook effects unresolved.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

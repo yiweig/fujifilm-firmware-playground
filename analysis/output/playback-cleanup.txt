@@ -1,0 +1,19 @@
+MAIN SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original playback readiness, task-close and shared cleanup instructions. Synthetic RAM. RTOS terminate/delete, allocator and object release modeled; logging modeled. Separate termination-prefix controls stop before runtime callback or privileged kernel continuation.
+PASS readiness badIndex=-1 -> 1
+PASS readiness badIndex=0 -> 0
+PASS readiness badIndex=1 -> 0
+PASS readiness badIndex=2 -> 0
+PASS readiness badIndex=3 -> 0
+PASS readiness badIndex=4 -> 0
+PASS single QVLOAD close deleteResult=0 -> return=00000000 pointer=00000000 events=[terminate:42100600, delete:0, free:42100600]
+PASS single QVLOAD close deleteResult=17 -> return=87000203 pointer=42100600 events=[terminate:42100600, delete:17, log]
+PASS batch close failIndex=-1 -> return 0; five deletes attempted; events=[terminate:42100200, delete:0, free:42100200, terminate:42100400, delete:0, free:42100400, terminate:42100600, delete:0, free:42100600, terminate:42100800, delete:0, free:42100800, terminate:42100a00, delete:0, free:42100a00]
+PASS batch close failIndex=2 -> return 0; five deletes attempted; events=[terminate:42100200, delete:0, free:42100200, terminate:42100400, delete:0, free:42100400, terminate:42100600, delete:17, log, terminate:42100800, delete:0, free:42100800, terminate:42100a00, delete:0, free:42100a00]
+PASS not-ready close wait=0 -> stop=43000000 r0=1; no real delay
+PASS not-ready close wait=1 -> stop=4000c450 r0=10; no real delay
+PASS full shared cleanup resources=false failIndex=-1 -> return 0; events=[terminate:42100200, delete:0, free:42100200, terminate:42100400, delete:0, free:42100400, terminate:42100600, delete:0, free:42100600, terminate:42100800, delete:0, free:42100800, terminate:42100a00, delete:0, free:42100a00]
+PASS full shared cleanup resources=true failIndex=2 -> return 0; events=[terminate:42100200, delete:0, free:42100200, terminate:42100400, delete:0, free:42100400, terminate:42100600, delete:17, log, terminate:42100800, delete:0, free:42100800, terminate:42100a00, delete:0, free:42100a00, release:42100e00, free:42100d00, release:42102000, release:42102100, free:42102200, release:42102300, release:42102400, release:42102500, release:42102600, free:42102700, free:42102800]
+PASS termination prefix hook=0 -> stop=40026e5c before callback/kernel body
+PASS termination prefix hook=1 -> stop=42100f00 before callback/kernel body
+16 controls passed. Expected loaded-RAM data changes only; original source bytes unchanged. No actual RTOS shutdown, allocator release, hook body, privileged continuation, task worker, USB/NAND/SD, payload or camera executes. Failure injection is a model, not a live error observation; write-free handoff and recovery remain unqualified.

@@ -26,6 +26,10 @@ reconfiguration, clock or hardware calls. No new persistent write is identified
 in this pass; persistent-storage and USB effects across those callees remain
 unresolved. No RAM launch or independent recovery procedure is qualified.
 
+Follow-up: [playback cleanup](playback-cleanup-before-handoff.md) resolves the
+shared cleanup to five named playback tasks. Sixteen controls demonstrate readiness
+gates and ignored deletion errors; runtime hooks and kernel effects remain open.
+
 ## Sensor timeout store and conditional mode request
 
 Original setter `0x4010e11c(sensor,value)`:

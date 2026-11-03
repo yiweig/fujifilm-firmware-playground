@@ -298,6 +298,12 @@ sensor setting as a power-save timeout with a conditional mode request. Candidat
 exits can enter shared cleanup or clock-related helpers. Fifteen offline controls
 stop at these boundaries; no live write-free guarantee follows from them.
 
+The [playback cleanup audit](playback-cleanup-before-handoff.md) finds that
+five-task cleanup can return zero even when a modeled task deletion failed; the
+outer cleanup continues with shared resource release. Sixteen offline controls
+verify caller behavior, not actual shutdown. Runtime termination hooks and kernel
+effects remain unaudited, so a zero cleanup return cannot establish quiescence.
+
 ## Required safety gates before flashing
 
 Treat each item as a gate, not merely a convenience:
