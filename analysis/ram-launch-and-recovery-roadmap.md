@@ -171,6 +171,14 @@ bytes. No implementation was recovered. R2 now needs authentic provider bytes
 with mapping/provenance, or a genuinely new access/mapping lead. Repeating this
 completed hypothesis is not the next task; the artifact requirements are recorded.
 
+## Public evidence refresh
+
+The [2026-11-03 source review](public-entry-evidence-refresh.md) checked a new
+pinned FujiMod HEAD and selected older softmod sources. It found no qualified
+X-half access/recovery record or provider artifact; the latter softmod is MIPS,
+not an ARM loader. A separate RAW-research claim does not establish recovery.
+The report includes an unsent question for a researcher with exact-body evidence.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

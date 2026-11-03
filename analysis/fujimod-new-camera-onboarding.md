@@ -5,6 +5,11 @@ Reviewed against public FujiMod commit
 FujiMod's current resources into a beginner-oriented path for the X half. No
 camera operations were performed.
 
+Follow-up: the [2026-11-03 public evidence refresh](public-entry-evidence-refresh.md)
+checks FujiMod at `122b82ea54ef4980035e484ed7dfee39c4d2cc18`. The complete tree
+still lacks an X-half body definition/firmware access profile or SPCA6500-named
+record. This is a separate pinned check; the assessment below retains its date.
+
 ## Short answer
 
 FujiMod has the pieces of a new-camera workflow, but not a single public,

@@ -12,6 +12,10 @@ but nothing that qualifies calling `0x00000b34` or launching another camera's
 programmer on the X half. The helper's code/cache-synchronization role remains
 a hypothesis from its X-half callers, not a matched implementation.
 
+Follow-up: [public entry/provider refresh](public-entry-evidence-refresh.md) checks
+new FujiMod metadata, confirms the same upstream V50 HEAD, and reads older MIPS
+softmod source. No newly verified X-half provider or recovery route was obtained.
+
 ## Retained V50 corpus
 
 The previously acquired [V50 repository](https://github.com/Linouth/iCatch-V50-Playground/tree/dc437ced8fdc9564e39ca550af6a1d53b1037714)

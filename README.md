@@ -273,6 +273,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/low-helper-backing-boundary.md`](analysis/low-helper-backing-boundary.md)
   — six mapping/copy controls distinguish low physical memory from known SRAM
   copies; records the missing provider artifact and a stopping point for this lead.
+- [`analysis/public-entry-evidence-refresh.md`](analysis/public-entry-evidence-refresh.md)
+  — current pinned public catalog/source review, MIPS softmod incompatibility,
+  and an unsent request for exact-body entry/provider evidence.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

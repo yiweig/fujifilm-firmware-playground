@@ -1,0 +1,140 @@
+{
+  "review_date": "2026-11-03",
+  "scope": "Read-only public metadata and pinned text-source review; no firmware download, code execution, camera access or outbound messages.",
+  "repository_heads": [
+    {
+      "repo": "justjake/fujimod",
+      "head": "122b82ea54ef4980035e484ed7dfee39c4d2cc18",
+      "date": "2026-11-03T18:39:25Z",
+      "message": "Replicate source edges in partially overlapping centered scales"
+    },
+    {
+      "repo": "Linouth/iCatch-V50-Playground",
+      "head": "dc437ced8fdc9564e39ca550af6a1d53b1037714",
+      "date": "2020-06-25T15:56:59Z",
+      "message": "Progress"
+    },
+    {
+      "repo": "mheistermann/spca-fun",
+      "head": "c1f2727499ad661d9b0d8879f37fe5e4b1561b4d",
+      "date": "2016-05-30T20:26:16Z",
+      "message": "Talk was german, but slides are english."
+    }
+  ],
+  "fujimod_tree": {
+    "commit": "122b82ea54ef4980035e484ed7dfee39c4d2cc18",
+    "entries": 3196,
+    "truncated": false,
+    "xhalf_paths": [
+      "catalog/bodies/xhalf",
+      "catalog/bodies/xhalf/controls.json"
+    ],
+    "body_definition_present": false,
+    "firmware_record_paths": [],
+    "spca6500_named_paths": [],
+    "limit": "Path metadata inventory; not exhaustive source-content analysis or private/unpublished support inventory."
+  },
+  "xhalf_release_records": [
+    {
+      "firmware_id": "xhalf-200",
+      "product": "X half",
+      "version": "2.00",
+      "internal_version": "2.0006",
+      "update_sha256": "3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68",
+      "download_url": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-hf1/"
+    }
+  ],
+  "verified_source_records": [
+    {
+      "repo": "mheistermann/spca-fun",
+      "commit": "c1f2727499ad661d9b0d8879f37fe5e4b1561b4d",
+      "path": "softmod/HOW_TO_RUN.txt",
+      "git_blob_sha1": "0246b52229f8ea0ab74df2bbbfd0a5877259d1bb",
+      "sha256": "9d55091c06c1ae1837ec0a60f072df75cc5ef801d2aac1976e1b556f926f362f",
+      "size": 296,
+      "url": "https://raw.githubusercontent.com/mheistermann/spca-fun/c1f2727499ad661d9b0d8879f37fe5e4b1561b4d/softmod/HOW_TO_RUN.txt"
+    },
+    {
+      "repo": "mheistermann/spca-fun",
+      "commit": "c1f2727499ad661d9b0d8879f37fe5e4b1561b4d",
+      "path": "softmod/apploader.s",
+      "git_blob_sha1": "245f65725e1f07965f94645cd404b39a5ab6357f",
+      "sha256": "e062e3900cebe3b707a1f8696ba4c465940d1f6993003c94da015980eb345b44",
+      "size": 1027,
+      "url": "https://raw.githubusercontent.com/mheistermann/spca-fun/c1f2727499ad661d9b0d8879f37fe5e4b1561b4d/softmod/apploader.s"
+    },
+    {
+      "repo": "mheistermann/spca-fun",
+      "commit": "c1f2727499ad661d9b0d8879f37fe5e4b1561b4d",
+      "path": "softmod/eken.h",
+      "git_blob_sha1": "068ddeec65675c7a2bf3bfc6942f0ed1d275bb15",
+      "sha256": "3667abd77ff61e72a0929ad800d40154451b959daa7fc1262231786e6419b04d",
+      "size": 2713,
+      "url": "https://raw.githubusercontent.com/mheistermann/spca-fun/c1f2727499ad661d9b0d8879f37fe5e4b1561b4d/softmod/eken.h"
+    },
+    {
+      "repo": "mheistermann/spca-fun",
+      "commit": "c1f2727499ad661d9b0d8879f37fe5e4b1561b4d",
+      "path": "softmod/eken.ld",
+      "git_blob_sha1": "20962e4a4ecd33ecb2ae6d1aa256d36d52c49d6b",
+      "sha256": "fabb83673811bb2388596e727050b693524d4bb53a2ba9e212633e3badaefe42",
+      "size": 575,
+      "url": "https://raw.githubusercontent.com/mheistermann/spca-fun/c1f2727499ad661d9b0d8879f37fe5e4b1561b4d/softmod/eken.ld"
+    },
+    {
+      "repo": "mheistermann/spca-fun",
+      "commit": "c1f2727499ad661d9b0d8879f37fe5e4b1561b4d",
+      "path": "eken-ftp-exploit/README.md",
+      "git_blob_sha1": "7c6b090d69e296737625011bac6093728b468180",
+      "sha256": "867967a3f1f84eb920d9c7e745bab4730782ade725e1a5d77922d6b9c53f6a5f",
+      "size": 183,
+      "url": "https://raw.githubusercontent.com/mheistermann/spca-fun/c1f2727499ad661d9b0d8879f37fe5e4b1561b4d/eken-ftp-exploit/README.md"
+    },
+    {
+      "repo": "justjake/fujimod",
+      "commit": "122b82ea54ef4980035e484ed7dfee39c4d2cc18",
+      "path": "catalog/firmware-versions.generated.json",
+      "git_blob_sha1": "67199942e3ce6d1b0fd471e84c905b07cca2e7da",
+      "sha256": "89a42fb817fbba7508d46bf2c2e43f63729e8715413992e8b9090bd488c365b3",
+      "size": 21464,
+      "url": "https://raw.githubusercontent.com/justjake/fujimod/122b82ea54ef4980035e484ed7dfee39c4d2cc18/catalog/firmware-versions.generated.json"
+    },
+    {
+      "repo": "justjake/fujimod",
+      "commit": "122b82ea54ef4980035e484ed7dfee39c4d2cc18",
+      "path": "crates/recovery/README.md",
+      "git_blob_sha1": "2d44d775fd897489b72e5842f6e8b80dcfc82b15",
+      "sha256": "663657210f374d451026eb3e1e85597a5e4822669caf6bbf1c71f2e9659d8ea7",
+      "size": 15339,
+      "url": "https://raw.githubusercontent.com/justjake/fujimod/122b82ea54ef4980035e484ed7dfee39c4d2cc18/crates/recovery/README.md"
+    }
+  ],
+  "dispositions": [
+    {
+      "candidate": "FujiMod current public catalog/recovery metadata",
+      "result": "No new X-half body/firmware access profile or SPCA6500 named artifact in complete pinned tree; release identity remains listed."
+    },
+    {
+      "candidate": "V50 Playground upstream",
+      "result": "HEAD equals previously reviewed dc437ced; existing selected binary audit not repeated. Previously unacquired LFS payloads remain uninspected."
+    },
+    {
+      "candidate": "spca-fun softmod",
+      "result": "Pinned linker declares MIPS; assembly uses MIPS registers; procedure presumes debug commands. Not an ARM X-half loader or known low-helper implementation."
+    },
+    {
+      "candidate": "Reddit X-half RAW comment",
+      "source": "https://www.reddit.com/r/fujifilm/comments/1wda2x6/xt3_running_classic_negative_eterna_bleach_bypass/",
+      "result": "First-person claim of RAW byte discovery and repacking difficulty; no accompanying verified low-memory artifact or cold-recovery proof in inspected comment. No contact/download."
+    }
+  ],
+  "query_scope": [
+    "SPCA6500 bootrom",
+    "SPCA6500 bootloader github",
+    "X-HF1 service manual",
+    "fujimod xhalf recovery",
+    "SPCA6500 ROM dump",
+    "Fujifilm xhalf raw github firmware"
+  ],
+  "search_limit": "Bounded keyword and selected repository review; broad searches had many irrelevant results. No claim that no artifact exists publicly or privately."
+}
