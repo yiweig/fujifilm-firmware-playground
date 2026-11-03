@@ -1,0 +1,18 @@
+MAIN SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original sensor timeout setter and candidate mode exits. Synthetic state; logging modeled. Stop boundaries execute no callee instructions. Two sensor controls additionally model wait/IRQ calls as returning.
+PASS sensor status=2 current=00 -> timeout RAM word=100; stop=43000000
+PASS sensor status=2 current=10 -> timeout RAM word=100; stop=43000000
+PASS sensor status=3 current=00 -> timeout RAM word=100; stop=40113960 wait(0,2), before wait executes
+PASS sensor status=3 current=10 -> timeout RAM word=100; stop=43000000
+PASS sensor status=4 current=00 -> timeout RAM word=100; stop=43000000
+PASS sensor status=3 current=00 activeMask=0 with modeled wait/IRQ -> stop=4010de08 r0=0; requested mode byte=0
+PASS sensor status=3 current=00 activeMask=1 with modeled wait/IRQ -> stop=40114504 r0=0; requested mode byte=0
+PASS candidate mode index=0 exit=40182e8c targetIndex=0 state+30=0 -> stop=43000000 return 0
+PASS candidate mode index=1 exit=402dbc80 targetIndex=0 state+30=0 -> stop=401a519c before callee executes
+PASS candidate mode index=2 exit=402dbbc0 targetIndex=0 state+30=0 -> stop=401a519c before callee executes
+PASS candidate mode index=3 exit=402db8fc targetIndex=0 state+30=0 -> stop=400d3aec before callee executes
+PASS candidate mode index=3 exit=402db8fc targetIndex=0 state+30=1 -> stop=43000000 return 0
+PASS candidate mode index=4 exit=402dbad8 targetIndex=0 state+30=0 -> stop=43000000 return 0
+PASS candidate mode index=5 exit=402dbd68 targetIndex=0 state+30=0 -> stop=400d3aec before callee executes
+PASS candidate mode index=6 exit=402dbdc8 targetIndex=0 state+30=0 -> stop=43000000 return 0
+15 controls passed. Sensor timeout word is the sole permitted loaded-image data change; source binaries unchanged. No physical wait, IRQ change, sensor reconfiguration, cleanup callee, mode worker, clock switch, USB/NAND/SD, payload or camera executes. Actual provider installation/state and transitive side effects remain unverified.

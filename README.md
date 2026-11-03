@@ -236,6 +236,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/main-idle-mode-handoff.md`](analysis/main-idle-mode-handoff.md)
   — asynchronous idle transition, mode exits and conditional DRAM-clock changes;
   five guard/wait controls, with deeper storage/USB effects unresolved.
+- [`analysis/main-sensor-and-mode-exits.md`](analysis/main-sensor-and-mode-exits.md)
+  — identifies the sensor power-save timeout and all six candidate non-idle exits;
+  15 bounded controls, with shared cleanup and clock effects still unaudited.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

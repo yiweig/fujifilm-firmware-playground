@@ -293,6 +293,11 @@ changes. Five offline controls verify only guards and stop boundaries. No new
 persistent write is established by that pass, but the full callback remains
 unqualified for a write-free RAM launch or a guaranteed return.
 
+The [sensor/exit follow-up](main-sensor-and-mode-exits.md) identifies that
+sensor setting as a power-save timeout with a conditional mode request. Candidate
+exits can enter shared cleanup or clock-related helpers. Fifteen offline controls
+stop at these boundaries; no live write-free guarantee follows from them.
+
 ## Required safety gates before flashing
 
 Treat each item as a gate, not merely a convenience:

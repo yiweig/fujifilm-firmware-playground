@@ -23,6 +23,11 @@ current mode and clock state on the camera remain unknown.
 Five bounded controls verify guards and stop boundaries only. They do not
 execute the asynchronous transition or establish a safe RAM launch.
 
+Follow-up: [sensor and mode exits](main-sensor-and-mode-exits.md) identifies the
+setting as a power-save timeout, resolves all six candidate non-idle exit
+pointers, and adds 15 bounded controls. Shared cleanup and deeper clock/sensor
+effects remain open; provider installation and live state remain unobserved.
+
 ## Wrapper, mode mapping and asynchronous request
 
 Mode-ID table `0x40b0c90a` contains seven bytes:
