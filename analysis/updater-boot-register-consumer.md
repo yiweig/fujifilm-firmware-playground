@@ -8,6 +8,11 @@ not the main camera firmware. No camera access or card preparation occurred.
 
 ## Finding
 
+Correction/follow-up: [file-failure continuation](updater-file-failure-continuation.md)
+shows that `0x40075ea4`, previously called a shutdown boundary, has a return
+path. With modeled platform returns, failed file actions reach the USB-startup
+boundary. This is not a hardware availability or recovery proof.
+
 Follow-up: [updater firmware selection](updater-firmware-selection.md) traces a
 different conditional startup branch that registers a storage callback. That
 callback can request `:DEF_FW2` after examining six rawC configurations. This
@@ -27,7 +32,7 @@ fallback selector. Six rawC boot-configuration entries also must not be equated
 with the two firmware slots merely because both concern booting.
 
 Eight supplied-state controls pass, stopping before ISP task/setup, boot loading
-or shutdown. **There is still no independent cold-recovery procedure.**
+or a platform helper. **There is still no independent cold-recovery procedure.**
 
 ## Startup consumer and register inputs
 
@@ -98,7 +103,7 @@ refer to synthetic memory, with boot-status bit 7 set, configuration byte
 | 1 | `TEST` / `bin` | 0 | `D:\TEST.bin` | `0x4000f270` |
 | 1 | `TEST` / `BRN` | 0 | `D:\TEST.BRN` | `0x4000f270` |
 | 1 | `FPUPDATE` / `DAT` | 0 | `D:\FPUPDATE.DAT` | `0x4000f270` |
-| 1 | `TEST` / `brn` | 1 | `D:\TEST.brn` | `0x40075ea4`, cleanup/shutdown path |
+| 1 | `TEST` / `brn` | 1 | `D:\TEST.brn` | `0x40075ea4`, platform helper; see correction above |
 | 1 | `firmware` / `brn` | 0 | `D:\firmware.brn` | `0x40009ca0`, ISP setup |
 
 The original status getter, register reads, pathname loops and branch logic

@@ -42,6 +42,13 @@ for version bookkeeping even with automatic calibration disabled. This is
 not proof of harmful calibration changes or a firmware flash, but it rules
 out treating that setting alone as making the button-entry route read-only.
 
+Follow-up on the packaged updater: [file-failure continuation](updater-file-failure-continuation.md)
+identifies conditional return paths from failed file actions toward its USB
+startup. The helper previously labeled shutdown has a return path, but its
+hardware effects and live USB availability remain unverified. This is evidence
+inside an executing updater; it does not establish entry when the main firmware
+cannot boot or change the recommendation against modified flashing.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

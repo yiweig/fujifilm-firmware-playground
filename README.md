@@ -192,6 +192,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-usb-identity.md`](analysis/updater-usb-identity.md)
   — target-0 GET_DESCRIPTOR path, `2aad:6500` template and vendor endpoints;
   runtime packet-size mutation and offline descriptor extraction.
+- [`analysis/updater-file-failure-continuation.md`](analysis/updater-file-failure-continuation.md)
+  — returned file errors can reach the USB-startup boundary if platform helpers
+  return; 11 controls and correction of the earlier "shutdown" label.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.
