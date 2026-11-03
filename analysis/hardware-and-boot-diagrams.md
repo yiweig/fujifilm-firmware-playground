@@ -11,8 +11,15 @@ Artifact identities:
   `3c1c662957003e5bab4f2a8fcb184180d72a92dbdec4fbeea030dac0df755d68`
 - extracted `DRAM CODE` SHA-256:
   `80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923`
-- extracted card updater SHA-256:
-  `e65576cadbd4db737e0dd2cfcff7395265ed4087fced6d267108f1af2718df51`
+- complete card updater SHA-256:
+  `4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976`
+
+Consolidation refresh: 2026-11-03. The updater hash previously listed here
+(`e65576...df51`) identifies a historical shortened extract that omitted
+`0x340` bytes. Use the [complete updater layout](updater-image-layout.md) for
+current coordinates; old evidence retains its historical identity.
+See the [architecture guide](architecture-guide.md) for the software model and
+[RAM/recovery roadmap](ram-launch-and-recovery-roadmap.md) for current priorities.
 
 ## Legend
 
@@ -132,7 +139,7 @@ flowchart TD
   early -.-> dramparam
   dramparam -.-> draminit
   draminit -.-> choose
-  choose -. "loader/copy path not yet traced" .-> main
+  choose -. "partial staged-load contract traced; earlier selection unknown" .-> main
   main --> camera
   main --> linuxboot
   linuxboot -. "exact activation path incomplete" .-> linux
@@ -165,6 +172,11 @@ flowchart TD
   rom -. "chipset-family lead only" .-> usbisp
   usbisp -. "desired RAM loader / flash repair route" .-> early
 ```
+
+The [staged storage handoff](staged-loader-storage-handoff.md) now identifies
+application-side section loading/checks and an earlier-stage SRAM descriptor.
+That narrows the loading arrow; it does not recover the earlier selector or
+establish a successful physical cold boot.
 
 ### Safety boundary shown by the flow
 
@@ -264,6 +276,10 @@ file ranges remain in `update-package-and-linux.md` and
 
 ## Source reports
 
+- [`architecture-guide.md`](architecture-guide.md)
+- [`ram-launch-and-recovery-roadmap.md`](ram-launch-and-recovery-roadmap.md)
+- [`updater-image-layout.md`](updater-image-layout.md)
+- [`staged-loader-storage-handoff.md`](staged-loader-storage-handoff.md)
 - [`memory-and-hardware-map.md`](memory-and-hardware-map.md)
 - [`hardware-register-blocks.tsv`](hardware-register-blocks.tsv)
 - [`update-package-and-linux.md`](update-package-and-linux.md)

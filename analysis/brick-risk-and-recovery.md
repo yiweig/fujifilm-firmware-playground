@@ -5,6 +5,12 @@ This assessment is based on static inspection of the official X half 2.00
 at commit `974e95dafab3b7a281e7453aad8ff029f7df2a58` (2026-10-30). No camera
 commands were sent and no update was attempted.
 
+For a consolidated explanation and current research priorities, read the
+[architecture guide](architecture-guide.md) and
+[RAM-launch/recovery roadmap](ram-launch-and-recovery-roadmap.md). The roadmap
+separates temporary execution from independent cold recovery and ranks the
+remaining blockers; the detailed risk findings below retain their original scope.
+
 ## Bottom line
 
 Flashing a modified package is **not an acceptable first experiment yet**. The

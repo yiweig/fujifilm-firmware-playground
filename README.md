@@ -7,7 +7,7 @@ state are intentionally excluded from version control.
 
 ## Start here: handoff overview
 
-Last overview refresh: **2026-11-02**. This is a research notebook and collection
+Last overview refresh: **2026-11-03**. This is a research notebook and collection
 of analysis tools, not a firmware patcher or a deployable camera modification.
 Most firmware investigations are offline; live observations are explicitly
 identified in their reports. A camera is not required for the static tools.
@@ -17,6 +17,22 @@ lever review, replace Auto ISO 3's ISO-12800 cap with ISO 6400 (and assess a
 fourth preset), and explore RAW feasibility. The current priority is establishing
 RAM execution and a confirmed recovery path before considering a modified flash.
 The user excludes opening the camera, wiring UART or sending it to a repair lab.
+
+Read these first:
+
+1. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
+   beginner-oriented account of the package, startup, tasks, imaging, USB and storage.
+2. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
+   the proposed launch path with evidence levels, ranked blockers, and which leads
+   have already been examined. Temporary execution and independent recovery are
+   separate outcomes; neither has been established end to end.
+3. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
+   [memory map](analysis/memory-and-hardware-map.md) — physical/address-space
+   orientation, with unresolved regions explicitly marked.
+
+Recent task/clock traces narrow handoff preparation, but do not close the missing
+retail loader entry or independent recovery. Next research should target evidence
+for those access/earlier-stage gaps before automatically expanding another callee.
 
 | Topic | Current finding | Start with |
 | --- | --- | --- |
@@ -31,6 +47,7 @@ The user excludes opening the camera, wiring UART or sending it to a repair lab.
 | Updater error path | Returned file errors can continue toward USB startup. The formerly mislabeled shutdown helper acquires USB resources and programs a PHY/PLL block; eight focused controls pass. Live enumeration remains unverified. | [Return path](analysis/updater-file-failure-continuation.md), [resource bring-up](analysis/updater-usb-resource-bringup.md) |
 | Updater storage activation | NAND header parsing during initialization can reach the erase-capable table builder before a mount request. Five parser controls stop before construction; actual installed metadata is unknown. Stock-updater RAM execution is not proven volatile. | [Initialization risk](analysis/updater-nand-initialization-risk.md), [mount/write risk](analysis/updater-mount-write-risk.md) |
 | RAM loader | Device-side USB transfer and copy/execute code identified. Temporary retail entry, full handoff effects and payload safety remain unqualified. | [Receiver](analysis/xhalf-usb-ram-receiver.md), [handoff](analysis/ram-handoff-copy-boundary.md) |
+| Handoff preparation | Optional callback lifetime, sensor timeout, candidate mode exits, playback cleanup, mutex/wait cleanup and clock synchronization traced in bounded controls. Close errors can be ignored; lock release can reach task-resume work. Real callbacks, concurrent effects and the hardware clock core remain unresolved. | [Architecture guide](analysis/architecture-guide.md), [clock audit](analysis/idle-clock-switch-and-callbacks.md) |
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
 | Earlier-stage helper | `0x00000b34` has two identified call contexts, but its implementation/backing is unrecovered. Cache synchronization is a hypothesis. Public comparison artifacts did not resolve it. | [Helper investigation](analysis/low-address-loader-helper.md), [public artifact review](analysis/public-boot-artifact-review.md) |
@@ -39,6 +56,11 @@ For orientation, read the [hardware/boot diagrams](analysis/hardware-and-boot-di
 and [memory map](analysis/memory-and-hardware-map.md), then the report for the
 specific question. The full index below preserves the investigation history.
 Read follow-up/correction sections before reusing an older conclusion.
+
+The [architecture guide](analysis/architecture-guide.md) synthesizes the model;
+the [roadmap](analysis/ram-launch-and-recovery-roadmap.md) owns the consolidated
+priorities. Detailed reports remain the source for addresses, evidence and
+reproduction. These summaries add no new camera observations.
 
 ## Repository layout
 

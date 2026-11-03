@@ -1,0 +1,183 @@
+# RAM launch and recovery: evidence map and priorities
+
+Consolidated 2026-11-03. Read the [architecture guide](architecture-guide.md)
+first for subsystem context. This document synthesizes existing findings; it
+adds no camera experiment, executable payload or new binary-analysis result.
+All technical addresses below refer to the hash-qualified 2.00 reports linked
+from the tables, unless explicitly marked as updater.
+
+## Two outcomes, with different requirements
+
+**Temporary RAM execution:** start controlled replacement code while accounting
+for all persistent effects of entry, handoff and payload. The installed camera
+software may still be needed to enter this path.
+
+**Independent recovery:** enter a known restore path after a cold power cycle
+even when the installed application cannot boot, and restore the necessary
+firmware plus device-specific data.
+
+The first does not imply the second. We have an application-level RAM-loader
+lead and many analyzed components, but neither outcome is established end to
+end. RAM execution can be investigated before cold recovery is established;
+neither milestone alone authorizes modified flashing.
+
+## Proposed application RAM-launch path
+
+Legend: **L** = the specified limited live interaction occurred; **P** = partial
+static/controlled understanding; **U** = required behavior unresolved. A P box
+can contain known operations without the complete box being qualified safe.
+Arrows show the proposed dependency chain, not a recorded successful session.
+
+```mermaid
+flowchart TD
+    A["L: normal PTP information request and close"]
+    B["U: temporary entry into loader API mode 4"]
+    C["P: target-0 registration, initialization and connection"]
+    D["P: transfer parsing, buffers and state-6 completion"]
+    E{"P: optional preparation callback nonzero?"}
+    F["P: backlight / lens / mode exit / idle clocks"]
+    G["P: interface operation 10 and header-to-SRAM work"]
+    H["P: workspace, mapping, caches, IRQ/GIC preparation"]
+    I["P: hardware copy-command construction"]
+    J["U: low helper 0x00000b34 and actual copy completion"]
+    K["U: chosen payload entry and complete startup effects"]
+    Z["U: harmless observable result and qualified restart"]
+    A -.-> B
+    B -.-> C
+    C --> D
+    D --> E
+    E -->|yes| F
+    E -->|no| G
+    F -->|if it returns| G
+    G --> H --> I --> J --> K --> Z
+```
+
+Normal PTP cannot be assumed to dispatch loader requests. The two interfaces
+are separated by target selection. Likewise, null callback state is not a
+usable bypass until its real value/lifetime is established on the chosen route.
+
+| Stage | What is supported | Evidence still needed |
+| --- | --- | --- |
+| Normal communication | Camera identity and a restricted standard-information session | This does not qualify vendor transport or attest the installed release |
+| Loader selection | API mode 4 maps to target 0; mode-selection code/cached flag identified | A reachable, temporary, nonpersistent entry from the actual retail state |
+| Service construction | Registration and multiple reset/construction paths traced | Real descriptors, initialization, hardware state and transport behavior on that route |
+| Transfer/receiver | Parsing, transfer direction and selected queue boundaries reproduced | Validated protocol/state, lengths, workspace allocation and full error behavior |
+| Optional preparation | Producer/lifetime and several mode/task/clock dependencies traced | Actual pointer/state plus remaining lens/sensor/clock and concurrent effects |
+| Final preparation | Boot fields, resource request, workspace/MMU/cache/GIC operations identified | Interface operation 10, complete storage/header effects and compatible inherited hardware state |
+| Copy and low helper | Conversion/command metadata and helper arguments identified | Source/stack/stub survival, physical completion, helper bytes/mapping/effects |
+| Payload | Different main/updater special entries and some startup paths identified | A specific minimal payload with audited startup, persistence and restart behavior |
+
+Sources: [live session](macos-device-info-session.md),
+[selection/routing](retail-usb-control-routing.md),
+[receiver](xhalf-usb-ram-receiver.md),
+[initialization](early-usb-startup-dependencies.md),
+[callback lifetime](main-loader-callback-lifetime.md),
+[preparation](main-handoff-usb-state.md),
+[copy/entry](ram-handoff-copy-boundary.md),
+[low helper](low-address-loader-helper.md).
+
+## Independent recovery is a separate lane
+
+```mermaid
+flowchart LR
+    P[Cold power-on with unusable main firmware]
+    E[U: independent boot-ROM or early-loader entry]
+    M[U: accepted SD/USB format and hardware initialization]
+    R[U: verified restore path using stock and per-device data]
+    P -.-> E -.-> M -.-> R
+```
+
+The existence of mask ROM, two firmware slots, other iCatch recovery tools or
+a function called `sdboot` does not supply any missing arrow. The X half's
+low-address implementation and exact boot-source/validation contract remain
+unrecovered. The user excludes opening the body, UART wiring and repair-lab
+acquisition; those are not fallback work items for this project.
+
+Sources: [recovery-entry review](recovery-entry-review.md),
+[public-artifact review](public-boot-artifact-review.md),
+[risk assessment](brick-risk-and-recovery.md).
+
+## Ranked blockers for temporary execution
+
+Ranks express research importance, not a bricking probability. Ordering a
+blocker first does not mean it is easiest or that another static trace can
+supply the missing evidence.
+
+| Rank | Blocker | Why it matters | Evidence that would close or materially narrow it |
+| --- | --- | --- | --- |
+| R1 | Qualified retail-to-loader entry | Without entry, the analyzed receiver cannot be used | A traceable route for this body whose activation and persistence effects are understood; existing PTP/session success is insufficient |
+| R2 | Earlier-stage helper/backing | The final path calls code whose bytes and full effects are unknown | Authentic bytes plus mapping/provenance for the low helper, or a fully evidenced alternative that avoids it |
+| R3 | Memory ownership and hardware transition | Overwriting live RAM can destroy the stub, stack, data or other users | A complete chosen-route map of allocations, overwrite intervals, other cores/DMA, cache/interrupt state and real copy behavior |
+| R4 | Preparation and runtime state | Optional callbacks and mode/clock work may block or add effects | Determine which branches actually apply, then audit their complete effects; closing every unrelated SDK function is unnecessary |
+| R5 | Payload startup and restart | A RAM-resident payload may still erase flash or leave no functioning return path | A specific controlled diagnostic with known entry/startup/outputs and restart behavior; stock updater is not assumed harmless |
+
+R1 and R2 are major access/evidence gaps. R3–R5 are needed to qualify a proposed
+launch even if access becomes available. Recent task and clock findings mostly
+narrow R4; they do not close R1 or prove independent recovery.
+
+The stock updater is a concrete R5 counterexample: conditional NAND startup can
+reach erase-capable table construction. Its USB continuation can be studied in
+isolation, but direct entry to that continuation is an emulator fixture, not a
+verified safe hardware-entry method.
+Sources: [NAND initialization](updater-nand-initialization-risk.md),
+[USB/storage distinction](updater-usb-storage-separation.md).
+
+## Ranked requirements for recoverable flashing
+
+These remain separate from application RAM execution:
+
+| Rank | Requirement | Missing proof |
+| --- | --- | --- |
+| C1 | Cold entry independent of installed main firmware | Exact X-half entry conditions, accepted medium/protocol and executable boot path |
+| C2 | Surviving restore mechanism | Which boot/DRAM/layout components an update can damage and how the independent path restores them |
+| C3 | Complete per-device backup | Correct storage scope, bad-block/layout metadata, calibration/settings, independently verified persistence and restore semantics |
+| C4 | Valid modified package | All relevant integrity/validation fields, including unresolved outer structure, and reproducible no-op reconstruction before a patch |
+
+Ordinary updater checks, read-back/retry and Firmware2 preservation help explain
+its design. They do not establish C1/C2. A stock DAT file does not supply
+per-device calibration or prove C3. Archive caching and error masking mean a
+successful logical read/write reply alone cannot verify a backup or restore.
+See [risk assessment](brick-risk-and-recovery.md),
+[archive backing](cold-resource-backing.md) and
+[save errors](cold-save-error-propagation.md).
+
+## Known entry leads: what has already been checked
+
+| Lead | Existing conclusion | What would justify reopening it |
+| --- | --- | --- |
+| Standard retail PTP / advertised operations | Reviewed handlers do not establish loader selection; no vendor-control fallback | A new effective handler/registration or exact supported transition, not a guessed opcode name |
+| Cached USB-selection flag | Five known writers; no qualified temporary retail sequence | A new producer/reachable path, with shared-buffer lifetime accounted for |
+| Internal `usbt`, `clbt usb`, DPC refresh | Useful software paths; retail shell transport not established | A qualified non-invasive shell/command route |
+| Calibration entry | Can select loader mode, but initialization can attempt persistent factory-data saves | Evidence for a distinct write-free route; disabling automatic calibration alone is insufficient |
+| Early main-image shell | Still needs main firmware; UART input and USB-registration dependencies remain | A demonstrated separate transport/initialization path consistent with constraints |
+| Vendor `sdboot` / Firmware2 | Storage-layout/slot code identified; cold entry/fallback not proved | Authentic earlier-stage selection/boot evidence for this body |
+| Comparable V50 tools/artifacts | Useful processor-family comparisons; retained review did not recover the X-half helper/entry | New authentic compatible boot/service material with provenance |
+
+Sources: [PTP review](ptp-advertised-operation-review.md),
+[flag writers](usb-selection-writer-search.md),
+[refresh reachability](usb-cache-refresh-reachability.md),
+[shell/loader entry](xhalf-loader-mode-entry.md),
+[service writes](service-entry-initialization-writes.md),
+[early USB dependencies](early-usb-startup-dependencies.md),
+[recovery review](recovery-entry-review.md),
+[comparison review](public-boot-artifact-review.md).
+
+## Decision for the next research pass
+
+Prioritize evidence that could close **R1/R2 or C1**, rather than automatically
+continuing down another clock/kernel callee. The entry leads and retained public
+corpus above have already had bounded reviews; repeating the same searches is
+not new progress.
+
+Before a new deep trace, name the specific unexamined caller, mapping edge or
+new artifact, and state which blocker it could close. For R2, the question is
+whether a remaining mapping/copy path can identify the actual low-helper backing;
+its two known callers and four-version stability are already documented. If
+required bytes are absent, record the exact artifact needed instead of replacing
+the helper with a guess. New authentic earlier-stage/service documentation could
+be more valuable than further detail about unrelated application cleanup.
+
+Continue R4 only when the trace qualifies a branch on a proposed launch route
+or exposes a concrete persistent/hardware effect. Success should mean a reduced
+blocker with explicit limits, not simply more reports or passing controls.
+No camera reconnection is required for the present consolidation.
