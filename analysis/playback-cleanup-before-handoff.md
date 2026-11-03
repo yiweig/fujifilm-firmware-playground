@@ -29,6 +29,11 @@ calls. Therefore absence of persistent writes or USB effects across the full
 path is still unresolved. The result does not qualify safe RAM execution or
 independent recovery.
 
+Follow-up: [termination synchronization hooks](termination-synchronization-hooks.md)
+identifies the global hook as owned-mutex release and two per-task callbacks as
+queue/event wait cleanup. Ten controls stop before scheduler/resume work; actual
+runtime state and concurrent side effects remain unobserved.
+
 ## Five readiness conditions
 
 Predicate `0x401deb70` calls five literal-address getters and compares word

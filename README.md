@@ -242,6 +242,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/playback-cleanup-before-handoff.md`](analysis/playback-cleanup-before-handoff.md)
   — identifies five playback tasks, readiness gates, ignored close errors and
   a runtime termination hook; 16 controls, with kernel/hook effects unresolved.
+- [`analysis/termination-synchronization-hooks.md`](analysis/termination-synchronization-hooks.md)
+  — mutex construction installs the termination hook; queue/event wait cleanup
+  and ownership transfer reach scheduler boundaries in ten bounded controls.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

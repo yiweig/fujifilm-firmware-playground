@@ -304,6 +304,12 @@ outer cleanup continues with shared resource release. Sixteen offline controls
 verify caller behavior, not actual shutdown. Runtime termination hooks and kernel
 effects remain unaudited, so a zero cleanup return cannot establish quiescence.
 
+The [termination-hook follow-up](termination-synchronization-hooks.md) identifies
+mutex release and queue/event wait cleanup. A supplied contended mutex transfers
+ownership and reaches a task-resume helper; ten offline controls stop before
+scheduling. Task cleanup therefore does not establish global quiescence or what
+other tasks might do after their locks become available.
+
 ## Required safety gates before flashing
 
 Treat each item as a gate, not merely a convenience:

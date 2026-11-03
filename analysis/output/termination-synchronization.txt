@@ -1,0 +1,13 @@
+MAIN SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original mutex constructor, termination hook, mutex release, task terminator and queue/event wait cleanup. Synthetic RAM; MRS/CPSID/MSR IRQ operations modeled as saved zero/no-op. Stop before scheduler/resume helpers. No concurrency, physical interrupts or camera execution.
+PASS mutex constructor existing=0 -> termination hook=4008c1d8; mutex magic/count set; modeledIRQ=3
+PASS mutex constructor existing=1 -> termination hook=4008c1d8; mutex magic/count set; modeledIRQ=3
+PASS termination hook ownedCase=0 -> stop=43000000 counter=7; modeledIRQ=3
+PASS termination hook ownedCase=1 -> stop=43000000 counter=7; modeledIRQ=9
+PASS termination hook ownedCase=2 -> stop=40049e20 counter=9; modeledIRQ=6
+PASS original terminator initialState=0 -> stop=4004a180 global hook executed; modeledIRQ=6
+PASS original terminator initialState=1 -> stop=40049fc8 global hook executed; modeledIRQ=6
+PASS original terminator initialState=2 -> stop=40049fc8 global hook executed; modeledIRQ=6
+PASS original terminator initialState=5 -> stop=40049fc8 global hook executed, installed queue/event wait cleanup cleared callback and wait list; modeledIRQ=12
+PASS original terminator initialState=7 -> stop=40049fc8 global hook executed, installed queue/event wait cleanup cleared callback and wait list; modeledIRQ=12
+10 controls passed. Only expected loaded-RAM data changes; source bytes unchanged. No scheduler/resume helper, task worker, physical IRQ/FPU operation, USB/NAND/SD, payload or camera executes. Contended transfer stops before resume and does not complete the hook. Actual installed hooks, mutexes and concurrent side effects remain unobserved.
