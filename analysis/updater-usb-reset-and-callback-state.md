@@ -7,6 +7,12 @@ All addresses are updater addresses. No camera access or firmware changes.
 
 ## Finding and naming refinement
 
+Follow-up: [reset acknowledgement and pointer queues](updater-usb-reset-exchange.md)
+executes the original control/target dispatch exchange with manual delivery.
+Four new controls pass. It also corrects USB queue decoding in the previous
+harness; all five controls were rerun with a nonzero-low-halfword message
+address and pointer-aware decoding. The retained control output is that rerun.
+
 The [USB/storage separation controls](updater-usb-storage-separation.md) stopped
 at `0x4000ffa0`, labeled broadly as controller bring-up. Its embedded diagnostic
 at `0x400938bb` identifies it more specifically as **`usbDclBusReset`**.
@@ -42,7 +48,8 @@ Routine `0x4000ffa0` follows these inspected calls:
 
 The word notification 3 and halfword message type 0 belong to **different
 queues/formats**. They are not interchangeable with storage-worker message
-types. On return code 11 from its first queue-post attempt, `0x4000fe84`
+types. USB queues actually carry a pointer to the message whose halfword type
+is 0; the DCL queue carries integer 3 directly. On return code 11 from its first queue-post attempt, `0x4000fe84`
 removes one queued item and retries once. This is original control flow with
 supplied queue returns, not a measurement of actual queue capacity/semantics.
 

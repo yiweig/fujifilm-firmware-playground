@@ -218,6 +218,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/updater-usb-reset-and-callback-state.md`](analysis/updater-usb-reset-and-callback-state.md)
   — refines that boundary to asynchronous `usbDclBusReset`; callback registration
   preserves occupied handlers, while normal startup clears their RAM; five controls.
+- [`analysis/updater-usb-reset-exchange.md`](analysis/updater-usb-reset-exchange.md)
+  — traces the target-0 reset/acknowledgement gate through original dispatchers;
+  four controls, corrected pointer-queue model, and five repaired controls rerun.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

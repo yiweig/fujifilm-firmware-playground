@@ -1,5 +1,5 @@
 Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
-Offline original DCL bus reset and event registrar. MMIO is synthetic memory. Queue/log/allocation/critical-section/IRQ-registration helpers modeled; no task or interrupt executes.
+Offline original DCL bus reset and event registrar. MMIO is synthetic memory. USB queue items decoded as message pointers, DCL items as integers. Queue/log/allocation/critical-section/IRQ-registration helpers modeled; no task or interrupt executes.
 PASS bus reset queue-full=false posts=[queue=42200000 type=3, queue=42200100 type=0] remove=0; returned without backend calls.
 PASS bus reset queue-full=true posts=[queue=42200000 type=3, queue=42200000 type=3, queue=42200100 type=0] remove=1; returned without backend calls.
 PASS event0 count=0 occupied=false -> slot=400100b0 returned=00000000 IRQ-registrations=1; callbacks never execute.

@@ -1,0 +1,8 @@
+Complete updater SHA256 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Original control/target dispatch and download initializer; messages manually delivered, not a scheduler. Queue/allocation/free/log helpers modeled; MMIO is synthetic memory.
+One original loaded-data byte 4009dd84 changes from receiver state 1 to 2; all other loaded bytes must stay unchanged. Source file is untouched.
+PASS full reset exchange old-scratch=false -> control gate 1 then 0; receiver=2; posts=[queue=42200100 type=0, queue=42200000 type=1] frees=[]; no storage calls.
+PASS full reset exchange old-scratch=true -> control gate 1 then 0; receiver=2; posts=[queue=42200100 type=0, queue=42200000 type=1] frees=[1108353024]; no storage calls.
+PASS type-4 setup request while control gate=1 -> return without parsing setup or posting target work.
+PASS target=2 -> supplied target-2 initializer boundary, stopped before callback; target-0 initializer never executes.
+4 controls passed. Explicit serial delivery and supplied state; no real queues, scheduling, task loops, controller readiness, USB enumeration, NAND/SD I/O, safe live entry or recovery established.

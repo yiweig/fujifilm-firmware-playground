@@ -96,6 +96,13 @@ table's RAM, so calling USB setup directly would need qualified initialization
 and memory ownership. Five offline controls verify those branches without
 executing callbacks, interrupts or tasks. Physical USB readiness remains unknown.
 
+The [reset acknowledgement audit](updater-usb-reset-exchange.md) completes
+the original target-0 reset/acknowledgement handlers with serial message
+delivery. Four controls show the request gate releasing without a NAND/SD
+call in that path; they model queues and allocation and do not run task loops.
+It also repairs earlier USB queue decoding and reruns those five controls.
+This narrows the asynchronous dependency without validating physical USB or entry.
+
 ## Safeguards observed in the official updater
 
 The complete ARMv7 card updater is 666,112 bytes at package offset `0x200`

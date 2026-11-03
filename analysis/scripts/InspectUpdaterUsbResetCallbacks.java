@@ -42,9 +42,9 @@ public class InspectUpdaterUsbResetCallbacks extends GhidraScript {
                 monitor.checkCancelled();long pc=t.getCounter().getOffset();if(pc==END)return;
                 if(pc==0x40083560L){ret(0);continue;} // logs only
                 if(pc==0x40082788L){ret(0);continue;} // queue flush/reset modeled
-                if(pc==0x400826b4L){long q=reg("r0"),p=reg("r1"),type=val(p,q==0x42200000L?4:2);sent.add(String.format("queue=%08x type=%x",q,type));if(full&&sent.size()==1)ret(11);else ret(0);continue;}
+                if(pc==0x400826b4L){long q=reg("r0"),p=reg("r1"),type=q==0x42200000L?val(p,4):val(val(p,4),2);sent.add(String.format("queue=%08x type=%x",q,type));if(full&&sent.size()==1)ret(11);else ret(0);continue;}
                 if(pc==0x400826bcL){removes++;ret(0);continue;}
-                if(pc==0x400110dcL){if(reg("r0")!=12)throw new Exception("Unexpected reset allocation");allocations++;bytes(RECORD,new byte[12]);ret(RECORD);continue;}
+                if(pc==0x400110dcL){if(reg("r0")!=12)throw new Exception("Unexpected reset allocation");allocations++;bytes(RECORD+0x80,new byte[12]);ret(RECORD+0x80);continue;}
                 boolean allowed=(pc>=0x4000ffa0L&&pc<0x40010034L)||(pc>=0x4007574cL&&pc<0x40075764L)
                     ||(pc>=0x400744d8L&&pc<0x40074544L)||(pc>=0x4000fe84L&&pc<0x4000fed8L)
                     ||(pc>=0x40011520L&&pc<0x40011568L)||(pc>=0x40010f60L&&pc<0x40010ff4L);
@@ -73,11 +73,11 @@ public class InspectUpdaterUsbResetCallbacks extends GhidraScript {
         if(!hash.equals("4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976"))throw new Exception("Wrong updater");
         try(PrintWriter out=new PrintWriter(getScriptArgs()[0])){
             out.println("Complete updater SHA256 "+hash);
-            out.println("Offline original DCL bus reset and event registrar. MMIO is synthetic memory. Queue/log/allocation/critical-section/IRQ-registration helpers modeled; no task or interrupt executes.");
+            out.println("Offline original DCL bus reset and event registrar. MMIO is synthetic memory. USB queue items decoded as message pointers, DCL items as integers. Queue/log/allocation/critical-section/IRQ-registration helpers modeled; no task or interrupt executes.");
             for(boolean full:new boolean[]{false,true}){
                 Arm a=new Arm();a.reset(full);
                 List<String> wanted=full?List.of("queue=42200000 type=3","queue=42200000 type=3","queue=42200100 type=0"):List.of("queue=42200000 type=3","queue=42200100 type=0");
-                if(!a.sent.equals(wanted)||a.removes!=(full?1:0)||a.allocations!=1||a.val(RECORD,2)!=0||a.val(0x400ba384L,4)!=1||a.val(0x400a2ce4L,4)!=0x400a2ce8L)throw new Exception("Reset control mismatch");
+                if(!a.sent.equals(wanted)||a.removes!=(full?1:0)||a.allocations!=1||a.val(RECORD+0x80,2)!=0||a.val(0x400ba384L,4)!=1||a.val(0x400a2ce4L,4)!=0x400a2ce8L)throw new Exception("Reset control mismatch");
                 a.unchanged();out.printf("PASS bus reset queue-full=%s posts=%s remove=%d; returned without backend calls.%n",full,a.sent,a.removes);
             }
             for(int mode=0;mode<3;mode++){

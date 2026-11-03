@@ -66,12 +66,16 @@ The original constructor requests:
 | --- | --- |
 | USB control task | Entry `0x4001a5ec`, allocated state size `0x11b4` |
 | USB event task | Entry `0x40010e88`, allocated state size `0x11b4` |
-| Two queues | Parameter 1 = 1, element size 12 |
-| Additional queue through `0x4000ff24` | Parameter 1 = 1, element size 16 |
+| Two queues | One word per item, capacity 12 each |
+| Additional queue through `0x4000ff24` | One word per item, capacity 16 |
 | Event registrations | IDs `0x10`, `0x11`, `0x12`, `0`, `1`, `2`, `9`, `0x0a`, `3`, `4` through `0x4007599c` |
 | Controller bring-up | `0x4000ffa0(0)`, the final stop boundary |
 
 `0x4000ff24` itself is an additional queue constructor, not controller bring-up.
+The [queue-format follow-up](updater-usb-reset-exchange.md) corrects this
+report's previous labeling of 12/16 as element sizes: the original constructor
+multiplies capacity by four bytes per word-sized item. USB queue items are
+message pointers; allocated message objects are a separate 12-byte structure.
 The event registration helper is modeled as returning; its entire side-effect
 set is not classified here. The control task's original entry receives queued
 requests and calls `0x4001a338`; the event task first calls descriptor setup
