@@ -1,10 +1,10 @@
 #!/bin/bash
-# Read one fixed standard metadata operation through ImageCaptureCore.
-# The framework may enumerate media. No uploads or vendor operations.
+# One fixed metadata read or factory cached-chunk probe through ImageCaptureCore.
+# The framework may enumerate media. No factory load/write or uploads.
 set -euo pipefail
 umask 077
-if [[ $# != 1 || ( $1 != --read-device-info && $1 != --read-storage-ids && $1 != --read-storage-info-known && $1 != --read-d220-desc && $1 != --build && $1 != --self-test ) ]]; then
-    echo 'Usage: bash analysis/run-imagecapture-device-info.sh {--build|--self-test|--read-device-info|--read-storage-ids|--read-storage-info-known|--read-d220-desc}' >&2
+if [[ $# != 1 || ( $1 != --read-device-info && $1 != --read-storage-ids && $1 != --read-storage-info-known && $1 != --read-d220-desc && $1 != --probe-factory-chunk && $1 != --build && $1 != --self-test ) ]]; then
+    echo 'Usage: bash analysis/run-imagecapture-device-info.sh {--build|--self-test|--read-device-info|--read-storage-ids|--read-storage-info-known|--read-d220-desc|--probe-factory-chunk}' >&2
     exit 2
 fi
 script_dir=$(cd "$(dirname "$0")" && pwd)
@@ -58,7 +58,7 @@ from ptp_device_info import decode_device_info, decode_storage_ids, decode_stora
 root = Path(sys.argv[2])
 report = json.loads((root / 'session.json').read_text())
 report['raw_dataset_retained'] = False
-if report.get('status') == 'ok':
+if report.get('status') == 'ok' and sys.argv[3] != '--probe-factory-chunk':
     try:
         with (root / 'device-info.dataset').open('rb') as source:
             data = source.read(65537)

@@ -25,6 +25,14 @@ session close. The client now has four fixed read modes, one explicit request
 per invocation. [Static and live property investigation](d220-property-investigation.md)
 suggests transfer/status bookkeeping; it establishes no RAM/recovery entry.
 
+
+Follow-up 2026-11-03: the user confirmed installed firmware 2.00. One fixed
+`1027(0)` [live cached-chunk availability probe](factory-chunk-availability-probe.md)
+returned `2005` OperationNotSupported in normal USB mode and closed normally.
+A prior host-permission timeout sent zero explicit requests; both attempts are
+retained separately. No marker, file-load command, factory write or full record
+acquisition was performed. Factory registration/activation remains unqualified.
+
 ## Client boundary
 
 [imagecapture_device_info.m](imagecapture_device_info.m) is a separate client

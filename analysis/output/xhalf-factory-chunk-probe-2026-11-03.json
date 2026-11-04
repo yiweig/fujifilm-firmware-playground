@@ -1,0 +1,21 @@
+{
+  "catalog_complete": false,
+  "catalog_items_reported": 0,
+  "client_has_open_session_at_exit": false,
+  "discovery_callbacks": 0,
+  "explicit_ptp_command_count": 0,
+  "session_closed": false,
+  "session_opened": false,
+  "status": "no_unique_camera",
+  "wire_traffic_observed": false,
+  "raw_dataset_retained": false,
+  "client_source_sha256": "4f674d1dac8a2ae24cc9f4ac3a848b79a9583abf1fb3a262cde83ffa364ed9e2",
+  "wrapper_source_sha256": "320dbe57a453edd715799b23f2770d573ddda10db04c5ef820adb83465ebc10c",
+  "intended_request": {
+    "opcode": "1027",
+    "parameter": "00000000",
+    "purpose": "cached first-chunk availability probe, no file load"
+  },
+  "installed_firmware_user_report": "2.00",
+  "interpretation": "Host discovery ended with zero callbacks and no explicit request; user subsequently confirmed clicking Allow."
+}

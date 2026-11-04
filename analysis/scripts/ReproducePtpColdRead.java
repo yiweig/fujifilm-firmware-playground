@@ -125,6 +125,16 @@ public class ReproducePtpColdRead extends GhidraScript {
             out.println("Original 2.00 SHA-256: "+hash);
             out.println("Offline callback test; synthetic file, request, RAM; no real USB or storage.");
             out.println("Baseline stubs: 40004064 log, 40125d94 read, 4000cdf0 zero, 40008b8c copy, 405e6ac0 response.");
+            Arm probe=new Arm();
+            probe.bytes(COLD,fixture);
+            if(probe.request(0x1027,0)!=END || probe.responseCode!=0x2001
+                || probe.response.size()!=5 || probe.response.get(0)!=0 || probe.reads!=0
+                || !Arrays.equals(fixture,probe.bytes(COLD,1024)))
+                throw new Exception("Standalone chunk probe changed buffer or invoked file reader");
+            for(int w=0;w<4;w++)
+                if(probe.response.get(w+1)!=Utils.bytesToLong(Arrays.copyOfRange(fixture,4*w,4*w+4),4,false))
+                    throw new Exception("Standalone probe returned wrong cached bytes");
+            out.println("PASS: standalone 1027(0), without 1025 load, returns exactly first 16 cached bytes; no file read and cold buffer unchanged.");
             Arm a=new Arm();
             if(a.request(0x1025,0)!=END || a.responseCode!=0x2001 || !a.response.isEmpty() || a.reads!=1)
                 throw new Exception("Unexpected read initialization");

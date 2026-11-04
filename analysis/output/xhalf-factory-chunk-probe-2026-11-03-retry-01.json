@@ -1,0 +1,39 @@
+{
+  "catalog_complete": true,
+  "catalog_items_reported": 43,
+  "client_has_open_session_at_exit": false,
+  "dataset_bytes": 0,
+  "discovery_callbacks": 1,
+  "explicit_opcode": "1027",
+  "explicit_ptp_command_count": 1,
+  "factory_chunk_bytes_omitted": 0,
+  "factory_parameter": "00000000",
+  "factory_probe_outcome": "operation_not_supported",
+  "model_from_discovery": "X-HF1",
+  "response_bytes": 12,
+  "response_code": "2005",
+  "returned_transaction_id": 145,
+  "session_closed": true,
+  "session_opened": true,
+  "status": "ok",
+  "usb_identity": "04cb:030a",
+  "wire_traffic_observed": false,
+  "raw_dataset_retained": false,
+  "client_source_sha256": "4f674d1dac8a2ae24cc9f4ac3a848b79a9583abf1fb3a262cde83ffa364ed9e2",
+  "wrapper_source_sha256": "320dbe57a453edd715799b23f2770d573ddda10db04c5ef820adb83465ebc10c",
+  "installed_firmware_user_report": "2.00",
+  "retry_basis": "User confirmed clicking Allow after initial discovery timeout with zero explicit commands.",
+  "client_unchanged_since_first_attempt": true,
+  "registry_corroboration": {
+    "unique_matching_device": true,
+    "usb_identity": "04cb:030a",
+    "registry_entry_id": 4295356298,
+    "location_id": "00100000",
+    "source": "cached IORegistry; no device open or camera commands"
+  },
+  "limitations": [
+    "Unsupported for this opcode/parameter in this session; not proof all factory interfaces are unavailable.",
+    "No SD marker, factory file load/write, or full record acquisition was performed by this experiment.",
+    "Explicit count excludes framework initialization/catalog/session traffic; wire traffic unobserved."
+  ]
+}

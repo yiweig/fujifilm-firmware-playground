@@ -6,6 +6,14 @@ Date: 2026-11-01. Static analysis and offline emulation of official firmware
 Addresses are ARM runtime addresses, base `0x40000000`.
 No camera connected, USB traffic sent, card marker created, or firmware modified.
 
+
+Follow-up 2026-11-03: the user confirmed installed firmware 2.00. One fixed
+`1027(0)` [live cached-chunk availability probe](factory-chunk-availability-probe.md)
+returned `2005` OperationNotSupported in normal USB mode and closed normally.
+A prior host-permission timeout sent zero explicit requests; both attempts are
+retained separately. No marker, file-load command, factory write or full record
+acquisition was performed. Factory registration/activation remains unqualified.
+
 ## Finding
 
 The existing factory PTP callback has a narrowly identifiable read path for

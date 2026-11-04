@@ -1,6 +1,6 @@
-// Fixed standard reads: DeviceInfo, StorageIDs, known StorageInfo, or d220 descriptor.
+// Fixed metadata reads and one factory cached-chunk availability probe.
 // Apple manages the session and may catalog media.
-// No vendor operations, property setters, clock sync, uploads, capture or resets.
+// No factory load/write, property setters, clock sync, uploads, capture or resets.
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <ImageCaptureCore/ImageCaptureCore.h>
@@ -19,10 +19,23 @@ static NSData *D220DescCommand(void) {
     const uint8_t bytes[] = {16,0,0,0,1,0,20,16,0,0,0,0,32,210,0,0};
     return [NSData dataWithBytes:bytes length:sizeof(bytes)];
 }
+static NSData *FactoryProbeCommand(void) {
+    // Exactly 1027(0): read first cached chunk. No user-selected offset/mode.
+    const uint8_t bytes[] = {16,0,0,0,1,0,39,16,0,0,0,0,0,0,0,0};
+    return [NSData dataWithBytes:bytes length:sizeof(bytes)];
+}
 static uint32_t U32(const uint8_t *p) {
     return (uint32_t)p[0] | (uint32_t)p[1]<<8 | (uint32_t)p[2]<<16 | (uint32_t)p[3]<<24;
 }
 static uint16_t U16(const uint8_t *p) { return p[0] | (uint16_t)p[1]<<8; }
+static int FactoryProbeReply(NSData *response, NSData *data) {
+    if (data.length || (response.length != 12 && response.length != 32)) return 0;
+    const uint8_t *p = response.bytes;
+    if (U32(p) != response.length || U16(p+4) != 3) return 0;
+    if (response.length == 12 && U16(p+6) == 0x2005) return 2;
+    if (response.length == 32 && U16(p+6) == 0x2001 && U32(p+12) == 0) return 1;
+    return 0;
+}
 static BOOL ValidStorageIDs(NSData *data) {
     if (data.length < 4 || data.length > 16) return NO;
     uint32_t count = U32(data.bytes);
@@ -65,6 +78,7 @@ static BOOL ValidD220Desc(NSData *data) {
 @property(nonatomic) BOOL readStorageIDs;
 @property(nonatomic) BOOL readStorageInfo;
 @property(nonatomic) BOOL readD220Desc;
+@property(nonatomic) BOOL readFactoryProbe;
 - (void)beginSession;
 - (void)finish:(NSString *)status;
 @end
@@ -143,11 +157,12 @@ static BOOL ValidD220Desc(NSData *data) {
     self.sent = YES;
     self.inFlight = YES;
     self.report[@"explicit_ptp_command_count"] = @1;
-    self.report[@"explicit_opcode"] = self.readD220Desc ? @"1014" : self.readStorageInfo ? @"1005" : self.readStorageIDs ? @"1004" : @"1001";
+    self.report[@"explicit_opcode"] = self.readFactoryProbe ? @"1027" : self.readD220Desc ? @"1014" : self.readStorageInfo ? @"1005" : self.readStorageIDs ? @"1004" : @"1001";
+    if (self.readFactoryProbe) self.report[@"factory_parameter"] = @"00000000";
     if (self.readD220Desc) self.report[@"property_code_parameter"] = @"d220";
     if (self.readStorageInfo) self.report[@"storage_id_parameter"] = @"00010001";
     [self armTimeout:10 status:@"command_timeout_no_explicit_cleanup"];
-    NSData *command = self.readD220Desc ? D220DescCommand() : self.readStorageInfo ? StorageInfoCommand() : InfoCommand(self.readStorageIDs);
+    NSData *command = self.readFactoryProbe ? FactoryProbeCommand() : self.readD220Desc ? D220DescCommand() : self.readStorageInfo ? StorageInfoCommand() : InfoCommand(self.readStorageIDs);
     [self.camera requestSendPTPCommand:command outData:nil sendCommandDelegate:self
         didSendCommandSelector:@selector(didSendPTPCommand:inData:response:error:contextInfo:)
         contextInfo:NULL];
@@ -179,6 +194,21 @@ static BOOL ValidD220Desc(NSData *data) {
     if (self.done || !self.inFlight) return;
     self.inFlight = NO;
     if (error) { [self noteError:error]; [self finish:@"request_failed_no_explicit_cleanup"]; return; }
+    if (self.readFactoryProbe) {
+        int outcome = FactoryProbeReply(response, data);
+        if (!outcome) { [self finish:@"unexpected_reply_no_explicit_cleanup"]; return; }
+        self.report[@"response_code"] = outcome == 1 ? @"2001" : @"2005";
+        self.report[@"factory_probe_outcome"] = outcome == 1 ? @"cached_chunk_reply" : @"operation_not_supported";
+        self.report[@"returned_transaction_id"] = @(U32((const uint8_t *)response.bytes+8));
+        self.report[@"response_bytes"] = @(response.length);
+        self.report[@"dataset_bytes"] = @(data.length);
+        self.report[@"factory_chunk_bytes_omitted"] = outcome == 1 ? @16 : @0;
+        // Deliberately omit cached factory words: not a fresh or validated record.
+        self.closing = YES;
+        [self armTimeout:10 status:@"close_timeout"];
+        [self.camera requestCloseSession];
+        return;
+    }
     if (response.length != 12 || U32(response.bytes) != 12 ||
         U16((const uint8_t *)response.bytes+4) != 3 ||
         U16((const uint8_t *)response.bytes+6) != 0x2001 ||
@@ -208,7 +238,9 @@ static BOOL ValidD220Desc(NSData *data) {
     if (self.done || device != self.camera) return;
     if (error) { [self noteError:error]; [self finish:@"close_failed"]; return; }
     self.report[@"session_closed"] = @YES;
-    [self finish:self.closing && [self.report[@"dataset_saved"] boolValue] ? @"ok" : @"session_closed_without_dataset"];
+    BOOL resultReady = [self.report[@"dataset_saved"] boolValue] ||
+        (self.readFactoryProbe && self.report[@"factory_probe_outcome"] != nil);
+    [self finish:self.closing && resultReady ? @"ok" : @"session_closed_without_result"];
 }
 - (void)didRemoveDevice:(ICDevice *)device {
     if (device == self.camera) [self finish:@"device_removed"];
@@ -259,14 +291,34 @@ int main(int argc, const char *argv[]) {
                 if (i < 4) bad[positions[i]] ^= 1;
                 if (ValidD220Desc([NSData dataWithBytes:bad length:i == 4 ? 27 : 26])) ok = NO;
             }
-            puts(ok ? "Fixed metadata commands and dataset boundary self-tests passed; no camera access." : "Self-test failed.");
+            const uint8_t probeCommand[] = {16,0,0,0,1,0,39,16,0,0,0,0,0,0,0,0};
+            ok = ok && [FactoryProbeCommand() isEqualToData:[NSData dataWithBytes:probeCommand length:16]];
+            uint8_t supported[33] = {32,0,0,0,3,0,1,32,7,0,0,0};
+            uint8_t unsupported[13] = {12,0,0,0,3,0,5,32,9,0,0,0};
+            NSData *emptyData = [NSData data];
+            ok = ok && FactoryProbeReply([NSData dataWithBytes:supported length:32], emptyData) == 1 &&
+                FactoryProbeReply([NSData dataWithBytes:unsupported length:12], emptyData) == 2 &&
+                !FactoryProbeReply([NSData dataWithBytes:supported length:32], InfoCommand(NO));
+            for (NSUInteger i = 0; i < 33; ++i)
+                if (i != 32 && FactoryProbeReply([NSData dataWithBytes:supported length:i], emptyData)) ok = NO;
+            for (NSUInteger i = 0; i < 14; ++i) {
+                uint8_t bad[32]; memcpy(bad, supported, 32);
+                NSUInteger positions[] = {0,1,2,3,4,5,6,7,12,13,14,15};
+                if (i < 12) bad[positions[i]] ^= 1;
+                else { bad[6] = 5; if (i == 13) bad[0] = 12; }
+                if (FactoryProbeReply([NSData dataWithBytes:bad length:32], emptyData)) ok = NO;
+            }
+            for (NSUInteger i = 0; i < 14; ++i)
+                if (i != 12 && FactoryProbeReply([NSData dataWithBytes:unsupported length:i], emptyData)) ok = NO;
+            puts(ok ? "Fixed reads, factory probe and reply boundary self-tests passed; no camera access." : "Self-test failed.");
             return ok ? 0 : 1;
         }
+        BOOL factoryProbe = argc == 3 && strcmp(argv[1], "--probe-factory-chunk") == 0;
         BOOL d220Desc = argc == 3 && strcmp(argv[1], "--read-d220-desc") == 0;
         BOOL storageIDs = argc == 3 && strcmp(argv[1], "--read-storage-ids") == 0;
         BOOL storageInfo = argc == 3 && strcmp(argv[1], "--read-storage-info-known") == 0;
-        if (argc != 3 || (!d220Desc && !storageIDs && !storageInfo && strcmp(argv[1], "--read-device-info") != 0) || argv[2][0] != '/') {
-            fprintf(stderr, "Usage: imagecapture_device_info {--read-device-info|--read-storage-ids|--read-storage-info-known|--read-d220-desc} /absolute/private/dataset\n");
+        if (argc != 3 || (!factoryProbe && !d220Desc && !storageIDs && !storageInfo && strcmp(argv[1], "--read-device-info") != 0) || argv[2][0] != '/') {
+            fprintf(stderr, "Usage: imagecapture_device_info {--read-device-info|--read-storage-ids|--read-storage-info-known|--read-d220-desc|--probe-factory-chunk} /absolute/private/dataset\n");
             return 2;
         }
         [NSApplication sharedApplication];
@@ -275,6 +327,7 @@ int main(int argc, const char *argv[]) {
         reader.readStorageIDs = storageIDs;
         reader.readStorageInfo = storageInfo;
         reader.readD220Desc = d220Desc;
+        reader.readFactoryProbe = factoryProbe;
         reader.datasetPath = [NSString stringWithUTF8String:argv[2]];
         ICDeviceBrowser *browser = [ICDeviceBrowser new];
         browser.delegate = reader;
