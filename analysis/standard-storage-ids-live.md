@@ -47,6 +47,10 @@ from this standard-format response.
 
 ## Restricted client expansion
 
+Later extension: [known-ID StorageInfo](standard-storage-info-live.md) adds a
+third fixed mode. Its first attempt stopped at host discovery with zero
+explicit requests; it does not change this earlier successful read's result.
+
 The existing stable `XHalfDeviceInfo.app` now supports two fixed modes:
 `--read-device-info` or `--read-storage-ids`. Each invocation submits exactly
 one explicit operation. There is no arbitrary opcode/parameter entry point.

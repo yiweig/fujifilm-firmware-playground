@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline DeviceInfo dataset decoder. No USB, session or transport backend."""
+"""Offline standard metadata decoders. No USB, session or transport backend."""
 import argparse
 import json
 from pathlib import Path
@@ -19,6 +19,41 @@ def decode_storage_ids(data):
     if count > 3 or len(data) != 4 + count * 4:
         raise ValueError('StorageIDs count/length mismatch')
     return {'count': count, 'storage_ids': [f'{x:08x}' for (x,) in struct.iter_unpack('<I', data[4:])]}
+
+
+def decode_storage_info(data):
+    """Bounded StorageInfo decoder; validate but omit volume/description text."""
+    if not 28 <= len(data) <= 1048:
+        raise ValueError('StorageInfo must contain 28..1048 bytes')
+    storage_type, filesystem, access, capacity, free, images = struct.unpack_from('<HHHQQI', data)
+    offset = 26
+    present = []
+    for _ in range(2):
+        if offset >= len(data):
+            raise ValueError('Truncated StorageInfo string count')
+        count = data[offset]
+        offset += 1
+        length = count * 2
+        if length > len(data) - offset:
+            raise ValueError('Truncated StorageInfo string')
+        raw = data[offset:offset + length]
+        offset += length
+        if count:
+            if raw[-2:] != b'\0\0':
+                raise ValueError('StorageInfo string missing terminator')
+            text = raw[:-2].decode('utf-16-le', errors='strict')
+            if '\0' in text:
+                raise ValueError('StorageInfo string contains embedded NUL')
+            present.append(bool(text))
+        else:
+            present.append(False)
+    if offset != len(data):
+        raise ValueError('Trailing StorageInfo bytes')
+    return {'storage_type_code': storage_type, 'filesystem_type_code': filesystem,
+            'access_capability_code': access, 'maximum_capacity_bytes': capacity,
+            'free_space_bytes': free, 'free_space_images': images,
+            'description_present': present[0], 'volume_label_present': present[1],
+            'text_fields_omitted': True}
 
 
 def decode_device_info(data):

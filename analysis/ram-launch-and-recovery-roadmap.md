@@ -239,6 +239,12 @@ This qualifies that bounded metadata operation on the live camera, not raw
 storage access, a physical-medium mapping or a loader transition. No vendor
 request, setter, upload or reset was submitted by the fixed client.
 
+The next [StorageInfo attempt](standard-storage-info-live.md) is prepared for
+that exact ID but stops at ImageCapture discovery: no session or explicit
+request. Cached USB presence persists and host logs show an access-prompt
+request. This is an unresolved host authorization/discovery boundary, not new
+camera-side recovery evidence.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

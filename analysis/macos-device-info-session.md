@@ -9,6 +9,11 @@ submits only one selected metadata read; the original information mode and
 historical observations below retain their scope. The new live pass sent
 `0x1004`, received one ID and completed explicit session close.
 
+The following [known-ID StorageInfo attempt](standard-storage-info-live.md)
+adds a third fixed mode but received no host discovery callbacks and sent no
+explicit request. Removable-volume authorization is again a relevant host
+boundary; no camera rejection or new successful opcode is claimed.
+
 ## Client boundary
 
 [imagecapture_device_info.m](imagecapture_device_info.m) is a separate client

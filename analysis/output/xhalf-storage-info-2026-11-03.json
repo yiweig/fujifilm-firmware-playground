@@ -1,0 +1,23 @@
+{
+  "catalog_complete": false,
+  "catalog_items_reported": 0,
+  "client_has_open_session_at_exit": false,
+  "discovery_callbacks": 0,
+  "explicit_ptp_command_count": 0,
+  "session_closed": false,
+  "session_opened": false,
+  "status": "no_unique_camera",
+  "wire_traffic_observed": false,
+  "raw_dataset_retained": false,
+  "observation_kind": "live_attempt_stopped_before_camera_session",
+  "intended_opcode": "1005",
+  "intended_storage_id": "00010001",
+  "client_source_sha256": "fbdf713ceb5a55bafeff20bd6bd46fc3a4f15aee0cf271bcf6d4a565a6b82c89",
+  "wrapper_source_sha256": "3c5d58938063da1b6d35723e1d5b6056e0ca70c97abd0f5489f1dcb0c2bea414",
+  "limits": [
+    "No discovery callbacks/session/explicit PTP requests; no GetStorageInfo reply was received.",
+    "Cached USB registry still showed the same normal camera after this attempt.",
+    "Selected host logs show a removable-volume access-prompt request; user response/completed authorization is not established.",
+    "No automatic retry, reset, driver detach or privacy-setting change followed."
+  ]
+}

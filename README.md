@@ -123,7 +123,7 @@ the versioned copy is `firmware/2.00/FPUPDATE.DAT`.
 | [usb_registry_inventory.py](analysis/usb_registry_inventory.py), [read_usb_configuration.c](analysis/read_usb_configuration.c) | macOS USB metadata helpers with different access behavior; read [descriptor API limits](analysis/macos-descriptor-api.md) before considering device access |
 | [run-imagecapture-inventory.sh](analysis/run-imagecapture-inventory.sh), [imagecapture_inventory.m](analysis/imagecapture_inventory.m) | Builds and launches a discovery-only Mac application; successfully identified the X-HF1 through Apple's service. No session-open or PTP command code; incidental framework traffic is unmeasured |
 | [ptp_device_info.py](analysis/ptp_device_info.py) | Fixed GetDeviceInfo encoder, serial-redacting DeviceInfo decoder and bounded StorageIDs decoder. PTP version fields do not independently attest the Fujifilm release |
-| [run-imagecapture-device-info.sh](analysis/run-imagecapture-device-info.sh), [imagecapture_device_info.m](analysis/imagecapture_device_info.m) | One of two fixed standard reads per invocation: DeviceInfo or StorageIDs; `--build` and `--self-test` perform no camera access. See [session/authorization findings](analysis/macos-device-info-session.md) and [StorageIDs result](analysis/standard-storage-ids-live.md); Apple's catalog traffic is separate |
+| [run-imagecapture-device-info.sh](analysis/run-imagecapture-device-info.sh), [imagecapture_device_info.m](analysis/imagecapture_device_info.m) | One fixed standard read per invocation: DeviceInfo, StorageIDs, or StorageInfo for known ID `00010001`; `--build`/`--self-test` perform no camera access. Two modes succeeded live; [StorageInfo attempt](analysis/standard-storage-info-live.md) stopped before sending. Apple's catalog traffic is separate |
 | [ptp-advertised-operation-map.tsv](analysis/ptp-advertised-operation-map.tsv), [compare_ptp_dispatch_versions.py](analysis/compare_ptp_dispatch_versions.py) | Offline mapping of all 26 observed advertised codes and hash-checked comparison of selected dispatcher/handler bodies across all four versions; no new camera command support |
 | `analysis/test_*.py` | Offline protocol/transport/registry tests; no camera needed |
 | `analysis/scripts/QueryFirmware.java`, `DecompileTargets.java`, `ExportIndex.java` | Focused database references, pseudocode and index exports; analysis metadata may change, firmware bytes do not |
@@ -306,6 +306,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/standard-storage-ids-live.md`](analysis/standard-storage-ids-live.md)
   — one explicit standard storage-ID read succeeds and closes its session;
   fixed client expansion and strict reply validation, without vendor operations.
+- [`analysis/standard-storage-info-live.md`](analysis/standard-storage-info-live.md)
+  — fixed known-ID StorageInfo read prepared and validated; first attempt received
+  no host discovery callbacks and submitted zero explicit camera requests.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

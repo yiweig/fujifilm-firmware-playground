@@ -1,7 +1,7 @@
 import struct
 import unittest
 
-from ptp_device_info import decode_device_info, decode_storage_ids, get_device_info_command
+from ptp_device_info import decode_device_info, decode_storage_ids, decode_storage_info, get_device_info_command
 
 
 def ptp_string(value):
@@ -17,6 +17,21 @@ def fixture():
 
 
 class DeviceInfoTests(unittest.TestCase):
+    def test_storage_info_boundaries_and_text_exclusion(self):
+        raw = struct.pack('<HHHQQI', 4, 3, 0, 1000000, 500000, 0xffffffff) + ptp_string('PRIVATE-VOLUME') + b'\0'
+        result = decode_storage_info(raw)
+        self.assertEqual(result['maximum_capacity_bytes'], 1000000)
+        self.assertEqual(result['storage_type_code'], 4)
+        self.assertNotIn('PRIVATE-VOLUME', repr(result))
+        self.assertTrue(result['description_present'])
+        self.assertFalse(result['volume_label_present'])
+        for broken in [raw[:i] for i in range(len(raw))] + [raw+b'x', raw[:-1]+b'\xff', b'x'*1049]:
+            with self.subTest(length=len(broken)), self.assertRaises(ValueError):
+                decode_storage_info(broken)
+        for text in [b'\x02\x00\xd8\x00\x00', b'\x02\x00\x00\x00\x00', b'\x01xx']:
+            with self.assertRaises(ValueError):
+                decode_storage_info(bytes(26)+text+b'\0')
+
     def test_storage_ids_boundaries(self):
         self.assertEqual(decode_storage_ids(struct.pack('<I', 0)), {'count': 0, 'storage_ids': []})
         raw = struct.pack('<IIII', 3, 0x10001, 0x20001, 0x30001)

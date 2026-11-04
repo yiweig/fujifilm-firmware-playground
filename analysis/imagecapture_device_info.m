@@ -1,4 +1,4 @@
-// Two fixed standard reads: GetDeviceInfo or GetStorageIDs, one per invocation.
+// Fixed standard reads: DeviceInfo, StorageIDs, or StorageInfo for known ID 00010001.
 // Apple manages the session and may catalog media.
 // No vendor operations, property setters, clock sync, uploads, capture or resets.
 #import <Foundation/Foundation.h>
@@ -11,6 +11,10 @@ static NSData *InfoCommand(BOOL storageIDs) {
     const uint8_t bytes[] = {12,0,0,0,1,0,storageIDs ? 4 : 1,16,0,0,0,0};
     return [NSData dataWithBytes:bytes length:sizeof(bytes)];
 }
+static NSData *StorageInfoCommand(void) {
+    const uint8_t bytes[] = {16,0,0,0,1,0,5,16,0,0,0,0,1,0,1,0};
+    return [NSData dataWithBytes:bytes length:sizeof(bytes)];
+}
 static uint32_t U32(const uint8_t *p) {
     return (uint32_t)p[0] | (uint32_t)p[1]<<8 | (uint32_t)p[2]<<16 | (uint32_t)p[3]<<24;
 }
@@ -19,6 +23,26 @@ static BOOL ValidStorageIDs(NSData *data) {
     if (data.length < 4 || data.length > 16) return NO;
     uint32_t count = U32(data.bytes);
     return count <= 3 && data.length == 4 + 4 * count;
+}
+static BOOL ValidStorageInfo(NSData *data) {
+    if (data.length < 28 || data.length > 1048) return NO;
+    const uint8_t *p = data.bytes;
+    NSUInteger offset = 26;
+    for (int i = 0; i < 2; ++i) {
+        if (offset >= data.length) return NO;
+        NSUInteger units = p[offset++];
+        if (units * 2 > data.length - offset) return NO;
+        if (units) {
+            if (U16(p + offset + (units - 1) * 2) != 0) return NO;
+            for (NSUInteger j = 0; j + 1 < units; ++j)
+                if (U16(p + offset + j * 2) == 0) return NO;
+            NSString *decoded = [[NSString alloc] initWithBytes:p+offset
+                length:(units-1)*2 encoding:NSUTF16LittleEndianStringEncoding];
+            if (!decoded) return NO;
+        }
+        offset += units * 2;
+    }
+    return offset == data.length;
 }
 
 @interface InfoReader : NSObject <ICDeviceBrowserDelegate, ICDeviceDelegate>
@@ -29,6 +53,7 @@ static BOOL ValidStorageIDs(NSData *data) {
 @property(nonatomic, strong) NSTimer *stageTimer;
 @property(nonatomic) BOOL opening, opened, catalogReady, sent, inFlight, closing, done;
 @property(nonatomic) BOOL readStorageIDs;
+@property(nonatomic) BOOL readStorageInfo;
 - (void)beginSession;
 - (void)finish:(NSString *)status;
 @end
@@ -107,9 +132,11 @@ static BOOL ValidStorageIDs(NSData *data) {
     self.sent = YES;
     self.inFlight = YES;
     self.report[@"explicit_ptp_command_count"] = @1;
-    self.report[@"explicit_opcode"] = self.readStorageIDs ? @"1004" : @"1001";
+    self.report[@"explicit_opcode"] = self.readStorageInfo ? @"1005" : self.readStorageIDs ? @"1004" : @"1001";
+    if (self.readStorageInfo) self.report[@"storage_id_parameter"] = @"00010001";
     [self armTimeout:10 status:@"command_timeout_no_explicit_cleanup"];
-    [self.camera requestSendPTPCommand:InfoCommand(self.readStorageIDs) outData:nil sendCommandDelegate:self
+    NSData *command = self.readStorageInfo ? StorageInfoCommand() : InfoCommand(self.readStorageIDs);
+    [self.camera requestSendPTPCommand:command outData:nil sendCommandDelegate:self
         didSendCommandSelector:@selector(didSendPTPCommand:inData:response:error:contextInfo:)
         contextInfo:NULL];
 }
@@ -144,7 +171,8 @@ static BOOL ValidStorageIDs(NSData *data) {
         U16((const uint8_t *)response.bytes+4) != 3 ||
         U16((const uint8_t *)response.bytes+6) != 0x2001 ||
         data.length == 0 || data.length > 65536 ||
-        (self.readStorageIDs && !ValidStorageIDs(data))) {
+        (self.readStorageIDs && !ValidStorageIDs(data)) ||
+        (self.readStorageInfo && !ValidStorageInfo(data))) {
         [self finish:@"unexpected_reply_no_explicit_cleanup"]; return;
     }
     self.report[@"response_code"] = @"2001";
@@ -193,18 +221,29 @@ int main(int argc, const char *argv[]) {
                 !ValidStorageIDs([NSData dataWithBytes:trailing length:sizeof(trailing)]);
             for (NSUInteger i = 0; i < sizeof(one); ++i)
                 if (ValidStorageIDs([NSData dataWithBytes:one length:i])) ok = NO;
-            puts(ok ? "Fixed metadata command and StorageIDs boundary self-tests passed; no camera access." : "Self-test failed.");
+            const uint8_t minimalInfo[28] = {0};
+            uint8_t invalidInfo[28] = {0}; invalidInfo[26] = 255;
+            NSData *infoCommand = StorageInfoCommand();
+            ok = ok && infoCommand.length == 16 && U16((const uint8_t *)infoCommand.bytes+6) == 0x1005 &&
+                U32((const uint8_t *)infoCommand.bytes+12) == 0x00010001 &&
+                ValidStorageInfo([NSData dataWithBytes:minimalInfo length:28]) &&
+                !ValidStorageInfo([NSData dataWithBytes:invalidInfo length:28]);
+            for (NSUInteger i = 0; i < 28; ++i)
+                if (ValidStorageInfo([NSData dataWithBytes:minimalInfo length:i])) ok = NO;
+            puts(ok ? "Fixed metadata commands and dataset boundary self-tests passed; no camera access." : "Self-test failed.");
             return ok ? 0 : 1;
         }
         BOOL storageIDs = argc == 3 && strcmp(argv[1], "--read-storage-ids") == 0;
-        if (argc != 3 || (!storageIDs && strcmp(argv[1], "--read-device-info") != 0) || argv[2][0] != '/') {
-            fprintf(stderr, "Usage: imagecapture_device_info {--read-device-info|--read-storage-ids} /absolute/private/dataset\n");
+        BOOL storageInfo = argc == 3 && strcmp(argv[1], "--read-storage-info-known") == 0;
+        if (argc != 3 || (!storageIDs && !storageInfo && strcmp(argv[1], "--read-device-info") != 0) || argv[2][0] != '/') {
+            fprintf(stderr, "Usage: imagecapture_device_info {--read-device-info|--read-storage-ids|--read-storage-info-known} /absolute/private/dataset\n");
             return 2;
         }
         [NSApplication sharedApplication];
         [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
         InfoReader *reader = [InfoReader new];
         reader.readStorageIDs = storageIDs;
+        reader.readStorageInfo = storageInfo;
         reader.datasetPath = [NSString stringWithUTF8String:argv[2]];
         ICDeviceBrowser *browser = [ICDeviceBrowser new];
         browser.delegate = reader;
