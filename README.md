@@ -187,6 +187,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/calibration-loader-entry-live.md`](analysis/calibration-loader-entry-live.md)
+  — **live loader entry**: `EnableTest.txt` + MOVIE/flash-ON/PLAY-hold reaches
+  USB API mode 4; `2aad:6500` enumerated, descriptors captured in the VM,
+  no controls pressed, power-off exit. Post-entry record diff = exactly the
+  predicted 3 bytes (`+0x04`, `+0x08`, checksum); camera normal afterwards.
+  R1 established for temporary execution; cold recovery (C1) unchanged.
 - [`analysis/uvc-debug-producers-trace.md`](analysis/uvc-debug-producers-trace.md)
   — all `f100000f`/`10e7` producers traced (DbgMsg thread, `dm` shell command,
   UVC service thread, handler self-posts); each requires a pre-existing

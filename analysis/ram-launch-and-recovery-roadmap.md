@@ -105,7 +105,7 @@ supply the missing evidence.
 
 | Rank | Blocker | Why it matters | Evidence that would close or materially narrow it |
 | --- | --- | --- | --- |
-| R1 | Qualified retail-to-loader entry | Without entry, the analyzed receiver cannot be used | A traceable route for this body whose activation and persistence effects are understood; existing PTP/session success is insufficient |
+| R1 | Qualified retail-to-loader entry | Without entry, the analyzed receiver cannot be used | **Established 2026-11-04** for temporary execution: `EnableTest.txt` + MOVIE/flash-ON/PLAY-hold enumerated `2aad:6500` live; activation cost measured as exactly the predicted 3 record bytes; power-off exit verified. See [live entry](calibration-loader-entry-live.md). Still application-dependent, so not cold recovery |
 | R2 | Earlier-stage helper/backing | The final path calls code whose bytes and full effects are unknown | Authentic bytes plus mapping/provenance for the low helper, or a fully evidenced alternative that avoids it |
 | R3 | Memory ownership and hardware transition | Overwriting live RAM can destroy the stub, stack, data or other users | A complete chosen-route map of allocations, overwrite intervals, other cores/DMA, cache/interrupt state and real copy behavior |
 | R4 | Preparation and runtime state | Optional callbacks and mode/clock work may block or add effects | Determine which branches actually apply, then audit their complete effects; closing every unrelated SDK function is unnecessary |
@@ -334,6 +334,18 @@ self-posts) requires a pre-existing shell, calibration/debug, or UVC
 context; there is no retail-reachable trigger. The calibration observation
 is the remaining concrete R1 candidate, with the record-fixture risk bounds
 above as its acceptance test. It remains a deliberate user decision.
+
+Follow-up 2026-11-04 (live): the [calibration entry experiment](calibration-loader-entry-live.md)
+succeeded. `2aad:6500` enumerated on the host, descriptors were captured in
+the passthrough VM, no camera control was pressed, and power-off exited.
+The post-entry factory record differs from the pre-entry backup at exactly
+the three predicted bytes (`+0x04`, `+0x08`, checksum), and the camera is
+confirmed normal afterwards. **R1 is closed for temporary execution** (it
+remains main-firmware-dependent, so C1 is unaffected). The research frontier
+moves to the loader protocol itself: R2's low helper should be dumped from
+live hardware via the receiver's memory-read branches before any upload/run
+is considered, and payload/restart qualification (R3–R5) follows from
+measured receiver behavior on this unit.
 
 ## Decision for the next research pass
 
