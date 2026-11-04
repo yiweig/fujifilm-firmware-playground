@@ -217,6 +217,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/apitest-shell-bridge-design.md`](analysis/apitest-shell-bridge-design.md)
+  — APITEST (`0xfa`) shell bridge fully traced: init cases, char queue into
+  the Cmd task, output hooks to a DRAM buffer; bootstrap gate to be
+  bypassed by a volatile state-word write via the loader primitive.
+  First live command planned is a deliberate unknown (`zztest`) toward
+  `rcaraw 17` (preview RAW) as the first capture.
 - [`analysis/loader-stage-copy-live.md`](analysis/loader-stage-copy-live.md)
   — trampoline v2 staged a full 64 KB SRAM image to the host (SPBoot header,
   DRAM params, the 36-byte earlier-stage descriptor at `0x3f00c518`); the
