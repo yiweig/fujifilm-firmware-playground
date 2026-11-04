@@ -245,6 +245,11 @@ request. Cached USB presence persists and host logs show an access-prompt
 request. This is an unresolved host authorization/discovery boundary, not new
 camera-side recovery evidence.
 
+After the user confirms allowing the prompt late, one unchanged retry
+succeeds: `GetStorageInfo(00010001)` returns removable DCF media metadata,
+31,910,264,832-byte capacity and completes session close. This resolves that
+specific host access attempt while leaving the RAM/recovery entry gap open.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

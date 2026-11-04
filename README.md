@@ -51,7 +51,7 @@ for those access/earlier-stage gaps before automatically expanding another calle
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
 | Observed ordinary USB startup | One normal `04cb:030a` arrival during user-performed power-on; no intermediate identity/removal observed. Registry events cannot expose internal startup or failed enumeration. | [Live startup observation](analysis/usb-normal-startup-observation.md) |
-| Active standard metadata read | GetStorageIDs succeeded with one ID, `00010001`, and explicit session close. The ID establishes no raw-memory or recovery access. | [StorageIDs live pass](analysis/standard-storage-ids-live.md) |
+| Active standard metadata reads | GetStorageIDs returned `00010001`; GetStorageInfo for that ID reports removable DCF media, about 31.9 GB capacity. Both closed their sessions; no raw-memory or recovery access established. | [StorageIDs](analysis/standard-storage-ids-live.md), [StorageInfo](analysis/standard-storage-info-live.md) |
 | Earlier-stage helper | Known table/copy paths do not recover `0x00000b34`; conditional mappings point to low physical memory, not the known SRAM blob/main-image offset. Authentic provider bytes/mapping are still needed; six controls narrow this boundary. | [Backing/artifact gap](analysis/low-helper-backing-boundary.md), [earlier helper trace](analysis/low-address-loader-helper.md) |
 
 For orientation, read the [hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md)
@@ -123,7 +123,7 @@ the versioned copy is `firmware/2.00/FPUPDATE.DAT`.
 | [usb_registry_inventory.py](analysis/usb_registry_inventory.py), [read_usb_configuration.c](analysis/read_usb_configuration.c) | macOS USB metadata helpers with different access behavior; read [descriptor API limits](analysis/macos-descriptor-api.md) before considering device access |
 | [run-imagecapture-inventory.sh](analysis/run-imagecapture-inventory.sh), [imagecapture_inventory.m](analysis/imagecapture_inventory.m) | Builds and launches a discovery-only Mac application; successfully identified the X-HF1 through Apple's service. No session-open or PTP command code; incidental framework traffic is unmeasured |
 | [ptp_device_info.py](analysis/ptp_device_info.py) | Fixed GetDeviceInfo encoder, serial-redacting DeviceInfo decoder and bounded StorageIDs decoder. PTP version fields do not independently attest the Fujifilm release |
-| [run-imagecapture-device-info.sh](analysis/run-imagecapture-device-info.sh), [imagecapture_device_info.m](analysis/imagecapture_device_info.m) | One fixed standard read per invocation: DeviceInfo, StorageIDs, or StorageInfo for known ID `00010001`; `--build`/`--self-test` perform no camera access. Two modes succeeded live; [StorageInfo attempt](analysis/standard-storage-info-live.md) stopped before sending. Apple's catalog traffic is separate |
+| [run-imagecapture-device-info.sh](analysis/run-imagecapture-device-info.sh), [imagecapture_device_info.m](analysis/imagecapture_device_info.m) | One fixed standard read per invocation: DeviceInfo, StorageIDs, or StorageInfo for known ID `00010001`; `--build`/`--self-test` perform no camera access. All three succeeded live; [StorageInfo](analysis/standard-storage-info-live.md) needed delayed macOS authorization. Apple's catalog traffic is separate |
 | [ptp-advertised-operation-map.tsv](analysis/ptp-advertised-operation-map.tsv), [compare_ptp_dispatch_versions.py](analysis/compare_ptp_dispatch_versions.py) | Offline mapping of all 26 observed advertised codes and hash-checked comparison of selected dispatcher/handler bodies across all four versions; no new camera command support |
 | `analysis/test_*.py` | Offline protocol/transport/registry tests; no camera needed |
 | `analysis/scripts/QueryFirmware.java`, `DecompileTargets.java`, `ExportIndex.java` | Focused database references, pseudocode and index exports; analysis metadata may change, firmware bytes do not |
@@ -307,8 +307,8 @@ UI features can continue offline, but deployment remains gated on recovery.
   — one explicit standard storage-ID read succeeds and closes its session;
   fixed client expansion and strict reply validation, without vendor operations.
 - [`analysis/standard-storage-info-live.md`](analysis/standard-storage-info-live.md)
-  — fixed known-ID StorageInfo read prepared and validated; first attempt received
-  no host discovery callbacks and submitted zero explicit camera requests.
+  — fixed known-ID StorageInfo succeeds after delayed macOS authorization;
+  removable DCF media, 31.9 GB reported capacity, and explicit session close.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

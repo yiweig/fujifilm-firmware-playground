@@ -10,6 +10,11 @@ submits one explicit `0x1004`, receives ID `00010001`, and completes session
 close. The client now has two fixed metadata modes, one operation per run.
 The historical offline handler review below retains its original scope.
 
+A subsequent [StorageInfo read](standard-storage-info-live.md) succeeds for
+`00010001` after delayed host authorization, reporting removable DCF media and
+closing its session. This is a second added standard metadata operation, not
+a firmware-memory or recovery interface.
+
 ## Result
 
 All 26 advertised codes are mapped in

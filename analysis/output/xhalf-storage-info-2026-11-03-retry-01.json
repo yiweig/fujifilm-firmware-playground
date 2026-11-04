@@ -1,0 +1,55 @@
+{
+  "catalog_complete": true,
+  "catalog_items_reported": 43,
+  "client_has_open_session_at_exit": false,
+  "dataset_bytes": 62,
+  "dataset_saved": true,
+  "discovery_callbacks": 1,
+  "explicit_opcode": "1005",
+  "explicit_ptp_command_count": 1,
+  "model_from_discovery": "X-HF1",
+  "response_code": "2001",
+  "returned_transaction_id": 141,
+  "session_closed": true,
+  "session_opened": true,
+  "status": "ok",
+  "storage_id_parameter": "00010001",
+  "usb_identity": "04cb:030a",
+  "wire_traffic_observed": false,
+  "raw_dataset_retained": false,
+  "storage_info": {
+    "storage_type_code": 4,
+    "filesystem_type_code": 3,
+    "access_capability_code": 0,
+    "maximum_capacity_bytes": 31910264832,
+    "free_space_bytes": 31539298304,
+    "free_space_images": 2717,
+    "description_present": true,
+    "volume_label_present": false,
+    "text_fields_omitted": true
+  },
+  "client_source_sha256": "fbdf713ceb5a55bafeff20bd6bd46fc3a4f15aee0cf271bcf6d4a565a6b82c89",
+  "wrapper_source_sha256": "3c5d58938063da1b6d35723e1d5b6056e0ca70c97abd0f5489f1dcb0c2bea414",
+  "observation_kind": "live_standard_storage_info_read_after_authorization",
+  "previous_attempt": "xhalf-storage-info-2026-11-03.json",
+  "authorization_user_report": "The prompt appeared and was allowed several minutes later, after the first discovery window had expired.",
+  "explicit_command_parameters": [
+    "00010001"
+  ],
+  "outgoing_data_bytes": 0,
+  "registry_corroboration": {
+    "registry_id": 4295356298,
+    "location_id": "0x00100000",
+    "vendor": "04cb",
+    "product": "030a",
+    "count": 1,
+    "note": "A first cached-registry probe returned an invalid plist; subsequent probes returned valid data. The client independently checks unique model/USB identity before opening/sending."
+  },
+  "limits": [
+    "Framework initialization/catalog traffic is not counted by explicit_ptp_command_count and was not captured on the wire.",
+    "StorageInfo describes protocol-visible media, not raw sectors, processor RAM, firmware flash or a recovery interface.",
+    "Capacity/free-space/image-count are reported metadata; no physical capacity or capture-count verification performed.",
+    "Description and volume-label text were validated then omitted; the private raw dataset was removed.",
+    "The reply does not attest the installed firmware release or exact effective live handler."
+  ]
+}

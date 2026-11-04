@@ -50,6 +50,8 @@ from this standard-format response.
 Later extension: [known-ID StorageInfo](standard-storage-info-live.md) adds a
 third fixed mode. Its first attempt stopped at host discovery with zero
 explicit requests; it does not change this earlier successful read's result.
+After the user confirmed granting the late prompt, the unchanged retry
+succeeded and reported removable DCF media with about 31.9 GB capacity.
 
 The existing stable `XHalfDeviceInfo.app` now supports two fixed modes:
 `--read-device-info` or `--read-storage-ids`. Each invocation submits exactly

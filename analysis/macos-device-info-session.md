@@ -14,6 +14,10 @@ adds a third fixed mode but received no host discovery callbacks and sent no
 explicit request. Removable-volume authorization is again a relevant host
 boundary; no camera rejection or new successful opcode is claimed.
 
+The user then confirmed allowing the prompt several minutes after it appeared.
+An unchanged single retry succeeded with `0x1005` and completed session close;
+the StorageInfo report preserves both attempts and the reported media metadata.
+
 ## Client boundary
 
 [imagecapture_device_info.m](imagecapture_device_info.m) is a separate client

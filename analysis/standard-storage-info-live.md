@@ -1,10 +1,42 @@
-# Fixed StorageInfo read: prepared, first attempt stopped at host discovery
+# Standard StorageInfo: successful read after delayed authorization
 
 2026-11-03 local time. User authorized continuing the small active-read sequence.
 The camera remained connected normally after the successful
 [StorageIDs pass](standard-storage-ids-live.md).
 
 ## Current result
+
+After the user confirmed allowing the macOS prompt, one retry with the
+**unchanged client** succeeded. It submitted exactly one explicit `0x1005`
+request for `00010001`, received a valid 62-byte dataset with PTP success
+`0x2001`, and completed explicit session close. The client had no open session
+at exit. No further active request followed.
+
+| Reported metadata | Value |
+| --- | --- |
+| Storage type | 4, standard label `RemovableRAM` |
+| Filesystem type | 3, standard label `DCF` |
+| Access capability | 0, standard label `ReadWrite` |
+| Maximum capacity | 31,910,264,832 bytes, about 31.9 decimal GB |
+| Free space | 31,539,298,304 bytes, about 31.5 decimal GB |
+| Free-image count | 2,717, a reported estimate, not a tested capture count |
+| Description / volume label | Description present, label absent; text omitted |
+
+Evidence: [successful retry](output/xhalf-storage-info-2026-11-03-retry-01.json).
+This is consistent with ordinary nominal-32-GB removable camera media. It does
+not identify an internal firmware partition. PTP's `RemovableRAM` label names
+a writable-storage category; it is not evidence of volatile CPU-RAM access.
+`DCF` does not identify the underlying FAT/exFAT implementation, and the
+advertised access capability is not a write test or raw-storage permission.
+
+The retry's cached registry corroboration found one `04cb:030a` camera at
+registry ID `4295356298`, location `0x00100000`. That differs from the earlier
+connection, which is why the client discovers the device and rechecks its
+identity rather than hard-coding a USB port/address. An initial registry helper
+probe produced an invalid plist; subsequent registry reads succeeded. The
+client independently enforced its unique-camera/model/session preconditions.
+
+### First attempt and authorization timing
 
 The first StorageInfo attempt **sent zero explicit PTP requests**. The client
 received zero ImageCapture discovery callbacks, opened no session and returned
@@ -17,17 +49,22 @@ Separate cached-registry reads before and after still found one normal
 location `0x01100000`, with `ptpcamerad` as owner. No USB interface was claimed
 or driver detached by our code.
 
-Selected host logs around the attempt show `tccd` requesting
+Selected host logs around the first attempt show `tccd` requesting
 `kTCCServiceSystemPolicyRemovableVolumes` authorization for the research app,
 including `AUTHREQ_PROMPTING`. The selected messages do not establish the
-user's answer or completed authorization. The user was asked whether a prompt
-appeared. This is evidence for a host-access boundary, not proof of denial or
-a firmware error. The [earlier authorization investigation](macos-device-info-session.md)
-documents the same distinction.
+user's answer or completed authorization by themselves. The user subsequently
+confirmed that the prompt appeared and was allowed several minutes later,
+after being away from the computer. That exceeded the client's 60-second
+discovery window. Success on the unchanged retry supports this host
+authorization/timing explanation, not a camera firmware rejection. The
+[earlier authorization investigation](macos-device-info-session.md) documents
+the same distinction.
 
 No automatic retry, reset, app-policy/permission change or additional camera
-command followed the failed attempt. A further live attempt needs clarified
-host authorization while preserving the prepared command boundary.
+command followed the failed attempt automatically. Only after the user's
+authorization clarification was the single retry above performed. Client and
+wrapper hashes match across attempts; no TCC database, privacy setting,
+driver or client-source change was made to obtain that result.
 
 ## Fixed request and response boundary
 
@@ -108,3 +145,9 @@ bash analysis/run-imagecapture-device-info.sh --read-storage-info-known
 This prepared operation supplies no raw-storage or memory access and does not
 resolve RAM entry or recovery. A host-discovery failure must not be counted as
 a tested camera opcode.
+
+The successful retry now qualifies this specific normal metadata read. Both
+attempts are preserved separately so the zero-command failure is not confused
+with the subsequent successful camera operation. Raw datasets remain removed;
+the framework reported 43 catalog items and transaction ID 141, neither of
+which is a count of explicit requests or verified photos.
