@@ -217,6 +217,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/apitest-shell-live.md`](analysis/apitest-shell-live.md)
+  — APITEST bridge activated live: shell task woke, emitted `cmd>` as
+  per-char records on EP `0x84`; console stream decoded — sensor is
+  **Sony IMX283, RGGB, RAW_16, 4872×3672**. Lessons: drain EP `0x84`
+  before `init(1)` or USB wedges; post-activation transfers are slow
+  and can desync. Acknowledged command round-trip is next.
 - [`analysis/apitest-shell-bridge-design.md`](analysis/apitest-shell-bridge-design.md)
   — APITEST (`0xfa`) shell bridge fully traced: init cases, char queue into
   the Cmd task, output hooks to a DRAM buffer; bootstrap gate to be

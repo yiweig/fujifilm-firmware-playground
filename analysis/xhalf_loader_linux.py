@@ -40,7 +40,7 @@ WRITE_MAX = 256
 ALLOWED = [
     (0x00000000, 0x00010000, 'low memory / earlier-stage helper area'),
     (0x3F000000, 0x3F010000, 'SRAM'),
-    (0x40000000, 0x41400000, 'main image and runtime RAM'),
+    (0x40000000, 0x44000000, 'main image, runtime RAM, and heap (allocations seen to 0x42e757c0)'),
 ]
 MAX_LEN = 0x10000
 
@@ -123,9 +123,12 @@ class Loader:
     TRAMP_WORDS = [0xE92D0003, 0xE3000100, 0xE3440110, 0xE5901000, 0xE2811001,
                    0xE5801000, 0xE8BD0003, 0xE301C280, 0xE344C01E, 0xE12FFF1C]
 
+    APITEST_STATE = 0x40FC8270
+
     def _write_block32(self, block: int, data: bytes):
-        if block not in (b for b, _ in self.SLOT_BLOCKS) or len(data) != 32:
-            raise SystemExit('block write outside hijack slot allowlist')
+        allowed = [b for b, _ in self.SLOT_BLOCKS] + [0x40FC8280]
+        if block not in allowed or len(data) != 32:
+            raise SystemExit('block write outside allowlist')
         payload = struct.pack('<II', 32, block)
         sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F5, payload, timeout=TIMEOUT_MS)
         if sent != len(payload):
@@ -160,6 +163,96 @@ class Loader:
                 return True
             time.sleep(0.5)
         return False
+
+    def apitest_state(self):
+        data = self.read_mem(self.APITEST_STATE, 32)
+        words = struct.unpack('<8I', data)
+        names = ['queue', 'interpreter', 'buf8', 'flag_c', 'buf10', 'flag14', 'mode18', 'count1c']
+        print('apitest state:', {n: f'0x{v:08x}' for n, v in zip(names, words) if v or n in ('mode18',)})
+        return words
+
+    def _apitest_set_mode2(self):
+        block_addr = 0x40FC8280
+        data = bytearray(self.read_mem(block_addr, 32))
+        struct.pack_into('<I', data, 0x40FC8288 - block_addr, 2)
+        payload = struct.pack('<II', 32, block_addr)
+        if self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F5, payload, timeout=TIMEOUT_MS) != 8:
+            raise SystemExit('state setup: short control write')
+        if self.dev.write(EP_OUT, bytes(data), timeout=TIMEOUT_MS) != 32:
+            raise SystemExit('state write: short bulk OUT')
+
+    def apitest_ctrl(self, payload: bytes, wvalue: int = 0):
+        sent = self.dev.ctrl_transfer(0x40, 0xFA, wvalue, 0, payload, timeout=TIMEOUT_MS)
+        if sent != len(payload):
+            raise SystemExit(f'apitest: short control write {sent}/{len(payload)}')
+
+    def _start_drain(self):
+        """Continuously read bulk-IN/interrupt so device output can flow."""
+        import threading
+        packets = []
+        stop = threading.Event()
+
+        def run():
+            while not stop.is_set():
+                for ep in (EP_IN, 0x84):
+                    try:
+                        d = bytes(self.dev.read(ep, 512, timeout=300))
+                        if d:
+                            packets.append((ep, d))
+                            print(f'  [drain] EP{ep:#x} len={len(d)}: {d[:80]!r}', flush=True)
+                    except Exception:
+                        pass
+
+        thread = threading.Thread(target=run, daemon=True)
+        thread.start()
+        return stop, packets
+
+    def apitest_init(self):
+        # Correct order learned live: init(0)-first makes init(1) early-exit
+        # before installing the shell input/output hooks. So: teardown (if
+        # reachable), poke mode 2, [0x00] -> full init(1), poke mode 2.
+        print('--- baseline'); self.apitest_state()
+        try:
+            self.apitest_ctrl(b'\x00', wvalue=2)
+            print('--- teardown sent')
+        except Exception as exc:
+            print(f'--- teardown not reachable ({type(exc).__name__}); continuing')
+        self._apitest_set_mode2()
+        print('--- mode forced to 2 (DRAM poke)'); self.apitest_state()
+        stop, packets = self._start_drain()
+        try:
+            self.apitest_ctrl(b'\x00')
+            print('--- after [0x00] init(1) case'); self.apitest_state()
+            self._apitest_set_mode2()
+            print('--- mode forced to 2 again'); self.apitest_state()
+            import time
+            time.sleep(3)
+        finally:
+            stop.set()
+        print(f'drain captured {len(packets)} packet(s) during init')
+
+    def apitest_send(self, text: str):
+        stop, packets = self._start_drain()
+        try:
+            data = text.encode() + b'\n'
+            self.apitest_ctrl(data)
+            print(f'sent {len(data)} bytes: {data!r}')
+            import time
+            time.sleep(4)
+        finally:
+            stop.set()
+        print(f'drain captured {len(packets)} packet(s) after send')
+
+    def apitest_output(self, length=0x1000):
+        words = self.apitest_state()
+        buf = words[4]  # state+0x10: 16 KiB output buffer from init
+        if not buf:
+            raise SystemExit('no output buffer allocated yet')
+        data = self.read_mem(buf, length)
+        Path('apitest-output.bin').write_bytes(data)
+        print(f'output buffer 0x{buf:08x} first {length} bytes saved to apitest-output.bin')
+        text = ''.join(chr(b) if 32 <= b < 127 or b in (10, 13) else '.' for b in data)
+        print(text[:2000])
 
     def stage_copy(self):
         """Install trampoline v2; CMD=1 stages SRAM, CMD=2 stages low 256B."""
@@ -307,6 +400,10 @@ def main():
     mode.add_argument('--write-test', nargs=2, metavar=('ADDR', 'HOLD_S'))
     mode.add_argument('--hijack-test', action='store_true')
     mode.add_argument('--stage-copy', action='store_true')
+    mode.add_argument('--apitest-init', action='store_true')
+    mode.add_argument('--apitest-state', action='store_true')
+    mode.add_argument('--apitest-send', metavar='TEXT')
+    mode.add_argument('--apitest-output', action='store_true')
     args = parser.parse_args()
     if sys.platform != 'linux':
         raise SystemExit('Linux only: run inside the passthrough VM/host')
@@ -319,6 +416,14 @@ def main():
             print(f'bootquery reply: {data.hex()}')
             print(f'boot method byte: {method} (2 = running firmware, per host-DLL classification)')
             print(f'address word: 0x{addr:08x} (0 expected for zero-size query)')
+        elif args.apitest_init:
+            loader.apitest_init()
+        elif args.apitest_state:
+            loader.apitest_state()
+        elif args.apitest_send is not None:
+            loader.apitest_send(args.apitest_send)
+        elif args.apitest_output:
+            loader.apitest_output()
         elif args.stage_copy:
             loader.stage_copy()
         elif args.hijack_test:
