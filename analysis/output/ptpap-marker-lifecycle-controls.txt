@@ -1,0 +1,15 @@
+Original 2.00 main SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Original ARM marker helper, size helper, entry gate, Ptp_Init, registration wrapper/table writer and selected CloseSession handler.
+Modeled: marker filesystem open/size/close, logging, common configuration/callback installation, final PTP response. No USB, real storage, hardware fill or full entry/exit execution.
+PASS marker: modeled size=00000000 -> 0; open flags 10, size, close only; image/globals unchanged.
+PASS marker: modeled size=00000001 -> 1; open flags 10, size, close only; image/globals unchanged.
+PASS marker: modeled size=00001000 -> 1; open flags 10, size, close only; image/globals unchanged.
+PASS marker: modeled size=ffffffff -> 1; open flags 10, size, close only; image/globals unchanged.
+PASS missing marker: failed open -> zero; no size/read/close call; globals unchanged.
+PASS disabled gate on empty table: flag zero; no factory registrations.
+PASS enabled gate: flag one plus exactly seven 16-byte table entries 1021..1027; callback 405ca67c; other image/globals unchanged under common-call models.
+PASS enabled/disabled common configuration calls identical: [config:20f:19000, callback:9:405c9e08, callback:7:405ca274, callback:8:405c9efc, config:101:100c:900c, config:101:100d:900d, config:203:2:10001, config:209:100f:0, config:20c:300a:0, config:20c:b982:1, config:208:0, callback:c:405c9c80]
+PASS removal/re-entry control: marker open fails, flag becomes zero, existing seven registrations preserved; no removal routine invoked.
+PASS repeated enabled initialization: second seven entries appended; existing opcodes not deduplicated.
+PASS selected CloseSession with null session allocation: clears session/length words, preserves registration table and factory buffer; response modeled.
+Not proved: real marker activation/physical exit, all common callees, allocated-session cleanup, cold boot completion, persistence, or independent recovery.

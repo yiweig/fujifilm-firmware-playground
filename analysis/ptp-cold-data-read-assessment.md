@@ -14,6 +14,16 @@ A prior host-permission timeout sent zero explicit requests; both attempts are
 retained separately. No marker, file-load command, factory write or full record
 acquisition was performed. Factory registration/activation remains unqualified.
 
+
+Follow-up 2026-11-03: the [marker activation review](ptpap-marker-activation-review.md)
+adds eleven original-ARM checks. Marker detection adds seven registrations without
+changing the factory buffer in the modeled entry slice; removal/re-entry and
+CloseSession preserve existing registrations. A stage-28 startup zero-fill covers
+the entire table, providing an intended reset mechanism, not observed physical
+revocation. The current ImageCapture client can generate unmeasured framework traffic
+and is not yet qualified for factory-enabled operation. No marker was created;
+the report includes a draft activation/deactivation test and its transport gap.
+
 ## Finding
 
 The existing factory PTP callback has a narrowly identifiable read path for

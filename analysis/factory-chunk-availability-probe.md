@@ -6,6 +6,16 @@ permission timeout. Firmware identity is user-reported, not attested by USB.
 This pass tests availability of one existing factory read handler. It does not
 enable service mode, create an SD marker, load a file, or acquire a factory record.
 
+
+Follow-up 2026-11-03: the [marker activation review](ptpap-marker-activation-review.md)
+adds eleven original-ARM checks. Marker detection adds seven registrations without
+changing the factory buffer in the modeled entry slice; removal/re-entry and
+CloseSession preserve existing registrations. A stage-28 startup zero-fill covers
+the entire table, providing an intended reset mechanism, not observed physical
+revocation. The current ImageCapture client can generate unmeasured framework traffic
+and is not yet qualified for factory-enabled operation. No marker was created;
+the report includes a draft activation/deactivation test and its transport gap.
+
 ## Request selection and static boundary
 
 The [factory-read assessment](ptp-cold-data-read-assessment.md) identifies a

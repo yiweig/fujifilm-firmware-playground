@@ -51,6 +51,7 @@ for those access/earlier-stage gaps before automatically expanding another calle
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
 | Observed ordinary USB startup | One normal `04cb:030a` arrival during user-performed power-on; no intermediate identity/removal observed. Registry events cannot expose internal startup or failed enumeration. | [Live startup observation](analysis/usb-normal-startup-observation.md) |
+| Factory marker activation | Offline ARM controls: marker adds seven command registrations; removing it or closing a session preserves them. Startup requests a table-covering zero-fill, but physical revocation and host traffic remain unqualified. | [Activation review and draft experiment](analysis/ptpap-marker-activation-review.md) |
 | Factory read availability | One fixed `1027(0)` probe returned `2005` (unsupported) in normal USB mode, then closed normally. No factory record acquired or SD marker created. | [Availability probe](analysis/factory-chunk-availability-probe.md) |
 | Read-only vendor property | `GetDevicePropDesc(d220)` succeeded: UINT32, current 0, range 0–1. Static code suggests transfer/status bookkeeping; exact semantics unresolved. Session closed normally. | [Property investigation](analysis/d220-property-investigation.md) |
 | Active standard metadata reads | GetStorageIDs returned `00010001`; GetStorageInfo for that ID reports removable DCF media, about 31.9 GB capacity. Both closed their sessions; no raw-memory or recovery access established. | [StorageIDs](analysis/standard-storage-ids-live.md), [StorageInfo](analysis/standard-storage-info-live.md) |
@@ -428,6 +429,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/service-entry-initialization-writes.md`](analysis/service-entry-initialization-writes.md)
   — initialization attempts a whole cold-data save even with automatic
   calibration off; RTC wakeup control and before/after-USB ordering.
+- [`analysis/ptpap-marker-activation-review.md`](analysis/ptpap-marker-activation-review.md)
+  — marker semantics, eleven original-ARM lifecycle checks, non-immediate
+  revocation, intended startup table clear and a draft activation/deactivation test.
 - [`analysis/factory-chunk-availability-probe.md`](analysis/factory-chunk-availability-probe.md)
   — one live `1027(0)` returns unsupported in normal USB mode; successful close,
   delayed host-authorization attempt retained, no marker/load/factory record.

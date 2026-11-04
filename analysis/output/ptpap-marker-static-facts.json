@@ -1,0 +1,22 @@
+{
+  "image_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "registration_table_start": "4136b684",
+  "registration_table_end_exclusive": "4136bcc4",
+  "entry_stride": 16,
+  "entry_capacity": 100,
+  "covering_startup_fill": {
+    "stage": 28,
+    "table_end_field": "40000b5c",
+    "cpu_start": "40fd1140",
+    "cpu_end_exclusive": "413ab700",
+    "length": 4040128,
+    "requested_fill_value": 0
+  },
+  "startup_scope": "Intended hardware zero-fill interval; real completion and coverage of all restart routes unobserved.",
+  "marker_literal_pointer_location": "405219e4",
+  "marker_path_address": "40bc87ee",
+  "marker_path": "D:\\EnablePTPAP.txt",
+  "flag_address": "40e139d8",
+  "file_backed_initial_flag_byte": 1,
+  "initial_flag_scope": "Initialized image byte, not a live runtime value. Normal entry overwrites it with marker check result."
+}
