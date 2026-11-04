@@ -347,6 +347,16 @@ live hardware via the receiver's memory-read branches before any upload/run
 is considered, and payload/restart qualification (R3–R5) follows from
 measured receiver behavior on this unit.
 
+Follow-up 2026-11-04 (live loader reads): the [loader read session](loader-memory-read-live.md)
+qualifies the receiver's `0x04f2` branch on this unit. Boot query returns
+method 2; aligned-DRAM reads work to 64 KiB per transfer and the full
+20 MiB DRAM span is dumped and cross-validated against the factory-PTP
+record; misaligned, SRAM, and low-memory reads fail or wedge (battery
+removal resets). R2 remains open because the low helper lives in the
+unreadable low region; the DRAM dump is the next artifact to mine for it.
+R3 groundwork (a verified read map of runtime RAM) now exists; write and
+execute rungs (R4/R5) are still untouched and unqualified.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

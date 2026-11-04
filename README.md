@@ -187,6 +187,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/loader-memory-read-live.md`](analysis/loader-memory-read-live.md)
+  — loader protocol live from the VM: boot query returns method 2; memory
+  reads succeed for 32-byte-aligned DRAM (up to 64 KiB/transfer; full
+  20 MiB DRAM dumped, SHA-256 recorded, cross-validated against the PTP
+  record) and fail/hang for misaligned DRAM, SRAM, and low memory.
+  Battery removal is the wedged-state reset. Repeat entry = record no-op.
 - [`analysis/calibration-loader-entry-live.md`](analysis/calibration-loader-entry-live.md)
   — **live loader entry**: `EnableTest.txt` + MOVIE/flash-ON/PLAY-hold reaches
   USB API mode 4; `2aad:6500` enumerated, descriptors captured in the VM,
