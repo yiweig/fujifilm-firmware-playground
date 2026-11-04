@@ -192,6 +192,13 @@ template identical to the X-half updater's. This strengthens SDK comparison;
 the small high-memory header copy does not supply low `0xb34`. No retail/cold
 entry mechanism or cross-camera payload compatibility was established.
 
+The [FRM application caller review](frm-connection-and-programming-callers.md)
+then checks a previously unaudited host boundary. A set-size worker prepares
+the ISP connection and continues into Program All, which can erase, allocate,
+format and program storage. The driver INF supports `2aad:6500` interface 5,
+but neither that match nor the configurable upload protocol supplies a verified
+X-half retail/cold transition. GUI startup/event passivity remains unqualified.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

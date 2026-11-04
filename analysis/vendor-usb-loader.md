@@ -16,6 +16,12 @@ Exported function names below are shipped symbols, including vendor spelling.
 
 ## Result
 
+Follow-up: the [FRM application caller review](frm-connection-and-programming-callers.md)
+confirms the library baseline and traces its GUI-side wrapper, a connection
+routine and a set-size/Program All path. The latter can proceed from ISP
+preparation to erase/format/program operations. Full startup/event passivity
+remains unqualified; the bundled bulk-driver INF supports `2aad:6500` interface 5.
+
 The library implements distinct RAM-copy and upload/run paths, separately
 from explicit flash erase/program functions. This makes a deliberately limited
 RAM uploader plausible for this vendor family. It does not establish that the

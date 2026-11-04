@@ -1,0 +1,210 @@
+{
+  "source_commit": "dc437ced8fdc9564e39ca550af6a1d53b1037714",
+  "scope": "Selected archive metadata/configuration only; no driver install, binary execution or device access.",
+  "archives": [
+    {
+      "archive": "Reflash_V2.6.zip",
+      "sha256": "88fdb53627ff7c347f2a060e50a4de04b43b78516e83144c072de0d926a64969",
+      "bytes": 8790842,
+      "members": [
+        {
+          "member": "Reflash_V2.6/Download/FRM.exe",
+          "bytes": 512000,
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        {
+          "member": "Reflash_V2.6/Download/USB_CAM.dll",
+          "bytes": 385024,
+          "sha256": "60720ce7e246dd34f6d2cdbab5f21a26cf82d90669c056586b54431c2fe303a6"
+        },
+        {
+          "member": "Reflash_V2.6/Download/USB_CAM5000.ini",
+          "bytes": 27595,
+          "sha256": "845e3509f676e771e217178d5cd94d1c6dd27cbf07b2c49bf1ec8b0d35ea7d40",
+          "selected_lines": [
+            {
+              "line": 4,
+              "text": "IC_ID=8  //\"CA538A\""
+            },
+            {
+              "line": 5,
+              "text": "VendorID=\"04fc\""
+            },
+            {
+              "line": 6,
+              "text": "ProductID=\"5380\""
+            },
+            {
+              "line": 10,
+              "text": "BULK_ISP_SIZE=256"
+            },
+            {
+              "line": 25,
+              "text": "ID_NUMBER=0"
+            },
+            {
+              "line": 302,
+              "text": "BulkDnload_Request          =   0xfd"
+            },
+            {
+              "line": 303,
+              "text": "BulkDnload_Index            =   0x04f3"
+            },
+            {
+              "line": 304,
+              "text": "BulkDnload_Value            =   0x00"
+            },
+            {
+              "line": 305,
+              "text": "BulkDnload_Length           =   0x08"
+            },
+            {
+              "line": 317,
+              "text": "ISP_Dnload_Request          =   0xFd"
+            },
+            {
+              "line": 318,
+              "text": "ISP_Dnload_Index            =   0x04F1"
+            },
+            {
+              "line": 319,
+              "text": "ISP_Dnload_Value            =   0x00    // 256byte base"
+            },
+            {
+              "line": 320,
+              "text": "ISP_Dnload_Length           =   0x10"
+            },
+            {
+              "line": 741,
+              "text": "BootMethod_Request = 0x70"
+            },
+            {
+              "line": 742,
+              "text": "BootMethod_Index = 0x0"
+            },
+            {
+              "line": 743,
+              "text": "BootMethod_Value = 0x0"
+            },
+            {
+              "line": 744,
+              "text": "BootMethod_Length = 0xb"
+            },
+            {
+              "line": 878,
+              "text": "FRMDnloadRunISP_Request          =   0xfd"
+            },
+            {
+              "line": 879,
+              "text": "FRMDnloadRunISP_Index            =   0x04f7"
+            },
+            {
+              "line": 880,
+              "text": "FRMDnloadRunISP_Value            =   0x00"
+            },
+            {
+              "line": 881,
+              "text": "FRMDnloadRunISP_Length           =   0x0c"
+            }
+          ]
+        },
+        {
+          "member": "Reflash_V2.6/Download/frm_user.ini",
+          "bytes": 3637,
+          "sha256": "a62efbed098ce300950f1b60dd31d03ea31f2fc7b1d31996e42641ae963b20b0",
+          "selected_lines": [
+            {
+              "line": 5,
+              "text": "ISPName =spca6350isp.bin"
+            },
+            {
+              "line": 9,
+              "text": "SettingFilename =EVB_V35MA_DDR3_1G_MDP_300MHz_4bit.prm"
+            },
+            {
+              "line": 23,
+              "text": "PlatformName =spca6350"
+            },
+            {
+              "line": 39,
+              "text": "DramBootFlag=0"
+            },
+            {
+              "line": 47,
+              "text": "SettingFileFlag=1"
+            }
+          ]
+        },
+        {
+          "member": "Reflash_V2.6/Download/Profiles/spca6350_profile.ini",
+          "bytes": 1173,
+          "sha256": "6589622d9f3e99610030e55e4ca730cf30d39b40477e113b616e127ec2f775a7",
+          "selected_lines": [
+            {
+              "line": 10,
+              "text": "DramBootParFunc = 0"
+            },
+            {
+              "line": 17,
+              "text": "PlatformId = 6350               ;related to flow, UI....,should from [PLATFORM_ID]"
+            },
+            {
+              "line": 20,
+              "text": "StorageType = 3                 ;0: Nand, 1:Nor, 3:SPI"
+            },
+            {
+              "line": 25,
+              "text": "DefISPName = spca6350isp.bin"
+            },
+            {
+              "line": 26,
+              "text": "ulCoreAddr = 0xa0040000"
+            },
+            {
+              "line": 30,
+              "text": "SettingAddr = 0x0"
+            },
+            {
+              "line": 31,
+              "text": "NormalIspParamAddr = 0xa7ff0000"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "archive": "iCatch PC Driver.zip",
+      "sha256": "0e6d79b2c3e957d097678d03d316bd2cb754f05dd3ab375b9c700761b9414014",
+      "bytes": 295566,
+      "members": [
+        {
+          "member": "iCatch PC Driver/Icatchai.inf",
+          "bytes": 3737,
+          "sha256": "4fe4f75d832695f4093312122f42f1d8ac810235f7514cb61866d5d772ddc546",
+          "selected_lines": [
+            {
+              "line": 35,
+              "text": "%CAMERA.DeviceDesc%=Ca6350A_Dev,USB\\VID_2AAD&PID_6500&MI_05"
+            },
+            {
+              "line": 44,
+              "text": "%CAMERA.DeviceDesc%=Ca6350A_Dev,USB\\VID_2AAD&PID_6500&MI_05"
+            },
+            {
+              "line": 53,
+              "text": "%CAMERA.DeviceDesc%=Ca6350A_Dev,USB\\VID_2AAD&PID_6500&MI_05"
+            },
+            {
+              "line": 115,
+              "text": "CAMERA.DeviceDesc= \"Icatch(X) KV Series Bulk Camera Device\""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Names/configuration do not prove runtime selection, protocol compatibility, hardware identity or safe entry.",
+    "Use companion REA caller report for code evidence; no disassembly is produced by this script."
+  ]
+}

@@ -1,0 +1,1234 @@
+{
+  "scope": "Selected complete FRM pseudocode pages, with original REA Evidence IDs/limitations. No execution; no whole-GUI reachability proof.",
+  "artifact_sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365",
+  "pages": {
+    "connection_wrapper": {
+      "evidence_id": "ev_a3fbd800ab90bdf2c5e99bc649d710d39004f9c2087b1f78999a4a840b17823b",
+      "subject": {
+        "name": "FRM.exe",
+        "digest": {
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "local_path": "/private/tmp/v50-frm-static/FRM.exe",
+        "format": "pe",
+        "architecture": "x86"
+      },
+      "provider": {
+        "id": "rea-analysis-view",
+        "name": "REA analysis view projection",
+        "version": "1"
+      },
+      "analysis_profile": null,
+      "predicate_type": "rea.analysis-view",
+      "operation": "inspect_analysis_view",
+      "parameters": {
+        "parent_evidence_id": "ev_adb9e4d9e3e12b176973a471e81b3fa2f08232f90cb6f7ba9606ec728036c42f",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 16000
+        }
+      },
+      "raw_result": null,
+      "normalized_result": {
+        "kind": "native",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 16000
+        },
+        "procedure_address": "0x413580",
+        "item": {
+          "text": "\nint __cdecl FUN_00413580(int param_1)\n\n{\n  code *pcVar1;\n  int iVar2;\n  code *pcVar3;\n  \n  pcVar3 = (code *)0x0;\n  if (((*(int *)(param_1 + 0x94) != 0) && (*(int *)(param_1 + 0x19c) != 0)) &&\n     (pcVar3 = *(code **)(param_1 + 0x134), *(code **)(param_1 + 0x134) == (code *)0x0)) {\n    pcVar3 = _C_exref;\n  }\n  pcVar1 = *(code **)(param_1 + 0xf4);\n  if (*(code **)(param_1 + 0xf4) == (code *)0x0) {\n    pcVar1 = _C_exref;\n  }\n  iVar2 = FrmChcekIspCon((char *)pcVar1,(char *)pcVar3,*(ulong *)(param_1 + 0xc4),\n                         *(ulong *)(param_1 + 0xd8),*(ulong *)(param_1 + 0xdc));\n  if ((iVar2 == 0) &&\n     (iVar2 = FrmStorageTypeSelect(*(ulong *)(param_1 + 0xa8),*(ulong *)(param_1 + 0xac)),\n     iVar2 != 0)) {\n    AfxMessageBox(s_Storage_Type_Select_Error__00452c10,0x30,0);\n  }\n  return iVar2;\n}\n\n",
+          "unit": "utf16-code-units"
+        },
+        "parent_evidence_id": "ev_adb9e4d9e3e12b176973a471e81b3fa2f08232f90cb6f7ba9606ec728036c42f",
+        "parent_operation": "analyze_function",
+        "parent_digest": "adb9e4d9e3e12b176973a471e81b3fa2f08232f90cb6f7ba9606ec728036c42f",
+        "view_digest": "53dbc3f7c5992ca2983bbf9ceaaf98d2ccbe497f0d355324a8b89d6c6dc98854",
+        "artifact": {
+          "path": "/private/tmp/v50-frm-static/FRM.exe",
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "coverage": {
+          "status": "page",
+          "examined": 813,
+          "total": 813,
+          "next_offset": null,
+          "exhausted": true
+        },
+        "limitations": [
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+          "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+          "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+          "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+          "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+          "Pseudocode is neither original source nor guaranteed to compile.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+          "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+          "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "unknowns": []
+      },
+      "confidence": "derived",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+        "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+        "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+        "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+        "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+        "Pseudocode is neither original source nor guaranteed to compile.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+        "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+        "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ],
+      "relationship_coverage": {
+        "status": "partial",
+        "limitations": [
+          "Ghidra's caller inventory omits sources of 9 call reference(s) into this function's body."
+        ],
+        "limited_directions": [
+          "callers"
+        ],
+        "diagnostics": [
+          "Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals."
+        ]
+      },
+      "locations": [
+        {
+          "kind": "artifact-path",
+          "path": "/private/tmp/v50-frm-static/FRM.exe"
+        },
+        {
+          "kind": "address",
+          "address": "0x413580"
+        }
+      ],
+      "evidence_links": [
+        "ev_adb9e4d9e3e12b176973a471e81b3fa2f08232f90cb6f7ba9606ec728036c42f"
+      ]
+    },
+    "connection_routine": {
+      "evidence_id": "ev_9228d5831cb011d2c67e16813aad5c0bb4c5326fb5cb75c3f8c1dd6ac6fad3f1",
+      "subject": {
+        "name": "FRM.exe",
+        "digest": {
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "local_path": "/private/tmp/v50-frm-static/FRM.exe",
+        "format": "pe",
+        "architecture": "x86"
+      },
+      "provider": {
+        "id": "rea-analysis-view",
+        "name": "REA analysis view projection",
+        "version": "1"
+      },
+      "analysis_profile": null,
+      "predicate_type": "rea.analysis-view",
+      "operation": "inspect_analysis_view",
+      "parameters": {
+        "parent_evidence_id": "ev_59c186299b4d1637700944f725f03fa59e1a50ee0a402f432d42ecadb856c380",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 11000
+        }
+      },
+      "raw_result": null,
+      "normalized_result": {
+        "kind": "native",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 11000
+        },
+        "procedure_address": "0x42e240",
+        "item": {
+          "text": "\nvoid __fastcall FUN_0042e240(void *param_1)\n\n{\n  CWnd *pCVar1;\n  int iVar2;\n  code *pcVar3;\n  CWinThread *pCVar4;\n  CWnd *pCVar5;\n  uint uVar6;\n  CString local_150 [4];\n  char *local_14c;\n  char acStack_148 [4];\n  uint uStack_144;\n  char local_140 [4];\n  char local_13c [4];\n  char local_138 [4];\n  char local_134 [4];\n  undefined4 local_130;\n  CFileFind local_12c [28];\n  CHAR local_110 [260];\n  void *local_c;\n  undefined1 *puStack_8;\n  int local_4;\n  \n  local_4 = 0xffffffff;\n  puStack_8 = &LAB_00445011;\n  local_c = ExceptionList;\n  local_140 = (char  [4])s_USB_CAM5000_INI_00454a38._0_4_;\n  local_13c = (char  [4])s_USB_CAM5000_INI_00454a38._4_4_;\n  local_138 = (char  [4])s_USB_CAM5000_INI_00454a38._8_4_;\n  local_134 = (char  [4])s_USB_CAM5000_INI_00454a38._12_4_;\n  local_130 = 0;\n  ExceptionList = &local_c;\n  CString::CString(local_150);\n  local_4 = 0;\n  CString::CString((CString *)&local_14c);\n  local_4._0_1_ = 1;\n  CFileFind::CFileFind(local_12c);\n  local_4 = CONCAT31(local_4._1_3_,2);\n  pCVar1 = (CWnd *)FUN_00401c80(&DAT_00473150,1);\n  FUN_0042ea60(param_1,0);\n  DAT_004731c0 = 1;\n  pcVar3 = DAT_00473c04;\n  if (DAT_00473c04 == (code *)0x0) {\n    pcVar3 = _C_exref;\n  }\n  wsprintfA(local_110,s__s__s_0045211c,pcVar3,local_140);\n  iVar2 = CFileFind::FindFile(local_12c,local_110,0);\n  if (iVar2 == 0) {\n    pcVar3 = DAT_00473bf4;\n    if (DAT_00473bf4 == (code *)0x0) {\n      pcVar3 = _C_exref;\n    }\n    wsprintfA(local_110,s__s__s_0045211c,pcVar3,local_140);\n  }\n  iVar2 = Load_IniFile(local_110);\n  if (iVar2 == 0) {\n    iVar2 = FUN_00413580(0x473bf0);\n    if (iVar2 == 0) {\n      pCVar4 = AfxGetThread();\n      if (pCVar4 == (CWinThread *)0x0) {\n        pCVar5 = (CWnd *)0x0;\n      }\n      else {\n        pCVar5 = (CWnd *)(**(code **)(*(int *)pCVar4 + 0x7c))();\n      }\n      FUN_00433bd0(pCVar5);\n      FUN_00424010(pCVar1);\n      iVar2 = Frm_ISPVersionGet(acStack_148);\n      if (iVar2 == 0) {\n        FUN_0042c8b0((CWnd *)&DAT_004730b0,(char *)&DAT_00472f38);\n        CString::Format(local_150,(char *)local_150);\n        uVar6 = 0x40;\n      }\n      else {\n        uVar6 = 0;\n        uStack_144 = 0x30;\n        local_14c = s_USB_device_connected_error__Get_I_00454964;\n      }\n      AfxMessageBox(local_14c,uStack_144,uVar6);\n      FUN_0042adc0();\n    }\n    else {\n      AfxMessageBox(s_USB_device_connected_error__Chec_004549a4,0x30,0);\n    }\n  }\n  else {\n    AfxMessageBox(s_USB_device_not_connected__Can_t_d_004549f0,0x30,0);\n    FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Device_not_detected__004549d8);\n  }\n  FUN_0042ea60(param_1,1);\n  DAT_004731c0 = 0;\n  local_4._0_1_ = 1;\n  CFileFind::~CFileFind(local_12c);\n  local_4 = (uint)local_4._1_3_ << 8;\n  CString::~CString((CString *)&local_14c);\n  local_4 = 0xffffffff;\n  CString::~CString(local_150);\n  ExceptionList = local_c;\n  return;\n}\n\n",
+          "unit": "utf16-code-units"
+        },
+        "parent_evidence_id": "ev_59c186299b4d1637700944f725f03fa59e1a50ee0a402f432d42ecadb856c380",
+        "parent_operation": "analyze_function",
+        "parent_digest": "59c186299b4d1637700944f725f03fa59e1a50ee0a402f432d42ecadb856c380",
+        "view_digest": "7063f0b69668612c5161d0a96880bb614adcb2405b8b5baf4d8b93ebe9aec910",
+        "artifact": {
+          "path": "/private/tmp/v50-frm-static/FRM.exe",
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "coverage": {
+          "status": "page",
+          "examined": 2811,
+          "total": 2811,
+          "next_offset": null,
+          "exhausted": true
+        },
+        "limitations": [
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+          "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+          "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+          "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+          "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+          "Pseudocode is neither original source nor guaranteed to compile.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+          "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+          "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "unknowns": []
+      },
+      "confidence": "derived",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+        "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+        "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+        "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+        "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+        "Pseudocode is neither original source nor guaranteed to compile.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+        "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+        "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ],
+      "relationship_coverage": {
+        "status": "partial",
+        "limitations": [
+          "Ghidra's caller inventory omits sources of 2 call reference(s) into this function's body.",
+          "Ghidra's callee inventory omits targets of 1 call reference(s) or decoded call(s) without destinations."
+        ],
+        "limited_directions": [
+          "callers",
+          "callees"
+        ],
+        "diagnostics": [
+          "Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals."
+        ]
+      },
+      "locations": [
+        {
+          "kind": "artifact-path",
+          "path": "/private/tmp/v50-frm-static/FRM.exe"
+        },
+        {
+          "kind": "address",
+          "address": "0x42e240"
+        }
+      ],
+      "evidence_links": [
+        "ev_59c186299b4d1637700944f725f03fa59e1a50ee0a402f432d42ecadb856c380"
+      ]
+    },
+    "program_all": {
+      "evidence_id": "ev_7b53e3e38904cd82851e0c1efd8f183343140b4349192c36c561145b9c639ce1",
+      "subject": {
+        "name": "FRM.exe",
+        "digest": {
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "local_path": "/private/tmp/v50-frm-static/FRM.exe",
+        "format": "pe",
+        "architecture": "x86"
+      },
+      "provider": {
+        "id": "rea-analysis-view",
+        "name": "REA analysis view projection",
+        "version": "1"
+      },
+      "analysis_profile": null,
+      "predicate_type": "rea.analysis-view",
+      "operation": "inspect_analysis_view",
+      "parameters": {
+        "parent_evidence_id": "ev_9eece8abeb7581cf3f7738bfacfe3ea347d0bb64b6f6939c08cf939bd3cee0ba",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 16000
+        }
+      },
+      "raw_result": null,
+      "normalized_result": {
+        "kind": "native",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 16000
+        },
+        "procedure_address": "0x42afa0",
+        "item": {
+          "text": "\nundefined4 __fastcall FUN_0042afa0(void *param_1)\n\n{\n  void *pvVar1;\n  int iVar2;\n  uint uVar3;\n  int iVar4;\n  undefined4 uVar5;\n  char *pcVar6;\n  ulong uVar7;\n  undefined1 *puVar8;\n  uint local_d4;\n  uint local_cc;\n  uint local_c8;\n  undefined4 local_c4 [10];\n  uint local_9c;\n  CFileFind local_98 [28];\n  CDialog local_7c [96];\n  uint local_1c;\n  void *local_c;\n  undefined1 *puStack_8;\n  int local_4;\n  \n  local_4 = 0xffffffff;\n  puStack_8 = &LAB_00444c8e;\n  local_c = ExceptionList;\n  ExceptionList = &local_c;\n  pvVar1 = (void *)FUN_00401c80(&DAT_00473150,1);\n  if (*(int *)((int)param_1 + 0x1c0) == 0) {\n    iVar2 = FUN_0042eff0();\n    if (iVar2 == 0) {\n      FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Program_All_has_been_interrupted_004546f4);\n      ExceptionList = local_c;\n      return 0;\n    }\n    if (((DAT_00473c90 < 0xaf0) || (0xb53 < DAT_00473c90)) &&\n       (uVar3 = FUN_00430fa0(param_1,DAT_00473100,DAT_004730fc,DAT_004730f8), (char)uVar3 == '\\0'))\n    {\n      FUN_00431410();\n      FUN_0042c8b0((CWnd *)&DAT_004730b0,s_RSV_total_size_setting_is_invali_004546d0);\n      ExceptionList = local_c;\n      return 0;\n    }\n    FUN_00434bc0(local_c4);\n    local_4 = 0;\n    if (DAT_00473c70 == 0) goto LAB_0042b15a;\n    local_d4 = FUN_00434c00();\n    if ((local_d4 != 0xffffffff) && (iVar2 = FUN_00434cc0(), iVar2 != -1)) {\n      if (iVar2 < (int)local_d4) {\n        local_d4 = 0;\n      }\n      iVar2 = FUN_0042adf0((int)param_1);\n      if (iVar2 != -1) {\n        if (((int)local_d4 < iVar2) || (DAT_00473c74 == 1)) {\n          FUN_00434d00(local_7c,(CWnd *)0x0);\n          local_4._0_1_ = 1;\n          uVar3 = FUN_00434c40();\n          FUN_00434d60(local_7c,uVar3);\n          iVar4 = FUN_00434c80();\n          FUN_00434d70(local_7c,iVar4);\n          FUN_00434d80(local_7c,local_d4);\n          FUN_00434d90(local_7c,iVar2);\n          iVar2 = CDialog::DoModal(local_7c);\n          if (iVar2 != 1) {\n            local_4 = (uint)local_4._1_3_ << 8;\n            CDialog::~CDialog(local_7c);\n            goto LAB_0042b1c8;\n          }\n          local_d4 = local_1c;\n          local_4 = (uint)local_4._1_3_ << 8;\n          CDialog::~CDialog(local_7c);\n        }\nLAB_0042b15a:\n        FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Nand_Total_Erasing____004546b8);\n        iVar2 = FrmNandTotalErase(DAT_00473ca0);\n        if (iVar2 == 0) {\n          FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Rsv_Allocating____004546a4);\n          iVar2 = FrmRsvAllocate(DAT_00473100,DAT_004730fc,DAT_004730f8,DAT_00473058);\n          if ((iVar2 == 0) && ((DAT_00473c98 != 3 || (iVar2 = FrmNandDetect(), iVar2 == 0)))) {\n            iVar2 = FUN_0042ff60(param_1,(int *)&local_c8,(int *)&local_cc,(int *)&local_9c);\n            if (((iVar2 != 0) ||\n                (((DAT_00473100 != local_c8 || (DAT_004730fc != local_cc)) ||\n                 (DAT_004730f8 != local_9c)))) &&\n               (((((99 < DAT_00473c90 - 0xaf0 || (local_c8 < DAT_00473100)) ||\n                  ((uVar3 = *(uint *)((int)param_1 + 0x17c), uVar3 <= local_c8 - DAT_00473100 ||\n                   ((local_cc < DAT_004730fc || (uVar3 <= local_cc - DAT_004730fc)))))) ||\n                 (local_9c < DAT_004730f8)) || (uVar3 <= local_9c - DAT_004730f8)))) {\nLAB_0042b352:\n              local_4 = 0xffffffff;\n              FUN_00434cf0(local_c4);\n              ExceptionList = local_c;\n              return 0;\n            }\n            if ((*(int *)((int)param_1 + 0x174) == 0) ||\n               ((*(int *)((int)param_1 + 0x174) == 1 && (DAT_00473c68 == 0)))) {\n              FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Nand_Formating____00454690);\n              iVar2 = FrmNandFormat();\n              if (iVar2 != 0) {\n                local_4 = 0xffffffff;\n                FUN_00434cf0(local_c4);\n                ExceptionList = local_c;\n                return 0;\n              }\n            }\n            iVar2 = FrmUserDiskFormat();\n            if (iVar2 != 0) {\n              local_4 = 0xffffffff;\n              FUN_00434cf0(local_c4);\n              ExceptionList = local_c;\n              return 0;\n            }\n            FUN_00430300();\n            FUN_00422ea0((int)pvVar1 + 0x6c,*(LPARAM *)((int)pvVar1 + 0x16c));\n            FUN_00422ea0((int)pvVar1 + 0x6c,*(LPARAM *)((int)pvVar1 + 0x170));\n            iVar2 = *(int *)((int)param_1 + 0x1ac) + 1;\n            *(int *)((int)param_1 + 0x1ac) = iVar2;\n            DAT_00473148 = (iVar2 * 100) / DAT_0047314c;\n            if ((DAT_00473c70 != 0) && (iVar2 = Frm_RsvAllocSizeSet((ushort)local_d4), iVar2 != 0))\n            goto LAB_0042b352;\n            local_4 = 0xffffffff;\n            FUN_00434cf0(local_c4);\n            goto LAB_0042b385;\n          }\n        }\n      }\n    }\nLAB_0042b1c8:\n    local_4 = 0xffffffff;\n    FUN_00434cf0(local_c4);\n    uVar5 = 0;\n  }\n  else {\nLAB_0042b385:\n    FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Nand_detecting____004538c8);\n    iVar2 = FrmNandDetect();\n    if (iVar2 == 0) {\n      if (*(int *)((int)param_1 + 0x1c0) == 0) {\n        FUN_0042c8b0((CWnd *)&DAT_004730b0,s_F_W_programming____00453e38);\n        pcVar6 = CString::GetBuffer((CString *)&DAT_00473064,0);\n        iVar2 = FrmNandFwProgram(pcVar6);\n        if (iVar2 != 0) {\n          ExceptionList = local_c;\n          return 0;\n        }\n        iVar2 = *(int *)((int)param_1 + 0x1ac) + 1;\n        *(int *)((int)param_1 + 0x1ac) = iVar2;\n        DAT_00473148 = (iVar2 * 100) / DAT_0047314c;\n      }\n      FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Rsv_updating____00454680);\n      if (*(int *)((int)param_1 + 0x174) == 0) {\n        pcVar6 = std::basic_string<char,std::char_traits<char>,std::allocator<char>_>::c_str\n                           ((basic_string<char,std::char_traits<char>,std::allocator<char>_> *)\n                            &DAT_00473c00);\n        CString::CString((CString *)&stack0xffffff18,pcVar6);\n        iVar2 = FUN_0042b790(param_1);\n      }\n      else {\n        iVar2 = FUN_00430430();\n      }\n      CFileFind::CFileFind(local_98);\n      local_4 = 2;\n      if ((*(int *)(DAT_00473060 + -8) != 0) &&\n         (iVar4 = CFileFind::FindFile(local_98,DAT_00473060,0), iVar4 != 0)) {\n        CFileFind::FindNextFileA(local_98);\n        uVar7 = CFileFind::GetLength(local_98);\n        if (DAT_004730f8 < uVar7) {\n          AfxMessageBox(s_There_is_not_enough_space_in_Raw_00453c90,0x30,0);\n          local_4 = 0xffffffff;\n          CFileFind::~CFileFind(local_98);\n          ExceptionList = local_c;\n          return 0;\n        }\n        *(undefined4 *)((int)param_1 + 0x1b8) = 1;\n        FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Write_RawC____00453e28);\n        pcVar6 = CString::GetBuffer((CString *)&DAT_00473060,0);\n        iVar4 = FrmRawCWrite(pcVar6);\n        if (iVar4 != 0) {\n          AfxMessageBox(s_Update_RawC_Error__00453c54,0x30,0);\n          local_4 = 0xffffffff;\n          CFileFind::~CFileFind(local_98);\n          ExceptionList = local_c;\n          return 0;\n        }\n      }\n      InvalidateRect(*(HWND *)((int)pvVar1 + 0x8c),(RECT *)0x0,1);\n      if (iVar2 == 0) {\n        local_4 = 0xffffffff;\n        CFileFind::~CFileFind(local_98);\n        uVar5 = 0;\n      }\n      else {\n        iVar2 = *(int *)((int)param_1 + 0x1ac) + 1;\n        *(int *)((int)param_1 + 0x1ac) = iVar2;\n        DAT_00473148 = (iVar2 * 100) / DAT_0047314c;\n        if (*(int *)((int)param_1 + 0x16c) == 1) {\n          FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Rsv_readback____00454670);\n          if (*(int *)((int)param_1 + 0x174) == 0) {\n            iVar2 = FUN_0042cb20(param_1);\n          }\n          else {\n            iVar2 = FUN_00430c40((int)param_1);\n          }\n          if (iVar2 == 0) {\n            AfxMessageBox(s_Read_Verify_Rsv_Error__00454658,0x30,0);\n            local_4 = 0xffffffff;\n            CFileFind::~CFileFind(local_98);\n            ExceptionList = local_c;\n            return 0;\n          }\n          if (*(int *)((int)param_1 + 0x1c0) == 0) {\n            FUN_0042c8b0((CWnd *)&DAT_004730b0,s_F_W_readback____00454648);\n            iVar2 = FUN_0042c910();\n            if (iVar2 == 0) {\n              AfxMessageBox(s_Read_Verify_F_W_Error__00454438,0x30,0);\n              local_4 = 0xffffffff;\n              CFileFind::~CFileFind(local_98);\n              ExceptionList = local_c;\n              return 0;\n            }\n            *(int *)((int)param_1 + 0x1ac) = *(int *)((int)param_1 + 0x1ac) + 1;\n          }\n          iVar2 = *(int *)((int)param_1 + 0x1ac) + 1;\n          *(int *)((int)param_1 + 0x1ac) = iVar2;\n          DAT_00473148 = (iVar2 * 100) / DAT_0047314c;\n        }\n        if ((*(int *)((int)param_1 + 0x168) == 0) && (*(int *)((int)param_1 + 0x178) != 0)) {\n          FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Write_Backup_____00454634);\n          iVar2 = FUN_00432180((char *)0x0);\n          if (iVar2 != 0) {\n            AfxMessageBox(s_Write_Backup_Rsv_Error__0045461c,0x30,0);\n            local_4 = 0xffffffff;\n            CFileFind::~CFileFind(local_98);\n            ExceptionList = local_c;\n            return 0;\n          }\n          if (*(int *)((int)param_1 + 0x16c) == 1) {\n            FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Read_Verify_Backup_____00454604);\n            puVar8 = FUN_00432500(param_1,(char *)0x0);\n            if (puVar8 != (undefined1 *)0x0) {\n              AfxMessageBox(s_Read_Verify_Backup_Rsv_Error__004545e4,0x30,0);\n              local_4 = 0xffffffff;\n              CFileFind::~CFileFind(local_98);\n              ExceptionList = local_c;\n              return 0;\n            }\n          }\n        }\n        DAT_00473148 = 0;\n        SendMessageA(DAT_00473128,0x402,0,0);\n        if (*(int *)((int)param_1 + 0x174) != 0) {\n          FUN_00425480(pvVar1);\n        }\n        local_4 = 0xffffffff;\n        CFileFind::~CFileFind(local_98);\n        uVar5 = 1;\n      }\n    }\n    else {\n      uVar5 = 0;\n    }\n  }\n  ExceptionList = local_c;\n  return uVar5;\n}\n\n",
+          "unit": "utf16-code-units"
+        },
+        "parent_evidence_id": "ev_9eece8abeb7581cf3f7738bfacfe3ea347d0bb64b6f6939c08cf939bd3cee0ba",
+        "parent_operation": "analyze_function",
+        "parent_digest": "9eece8abeb7581cf3f7738bfacfe3ea347d0bb64b6f6939c08cf939bd3cee0ba",
+        "view_digest": "9ef72b0d1ecdcf897ecad0b6abe13dfbb4560198242a0df1e768ba7c3fff15ab",
+        "artifact": {
+          "path": "/private/tmp/v50-frm-static/FRM.exe",
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "coverage": {
+          "status": "page",
+          "examined": 9799,
+          "total": 9799,
+          "next_offset": null,
+          "exhausted": true
+        },
+        "limitations": [
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+          "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+          "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+          "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+          "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+          "Pseudocode is neither original source nor guaranteed to compile.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+          "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+          "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "unknowns": []
+      },
+      "confidence": "derived",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+        "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+        "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+        "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+        "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+        "Pseudocode is neither original source nor guaranteed to compile.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+        "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+        "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ],
+      "relationship_coverage": {
+        "status": "partial",
+        "limitations": [
+          "Ghidra's caller inventory omits sources of 2 call reference(s) into this function's body."
+        ],
+        "limited_directions": [
+          "callers"
+        ],
+        "diagnostics": [
+          "Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals."
+        ]
+      },
+      "locations": [
+        {
+          "kind": "artifact-path",
+          "path": "/private/tmp/v50-frm-static/FRM.exe"
+        },
+        {
+          "kind": "address",
+          "address": "0x42afa0"
+        }
+      ],
+      "evidence_links": [
+        "ev_9eece8abeb7581cf3f7738bfacfe3ea347d0bb64b6f6939c08cf939bd3cee0ba"
+      ]
+    },
+    "set_size_worker": {
+      "evidence_id": "ev_564ca44cb460844e3786e88db4e382912502f2c410ed92b38762550cba1a00f6",
+      "subject": {
+        "name": "FRM.exe",
+        "digest": {
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "local_path": "/private/tmp/v50-frm-static/FRM.exe",
+        "format": "pe",
+        "architecture": "x86"
+      },
+      "provider": {
+        "id": "rea-analysis-view",
+        "name": "REA analysis view projection",
+        "version": "1"
+      },
+      "analysis_profile": null,
+      "predicate_type": "rea.analysis-view",
+      "operation": "inspect_analysis_view",
+      "parameters": {
+        "parent_evidence_id": "ev_c23517b402c1a239bfbbaad8df56a265d099bd9c5c35572adc123aa536bc86ad",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 11000
+        }
+      },
+      "raw_result": null,
+      "normalized_result": {
+        "kind": "native",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 11000
+        },
+        "procedure_address": "0x4358f0",
+        "item": {
+          "text": "\nundefined4 FUN_004358f0(CWnd *param_1)\n\n{\n  code cVar1;\n  CWnd *pCVar2;\n  LRESULT LVar3;\n  int iVar4;\n  code *pcVar5;\n  basic_string<char,std::char_traits<char>,std::allocator<char>_> local_1c [4];\n  code *local_18;\n  void *local_c;\n  undefined1 *puStack_8;\n  undefined4 local_4;\n  \n  local_4 = 0xffffffff;\n  puStack_8 = &LAB_00445b89;\n  local_c = ExceptionList;\n  ExceptionList = &local_c;\n  pCVar2 = CWnd::GetDlgItem(param_1,0x3f0);\n  LVar3 = SendMessageA(*(HWND *)(pCVar2 + 0x20),0xf0,0,0);\n  *(LRESULT *)(param_1 + 0x16c) = LVar3;\n  *(undefined4 *)(param_1 + 0x23c) = 0;\n  FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Check_ISP_Core____004543c4);\n  iVar4 = FUN_00413580(0x473bf0);\n  if (iVar4 == 0) {\n    iVar4 = FUN_0042afa0(param_1);\n    if ((iVar4 != 0) && ((*(int *)(param_1 + 0x16c) == 0 || (*(int *)(param_1 + 0x23c) == 0)))) {\n      Sleep(200);\n      FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Set_Size_OK__0045503c);\n      FUN_0042ea60(param_1,1);\n      DAT_004731c0 = 0;\n      KillTimer(*(HWND *)(param_1 + 0x20),1);\n      ExceptionList = local_c;\n      return 1;\n    }\n    local_1c[0] = param_1._0_1_;\n    std::basic_string<char,std::char_traits<char>,std::allocator<char>_>::_Tidy(local_1c,false);\n    local_4 = 0;\n    if (iVar4 == 0) {\n      FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Program_All_Error__004544d8);\n      pcVar5 = (code *)s_Program_All_Error__004544d8;\n    }\n    else {\n      FUN_0042a690((int)param_1,local_1c);\n      pcVar5 = local_18;\n      if (local_18 == (code *)0x0) {\n        pcVar5 = _C_exref;\n      }\n      FUN_0042c8b0((CWnd *)&DAT_004730b0,(char *)pcVar5);\n      pcVar5 = local_18;\n      if (local_18 == (code *)0x0) {\n        pcVar5 = _C_exref;\n      }\n    }\n    AfxMessageBox((char *)pcVar5,0x30,0);\n    *(undefined4 *)(param_1 + 0x23c) = 0;\n    FUN_0042ea60(param_1,1);\n    DAT_004731c0 = 0;\n    KillTimer(*(HWND *)(param_1 + 0x20),1);\n    DAT_00473148 = 0;\n    SendMessageA(DAT_00473128,0x402,0,0);\n    if (local_18 != (code *)0x0) {\n      cVar1 = local_18[-1];\n      if ((cVar1 == (code)0x0) || (cVar1 == (code)0xff)) {\n        operator_delete(local_18 + -1);\n      }\n      else {\n        local_18[-1] = (code)((char)cVar1 + -1);\n      }\n    }\n  }\n  else {\n    AfxMessageBox(s_Check_ISPCore_Failed__00454394,0x30,0);\n    FUN_0042ea60(param_1,1);\n    KillTimer(*(HWND *)(param_1 + 0x20),1);\n  }\n  ExceptionList = local_c;\n  return 0;\n}\n\n",
+          "unit": "utf16-code-units"
+        },
+        "parent_evidence_id": "ev_c23517b402c1a239bfbbaad8df56a265d099bd9c5c35572adc123aa536bc86ad",
+        "parent_operation": "analyze_function",
+        "parent_digest": "c23517b402c1a239bfbbaad8df56a265d099bd9c5c35572adc123aa536bc86ad",
+        "view_digest": "352430e52b957f44a3c6a376e66e391d65f87a05bf65b8a58693197182c97c92",
+        "artifact": {
+          "path": "/private/tmp/v50-frm-static/FRM.exe",
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "coverage": {
+          "status": "page",
+          "examined": 2365,
+          "total": 2365,
+          "next_offset": null,
+          "exhausted": true
+        },
+        "limitations": [
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+          "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+          "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+          "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+          "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+          "Pseudocode is neither original source nor guaranteed to compile.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+          "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+          "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "unknowns": []
+      },
+      "confidence": "derived",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+        "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+        "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+        "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+        "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+        "Pseudocode is neither original source nor guaranteed to compile.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+        "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+        "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ],
+      "relationship_coverage": {
+        "status": "complete",
+        "diagnostics": [
+          "Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals."
+        ]
+      },
+      "locations": [
+        {
+          "kind": "artifact-path",
+          "path": "/private/tmp/v50-frm-static/FRM.exe"
+        },
+        {
+          "kind": "address",
+          "address": "0x4358f0"
+        }
+      ],
+      "evidence_links": [
+        "ev_c23517b402c1a239bfbbaad8df56a265d099bd9c5c35572adc123aa536bc86ad"
+      ]
+    },
+    "dialog_initialization": {
+      "evidence_id": "ev_3b306b22ace62f98421d325779ace5f6131fcf92ca6c1fe6913f59c63c0e9a36",
+      "subject": {
+        "name": "FRM.exe",
+        "digest": {
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "local_path": "/private/tmp/v50-frm-static/FRM.exe",
+        "format": "pe",
+        "architecture": "x86"
+      },
+      "provider": {
+        "id": "rea-analysis-view",
+        "name": "REA analysis view projection",
+        "version": "1"
+      },
+      "analysis_profile": null,
+      "predicate_type": "rea.analysis-view",
+      "operation": "inspect_analysis_view",
+      "parameters": {
+        "parent_evidence_id": "ev_36c981115d78a3171534e4adfe13b9ab669b4c918700643bdb0efc6a4d219884",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 16000
+        }
+      },
+      "raw_result": null,
+      "normalized_result": {
+        "kind": "native",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 16000
+        },
+        "procedure_address": "0x433320",
+        "item": {
+          "text": "\nundefined4 __fastcall FUN_00433320(CDialog *param_1)\n\n{\n  char cVar1;\n  undefined4 uVar2;\n  int iVar3;\n  HMENU pHVar4;\n  CMenu *pCVar5;\n  basic_string<char,struct_std::char_traits<char>,class_std::allocator<char>_> *pbVar6;\n  code *pcVar7;\n  CString local_1dc [4];\n  LPCSTR local_1d8 [2];\n  undefined4 uStack_1d0;\n  undefined4 local_1cc;\n  code *local_1c8;\n  undefined4 local_1c4;\n  undefined4 local_1c0;\n  char local_1bc [4];\n  char local_1b8 [4];\n  char local_1b4 [4];\n  char local_1b0 [4];\n  undefined4 local_1ac;\n  basic_string<char,struct_std::char_traits<char>,class_std::allocator<char>_> local_1a4 [4];\n  int local_1a0;\n  undefined4 local_19c;\n  undefined4 local_198 [6];\n  CWnd aCStack_180 [4];\n  CDialog aCStack_17c [92];\n  CString aCStack_120 [16];\n  CHAR local_110 [256];\n  void *pvStack_10;\n  void *pvStack_c;\n  undefined1 *puStack_8;\n  undefined4 local_4;\n  \n  local_4 = 0xffffffff;\n  puStack_8 = &LAB_0044587a;\n  pvStack_c = ExceptionList;\n  local_1bc = (char  [4])s_USB_CAM5000_INI_00454a38._0_4_;\n  local_1b8 = (char  [4])s_USB_CAM5000_INI_00454a38._4_4_;\n  local_1b4 = (char  [4])s_USB_CAM5000_INI_00454a38._8_4_;\n  local_1b0 = (char  [4])s_USB_CAM5000_INI_00454a38._12_4_;\n  local_1ac = 0;\n  ExceptionList = &pvStack_c;\n  CString::CString((CString *)&local_1c0);\n  local_4 = 0;\n  CFileFind::CFileFind((CFileFind *)local_198);\n  local_4 = CONCAT31(local_4._1_3_,1);\n  uVar2 = FUN_00419ab0();\n  if ((char)uVar2 == '\\0') {\n    AfxMessageBox(s__Net_Framework2_0_is_not_install_00454dec,0,0);\n                    /* WARNING: Subroutine does not return */\n    exit(1);\n  }\n  DAT_004730ac = param_1;\n  CToolTipCtrl::Create((CToolTipCtrl *)(param_1 + 0xc64),(CWnd *)param_1,0);\n  SendMessageA(*(HWND *)(param_1 + 0xc84),0x401,1,0);\n  FUN_004143f0(&DAT_00473bf0,(char *)0x0,1);\n  FUN_004341f0();\n  pcVar7 = DAT_00473c04;\n  if (DAT_00473c04 == (code *)0x0) {\n    pcVar7 = _C_exref;\n  }\n  wsprintfA(local_110,s__s__s_0045211c,pcVar7,local_1bc);\n  iVar3 = CFileFind::FindFile((CFileFind *)local_198,local_110,0);\n  if (iVar3 == 0) {\n    pcVar7 = DAT_00473bf4;\n    if (DAT_00473bf4 == (code *)0x0) {\n      pcVar7 = _C_exref;\n    }\n    wsprintfA(local_110,s__s__s_0045211c,pcVar7,local_1bc);\n  }\n  iVar3 = Load_IniFile(local_110);\n  if (iVar3 != 0) {\n    MessageBoxA((HWND)0x0,s_USB_device_not_connected__Can_t_d_004549f0,&DAT_004538f0,0x30);\n  }\n  FUN_00401080(param_1);\n  pHVar4 = GetSystemMenu(*(HWND *)(param_1 + 0x20),0);\n  pCVar5 = CMenu::FromHandle(pHVar4);\n  if (pCVar5 != (CMenu *)0x0) {\n    CString::CString((CString *)local_1d8);\n    local_4 = CONCAT31(local_4._1_3_,2);\n    CString::LoadStringA((CString *)local_1d8,0x65);\n    if (*(int *)(local_1d8[0] + -8) != 0) {\n      AppendMenuA(*(HMENU *)(pCVar5 + 4),0x800,0,(LPCSTR)0x0);\n      AppendMenuA(*(HMENU *)(pCVar5 + 4),0,0x10,local_1d8[0]);\n    }\n    local_4 = CONCAT31(local_4._1_3_,1);\n    CString::~CString((CString *)local_1d8);\n  }\n  SendMessageA(*(HWND *)(param_1 + 0x20),0x80,1,*(LPARAM *)(param_1 + 0x22c));\n  SendMessageA(*(HWND *)(param_1 + 0x20),0x80,0,*(LPARAM *)(param_1 + 0x22c));\n  FUN_00433aa0((undefined4 *)(param_1 + 0x228),(undefined4 *)(param_1 + 0x224));\n  CString::CString(local_1dc);\n  local_4 = CONCAT31(local_4._1_3_,3);\n  if (*(short *)(param_1 + 0x224) == 0) {\n    CString::Format(local_1dc,(char *)local_1dc);\n  }\n  else {\n    CString::Format((CString *)(uint)*(ushort *)(param_1 + 0x228),(char *)local_1dc);\n  }\n  if (DAT_00473c60 == 1) {\n    CString::operator+=((CString *)local_1d8,s__MP_Mode__00454dd0);\n  }\n  CWnd::SetWindowTextA((CWnd *)param_1,local_1d8[0]);\n  local_1c8 = (code *)0x0;\n  local_1cc = CONCAT31(local_1cc._1_3_,uStack_1d0._3_1_);\n  local_1c4 = 0;\n  local_1c0 = 0;\n  pbVar6 = (basic_string<char,struct_std::char_traits<char>,class_std::allocator<char>_> *)\n           std::operator+(local_1a4,&DAT_00473bf0);\n  std::basic_string<char,std::char_traits<char>,std::allocator<char>_>::assign\n            ((basic_string<char,std::char_traits<char>,std::allocator<char>_> *)&local_1cc,pbVar6,0,\n             *(uint *)npos_exref);\n  if (local_1a0 != 0) {\n    cVar1 = *(char *)(local_1a0 + -1);\n    if ((cVar1 == '\\0') || (cVar1 == -1)) {\n      operator_delete((char *)(local_1a0 + -1));\n    }\n    else {\n      *(char *)(local_1a0 + -1) = cVar1 + -1;\n    }\n  }\n  local_1a0 = 0;\n  local_19c = 0;\n  local_198[0] = 0;\n  pcVar7 = local_1c8;\n  if (local_1c8 == (code *)0x0) {\n    pcVar7 = _C_exref;\n  }\n  FUN_00410240((char *)pcVar7,(int)(param_1 + 0x120));\n  FUN_0040f840(param_1 + 0xcc0,0,\n               (basic_string<char,std::char_traits<char>,std::allocator<char>_> *)&DAT_00473c10);\n  (**(code **)(*(int *)(param_1 + 0x230) + 0xd8))(0x81);\n  FUN_00419d60(aCStack_17c,(CWnd *)0x0);\n  local_4 = CONCAT31(local_4._1_3_,6);\n  FUN_00434150(param_1,aCStack_17c);\n  (**(code **)(*(int *)(param_1 + 0x470) + 0xd8))(0x82);\n  CWnd::ShowWindow(aCStack_180,0);\n  FUN_00401cb0(&DAT_00473150,s_Basic_00454dbc,0,param_1 + 0x230);\n  FUN_00401cb0(&DAT_00473150,s_Advanced_00454db0,1,param_1 + 0x470);\n  FUN_00401bb0(&DAT_00473150,0);\n  FUN_00433cd0((int)param_1);\n  puStack_8._0_1_ = 7;\n  CString::~CString(aCStack_120);\n  puStack_8 = (undefined1 *)CONCAT31(puStack_8._1_3_,4);\n  CDialog::~CDialog((CDialog *)aCStack_180);\n  if (uStack_1d0 != 0) {\n    cVar1 = *(char *)(uStack_1d0 + -1);\n    if ((cVar1 == '\\0') || (cVar1 == -1)) {\n      operator_delete((char *)(uStack_1d0 + -1));\n    }\n    else {\n      *(char *)(uStack_1d0 + -1) = cVar1 + -1;\n    }\n  }\n  uStack_1d0 = 0;\n  local_1cc = 0;\n  local_1c8 = (code *)0x0;\n  puStack_8._0_1_ = 1;\n  CString::~CString((CString *)&stack0xfffffe20);\n  puStack_8 = (undefined1 *)((uint)puStack_8._1_3_ << 8);\n  CFileFind::~CFileFind((CFileFind *)&local_19c);\n  puStack_8 = (undefined1 *)0xffffffff;\n  CString::~CString((CString *)&local_1c4);\n  ExceptionList = pvStack_10;\n  return 1;\n}\n\n",
+          "unit": "utf16-code-units"
+        },
+        "parent_evidence_id": "ev_36c981115d78a3171534e4adfe13b9ab669b4c918700643bdb0efc6a4d219884",
+        "parent_operation": "analyze_function",
+        "parent_digest": "36c981115d78a3171534e4adfe13b9ab669b4c918700643bdb0efc6a4d219884",
+        "view_digest": "e505b6ccd89fdfa8f08e07270a6b5824092e14d9262e892230e822693e4d4f3d",
+        "artifact": {
+          "path": "/private/tmp/v50-frm-static/FRM.exe",
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "coverage": {
+          "status": "page",
+          "examined": 5823,
+          "total": 5823,
+          "next_offset": null,
+          "exhausted": true
+        },
+        "limitations": [
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "Ghidra Listing reports a terminal call at 0x4333a3 to EXTERNAL:0x1a1 MSVCRT.DLL::exit (external=true, thunk=false, hasNoReturn=true); fallthrough is excluded by Ghidra's flow model. This records Ghidra's FunctionManager flag, not an independent verification that the callee cannot return.",
+          "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+          "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+          "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+          "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+          "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+          "Pseudocode is neither original source nor guaranteed to compile.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+          "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+          "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "unknowns": []
+      },
+      "confidence": "derived",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "Ghidra Listing reports a terminal call at 0x4333a3 to EXTERNAL:0x1a1 MSVCRT.DLL::exit (external=true, thunk=false, hasNoReturn=true); fallthrough is excluded by Ghidra's flow model. This records Ghidra's FunctionManager flag, not an independent verification that the callee cannot return.",
+        "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+        "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+        "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+        "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+        "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+        "Pseudocode is neither original source nor guaranteed to compile.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+        "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+        "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ],
+      "relationship_coverage": {
+        "status": "partial",
+        "limitations": [
+          "Ghidra's callee inventory omits targets of 2 call reference(s) or decoded call(s) without destinations."
+        ],
+        "limited_directions": [
+          "callees"
+        ],
+        "diagnostics": [
+          "Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals."
+        ]
+      },
+      "locations": [
+        {
+          "kind": "artifact-path",
+          "path": "/private/tmp/v50-frm-static/FRM.exe"
+        },
+        {
+          "kind": "address",
+          "address": "0x433320"
+        }
+      ],
+      "evidence_links": [
+        "ev_36c981115d78a3171534e4adfe13b9ab669b4c918700643bdb0efc6a4d219884"
+      ]
+    },
+    "set_size_caller": {
+      "evidence_id": "ev_3832d42f739fccd4d36160ab8747652102c876f79863066473da2f7fe57fd868",
+      "subject": {
+        "name": "FRM.exe",
+        "digest": {
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "local_path": "/private/tmp/v50-frm-static/FRM.exe",
+        "format": "pe",
+        "architecture": "x86"
+      },
+      "provider": {
+        "id": "rea-analysis-view",
+        "name": "REA analysis view projection",
+        "version": "1"
+      },
+      "analysis_profile": null,
+      "predicate_type": "rea.analysis-view",
+      "operation": "inspect_analysis_view",
+      "parameters": {
+        "parent_evidence_id": "ev_d996c6544ea0c73dcac29a6a4f1e3bc59506425c1eecd98de83415deaf4070de",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 8000
+        }
+      },
+      "raw_result": null,
+      "normalized_result": {
+        "kind": "native",
+        "view": {
+          "kind": "native",
+          "facet": "pseudocode",
+          "offset": 0,
+          "limit": 8000
+        },
+        "procedure_address": "0x435440",
+        "item": {
+          "text": "\nvoid __fastcall FUN_00435440(CWnd *param_1)\n\n{\n  CWinThread *pCVar1;\n  CWnd *this;\n  int iVar2;\n  char *unaff_EDI;\n  \n  pCVar1 = AfxGetThread();\n  if (pCVar1 != (CWinThread *)0x0) {\n    (**(code **)(*(int *)pCVar1 + 0x7c))();\n  }\n  this = (CWnd *)FUN_00401c80(&DAT_00473150,0);\n  CWnd::UpdateData(param_1,1);\n  iVar2 = FUN_00435ad0((int)param_1);\n  if ((iVar2 == 0) || (iVar2 = FUN_00435890(this), iVar2 == 0)) {\n    return;\n  }\n  iVar2 = FUN_00435b00(param_1);\n  if (iVar2 != 6) {\n    if (DAT_00473e78 == 0) {\n      FUN_0042ea60(this,1);\n      DAT_004731c0 = 0;\n      KillTimer(*(HWND *)(this + 0x20),1);\n      return;\n    }\n    *(undefined4 *)(DAT_00473e78 + 0x220) = 1;\n    DAT_004730f8 = *(int *)(param_1 + 0x68) << 10;\n    DAT_004730fc = *(int *)(param_1 + 100) << 10;\n    DAT_00473100 = *(int *)(param_1 + 0x60) << 10;\n    iVar2 = FUN_0042fb10(this,*(int *)(param_1 + 0x60) << 10,*(int *)(param_1 + 100) << 10,\n                         *(int *)(param_1 + 0x68) << 10,unaff_EDI);\n    if (iVar2 != 0) {\n      CWnd::UpdateData(param_1,0);\n      CDialog::OnOK((CDialog *)param_1);\n      DAT_00473100 = *(int *)(param_1 + 0x60) << 10;\n      DAT_004730fc = *(int *)(param_1 + 100) << 10;\n      DAT_004730f8 = *(int *)(param_1 + 0x68) << 10;\n      FUN_004358f0(this);\n      return;\n    }\n  }\n  FUN_0042ea60(this,1);\n  DAT_004731c0 = 0;\n  KillTimer(*(HWND *)(this + 0x20),1);\n  return;\n}\n\n",
+          "unit": "utf16-code-units"
+        },
+        "parent_evidence_id": "ev_d996c6544ea0c73dcac29a6a4f1e3bc59506425c1eecd98de83415deaf4070de",
+        "parent_operation": "analyze_function",
+        "parent_digest": "d996c6544ea0c73dcac29a6a4f1e3bc59506425c1eecd98de83415deaf4070de",
+        "view_digest": "58a8f8a0e689e20795d4c750add716e0089c130cd5098a35a2de23958c56b992",
+        "artifact": {
+          "path": "/private/tmp/v50-frm-static/FRM.exe",
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "coverage": {
+          "status": "page",
+          "examined": 1388,
+          "total": 1388,
+          "next_offset": null,
+          "exhausted": true
+        },
+        "limitations": [
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+          "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+          "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+          "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+          "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+          "Pseudocode is neither original source nor guaranteed to compile.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+          "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+          "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "unknowns": []
+      },
+      "confidence": "derived",
+      "authority": "shipped-artifact",
+      "environment": null,
+      "limitations": [
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+        "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+        "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+        "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+        "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+        "Pseudocode is neither original source nor guaranteed to compile.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+        "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+        "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ],
+      "relationship_coverage": {
+        "status": "partial",
+        "limitations": [
+          "Ghidra's callee inventory omits targets of 1 call reference(s) or decoded call(s) without destinations."
+        ],
+        "limited_directions": [
+          "callees"
+        ],
+        "diagnostics": [
+          "Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals."
+        ]
+      },
+      "locations": [
+        {
+          "kind": "artifact-path",
+          "path": "/private/tmp/v50-frm-static/FRM.exe"
+        },
+        {
+          "kind": "address",
+          "address": "0x435440"
+        }
+      ],
+      "evidence_links": [
+        "ev_d996c6544ea0c73dcac29a6a4f1e3bc59506425c1eecd98de83415deaf4070de"
+      ]
+    }
+  },
+  "usb_library_imports": [
+    {
+      "index": 0,
+      "name": "USB_CAM.dll",
+      "name_rva": 326048,
+      "original_first_thunk_rva": 324032,
+      "first_thunk_rva": 288700,
+      "time_date_stamp": 0,
+      "forwarder_chain": 0,
+      "location": {
+        "offset": 321752,
+        "bytes": 20
+      },
+      "functions": [
+        {
+          "hint": 73,
+          "name": "?FrmPowerOff@@YAHXZ",
+          "ordinal": null,
+          "ilt_rva": 324032,
+          "iat_rva": 288700,
+          "thunk_hex": "4f644"
+        },
+        {
+          "hint": 84,
+          "name": "?FrmTimeSync@@YAXXZ",
+          "ordinal": null,
+          "ilt_rva": 324036,
+          "iat_rva": 288704,
+          "thunk_hex": "4f65a"
+        },
+        {
+          "hint": 86,
+          "name": "?Frm_Complete@@YAHXZ",
+          "ordinal": null,
+          "ilt_rva": 324040,
+          "iat_rva": 288708,
+          "thunk_hex": "4f670"
+        },
+        {
+          "hint": 53,
+          "name": "?FrmCustomStatusSet@@YAHK@Z",
+          "ordinal": null,
+          "ilt_rva": 324044,
+          "iat_rva": 288712,
+          "thunk_hex": "4f688"
+        },
+        {
+          "hint": 91,
+          "name": "?Frm_RsvAllocSizeSet@@YAHG@Z",
+          "ordinal": null,
+          "ilt_rva": 324048,
+          "iat_rva": 288716,
+          "thunk_hex": "4f6a6"
+        },
+        {
+          "hint": 85,
+          "name": "?FrmUserDiskFormat@@YAHXZ",
+          "ordinal": null,
+          "ilt_rva": 324052,
+          "iat_rva": 288720,
+          "thunk_hex": "4f6c6"
+        },
+        {
+          "hint": 64,
+          "name": "?FrmNandFormat@@YAHXZ",
+          "ordinal": null,
+          "ilt_rva": 324056,
+          "iat_rva": 288724,
+          "thunk_hex": "4f6e2"
+        },
+        {
+          "hint": 79,
+          "name": "?FrmRsvAllocate@@YAHKKKK@Z",
+          "ordinal": null,
+          "ilt_rva": 324060,
+          "iat_rva": 288728,
+          "thunk_hex": "4f6fa"
+        },
+        {
+          "hint": 23,
+          "name": "?CreateDirctoryResourceFile@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324064,
+          "iat_rva": 288732,
+          "thunk_hex": "4f718"
+        },
+        {
+          "hint": 20,
+          "name": "?CloseResourceFile@@YAHXZ",
+          "ordinal": null,
+          "ilt_rva": 324068,
+          "iat_rva": 288736,
+          "thunk_hex": "4f740"
+        },
+        {
+          "hint": 43,
+          "name": "?FRMGetRsvFileSize@@YAHPAEPAI1@Z",
+          "ordinal": null,
+          "ilt_rva": 324072,
+          "iat_rva": 288740,
+          "thunk_hex": "4f75c"
+        },
+        {
+          "hint": 24,
+          "name": "?CreateFileResourceFile@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324076,
+          "iat_rva": 288744,
+          "thunk_hex": "4f620"
+        },
+        {
+          "hint": 178,
+          "name": "?WriteFileBuffer2Dram@@YAHPAEK@Z",
+          "ordinal": null,
+          "ilt_rva": 324080,
+          "iat_rva": 288748,
+          "thunk_hex": "4f5fc"
+        },
+        {
+          "hint": 75,
+          "name": "?FrmRSVImgGet@@YAHIPBD0H@Z",
+          "ordinal": null,
+          "ilt_rva": 324084,
+          "iat_rva": 288752,
+          "thunk_hex": "4f5de"
+        },
+        {
+          "hint": 28,
+          "name": "?DeleteResourceDirectory@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324088,
+          "iat_rva": 288756,
+          "thunk_hex": "4f5b8"
+        },
+        {
+          "hint": 77,
+          "name": "?FrmRawCRead@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324092,
+          "iat_rva": 288760,
+          "thunk_hex": "4f59e"
+        },
+        {
+          "hint": 66,
+          "name": "?FrmNandFwRead@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324096,
+          "iat_rva": 288764,
+          "thunk_hex": "4f582"
+        },
+        {
+          "hint": 94,
+          "name": "?GetBulkDataFromFW@@YAHPAEIPAXAAH@Z",
+          "ordinal": null,
+          "ilt_rva": 324100,
+          "iat_rva": 288768,
+          "thunk_hex": "4f55c"
+        },
+        {
+          "hint": 82,
+          "name": "?FrmSpiFlashImageRead@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324104,
+          "iat_rva": 288772,
+          "thunk_hex": "4f53a"
+        },
+        {
+          "hint": 65,
+          "name": "?FrmNandFwProgram@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324108,
+          "iat_rva": 288776,
+          "thunk_hex": "4f51c"
+        },
+        {
+          "hint": 78,
+          "name": "?FrmRawCWrite@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324112,
+          "iat_rva": 288780,
+          "thunk_hex": "4f502"
+        },
+        {
+          "hint": 35,
+          "name": "?DramParameterWrite@@YAHXZ",
+          "ordinal": null,
+          "ilt_rva": 324116,
+          "iat_rva": 288784,
+          "thunk_hex": "4f4e4"
+        },
+        {
+          "hint": 55,
+          "name": "?FrmDirEx@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324120,
+          "iat_rva": 288788,
+          "thunk_hex": "4f4ce"
+        },
+        {
+          "hint": 63,
+          "name": "?FrmNandDetect@@YAHXZ",
+          "ordinal": null,
+          "ilt_rva": 324124,
+          "iat_rva": 288792,
+          "thunk_hex": "4f4b6"
+        },
+        {
+          "hint": 68,
+          "name": "?FrmNandTotalErase@@YAHK@Z",
+          "ordinal": null,
+          "ilt_rva": 324128,
+          "iat_rva": 288796,
+          "thunk_hex": "4f498"
+        },
+        {
+          "hint": 5,
+          "name": "?ChangeCurrentDirectory@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324132,
+          "iat_rva": 288800,
+          "thunk_hex": "4f474"
+        },
+        {
+          "hint": 110,
+          "name": "?GetFileInfoBulkPackCount@@YAHPADAAG@Z",
+          "ordinal": null,
+          "ilt_rva": 324136,
+          "iat_rva": 288804,
+          "thunk_hex": "4f44a"
+        },
+        {
+          "hint": 119,
+          "name": "?GetResourceFileFromFW@@YAHPAEK@Z",
+          "ordinal": null,
+          "ilt_rva": 324140,
+          "iat_rva": 288808,
+          "thunk_hex": "4f426"
+        },
+        {
+          "hint": 111,
+          "name": "?GetFreeVfsSpace@@YAHAAI@Z",
+          "ordinal": null,
+          "ilt_rva": 324144,
+          "iat_rva": 288812,
+          "thunk_hex": "4f780"
+        },
+        {
+          "hint": 22,
+          "name": "?CompareFiles@@YAHPAD0_NAAK@Z",
+          "ordinal": null,
+          "ilt_rva": 324148,
+          "iat_rva": 288816,
+          "thunk_hex": "4f79e"
+        },
+        {
+          "hint": 39,
+          "name": "?EnableEncryptImg@@YAXH@Z",
+          "ordinal": null,
+          "ilt_rva": 324152,
+          "iat_rva": 288820,
+          "thunk_hex": "4f40a"
+        },
+        {
+          "hint": 48,
+          "name": "?FrmChcekIspCon@@YAHPAD0KKK@Z",
+          "ordinal": null,
+          "ilt_rva": 324156,
+          "iat_rva": 288824,
+          "thunk_hex": "4f3ea"
+        },
+        {
+          "hint": 83,
+          "name": "?FrmStorageTypeSelect@@YAHKK@Z",
+          "ordinal": null,
+          "ilt_rva": 324160,
+          "iat_rva": 288828,
+          "thunk_hex": "4f3c8"
+        },
+        {
+          "hint": 60,
+          "name": "?FrmGetDevName@@YAIIPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324164,
+          "iat_rva": 288832,
+          "thunk_hex": "4f3ac"
+        },
+        {
+          "hint": 21,
+          "name": "?CompareDecryptFile@@YAHPAD0_NAAK@Z",
+          "ordinal": null,
+          "ilt_rva": 324168,
+          "iat_rva": 288836,
+          "thunk_hex": "4f7be"
+        },
+        {
+          "hint": 50,
+          "name": "?FrmCustomGpioId@@YAHK@Z",
+          "ordinal": null,
+          "ilt_rva": 324172,
+          "iat_rva": 288840,
+          "thunk_hex": "4f7e4"
+        },
+        {
+          "hint": 51,
+          "name": "?FrmCustomMethod@@YAHK@Z",
+          "ordinal": null,
+          "ilt_rva": 324176,
+          "iat_rva": 288844,
+          "thunk_hex": "4f800"
+        },
+        {
+          "hint": 52,
+          "name": "?FrmCustomMode@@YAHK@Z",
+          "ordinal": null,
+          "ilt_rva": 324180,
+          "iat_rva": 288848,
+          "thunk_hex": "4f81c"
+        },
+        {
+          "hint": 92,
+          "name": "?Frm_Start@@YAHXZ",
+          "ordinal": null,
+          "ilt_rva": 324184,
+          "iat_rva": 288852,
+          "thunk_hex": "4f836"
+        },
+        {
+          "hint": 90,
+          "name": "?Frm_ISPVersionGet@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324188,
+          "iat_rva": 288856,
+          "thunk_hex": "4f84a"
+        },
+        {
+          "hint": 54,
+          "name": "?FrmDecryptImg@@YAHPBD0H@Z",
+          "ordinal": null,
+          "ilt_rva": 324192,
+          "iat_rva": 288860,
+          "thunk_hex": "4f38e"
+        },
+        {
+          "hint": 57,
+          "name": "?FrmEncryptImg@@YAHPBD0H@Z",
+          "ordinal": null,
+          "ilt_rva": 324196,
+          "iat_rva": 288864,
+          "thunk_hex": "4f370"
+        },
+        {
+          "hint": 129,
+          "name": "?Load_IniFile@@YAHPAD@Z",
+          "ordinal": null,
+          "ilt_rva": 324200,
+          "iat_rva": 288868,
+          "thunk_hex": "4f86a"
+        },
+        {
+          "hint": 80,
+          "name": "?FrmRsvaHeaderGet@@YAHPAEK@Z",
+          "ordinal": null,
+          "ilt_rva": 324204,
+          "iat_rva": 288872,
+          "thunk_hex": "4f884"
+        },
+        {
+          "hint": 62,
+          "name": "?FrmNandBlockInfoGet@@YAHPAE@Z",
+          "ordinal": null,
+          "ilt_rva": 324208,
+          "iat_rva": 288876,
+          "thunk_hex": "4f8a4"
+        },
+        {
+          "hint": 76,
+          "name": "?FrmRSVUpdateTurbo@@YAHIPBD0H@Z",
+          "ordinal": null,
+          "ilt_rva": 324212,
+          "iat_rva": 288880,
+          "thunk_hex": "4f8c6"
+        },
+        {
+          "hint": 89,
+          "name": "?Frm_ISPNandBadBlkTotalGet@@YAHPAK@Z",
+          "ordinal": null,
+          "ilt_rva": 324216,
+          "iat_rva": 288884,
+          "thunk_hex": "4f8e8"
+        },
+        {
+          "hint": 88,
+          "name": "?Frm_ISPNandBadBlkTest@@YAHPAKH@Z",
+          "ordinal": null,
+          "ilt_rva": 324220,
+          "iat_rva": 288888,
+          "thunk_hex": "4f910"
+        },
+        {
+          "hint": 87,
+          "name": "?Frm_ISPNandBadBlkDataUpload@@YAHPAKPADH@Z",
+          "ordinal": null,
+          "ilt_rva": 324224,
+          "iat_rva": 288892,
+          "thunk_hex": "4f934"
+        },
+        {
+          "hint": 152,
+          "name": "?SetPlatformId@@YAHK@Z",
+          "ordinal": null,
+          "ilt_rva": 324228,
+          "iat_rva": 288896,
+          "thunk_hex": "4f962"
+        },
+        {
+          "hint": 67,
+          "name": "?FrmNandInfoHeaderGet@@YAHPAEK@Z",
+          "ordinal": null,
+          "ilt_rva": 324232,
+          "iat_rva": 288900,
+          "thunk_hex": "4f97c"
+        }
+      ]
+    }
+  ],
+  "import_evidence_id": "ev_464fa2ce259fa8e2acedfacae0067cf9f93a963e16223a5b24b81fbafee39987"
+}
