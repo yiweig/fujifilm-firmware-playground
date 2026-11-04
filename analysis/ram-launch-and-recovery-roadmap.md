@@ -327,6 +327,14 @@ selector word), transitive entry callees, and exit behavior remain
 unqualified, and the UVC debug-event producer trace remains the safer
 unexplored alternative.
 
+Follow-up 2026-11-04 (offline): the [UVC producer trace](uvc-debug-producers-trace.md)
+closes route A. Every producer of the UVC-registration debug event
+(`DbgMsg_Thread` timer, `dm` shell command, UVC service thread, handler
+self-posts) requires a pre-existing shell, calibration/debug, or UVC
+context; there is no retail-reachable trigger. The calibration observation
+is the remaining concrete R1 candidate, with the record-fixture risk bounds
+above as its acceptance test. It remains a deliberate user decision.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

@@ -187,6 +187,10 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/uvc-debug-producers-trace.md`](analysis/uvc-debug-producers-trace.md)
+  — all `f100000f`/`10e7` producers traced (DbgMsg thread, `dm` shell command,
+  UVC service thread, handler self-posts); each requires a pre-existing
+  shell/calibration/UVC context. No retail-reachable UVC trigger; lead closed.
 - [`analysis/clbt-init-record-selection.md`](analysis/clbt-init-record-selection.md)
   — `InitClbtData` emulated with the live record as fixture: selector takes
   its no-candidate exit (no item auto-selected, item-20 exception cannot

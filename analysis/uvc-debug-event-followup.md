@@ -62,6 +62,12 @@ whether a normal retail action or already-qualified transport can cause
 f100000f/10e7 without calibration entry or persistent writes. Do not assume that
 posting an event in an emulator demonstrates host access to it.
 
+**Closed 2026-11-04:** the [producer trace](uvc-debug-producers-trace.md)
+identifies all producers — `DbgMsg_Thread` timer, `dm` shell command, UVC
+service thread, handler self-posts — and every one requires a pre-existing
+shell, calibration/debug, or UVC context. No retail-reachable producer
+exists among them; this lead is a bounded negative.
+
 Only after reachability is established should the UVC callback/request lifecycle
 and an explicit route from that service to loader selection be qualified. This
 is a promising software relationship to inspect, not a demonstrated RAM-boot
