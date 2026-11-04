@@ -187,6 +187,11 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/usb-cold-enumeration-matrix.md`](analysis/usb-cold-enumeration-matrix.md)
+  — live passive enumeration matrix: shutter chords (both forms), PLAY alone,
+  USB-only power without battery; only normal `04cb:030a` ever appeared, no
+  `2aad:6500` or intermediate identity. No DISP/BACK button exists on this
+  body. Calibration combo deliberately not tested; cold recovery still open.
 - [`analysis/macos-imagecapture-ptp-route.md`](analysis/macos-imagecapture-ptp-route.md)
   — possible PTP route through Apple's camera service; SDK/session catalog
   boundary inspected, with no framework session or camera request performed.

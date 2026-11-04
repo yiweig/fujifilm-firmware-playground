@@ -293,6 +293,16 @@ do not qualify complete entry. This supplies no new retail override. A specific
 next separate question is the caller/configuration gate for UVC service callback
 registration `4061b0bc`, before considering any request through that transport.
 
+Follow-up 2026-11-04: a live [cold enumeration matrix](usb-cold-enumeration-matrix.md)
+records passive registry observations for USB-first power-on, shutter-held
+USB insertion, shutter-held power-on, PLAY-held power-on, and USB power with
+the battery removed. Only normal `04cb:030a` ever appeared; no loader or
+intermediate identity was observed, and the body has no DISP/BACK button for
+the classic Fujifilm update chord. These forms are bounded negatives, not a
+retry list. The calibration combination remains untested by design, gated on
+the factory cold-data read. R1/R2/C1 remain open; C1 loses several cheap
+hypotheses rather than gaining an entry.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically
