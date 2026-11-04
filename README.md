@@ -217,6 +217,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/dram-dump-mining.md`](analysis/dram-dump-mining.md)
+  — from the DRAM dump: internal layout solved (512 MiB; headers 2 +
+  reserved 487/45/261 = Firmware1 at block 795, length = image size) and
+  **Firmware2 is empty** (start 2048, zero length/blocks/checksums) — no
+  fallback copy exists on this unit. Scratch-RAM candidate identified in
+  the 2.4 MiB zero gap for the first write/readback test.
 - [`analysis/loader-memory-read-live.md`](analysis/loader-memory-read-live.md)
   — loader protocol live from the VM: boot query returns method 2; memory
   reads succeed for 32-byte-aligned DRAM (up to 64 KiB/transfer; full

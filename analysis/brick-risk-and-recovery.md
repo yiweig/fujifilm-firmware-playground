@@ -277,6 +277,16 @@ unproven**. It does not clear the cold-recovery safety gate. Details and pinned
 sources are in
 [`spca6500-package-and-recovery-comparison.md`](spca6500-package-and-recovery-comparison.md).
 
+Follow-up (2026-11-04, live): the [DRAM dump mining](dram-dump-mining.md)
+recovers this unit's parsed `NAND RSV` header from running memory:
+Firmware1 sits at block 795 with length equal to the packaged image, while
+**Firmware2's start is the end-of-device sentinel (block 2048 of 2048)
+with zero length, blocks, and checksums — the slot is empty**. The
+"Firmware2 preserved" safeguard therefore preserves nothing bootable on
+this camera, and no cold-boot selector could rescue a corrupted
+Firmware1 from a second copy. This hardens, and does not change, the
+no-flash recommendation.
+
 ## Failure modes
 
 | Failure point | Likely result | Present confidence |
