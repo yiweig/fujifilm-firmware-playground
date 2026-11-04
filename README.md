@@ -217,6 +217,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/loader-hijack-test-live.md`](analysis/loader-hijack-test-live.md)
+  — **first code execution**: handler slots patched to a scratch trampoline
+  at `0x41100040`; it ran 13 times (counter in scratch), forwarding to the
+  real handler throughout; slots restored/verified (brief CPU-cache lag
+  observed, no DRAM mirror). Execution inside the live loader is proven
+  without the destructive upload/run handoff.
 - [`analysis/loader-write-test-live.md`](analysis/loader-write-test-live.md)
   — first loader write: 32-byte pattern to scratch `0x41100000` via `0x04f5`,
   read-back identical and stable over a 20 s hold (usbmon-captured).

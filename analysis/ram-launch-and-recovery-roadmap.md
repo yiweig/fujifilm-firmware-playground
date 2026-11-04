@@ -367,6 +367,18 @@ qualified on this unit. What remains before execution is payload design
 loader environment, or a qualified use of the receiver's own `0x04f7`
 handoff. SRAM/low-memory contents (R2's bytes) are still unread.
 
+Follow-up 2026-11-04 (live execution): the [hijack test](loader-hijack-test-live.md)
+ran scratch-resident code inside the live loader: the USB setup handler
+slots were pointed at a counter-incrementing trampoline that tail-calls
+the original handler. It executed 13 times with no malfunction, was
+restored and read-back-verified, and a post-test dump found no mirrored
+pointer (the brief post-restore firing was CPU cache retention). This is
+an execution primitive that neither replaces the running environment
+(nor needs the `0x04f7` handoff) nor depends on the unreadable low
+helper. R4's remaining work is payload design in USB dispatch context —
+most valuably, a forwarding routine that stages SRAM/low-memory bytes
+into DRAM for readout, which would close R2 with hardware-true data.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

@@ -114,6 +114,65 @@ class Loader:
         if written != len(data):
             raise SystemExit(f'bulk OUT stalled at {written}/{len(data)} bytes')
 
+    TRAMP_ADDR = 0x41100040
+    COUNTER_ADDR = 0x41100100
+    HANDLER = 0x401E1280
+    # Slot blocks (32B, aligned) containing the target-0 handler words for
+    # categories +0x2c and +0x54: (block_addr, word_offset_in_block).
+    SLOT_BLOCKS = [(0x40FC7BA0, 4), (0x40FC7BC0, 12)]
+    TRAMP_WORDS = [0xE92D0003, 0xE3000100, 0xE3440110, 0xE5901000, 0xE2811001,
+                   0xE5801000, 0xE8BD0003, 0xE301C280, 0xE344C01E, 0xE12FFF1C]
+
+    def _write_block32(self, block: int, data: bytes):
+        if block not in (b for b, _ in self.SLOT_BLOCKS) or len(data) != 32:
+            raise SystemExit('block write outside hijack slot allowlist')
+        payload = struct.pack('<II', 32, block)
+        sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F5, payload, timeout=TIMEOUT_MS)
+        if sent != len(payload):
+            raise SystemExit('slot setup: short control write')
+        if self.dev.write(EP_OUT, data, timeout=TIMEOUT_MS) != 32:
+            raise SystemExit('slot write: short bulk OUT')
+
+    def hijack_test(self):
+        tramp = b''.join(struct.pack('<I', w) for w in self.TRAMP_WORDS)
+        # Stage trampoline + zeroed counter in scratch (normal write path).
+        self.write_mem(self.TRAMP_ADDR, tramp)
+        self.write_mem(self.COUNTER_ADDR, bytes(32))
+        originals = []
+        for block, off in self.SLOT_BLOCKS:
+            data = self.read_mem(block, 32)
+            word = struct.unpack_from('<I', data, off)[0]
+            if word != self.HANDLER:
+                raise SystemExit(f'slot in block 0x{block:08x} is 0x{word:08x}, expected handler; abort')
+            originals.append(data)
+        count_mid = None
+        try:
+            for (block, off), _orig in zip(self.SLOT_BLOCKS, originals):
+                data = bytearray(self.read_mem(block, 32))
+                struct.pack_into('<I', data, off, self.TRAMP_ADDR)
+                self._write_block32(block, bytes(data))
+            print('slots patched to trampoline; triggering via 2 bootqueries')
+            self.bootquery()
+            self.bootquery()
+            count_mid = struct.unpack_from('<I', self.read_mem(self.COUNTER_ADDR, 32))[0]
+            print(f'counter after triggers: {count_mid}')
+        finally:
+            for (block, _off), orig in zip(self.SLOT_BLOCKS, originals):
+                self._write_block32(block, orig)
+            print('slots restored')
+        for (block, off), orig in zip(self.SLOT_BLOCKS, originals):
+            now = self.read_mem(block, 32)
+            if now != orig:
+                raise SystemExit(f'slot block 0x{block:08x} restore mismatch')
+        self.bootquery()
+        count_end = struct.unpack_from('<I', self.read_mem(self.COUNTER_ADDR, 32))[0]
+        print(f'counter after restore + 1 bootquery: {count_end}')
+        if not count_mid:
+            raise SystemExit('HIJACK DID NOT FIRE (counter 0); restore verified')
+        if count_end != count_mid:
+            raise SystemExit('counter changed after restore; restore ineffective')
+        print(f'HIJACK TEST PASS: handler intercepted {count_mid} time(s), trampoline executed, restore effective')
+
     def write_test(self, addr: int, hold_s: int):
         """Read, write pattern, read back, hold, re-read. One session."""
         import time
@@ -179,6 +238,7 @@ def main():
     mode.add_argument('--read', nargs=3, metavar=('ADDR', 'LEN', 'OUT'))
     mode.add_argument('--read-chunked', nargs=4, metavar=('ADDR', 'LEN', 'OUT', 'CHUNK'))
     mode.add_argument('--write-test', nargs=2, metavar=('ADDR', 'HOLD_S'))
+    mode.add_argument('--hijack-test', action='store_true')
     args = parser.parse_args()
     if sys.platform != 'linux':
         raise SystemExit('Linux only: run inside the passthrough VM/host')
@@ -191,6 +251,8 @@ def main():
             print(f'bootquery reply: {data.hex()}')
             print(f'boot method byte: {method} (2 = running firmware, per host-DLL classification)')
             print(f'address word: 0x{addr:08x} (0 expected for zero-size query)')
+        elif args.hijack_test:
+            loader.hijack_test()
         elif args.write_test:
             addr_s, hold_s = args.write_test
             loader.write_test(int(addr_s, 0), int(hold_s, 0))
