@@ -1,0 +1,138 @@
+Original 2.00 main image SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923. ELF .text matches complete source image. No code execution.
+
+
+analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40523e94: e92d401f     	push	{r0, r1, r2, r3, r4, lr}
+40523e98: e59f40e4     	ldr	r4, [pc, #0xe4]         @ 0x40523f84 <.text+0x523f84>
+40523e9c: e5943008     	ldr	r3, [r4, #0x8]
+40523ea0: e3530000     	cmp	r3, #0
+40523ea4: 0a000035     	beq	0x40523f80 <.text+0x523f80> @ imm = #0xd4
+40523ea8: e59f00d8     	ldr	r0, [pc, #0xd8]         @ 0x40523f88 <.text+0x523f88>
+40523eac: ebec7764     	bl	0x40041c44 <.text+0x41c44> @ imm = #-0x4e2270
+40523eb0: e5942008     	ldr	r2, [r4, #0x8]
+40523eb4: e59f30cc     	ldr	r3, [pc, #0xcc]         @ 0x40523f88 <.text+0x523f88>
+40523eb8: e2422001     	sub	r2, r2, #1
+40523ebc: e3520003     	cmp	r2, #3
+40523ec0: 979ff102     	ldrls	pc, [pc, r2, lsl #2]
+40523ec4: ea000014     	b	0x40523f1c <.text+0x523f1c> @ imm = #0x50
+
+
+analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40523ed8: e5932000     	ldr	r2, [r3]
+40523edc: e3822c02     	orr	r2, r2, #512
+40523ee0: ea000003     	b	0x40523ef4 <.text+0x523ef4> @ imm = #0xc
+40523ee4: e5932000     	ldr	r2, [r3]
+40523ee8: e3a01001     	mov	r1, #1
+40523eec: e3c22c02     	bic	r2, r2, #512
+40523ef0: e7ce2691     	bfi	r2, r1, #13, #2
+40523ef4: e5832000     	str	r2, [r3]
+40523ef8: ea000009     	b	0x40523f24 <.text+0x523f24> @ imm = #0x24
+40523efc: e5932000     	ldr	r2, [r3]
+40523f00: e3a01002     	mov	r1, #2
+40523f04: e3c22c02     	bic	r2, r2, #512
+40523f08: eafffff8     	b	0x40523ef0 <.text+0x523ef0> @ imm = #-0x20
+40523f0c: e5932000     	ldr	r2, [r3]
+40523f10: e7c9249f     	bfc	r2, #9, #1
+40523f14: e3822a06     	orr	r2, r2, #24576
+40523f18: eafffff5     	b	0x40523ef4 <.text+0x523ef4> @ imm = #-0x2c
+40523f1c: e59f0068     	ldr	r0, [pc, #0x68]         @ 0x40523f8c <.text+0x523f8c>
+40523f20: ebeb804f     	bl	0x40004064 <.text+0x4064> @ imm = #-0x51fec4
+40523f24: e59f305c     	ldr	r3, [pc, #0x5c]         @ 0x40523f88 <.text+0x523f88>
+40523f28: e5930000     	ldr	r0, [r3]
+40523f2c: e3c00003     	bic	r0, r0, #3
+40523f30: e7cb059f     	bfc	r0, #11, #1
+40523f34: e5830000     	str	r0, [r3]
+40523f38: ebec772a     	bl	0x40041be8 <.text+0x41be8> @ imm = #-0x4e2358
+
+
+analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40123d44: e59f3008     	ldr	r3, [pc, #0x8]          @ 0x40123d54 <.text+0x123d54>
+40123d48: e5d3017a     	ldrb	r0, [r3, #0x17a]
+40123d4c: e2000001     	and	r0, r0, #1
+40123d50: e12fff1e     	bx	lr
+
+
+analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40041ca4: e92d4030     	push	{r4, r5, lr}
+40041ca8: e1a04000     	mov	r4, r0
+40041cac: e24dd024     	sub	sp, sp, #36
+40041cb0: e3a00000     	mov	r0, #0
+40041cb4: e28d1004     	add	r1, sp, #4
+40041cb8: e1a02000     	mov	r2, r0
+40041cbc: eb00a604     	bl	0x4006b4d4 <.text+0x6b4d4> @ imm = #0x29810
+40041cc0: e5dd2004     	ldrb	r2, [sp, #0x4]
+40041cc4: e5dd1005     	ldrb	r1, [sp, #0x5]
+40041cc8: e5ddc006     	ldrb	r12, [sp, #0x6]
+40041ccc: e0810002     	add	r0, r1, r2
+40041cd0: e5dd3007     	ldrb	r3, [sp, #0x7]
+40041cd4: e6ec0070     	uxtab	r0, r12, r0
+40041cd8: e6e30070     	uxtab	r0, r3, r0
+40041cdc: e5dd5009     	ldrb	r5, [sp, #0x9]
+40041ce0: e6ef0070     	uxtb	r0, r0
+40041ce4: e1550000     	cmp	r5, r0
+40041ce8: 01a0c80c     	lsleq	r12, r12, #16
+40041cec: 018c1401     	orreq	r1, r12, r1, lsl #8
+40041cf0: 01812002     	orreq	r2, r1, r2
+40041cf4: 01823c03     	orreq	r3, r2, r3, lsl #24
+40041cf8: 05843000     	streq	r3, [r4]
+40041cfc: 03a00000     	moveq	r0, #0
+40041d00: 13a00001     	movne	r0, #1
+40041d04: e28dd024     	add	sp, sp, #36
+40041d08: e8bd8030     	pop	{r4, r5, pc}
+
+
+analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+4006b53c: e3550000     	cmp	r5, #0
+4006b540: 0a000004     	beq	0x4006b558 <.text+0x6b558> @ imm = #0x10
+4006b544: e1a00005     	mov	r0, r5
+4006b548: e3a01000     	mov	r1, #0
+4006b54c: e3a0201a     	mov	r2, #26
+4006b550: ebfef40b     	bl	0x40028584 <.text+0x28584> @ imm = #-0x42fd4
+4006b554: e1a05000     	mov	r5, r0
+
+
+analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40041c2c: e1a0000d     	mov	r0, sp
+40041c30: e3a01000     	mov	r1, #0
+40041c34: e3a02006     	mov	r2, #6
+40041c38: ebfffe13     	bl	0x4004148c <.text+0x4148c> @ imm = #-0x7b4
+40041c3c: e3a00000     	mov	r0, #0
+40041c40: e8bd800e     	pop	{r1, r2, r3, pc}
+40041c44: e92d4037     	push	{r0, r1, r2, r4, r5, lr}
+40041c48: e1a04000     	mov	r4, r0
+40041c4c: e3a01000     	mov	r1, #0
+40041c50: e1a0000d     	mov	r0, sp
+40041c54: e3a02006     	mov	r2, #6
+40041c58: ebfffe19     	bl	0x400414c4 <.text+0x414c4> @ imm = #-0x79c
+
+40523e78: 40bc9766 'Out off setting mode , force set to Disbale\n'
+40523e7c: 40bc9793 'Reboot Disable..\n'
+40523e80: 40bc97a5 'Reboot to First time power on.in %d sec.\n'
+40523e84: 40bc97cf 'Reboot to View mode..in %d sec.\n'
+40523e88: 40bc97f0 'Reboot to Playback mode..in %d sec.\n'
+40523e8c: 40bc9836 '\x1b[31mDesign Error!! Needs code review\x1b[m\n'
+40523e90: 40bc9815 'Reboot to Clbt mode..in %d sec.\n'

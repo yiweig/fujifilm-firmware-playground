@@ -105,6 +105,13 @@ This explains a software-produced route toward the special startup mask.
 It requires factory command access and changes retained state, so it does
 not solve initial shell access or independent recovery.
 
+The [early-selector producer follow-up](early-boot-selectors-across-versions.md#producer-follow-up-requested-reboot-modes-and-usb-sampling)
+maps mode 2 to view (`0x2000`), 3 to playback (`0x4000`) and 4 to calibration
+(`0x6000`). Its 46 bounded controls stop before the retained-record writer and
+compose the prepared values with four versions' early-shell selectors. Under
+the supplied inputs, the 1.30+ filter excludes these requests from that shell
+branch. This explains a software interaction, not a safe mode-entry procedure.
+
 ## Calibration selects the application loader
 
 At `0x405dd6a4`, calibration setup reads `0x413e6034` through `0x40613da8`.

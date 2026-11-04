@@ -68,11 +68,59 @@ public class InspectEarlyBootSelectors extends GhidraScript {
         }
         throw new Exception("Guard instruction bound");
     }
+    long rebootRecord(byte[] image,int mode,long incoming)throws Exception{
+        Arm a=new Arm();byte[] code=Arrays.copyOfRange(image,0x523e94,0x523f9c);a.mem(0x40523e94L,code);
+        a.put(0x413d3990L,mode,4);a.put(0x40e4ae64L,incoming,4);a.t.overrideCounter(toAddr(0x40523e94L));int reads=0;
+        for(int step=0;step<120;step++){
+            monitor.checkCancelled();long pc=a.t.getCounter().getOffset();
+            if(pc==END){if(mode!=0||reads!=0||a.get(0x40e4ae64L,4)!=incoming||a.reg("sp")!=SP)throw new Exception("Disabled record path");return incoming;}
+            if(pc==0x40041c44L){if(a.reg("r0")!=0x40e4ae64L||++reads!=1)throw new Exception("Record-read argument");a.put(a.reg("r0"),incoming,4);a.ret(0);continue;}
+            if(pc==0x40041be8L){
+                if(mode==0||reads!=1||a.reg("r0")!=a.get(0x40e4ae64L,4)||!Arrays.equals(code,a.mem(0x40523e94L,code.length)))throw new Exception("Record-write boundary");
+                return a.reg("r0"); // STOP: original writer and all later wakeup/power work remain unexecuted
+            }
+            if(!((pc>=0x40523e94L&&pc<0x40523f3cL)||pc==0x40523f80L))throw new Exception("Unexpected record PC "+Long.toHexString(pc));
+            a.t.stepInstruction();
+        }
+        throw new Exception("Record instruction bound");
+    }
+    void records(String[][] cases)throws Exception{
+        Map<String,byte[]> images=new LinkedHashMap<>();
+        for(String[] c:cases){byte[] b=Files.readAllBytes(Path.of(getScriptArgs()[1],c[1]));if(!hash(b).equals(c[2]))throw new Exception("Wrong image");images.put(c[0],b);}
+        byte[] main=images.get("2.00");int controls=0;
+        try(PrintWriter out=new PrintWriter(getScriptArgs()[0])){
+            out.println("Original 2.00 factory reboot worker to BEFORE retained-record writer; supplied successful record read. No real RTC write, wakeup, reset, shell, USB or camera access.");
+            out.println("Its prepared word is then supplied to the original selector in each version, with power=0 and USB-presence samples=1. This is software composition, not full boot or proof the same producer exists in older images.");
+            for(long incoming:new long[]{0,0xffffffffL}){
+                if(rebootRecord(main,0,incoming)!=incoming)throw new Exception("Disabled producer");controls++;
+                out.printf("PASS mode=0 incoming=%08x -> no record read/write boundary reached.%n",incoming);
+                for(int mode=1;mode<=4;mode++){
+                    long expected=mode==1?incoming|0x200L:mode==2?(incoming&~0x6200L)|0x2000L:mode==3?(incoming&~0x6200L)|0x4000L:(incoming&~0x200L)|0x6000L;
+                    expected=(expected&~0x803L)&0xffffffffL;long actual=rebootRecord(main,mode,incoming);
+                    if(actual!=expected)throw new Exception("Prepared record mismatch");controls++;
+                    StringBuilder results=new StringBuilder();
+                    for(String[] c:cases){byte[] b=images.get(c[0]);boolean newer=c[0].equals("1.30")||c[0].equals("2.00");int entry=(int)(target(b,0x39ac)-BASE);
+                        int result=selector(b,entry,newer,0,(int)actual,1,1,false);
+                        if(result!=(newer&&(actual&0x6000L)!=0?0:1))throw new Exception("Producer/selector composition");controls++;results.append(c[0]).append('=').append(result).append(' ');
+                    }
+                    out.printf("PASS mode=%d incoming=%08x -> prepared=%08x at writer boundary; selector results %s%n",mode,incoming,actual,results);
+                }
+            }
+            for(int value:new int[]{0,1,0xfe,0xff}){
+                Arm a=new Arm();a.mem(0x40123d44L,Arrays.copyOfRange(main,0x123d44,0x123d58));a.put(0x1000517aL,value,1);a.t.overrideCounter(toAddr(0x40123d44L));
+                for(int step=0;step<8&&a.t.getCounter().getOffset()!=END;step++){long pc=a.t.getCounter().getOffset();if(pc<0x40123d44L||pc>=0x40123d54L)throw new Exception("Presence getter PC");a.t.stepInstruction();}
+                if(a.t.getCounter().getOffset()!=END||a.reg("r0")!=(value&1))throw new Exception("Presence getter result");controls++;
+            }
+            out.println("PASS 4 original application USB-presence getter cases: returns byte 1000517a bit 0. No physical USB measurement.");
+            out.printf("%d controls passed. Masks and sampled input corroborated; no safe state setter or independent recovery entry established.%n",controls);
+        }
+    }
     public void run()throws Exception{
         String[][] cases={{"1.01","analysis/output/firmware-main-1.01.bin","64ca08d346075907bbec2dde2db50bc3a5507a93e5d7b2e5024d4a59599125f9"},
             {"1.20","analysis/output/firmware-main-1.20.bin","85d6d280605148d131c28f71b3560742310878340c6de5d1c05faf00d02a2c8f"},
             {"1.30","analysis/output/firmware-main-1.30.bin","34034d7d1314485fbbd8167669a83dbea4d3dc80cc9ba3c87c7ded2c96aa9df6"},
             {"2.00","firmware-main.bin","80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923"}};
+        if(getScriptArgs().length>2&&getScriptArgs()[2].equals("reboot-record")){records(cases);return;}
         int total=0;
         try(PrintWriter out=new PrintWriter(getScriptArgs()[0])){
             out.println("Original ARM guard and early-shell selector only. Synthetic MMIO/power/retained word; record-reader and power getter modeled. No live hardware, USB, persistent writes, shell or whole boot.");

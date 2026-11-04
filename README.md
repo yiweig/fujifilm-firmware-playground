@@ -292,7 +292,8 @@ UI features can continue offline, but deployment remains gated on recovery.
   INF supports `2aad:6500` interface 5, but supplies no verified X-half entry.
 - [`analysis/early-boot-selectors-across-versions.md`](analysis/early-boot-selectors-across-versions.md)
   — reset guard and early-shell selector across four releases; 1.30 adds a
-  saved-state filter, reproduced in 1,056 bounded controls. No new physical entry established.
+  saved-state filter, reproduced in 1,056 bounded controls. A further 46 controls
+  connect it to factory reboot requests and the USB-presence getter; no new physical entry established.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

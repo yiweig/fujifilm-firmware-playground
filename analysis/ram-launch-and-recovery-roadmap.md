@@ -213,6 +213,12 @@ synthetic inputs; they neither recover physical key semantics nor remove the
 known early-shell USB initialization gap. These slices still require the
 installed main image; C1 remains dependent on missing earlier-stage evidence.
 
+The same report's producer follow-up connects those bits to requested view,
+playback and calibration reboots, and the sampled input to the application's
+USB-presence getter. Forty-six additional controls stop before the retained
+record writer. This explains why specific software reboot requests can bypass
+the newer early-shell branch; it provides no safe retail setter or cold entry.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

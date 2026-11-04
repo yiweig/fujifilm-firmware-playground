@@ -1,0 +1,14 @@
+Original 2.00 factory reboot worker to BEFORE retained-record writer; supplied successful record read. No real RTC write, wakeup, reset, shell, USB or camera access.
+Its prepared word is then supplied to the original selector in each version, with power=0 and USB-presence samples=1. This is software composition, not full boot or proof the same producer exists in older images.
+PASS mode=0 incoming=00000000 -> no record read/write boundary reached.
+PASS mode=1 incoming=00000000 -> prepared=00000200 at writer boundary; selector results 1.01=1 1.20=1 1.30=1 2.00=1 
+PASS mode=2 incoming=00000000 -> prepared=00002000 at writer boundary; selector results 1.01=1 1.20=1 1.30=0 2.00=0 
+PASS mode=3 incoming=00000000 -> prepared=00004000 at writer boundary; selector results 1.01=1 1.20=1 1.30=0 2.00=0 
+PASS mode=4 incoming=00000000 -> prepared=00006000 at writer boundary; selector results 1.01=1 1.20=1 1.30=0 2.00=0 
+PASS mode=0 incoming=ffffffff -> no record read/write boundary reached.
+PASS mode=1 incoming=ffffffff -> prepared=fffff7fc at writer boundary; selector results 1.01=1 1.20=1 1.30=0 2.00=0 
+PASS mode=2 incoming=ffffffff -> prepared=ffffb5fc at writer boundary; selector results 1.01=1 1.20=1 1.30=0 2.00=0 
+PASS mode=3 incoming=ffffffff -> prepared=ffffd5fc at writer boundary; selector results 1.01=1 1.20=1 1.30=0 2.00=0 
+PASS mode=4 incoming=ffffffff -> prepared=fffff5fc at writer boundary; selector results 1.01=1 1.20=1 1.30=0 2.00=0 
+PASS 4 original application USB-presence getter cases: returns byte 1000517a bit 0. No physical USB measurement.
+46 controls passed. Masks and sampled input corroborated; no safe state setter or independent recovery entry established.
