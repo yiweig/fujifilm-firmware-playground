@@ -187,6 +187,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/factory-ptp-live-acquisition.md`](analysis/factory-ptp-live-acquisition.md)
+  — live factory-PTP activation through a UTM/Linux passthrough VM with
+  usbmon evidence: marker activates `1027`, 1,024-byte factory record read
+  twice and checksum-valid, restart without marker revokes access. Live
+  values: `DisableTest=1`, `FgUsbMode=0x18` (normal-UI loader branch
+  closed), `FgAutoClbt=0x18` (auto scheduling on), `0x168=0`.
 - [`analysis/usb-cold-enumeration-matrix.md`](analysis/usb-cold-enumeration-matrix.md)
   — live passive enumeration matrix: shutter chords (both forms), PLAY alone,
   USB-only power without battery; only normal `04cb:030a` ever appeared, no

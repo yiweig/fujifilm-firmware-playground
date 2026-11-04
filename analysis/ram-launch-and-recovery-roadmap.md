@@ -303,6 +303,18 @@ retry list. The calibration combination remains untested by design, gated on
 the factory cold-data read. R1/R2/C1 remain open; C1 loses several cheap
 hypotheses rather than gaining an entry.
 
+Follow-up 2026-11-04 (later): the [factory-PTP live acquisition](factory-ptp-live-acquisition.md)
+executes the drafted marker experiment through a UTM/Linux USB-passthrough VM
+with usbmon capture. Activation (`1027` success), a twice-matching
+checksum-valid 1,024-byte factory record, and revocation after a marker-free
+restart are now live facts. The record's `FgUsbMode=0x18` closes the
+normal-UI loader hypothesis for this unit; `DisableTest=1` means calibration
+entry would also need `EnableTest.txt`; `FgAutoClbt=0x18` with `0x168=0`
+bounds, but does not clear, calibration-entry risk. Next offline: determine
+the auto-selected calibration item (item-20 exception) and the initialization
+save's byte-level effect using this record as fixture. R1/R2/C1 remain open,
+but R1's remaining candidates are now concrete.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically
