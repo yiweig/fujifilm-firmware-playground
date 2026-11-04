@@ -1,0 +1,5 @@
+rcaraw handler argument emulation; dispatch/mode/delay/log stubbed, no camera.
+args=[17, D:, x] -> dispatched=[pvraw 2 1 1] modeCalls=[4018381c(17), 40183768(17), 40183768(17)]
+args=[17, D, x] -> dispatched=[pvraw 2 1 1] modeCalls=[4018381c(17), 40183768(17), 40183768(17)]
+args=[19, D:, x] -> dispatched=[snap attr raw=1, snap cap, snap attr raw=0] modeCalls=[4018381c(17), 40183768(17), 40183768(17)]
+args=[17, D:] -> dispatched=[pvraw 2 1 1] modeCalls=[4018381c(17), 40183768(17), 40183768(17)]
