@@ -1,0 +1,65 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Synthetic cold data, UI state and cable; no hardware accessed.
+OBS state=1000 flag=0 cached=0 cable=0 result=stopped-before-40043264
+OBS state=1000 flag=0 cached=0 cable=1 result=stopped-before-40043264
+OBS state=1000 flag=0 cached=1 cable=0 result=stopped-before-40043264
+OBS state=1000 flag=0 cached=1 cable=1 result=stopped-before-40043264
+OBS state=1000 flag=1 cached=0 cable=0 result=returned
+OBS state=1000 flag=1 cached=0 cable=1 result=stopped-before-40043264
+OBS state=1000 flag=1 cached=1 cable=0 result=stopped-before-40043264
+OBS state=1000 flag=1 cached=1 cable=1 result=returned
+OBS state=2000 flag=0 cached=0 cable=0 result=stopped-before-4006a074
+OBS state=2000 flag=0 cached=0 cable=1 result=stopped-before-4006a074
+OBS state=2000 flag=0 cached=1 cable=0 result=stopped-before-4006a074
+OBS state=2000 flag=0 cached=1 cable=1 result=stopped-before-4006a074
+OBS state=2000 flag=1 cached=0 cable=0 result=stopped-before-4006a074
+OBS state=2000 flag=1 cached=0 cable=1 result=stopped-before-4006a074
+OBS state=2000 flag=1 cached=1 cable=0 result=stopped-before-4006a074
+OBS state=2000 flag=1 cached=1 cable=1 result=stopped-before-4006a074
+OBS state=3000 flag=0 cached=0 cable=0 result=stopped-before-40123d44
+OBS state=3000 flag=0 cached=0 cable=1 result=stopped-before-40123d44
+OBS state=3000 flag=0 cached=1 cable=0 result=stopped-before-40123d44
+OBS state=3000 flag=0 cached=1 cable=1 result=stopped-before-40123d44
+OBS state=3000 flag=1 cached=0 cable=0 result=stopped-before-40123d44
+OBS state=3000 flag=1 cached=0 cable=1 result=stopped-before-40123d44
+OBS state=3000 flag=1 cached=1 cable=0 result=stopped-before-40123d44
+OBS state=3000 flag=1 cached=1 cable=1 result=stopped-before-40123d44
+OBS state=8000 flag=0 cached=0 cable=0 result=mode4
+OBS state=8000 flag=0 cached=0 cable=1 result=mode4
+OBS state=8000 flag=0 cached=1 cable=0 result=mode4
+OBS state=8000 flag=0 cached=1 cable=1 result=mode4
+OBS state=8000 flag=1 cached=0 cable=0 result=returned
+OBS state=8000 flag=1 cached=0 cable=1 result=stopped-before-4000f9d0
+OBS state=8000 flag=1 cached=1 cable=0 result=stopped-before-4000f9d0
+OBS state=8000 flag=1 cached=1 cable=1 result=returned
+OBS state=a000 flag=0 cached=0 cable=0 result=stopped-before-40123d44
+OBS state=a000 flag=0 cached=0 cable=1 result=stopped-before-40123d44
+OBS state=a000 flag=0 cached=1 cable=0 result=stopped-before-40123d44
+OBS state=a000 flag=0 cached=1 cable=1 result=stopped-before-40123d44
+OBS state=a000 flag=1 cached=0 cable=0 result=stopped-before-40123d44
+OBS state=a000 flag=1 cached=0 cable=1 result=stopped-before-40123d44
+OBS state=a000 flag=1 cached=1 cable=0 result=stopped-before-40123d44
+OBS state=a000 flag=1 cached=1 cable=1 result=stopped-before-40123d44
+OBS state=c000 flag=0 cached=0 cable=0 result=stopped-before-40043264
+OBS state=c000 flag=0 cached=0 cable=1 result=stopped-before-40043264
+OBS state=c000 flag=0 cached=1 cable=0 result=stopped-before-40043264
+OBS state=c000 flag=0 cached=1 cable=1 result=stopped-before-40043264
+OBS state=c000 flag=1 cached=0 cable=0 result=returned
+OBS state=c000 flag=1 cached=0 cable=1 result=stopped-before-40043264
+OBS state=c000 flag=1 cached=1 cable=0 result=stopped-before-40043264
+OBS state=c000 flag=1 cached=1 cable=1 result=returned
+OBS state=e000 flag=0 cached=0 cable=0 result=mode4
+OBS state=e000 flag=0 cached=0 cable=1 result=mode4
+OBS state=e000 flag=0 cached=1 cable=0 result=mode4
+OBS state=e000 flag=0 cached=1 cable=1 result=mode4
+OBS state=e000 flag=1 cached=0 cable=0 result=mode4
+OBS state=e000 flag=1 cached=0 cable=1 result=mode4
+OBS state=e000 flag=1 cached=1 cable=0 result=mode4
+OBS state=e000 flag=1 cached=1 cable=1 result=mode4
+PASS gate=404d605c target=404d61f4: all 256 byte values; only zero branches toward loader; UI RAM unchanged; no callees executed.
+PASS gate=404d73f8 target=404d7544: all 256 byte values; only zero branches toward loader; UI RAM unchanged; no callees executed.
+PASS gate=404d82c8 target=404d87f8: all 256 byte values; only zero branches toward loader; UI RAM unchanged; no callees executed.
+PASS gate=404d9abc target=404d9c70: all 256 byte values; only zero branches toward loader; UI RAM unchanged; no callees executed.
+PASS gate=404da960 target=404daaa8: all 256 byte values; only zero branches toward loader; UI RAM unchanged; no callees executed.
+PASS 1280 narrow gate cases; 56 full-group prefix observations are inventories, not whole-handler success proofs.
+Scope: supplied event/state/cable; stops before every unknown callee or USB mode setter. Does not establish retail reachability or effects after the boundary.

@@ -284,6 +284,15 @@ reconstruction, retained registration after marker removal and the misleading
 success response on a modeled file-open failure. Physical USB/storage, host
 traffic, startup/revocation and recovery remain outside these controls.
 
+
+Follow-up 2026-11-04: [remaining UI loader gates](remaining-ui-loader-gates.md)
+checks five additional mode-4 branch conditions for all 256 byte values each.
+All use the same cached byte; zero alone selects their loader-preparation block.
+The 56 separate dispatcher-prefix observations stop before unknown helpers and
+do not qualify complete entry. This supplies no new retail override. A specific
+next separate question is the caller/configuration gate for UVC service callback
+registration `4061b0bc`, before considering any request through that transport.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

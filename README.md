@@ -52,6 +52,7 @@ for those access/earlier-stage gaps before automatically expanding another calle
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
 | Observed ordinary USB startup | One normal `04cb:030a` arrival during user-performed power-on; no intermediate identity/removal observed. Registry events cannot expose internal startup or failed enumeration. | [Live startup observation](analysis/usb-normal-startup-observation.md) |
 | Emulated factory-read route | Original marker/registration code now connects to normal dispatch and response construction in one model. Eight checks pass, including full synthetic record reconstruction and failed-open stale-data behavior. | [Integrated emulation](analysis/ptpap-integrated-read-emulation.md) |
+| Additional UI loader branches | Five more branches share the same cached-flag gate; all 1,280 narrow byte-value checks pass. No alternative retail transition established. | [UI gate comparison](analysis/remaining-ui-loader-gates.md) |
 | Factory marker activation | Offline ARM controls: marker adds seven command registrations; removing it or closing a session preserves them. Startup requests a table-covering zero-fill, but physical revocation and host traffic remain unqualified. | [Activation review and draft experiment](analysis/ptpap-marker-activation-review.md) |
 | Factory read availability | One fixed `1027(0)` probe returned `2005` (unsupported) in normal USB mode, then closed normally. No factory record acquired or SD marker created. | [Availability probe](analysis/factory-chunk-availability-probe.md) |
 | Read-only vendor property | `GetDevicePropDesc(d220)` succeeded: UINT32, current 0, range 0–1. Static code suggests transfer/status bookkeeping; exact semantics unresolved. Session closed normally. | [Property investigation](analysis/d220-property-investigation.md) |
@@ -361,6 +362,8 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/recovery-entry-review.md`](analysis/recovery-entry-review.md) —
   early shell startup conditions, eSD firmware-slot header provenance, and why
   neither yet establishes independent SD/USB recovery.
+- [`analysis/remaining-ui-loader-gates.md`](analysis/remaining-ui-loader-gates.md)
+  — five additional UI gates, 1,280 checks and explicit emulator stopping boundaries.
 - [`analysis/normal-usb-loader-entry.md`](analysis/normal-usb-loader-entry.md) —
   calibration-free UI loader path, saved USB-setting gate, caller census and
   offline ARM reproduction; temporary retail activation remains unresolved.

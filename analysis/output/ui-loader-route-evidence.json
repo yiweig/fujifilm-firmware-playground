@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-04",
+  "main_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+  "elf_sha256": "7e5534e40adc45c14ca19b6d1ebd0ea730ccf1d13125eedcc35d802434133755",
+  "elf_text_compared_equal_to_raw": true,
+  "elf_text_file_offset": 256,
+  "processor": "ARM:LE:32:v7",
+  "compiler_spec": "default",
+  "project": "/private/tmp/fuji-ui-route-nov4/UiRouteNov4",
+  "auto_analysis": false,
+  "scope": "Private temporary ELF import after previous temporary project was unavailable. Script verifies full mapped main SHA256; no firmware or camera changes."
+}

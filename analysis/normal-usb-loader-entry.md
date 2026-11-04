@@ -6,6 +6,15 @@ Target: official 2.00 main image, SHA-256
 `80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923`,
 runtime base `0x40000000`, little-endian ARMv7.
 
+
+Follow-up 2026-11-04: [remaining UI loader gates](remaining-ui-loader-gates.md)
+checks five additional mode-4 branch conditions for all 256 byte values each.
+All use the same cached byte; zero alone selects their loader-preparation block.
+The 56 separate dispatcher-prefix observations stop before unknown helpers and
+do not qualify complete entry. This supplies no new retail override. A specific
+next separate question is the caller/configuration gate for UVC service callback
+registration `4061b0bc`, before considering any request through that transport.
+
 ## Finding
 
 **A calibration-free application path to USB loader mode exists.** Normal UI
