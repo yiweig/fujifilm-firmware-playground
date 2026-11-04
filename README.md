@@ -187,6 +187,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/clbt-init-record-selection.md`](analysis/clbt-init-record-selection.md)
+  — `InitClbtData` emulated with the live record as fixture: selector takes
+  its no-candidate exit (no item auto-selected, item-20 exception cannot
+  apply), and the save-boundary RAM diff is exactly `+0x04`/`+0x08`. With
+  item 0 the scheduler queues only the menu-open event; no worker runs
+  without physical confirmation.
 - [`analysis/factory-ptp-live-acquisition.md`](analysis/factory-ptp-live-acquisition.md)
   — live factory-PTP activation through a UTM/Linux passthrough VM with
   usbmon evidence: marker activates `1027`, 1,024-byte factory record read

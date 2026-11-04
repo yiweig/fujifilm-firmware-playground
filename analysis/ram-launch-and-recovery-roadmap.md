@@ -315,6 +315,18 @@ the auto-selected calibration item (item-20 exception) and the initialization
 save's byte-level effect using this record as fixture. R1/R2/C1 remain open,
 but R1's remaining candidates are now concrete.
 
+Follow-up 2026-11-04 (offline): the [record-fixture init emulation](clbt-init-record-selection.md)
+answers the two calibration questions for this unit. The selector takes its
+no-candidate exit — no item is auto-selected, so the item-20 self-confirming
+exception cannot apply, and with selection 0 the scheduler queues only the
+menu-open event `0xf0000007`. The initialization save would change exactly
+record bytes `+0x04`/`+0x08` (plus the writer checksum), a checkable
+prediction against the acquired backup. Calibration entry is therefore
+bounded but still a deliberate decision: pre-USB gates (display status, UVC
+selector word), transitive entry callees, and exit behavior remain
+unqualified, and the UVC debug-event producer trace remains the safer
+unexplored alternative.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

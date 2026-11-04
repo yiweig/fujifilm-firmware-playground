@@ -1,0 +1,12 @@
+Original main-image SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Fixture record SHA-256: 58efa22442bbb7524116d4d43fcd68e916c92951cc2f94aae6ab94a0947169af (live-acquired 2026-11-04, freshness caveat applies)
+Fixture fields: DisableTest=1 FgBootType=0018 FgUsbMode=0018 FgAutoClbt=0018 field168=0000 version=1,0,1
+Selector 405da930 calls: 1; no-candidate exit (mov r0,#0 at 405da9e8): true
+Item7 shortcut taken (only if selected==7 with no selector call): false
+Selected calibration item [413e3d98+4]: 0
+Confirmation choice state [413e3d98+8]: 0
+Runtime table +0xabc (from record +0x168): 0000
+Item-20 (AF LAMP) exception applies: no
+Cold-buffer RAM diff at save boundary (before writer checksum): +04:01->02 +08:01->06
+Cached USB-selection flag 40e6696d after init: 1
+Stopped before save helper 40125e4c; no file/USB/worker executed. Writer would additionally refresh the byte-sum checksum stored at +0x3fe in the saved file.
