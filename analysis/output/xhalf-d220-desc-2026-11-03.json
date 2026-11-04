@@ -1,0 +1,47 @@
+{
+  "catalog_complete": true,
+  "catalog_items_reported": 43,
+  "client_has_open_session_at_exit": false,
+  "dataset_bytes": 26,
+  "dataset_saved": true,
+  "discovery_callbacks": 1,
+  "explicit_opcode": "1014",
+  "explicit_ptp_command_count": 1,
+  "model_from_discovery": "X-HF1",
+  "property_code_parameter": "d220",
+  "response_code": "2001",
+  "returned_transaction_id": 143,
+  "session_closed": true,
+  "session_opened": true,
+  "status": "ok",
+  "usb_identity": "04cb:030a",
+  "wire_traffic_observed": false,
+  "raw_dataset_retained": false,
+  "property_descriptor": {
+    "property_code": "d220",
+    "data_type_code": "0006",
+    "data_type": "UINT32",
+    "get_set": 0,
+    "read_only": true,
+    "factory_default": 0,
+    "current_value": 0,
+    "form_flag": 1,
+    "range_minimum": 0,
+    "range_maximum": 1,
+    "range_step": 0
+  },
+  "client_source_sha256": "fcbe90b46947d31b67a0ea661e524b6515a8048ecd77a534393d9ee020aa77a9",
+  "wrapper_source_sha256": "f16e40c460e2d45c284cfc8c78a4eda50e75fee99f67e4c6cfc55818d33a7429",
+  "registry_corroboration": {
+    "source": "cached IORegistry, no camera commands",
+    "unique_matching_device": true,
+    "usb_identity": "04cb:030a",
+    "registry_entry_id": 4295356298,
+    "location_id": "00100000"
+  },
+  "limitations": [
+    "Explicit command count excludes ImageCaptureCore initialization/catalog traffic.",
+    "No property write, vendor command, raw-memory access or loader transition submitted by fixed client.",
+    "Descriptor does not attest installed firmware release or precise status semantics."
+  ]
+}

@@ -11,6 +11,20 @@ def get_device_info_command():
     return struct.pack('<IHHI', 12, 1, 0x1001, 0)
 
 
+def decode_d220_desc(data):
+    """Only the audited read-only UINT32/range descriptor; no generic properties."""
+    if len(data) != 26:
+        raise ValueError('d220 descriptor must contain exactly 26 bytes')
+    code, datatype, access, default, current, form, minimum, maximum, step = struct.unpack('<HHBIIBIII', data)
+    if (code, datatype, access, form) != (0xd220, 6, 0, 1):
+        raise ValueError('Unexpected d220 descriptor schema')
+    return {'property_code': 'd220', 'data_type_code': '0006',
+            'data_type': 'UINT32', 'get_set': access, 'read_only': True,
+            'factory_default': default, 'current_value': current,
+            'form_flag': form, 'range_minimum': minimum,
+            'range_maximum': maximum, 'range_step': step}
+
+
 def decode_storage_ids(data):
     """Strict selected X-half standard metadata reply, at most three IDs."""
     if not 4 <= len(data) <= 16:

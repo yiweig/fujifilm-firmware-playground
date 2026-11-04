@@ -250,6 +250,13 @@ succeeds: `GetStorageInfo(00010001)` returns removable DCF media metadata,
 31,910,264,832-byte capacity and completes session close. This resolves that
 specific host access attempt while leaving the RAM/recovery entry gap open.
 
+
+Follow-up 2026-11-03: one fixed `GetDevicePropDesc(d220)` read also succeeded,
+returning a read-only UINT32 descriptor, current zero, range 0–1 and confirmed
+session close. The client now has four fixed read modes, one explicit request
+per invocation. [Static and live property investigation](d220-property-investigation.md)
+suggests transfer/status bookkeeping; it establishes no RAM/recovery entry.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

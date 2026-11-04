@@ -1,7 +1,7 @@
 import struct
 import unittest
 
-from ptp_device_info import decode_device_info, decode_storage_ids, decode_storage_info, get_device_info_command
+from ptp_device_info import decode_device_info, decode_storage_ids, decode_storage_info, get_device_info_command, decode_d220_desc
 
 
 def ptp_string(value):
@@ -17,6 +17,20 @@ def fixture():
 
 
 class DeviceInfoTests(unittest.TestCase):
+    def test_d220_descriptor_boundaries(self):
+        raw = struct.pack('<HHBIIBIII', 0xd220, 6, 0, 0, 1, 1, 0, 0, 1)
+        result = decode_d220_desc(raw)
+        self.assertTrue(result['read_only'])
+        self.assertEqual(result['current_value'], 1)
+        for broken in [raw[:i] for i in range(len(raw))] + [raw+b'x']:
+            with self.assertRaises(ValueError):
+                decode_d220_desc(broken)
+        for position in (0, 2, 4, 13):
+            broken = bytearray(raw)
+            broken[position] ^= 1
+            with self.assertRaises(ValueError):
+                decode_d220_desc(broken)
+
     def test_storage_info_boundaries_and_text_exclusion(self):
         raw = struct.pack('<HHHQQI', 4, 3, 0, 1000000, 500000, 0xffffffff) + ptp_string('PRIVATE-VOLUME') + b'\0'
         result = decode_storage_info(raw)

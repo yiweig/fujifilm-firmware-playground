@@ -15,6 +15,13 @@ A subsequent [StorageInfo read](standard-storage-info-live.md) succeeds for
 closing its session. This is a second added standard metadata operation, not
 a firmware-memory or recovery interface.
 
+
+Follow-up 2026-11-03: one fixed `GetDevicePropDesc(d220)` read also succeeded,
+returning a read-only UINT32 descriptor, current zero, range 0–1 and confirmed
+session close. The client now has four fixed read modes, one explicit request
+per invocation. [Static and live property investigation](d220-property-investigation.md)
+suggests transfer/status bookkeeping; it establishes no RAM/recovery entry.
+
 ## Result
 
 All 26 advertised codes are mapped in

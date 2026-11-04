@@ -18,6 +18,13 @@ The user then confirmed allowing the prompt several minutes after it appeared.
 An unchanged single retry succeeded with `0x1005` and completed session close;
 the StorageInfo report preserves both attempts and the reported media metadata.
 
+
+Follow-up 2026-11-03: one fixed `GetDevicePropDesc(d220)` read also succeeded,
+returning a read-only UINT32 descriptor, current zero, range 0–1 and confirmed
+session close. The client now has four fixed read modes, one explicit request
+per invocation. [Static and live property investigation](d220-property-investigation.md)
+suggests transfer/status bookkeeping; it establishes no RAM/recovery entry.
+
 ## Client boundary
 
 [imagecapture_device_info.m](imagecapture_device_info.m) is a separate client

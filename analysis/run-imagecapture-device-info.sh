@@ -3,8 +3,8 @@
 # The framework may enumerate media. No uploads or vendor operations.
 set -euo pipefail
 umask 077
-if [[ $# != 1 || ( $1 != --read-device-info && $1 != --read-storage-ids && $1 != --read-storage-info-known && $1 != --build && $1 != --self-test ) ]]; then
-    echo 'Usage: bash analysis/run-imagecapture-device-info.sh {--build|--self-test|--read-device-info|--read-storage-ids|--read-storage-info-known}' >&2
+if [[ $# != 1 || ( $1 != --read-device-info && $1 != --read-storage-ids && $1 != --read-storage-info-known && $1 != --read-d220-desc && $1 != --build && $1 != --self-test ) ]]; then
+    echo 'Usage: bash analysis/run-imagecapture-device-info.sh {--build|--self-test|--read-device-info|--read-storage-ids|--read-storage-info-known|--read-d220-desc}' >&2
     exit 2
 fi
 script_dir=$(cd "$(dirname "$0")" && pwd)
@@ -54,7 +54,7 @@ import json
 from pathlib import Path
 import sys
 sys.path.insert(0, sys.argv[1])
-from ptp_device_info import decode_device_info, decode_storage_ids, decode_storage_info
+from ptp_device_info import decode_device_info, decode_storage_ids, decode_storage_info, decode_d220_desc
 root = Path(sys.argv[2])
 report = json.loads((root / 'session.json').read_text())
 report['raw_dataset_retained'] = False
@@ -62,7 +62,9 @@ if report.get('status') == 'ok':
     try:
         with (root / 'device-info.dataset').open('rb') as source:
             data = source.read(65537)
-            if sys.argv[3] == '--read-storage-ids':
+            if sys.argv[3] == '--read-d220-desc':
+                report['property_descriptor'] = decode_d220_desc(data)
+            elif sys.argv[3] == '--read-storage-ids':
                 report['storage_ids'] = decode_storage_ids(data)
             elif sys.argv[3] == '--read-storage-info-known':
                 report['storage_info'] = decode_storage_info(data)

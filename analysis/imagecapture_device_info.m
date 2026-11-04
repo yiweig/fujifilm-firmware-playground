@@ -1,4 +1,4 @@
-// Fixed standard reads: DeviceInfo, StorageIDs, or StorageInfo for known ID 00010001.
+// Fixed standard reads: DeviceInfo, StorageIDs, known StorageInfo, or d220 descriptor.
 // Apple manages the session and may catalog media.
 // No vendor operations, property setters, clock sync, uploads, capture or resets.
 #import <Foundation/Foundation.h>
@@ -13,6 +13,10 @@ static NSData *InfoCommand(BOOL storageIDs) {
 }
 static NSData *StorageInfoCommand(void) {
     const uint8_t bytes[] = {16,0,0,0,1,0,5,16,0,0,0,0,1,0,1,0};
+    return [NSData dataWithBytes:bytes length:sizeof(bytes)];
+}
+static NSData *D220DescCommand(void) {
+    const uint8_t bytes[] = {16,0,0,0,1,0,20,16,0,0,0,0,32,210,0,0};
     return [NSData dataWithBytes:bytes length:sizeof(bytes)];
 }
 static uint32_t U32(const uint8_t *p) {
@@ -45,6 +49,12 @@ static BOOL ValidStorageInfo(NSData *data) {
     return offset == data.length;
 }
 
+static BOOL ValidD220Desc(NSData *data) {
+    if (data.length != 26) return NO;
+    const uint8_t *p = data.bytes;
+    return U16(p) == 0xd220 && U16(p+2) == 6 && p[4] == 0 && p[13] == 1;
+}
+
 @interface InfoReader : NSObject <ICDeviceBrowserDelegate, ICDeviceDelegate>
 @property(nonatomic, strong) NSMutableArray<ICDevice *> *matches;
 @property(nonatomic, strong) ICCameraDevice *camera;
@@ -54,6 +64,7 @@ static BOOL ValidStorageInfo(NSData *data) {
 @property(nonatomic) BOOL opening, opened, catalogReady, sent, inFlight, closing, done;
 @property(nonatomic) BOOL readStorageIDs;
 @property(nonatomic) BOOL readStorageInfo;
+@property(nonatomic) BOOL readD220Desc;
 - (void)beginSession;
 - (void)finish:(NSString *)status;
 @end
@@ -132,10 +143,11 @@ static BOOL ValidStorageInfo(NSData *data) {
     self.sent = YES;
     self.inFlight = YES;
     self.report[@"explicit_ptp_command_count"] = @1;
-    self.report[@"explicit_opcode"] = self.readStorageInfo ? @"1005" : self.readStorageIDs ? @"1004" : @"1001";
+    self.report[@"explicit_opcode"] = self.readD220Desc ? @"1014" : self.readStorageInfo ? @"1005" : self.readStorageIDs ? @"1004" : @"1001";
+    if (self.readD220Desc) self.report[@"property_code_parameter"] = @"d220";
     if (self.readStorageInfo) self.report[@"storage_id_parameter"] = @"00010001";
     [self armTimeout:10 status:@"command_timeout_no_explicit_cleanup"];
-    NSData *command = self.readStorageInfo ? StorageInfoCommand() : InfoCommand(self.readStorageIDs);
+    NSData *command = self.readD220Desc ? D220DescCommand() : self.readStorageInfo ? StorageInfoCommand() : InfoCommand(self.readStorageIDs);
     [self.camera requestSendPTPCommand:command outData:nil sendCommandDelegate:self
         didSendCommandSelector:@selector(didSendPTPCommand:inData:response:error:contextInfo:)
         contextInfo:NULL];
@@ -172,7 +184,8 @@ static BOOL ValidStorageInfo(NSData *data) {
         U16((const uint8_t *)response.bytes+6) != 0x2001 ||
         data.length == 0 || data.length > 65536 ||
         (self.readStorageIDs && !ValidStorageIDs(data)) ||
-        (self.readStorageInfo && !ValidStorageInfo(data))) {
+        (self.readStorageInfo && !ValidStorageInfo(data)) ||
+        (self.readD220Desc && !ValidD220Desc(data))) {
         [self finish:@"unexpected_reply_no_explicit_cleanup"]; return;
     }
     self.report[@"response_code"] = @"2001";
@@ -230,13 +243,30 @@ int main(int argc, const char *argv[]) {
                 !ValidStorageInfo([NSData dataWithBytes:invalidInfo length:28]);
             for (NSUInteger i = 0; i < 28; ++i)
                 if (ValidStorageInfo([NSData dataWithBytes:minimalInfo length:i])) ok = NO;
+            const uint8_t desc[26] = {32,210,6,0,0,0,0,0,0,0,0,0,0,1};
+            NSData *descCommand = D220DescCommand();
+            ok = ok && descCommand.length == 16 && U32(descCommand.bytes) == 16 &&
+                U16((const uint8_t *)descCommand.bytes+4) == 1 &&
+                U16((const uint8_t *)descCommand.bytes+6) == 0x1014 &&
+                U32((const uint8_t *)descCommand.bytes+8) == 0 &&
+                U32((const uint8_t *)descCommand.bytes+12) == 0xd220 &&
+                ValidD220Desc([NSData dataWithBytes:desc length:26]);
+            for (NSUInteger i = 0; i < 26; ++i)
+                if (ValidD220Desc([NSData dataWithBytes:desc length:i])) ok = NO;
+            for (NSUInteger i = 0; i < 5; ++i) {
+                uint8_t bad[27]; memcpy(bad, desc, 26); bad[26] = 0;
+                NSUInteger positions[] = {0,2,4,13};
+                if (i < 4) bad[positions[i]] ^= 1;
+                if (ValidD220Desc([NSData dataWithBytes:bad length:i == 4 ? 27 : 26])) ok = NO;
+            }
             puts(ok ? "Fixed metadata commands and dataset boundary self-tests passed; no camera access." : "Self-test failed.");
             return ok ? 0 : 1;
         }
+        BOOL d220Desc = argc == 3 && strcmp(argv[1], "--read-d220-desc") == 0;
         BOOL storageIDs = argc == 3 && strcmp(argv[1], "--read-storage-ids") == 0;
         BOOL storageInfo = argc == 3 && strcmp(argv[1], "--read-storage-info-known") == 0;
-        if (argc != 3 || (!storageIDs && !storageInfo && strcmp(argv[1], "--read-device-info") != 0) || argv[2][0] != '/') {
-            fprintf(stderr, "Usage: imagecapture_device_info {--read-device-info|--read-storage-ids|--read-storage-info-known} /absolute/private/dataset\n");
+        if (argc != 3 || (!d220Desc && !storageIDs && !storageInfo && strcmp(argv[1], "--read-device-info") != 0) || argv[2][0] != '/') {
+            fprintf(stderr, "Usage: imagecapture_device_info {--read-device-info|--read-storage-ids|--read-storage-info-known|--read-d220-desc} /absolute/private/dataset\n");
             return 2;
         }
         [NSApplication sharedApplication];
@@ -244,6 +274,7 @@ int main(int argc, const char *argv[]) {
         InfoReader *reader = [InfoReader new];
         reader.readStorageIDs = storageIDs;
         reader.readStorageInfo = storageInfo;
+        reader.readD220Desc = d220Desc;
         reader.datasetPath = [NSString stringWithUTF8String:argv[2]];
         ICDeviceBrowser *browser = [ICDeviceBrowser new];
         browser.delegate = reader;
