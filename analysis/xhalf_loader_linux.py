@@ -133,6 +133,73 @@ class Loader:
         if self.dev.write(EP_OUT, data, timeout=TIMEOUT_MS) != 32:
             raise SystemExit('slot write: short bulk OUT')
 
+    TRAMP2_HEX = ('0f002de988009fe5001090e5011081e2001080e57c009fe5001090e5000051e3'
+                  '1800001a70209fe5002092e5010052e30200000a020052e30600000a110000ea'
+                  '0110a0e3001080e53f04a0e34c109fe50128a0e3040000ea0110a0e3001080e5'
+                  '0b0ca0e338109fe5012ca0e3043090e4043081e4042052e2fbffff1a14009fe5'
+                  '0210a0e3001080e50f00bde814c09fe51cff2fe1000110410401104108011041'
+                  '000011410010124180121e40')
+    SRAM_STAGE = 0x41110000
+    LOW_STAGE = 0x41121000
+
+    def _ctrl(self):
+        return bytearray(self.read_mem(self.COUNTER_ADDR, 32))
+
+    def _set_cmd(self, cmd):
+        block = self._ctrl()
+        struct.pack_into('<I', block, 4, 0)       # DONE = 0
+        struct.pack_into('<I', block, 8, cmd)     # CMD
+        self.write_mem(self.COUNTER_ADDR, bytes(block))
+
+    def _wait_done(self, timeout_s=20):
+        import time
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            done = struct.unpack_from('<I', self._ctrl(), 4)[0]
+            if done == 2:
+                return True
+            time.sleep(0.5)
+        return False
+
+    def stage_copy(self):
+        """Install trampoline v2; CMD=1 stages SRAM, CMD=2 stages low 256B."""
+        self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP2_HEX))
+        self.write_mem(self.COUNTER_ADDR, bytes(32))
+        if self.read_mem(self.TRAMP_ADDR, 32) != bytes.fromhex(self.TRAMP2_HEX)[:32]:
+            raise SystemExit('trampoline read-back mismatch; abort')
+        originals = []
+        for block, off in self.SLOT_BLOCKS:
+            data = self.read_mem(block, 32)
+            if struct.unpack_from('<I', data, off)[0] != self.HANDLER:
+                raise SystemExit('slot does not hold handler; abort')
+            originals.append(data)
+        try:
+            for (block, off), _ in zip(self.SLOT_BLOCKS, originals):
+                data = bytearray(self.read_mem(block, 32))
+                struct.pack_into('<I', data, off, self.TRAMP_ADDR)
+                self._write_block32(block, bytes(data))
+            print('trampoline v2 installed')
+            self._set_cmd(1)
+            self.bootquery()
+            if not self._wait_done():
+                raise SystemExit('SRAM copy did not complete (DONE!=2); camera may need battery pull')
+            self.read_chunked(self.SRAM_STAGE, 0x10000, 'sram-staged.bin', 0x10000)
+            print('SRAM staged and saved to sram-staged.bin')
+            self._set_cmd(2)
+            self.bootquery()
+            if not self._wait_done():
+                raise SystemExit('low copy did not complete (DONE!=2); SRAM data already saved; battery pull may be needed')
+            data = self.read_mem(self.LOW_STAGE, 0x100)
+            Path('low-b00.bin').write_bytes(data)
+            print('low 0xb00..0xc00 staged and saved to low-b00.bin:', data[:32].hex())
+        finally:
+            try:
+                for (block, _), orig in zip(self.SLOT_BLOCKS, originals):
+                    self._write_block32(block, orig)
+                print('slots restored')
+            except Exception as exc:
+                print(f'WARNING: slot restore failed: {exc}')
+
     def hijack_test(self):
         tramp = b''.join(struct.pack('<I', w) for w in self.TRAMP_WORDS)
         # Stage trampoline + zeroed counter in scratch (normal write path).
@@ -239,6 +306,7 @@ def main():
     mode.add_argument('--read-chunked', nargs=4, metavar=('ADDR', 'LEN', 'OUT', 'CHUNK'))
     mode.add_argument('--write-test', nargs=2, metavar=('ADDR', 'HOLD_S'))
     mode.add_argument('--hijack-test', action='store_true')
+    mode.add_argument('--stage-copy', action='store_true')
     args = parser.parse_args()
     if sys.platform != 'linux':
         raise SystemExit('Linux only: run inside the passthrough VM/host')
@@ -251,6 +319,8 @@ def main():
             print(f'bootquery reply: {data.hex()}')
             print(f'boot method byte: {method} (2 = running firmware, per host-DLL classification)')
             print(f'address word: 0x{addr:08x} (0 expected for zero-size query)')
+        elif args.stage_copy:
+            loader.stage_copy()
         elif args.hijack_test:
             loader.hijack_test()
         elif args.write_test:

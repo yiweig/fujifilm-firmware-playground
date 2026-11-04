@@ -1,0 +1,5 @@
+CMD=1 SRAM: DONE=2 staging match=true regs/stack ok=true
+DONE!=0 re-invoke: staging untouched=true counter=2
+CMD=2 low: DONE=2 staging match=true
+counter total=3
+TRAMPOLINE2 PASS

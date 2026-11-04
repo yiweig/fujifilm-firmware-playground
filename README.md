@@ -217,6 +217,11 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/loader-stage-copy-live.md`](analysis/loader-stage-copy-live.md)
+  — trampoline v2 staged a full 64 KB SRAM image to the host (SPBoot header,
+  DRAM params, the 36-byte earlier-stage descriptor at `0x3f00c518`); the
+  subsequent low-memory (`0xb00`) CPU copy wedged the camera (battery-pull
+  recovery, SRAM already safe). Low region remains unreadable.
 - [`analysis/loader-hijack-test-live.md`](analysis/loader-hijack-test-live.md)
   — **first code execution**: handler slots patched to a scratch trampoline
   at `0x41100040`; it ran 13 times (counter in scratch), forwarding to the
