@@ -1,0 +1,53 @@
+{
+  "scope": "Live macOS IORegistry arrival/removal notifications during user-performed ordinary power-on; not a USB packet capture or internal boot log.",
+  "observer_source": "analysis/usb_startup_observer.c",
+  "observer_source_sha256": "fee3dc6cca3a75d53e39d7e9509d6069ae6e076d4d39d06bc6b554e06156d185",
+  "observer_binary_sha256": "b1529ff1719e3fa3a9cd9bcf558a3c6b9fef9b52f148a59bda70ccf968591abd",
+  "raw_capture_local_path": "analysis/output/usb-startup/normal-power-on-01.jsonl",
+  "raw_capture_sha256": "e2b33bda02fce8f1b20dd1f3e8a3668a96f5fcf25892fce9ee1f61e5d2afb8db",
+  "raw_capture_bytes": 1189,
+  "started_utc": "2026-11-04T02:51:15.746Z",
+  "stop_requested_utc": "2026-11-04T02:58:16.473+00:00",
+  "baseline_device_count": 5,
+  "baseline_candidate_vendor_count": 0,
+  "post_ready_events": [
+    {
+      "utc": "2026-11-04T02:55:59.965Z",
+      "elapsed_s": 284.220735,
+      "event": "arrived",
+      "registry_id": 4295354226,
+      "vendor_id": 1227,
+      "product_id": 778,
+      "location_id": 17825792,
+      "usb_address": 1
+    }
+  ],
+  "current_registry_corroboration": {
+    "registry_id": 4295354226,
+    "vendor": "04cb",
+    "product": "030a",
+    "location_id": "0x01100000",
+    "interface_number": 0,
+    "interface_class": 6,
+    "interface_subclass": 1,
+    "interface_protocol": 1,
+    "declared_endpoints": 3,
+    "interface_owner": "ptpcamerad",
+    "source": "Separate cached registry read after user reported completion; no interface open."
+  },
+  "user_report": {
+    "sequence_completed": true,
+    "screen": "USB text and USB icon; no other unusual behavior reported",
+    "plug_and_power_timestamps": "Not independently recorded."
+  },
+  "observer_stderr_empty": true,
+  "observer_stop": "Explicit SIGINT to exact owned command; exec session confirmed exit code 130; capture flushed after each event.",
+  "conclusion": "One normal-mode device arrival observed; no intermediate identity or removal/rearrival observed in the captured registry events.",
+  "limits": [
+    "No exact user-action timestamps; elapsed_s is time since observer start, not camera boot duration.",
+    "Only devices published as IOUSBHostDevice are observed; earlier electrical activity or failed/unpublished enumeration is outside coverage.",
+    "No internal register capture, boot log or independent recovery evidence.",
+    "Observer sends no USB/PTP/vendor commands; ordinary macOS enumeration/framework traffic is separate and unmeasured.",
+    "Other-device baseline identities and raw serial strings are excluded from this summary."
+  ]
+}

@@ -228,6 +228,11 @@ constructor and selected continuations. Physical status meanings, samples and
 a safe way to select them remain unknown; this lead now needs documentation or
 authentic boot-state evidence rather than more synthetic combinations.
 
+A subsequent [ordinary-power-on registry observation](usb-normal-startup-observation.md)
+records one real `04cb:030a` arrival with no observed intermediate identity or
+removal/rearrival. It supplies external USB evidence only; no internal status
+values, failed enumeration or boot-ROM activity are captured. R1/C1 remain open.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

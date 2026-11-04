@@ -50,6 +50,7 @@ for those access/earlier-stage gaps before automatically expanding another calle
 | Handoff preparation | Optional callback lifetime, sensor timeout, candidate mode exits, playback cleanup, mutex/wait cleanup and clock synchronization traced in bounded controls. Close errors can be ignored; lock release can reach task-resume work. Real callbacks, concurrent effects and the hardware clock core remain unresolved. | [Architecture guide](analysis/architecture-guide.md), [clock audit](analysis/idle-clock-switch-and-callbacks.md) |
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
+| Observed ordinary USB startup | One normal `04cb:030a` arrival during user-performed power-on; no intermediate identity/removal observed. Registry events cannot expose internal startup or failed enumeration. | [Live startup observation](analysis/usb-normal-startup-observation.md) |
 | Earlier-stage helper | Known table/copy paths do not recover `0x00000b34`; conditional mappings point to low physical memory, not the known SRAM blob/main-image offset. Authentic provider bytes/mapping are still needed; six controls narrow this boundary. | [Backing/artifact gap](analysis/low-helper-backing-boundary.md), [earlier helper trace](analysis/low-address-loader-helper.md) |
 
 For orientation, read the [hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md)
@@ -116,6 +117,7 @@ the versioned copy is `firmware/2.00/FPUPDATE.DAT`.
 | [inspect_v50_package_isp.py](analysis/inspect_v50_package_isp.py) | Pinned V50 package inventory, ISP reset/copy literals, banner and stored USB identity; see the companion REA comparison for code evidence |
 | [inspect_frm_bundle.py](analysis/inspect_frm_bundle.py) | Hash-checked FRM/driver inventory, selected configuration and keyboard/timer tables; no extraction, executable launch or device access |
 | [compare_early_boot_selectors.py](analysis/compare_early_boot_selectors.py) | Four-version reset/early-shell selector comparison with hash-checked images and per-version producer/consumer addresses |
+| [usb_startup_observer.c](analysis/usb_startup_observer.c) | macOS registry arrival/removal observer; numeric metadata only, no USB interface opens or camera commands; local captures ignored |
 | [ptp_cold_reader.py](analysis/ptp_cold_reader.py), [ptp_usb_transport.py](analysis/ptp_usb_transport.py) | Restricted read-protocol model and adapter for an already supplied transport. No turnkey live discovery/acquisition client; success/checksum do not attest fresh storage data |
 | [usb_registry_inventory.py](analysis/usb_registry_inventory.py), [read_usb_configuration.c](analysis/read_usb_configuration.c) | macOS USB metadata helpers with different access behavior; read [descriptor API limits](analysis/macos-descriptor-api.md) before considering device access |
 | [run-imagecapture-inventory.sh](analysis/run-imagecapture-inventory.sh), [imagecapture_inventory.m](analysis/imagecapture_inventory.m) | Builds and launches a discovery-only Mac application; successfully identified the X-HF1 through Apple's service. No session-open or PTP command code; incidental framework traffic is unmeasured |
@@ -297,6 +299,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/early-power-source-provenance.md`](analysis/early-power-source-provenance.md)
   — sampled register sources, overlapping power-status bits and a zero-word
   control path; 500 bounded controls clarify why earlier zero-word fixtures are not full startup.
+- [`analysis/usb-normal-startup-observation.md`](analysis/usb-normal-startup-observation.md)
+  — live registry recording of ordinary power-on; one normal USB arrival,
+  no observed intermediate identity, and explicit timing/coverage limits.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

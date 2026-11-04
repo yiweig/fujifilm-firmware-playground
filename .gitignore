@@ -20,6 +20,7 @@ analysis/project/
 analysis/cache/
 analysis/settings/
 analysis/output/macos-device-info/
+analysis/output/usb-startup/
 
 # Generated logs and transient files
 *.log
