@@ -1,3 +1,33 @@
+# 🔴🟡🔴🟡 DISCLAIMER — READ THIS FIRST 🟡🔴🟡🔴
+
+> ## ⚠️ THIS IS VIBE-CODED RESEARCH. THERE IS A REAL RISK OF BRICKING YOUR DEVICE. ⚠️
+>
+> **This repository is experimental firmware research produced with heavy AI
+> assistance ("vibe coded"). It is not a product, not a guide, and not
+> endorsed by Fujifilm or anyone else.**
+>
+> 🔴 **You can permanently brick your camera.** Firmware, service-mode, and
+> RAM-loader experiments can corrupt firmware, factory calibration data, or
+> other device-specific state. There is **no proven recovery procedure**
+> for the Fujifilm X half. A failed experiment may leave you with a dead
+> camera that only Fujifilm service — if anyone — can revive, possibly at
+> significant cost, possibly never.
+>
+> 🟡 **No support whatsoever.** I offer **no support**: no help flashing,
+> no help unbricking, no answers to "it doesn't work", no guarantees that
+> any procedure here is accurate, complete, safe, or repeatable on your
+> unit. Findings are specific to one camera on specific firmware versions
+> and may be wrong.
+>
+> 🔴 **If you follow anything in this repo, you do so entirely at your own
+> risk, on your own hardware, accepting that you may destroy it.** Do not
+> attempt any of this on a camera you cannot afford to lose. If that is
+> not acceptable, close this tab now.
+>
+> **No warranty of any kind, express or implied. No liability accepted.**
+
+---
+
 # Fujifilm X half firmware research
 
 Static-analysis workspace for understanding the Fujifilm X half firmware,
