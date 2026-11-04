@@ -115,6 +115,7 @@ the versioned copy is `firmware/2.00/FPUPDATE.DAT`.
 | [inspect_v50_flash_layout.py](analysis/inspect_v50_flash_layout.py) | Hash-checked offline V50 external-flash layout parser; resource volumes, main image and unallocated trailing data, without inferring CPU-ROM mapping |
 | [inspect_v50_package_isp.py](analysis/inspect_v50_package_isp.py) | Pinned V50 package inventory, ISP reset/copy literals, banner and stored USB identity; see the companion REA comparison for code evidence |
 | [inspect_frm_bundle.py](analysis/inspect_frm_bundle.py) | Hash-checked FRM/driver inventory, selected configuration and keyboard/timer tables; no extraction, executable launch or device access |
+| [compare_early_boot_selectors.py](analysis/compare_early_boot_selectors.py) | Four-version reset/early-shell selector comparison with hash-checked images and per-version producer/consumer addresses |
 | [ptp_cold_reader.py](analysis/ptp_cold_reader.py), [ptp_usb_transport.py](analysis/ptp_usb_transport.py) | Restricted read-protocol model and adapter for an already supplied transport. No turnkey live discovery/acquisition client; success/checksum do not attest fresh storage data |
 | [usb_registry_inventory.py](analysis/usb_registry_inventory.py), [read_usb_configuration.c](analysis/read_usb_configuration.c) | macOS USB metadata helpers with different access behavior; read [descriptor API limits](analysis/macos-descriptor-api.md) before considering device access |
 | [run-imagecapture-inventory.sh](analysis/run-imagecapture-inventory.sh), [imagecapture_inventory.m](analysis/imagecapture_inventory.m) | Builds and launches a discovery-only Mac application; successfully identified the X-HF1 through Apple's service. No session-open or PTP command code; incidental framework traffic is unmeasured |
@@ -289,6 +290,9 @@ UI features can continue offline, but deployment remains gated on recovery.
   — FRM application callers link ISP preparation to a programming-capable worker;
   F5/F6 keyboard bindings and a progress timer are identified. The bulk-driver
   INF supports `2aad:6500` interface 5, but supplies no verified X-half entry.
+- [`analysis/early-boot-selectors-across-versions.md`](analysis/early-boot-selectors-across-versions.md)
+  — reset guard and early-shell selector across four releases; 1.30 adds a
+  saved-state filter, reproduced in 1,056 bounded controls. No new physical entry established.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.

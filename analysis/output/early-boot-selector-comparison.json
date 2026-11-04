@@ -1,0 +1,223 @@
+{
+  "scope": "Pinned reset guard, early-shell producer/consumer and selected bootstrap calls. Not an exhaustive boot graph or boot-ROM inventory.",
+  "versions": {
+    "1.01": {
+      "image_sha256": "64ca08d346075907bbec2dde2db50bc3a5507a93e5d7b2e5024d4a59599125f9",
+      "reset_vector_target": "0x40000ec0",
+      "reset_body_sha256": "400e0190949a397e5b5054eaed1b95ac090d8f8ed7c2248fc0704996e43233ec",
+      "reset_guard_range": [
+        "0x40000f7c",
+        "0x40000fb8"
+      ],
+      "reset_guard_sha256": "8f11058ba7c34f1f55ab0848cd6455351b74fc6479e02ec37a4e1f12fb6748d4",
+      "selector_call": "0x400039ac",
+      "selector": "0x4001cf2c",
+      "selector_end_exclusive": "0x4001cff8",
+      "selector_code_bytes": 204,
+      "selector_code_sha256": "b3abeeef949ba2a253235ddc2717b6f8a35f5876eb2fc19773124a21bd46c0ff",
+      "state_base": "0x40d8ac50",
+      "record_reader": "0x4004198c",
+      "power_getter": "0x4001d6c4",
+      "saved_bits_13_14_filter_encoding": null,
+      "successful_auxiliary_flag_offset": "0x19",
+      "selector_result_flag": "0x40d77e74",
+      "selector_consumer_range": [
+        "0x400035fc",
+        "0x4000361c"
+      ],
+      "early_shell_call": "0x401ee98c",
+      "normal_initialization_call": "0x400cf7cc",
+      "bootstrap_calls_before_selector": [
+        {
+          "site": "0x4000399c",
+          "target": "0x4000de0c"
+        },
+        {
+          "site": "0x400039a0",
+          "target": "0x4001d270"
+        },
+        {
+          "site": "0x400039a4",
+          "target": "0x4001d698"
+        },
+        {
+          "site": "0x400039a8",
+          "target": "0x4001d6e0"
+        },
+        {
+          "site": "0x400039ac",
+          "target": "0x4001cf2c"
+        }
+      ]
+    },
+    "1.20": {
+      "image_sha256": "85d6d280605148d131c28f71b3560742310878340c6de5d1c05faf00d02a2c8f",
+      "reset_vector_target": "0x40000ec0",
+      "reset_body_sha256": "400e0190949a397e5b5054eaed1b95ac090d8f8ed7c2248fc0704996e43233ec",
+      "reset_guard_range": [
+        "0x40000f7c",
+        "0x40000fb8"
+      ],
+      "reset_guard_sha256": "8f11058ba7c34f1f55ab0848cd6455351b74fc6479e02ec37a4e1f12fb6748d4",
+      "selector_call": "0x400039ac",
+      "selector": "0x4001cf2c",
+      "selector_end_exclusive": "0x4001cff8",
+      "selector_code_bytes": 204,
+      "selector_code_sha256": "b3abeeef949ba2a253235ddc2717b6f8a35f5876eb2fc19773124a21bd46c0ff",
+      "state_base": "0x40d920d0",
+      "record_reader": "0x4004198c",
+      "power_getter": "0x4001d6c4",
+      "saved_bits_13_14_filter_encoding": null,
+      "successful_auxiliary_flag_offset": "0x19",
+      "selector_result_flag": "0x40d7f2f4",
+      "selector_consumer_range": [
+        "0x400035fc",
+        "0x4000361c"
+      ],
+      "early_shell_call": "0x401ee9d4",
+      "normal_initialization_call": "0x400cf7dc",
+      "bootstrap_calls_before_selector": [
+        {
+          "site": "0x4000399c",
+          "target": "0x4000de0c"
+        },
+        {
+          "site": "0x400039a0",
+          "target": "0x4001d270"
+        },
+        {
+          "site": "0x400039a4",
+          "target": "0x4001d698"
+        },
+        {
+          "site": "0x400039a8",
+          "target": "0x4001d6e0"
+        },
+        {
+          "site": "0x400039ac",
+          "target": "0x4001cf2c"
+        }
+      ]
+    },
+    "1.30": {
+      "image_sha256": "34034d7d1314485fbbd8167669a83dbea4d3dc80cc9ba3c87c7ded2c96aa9df6",
+      "reset_vector_target": "0x40000ec0",
+      "reset_body_sha256": "400e0190949a397e5b5054eaed1b95ac090d8f8ed7c2248fc0704996e43233ec",
+      "reset_guard_range": [
+        "0x40000f7c",
+        "0x40000fb8"
+      ],
+      "reset_guard_sha256": "8f11058ba7c34f1f55ab0848cd6455351b74fc6479e02ec37a4e1f12fb6748d4",
+      "selector_call": "0x400039ac",
+      "selector": "0x4001cf2c",
+      "selector_end_exclusive": "0x4001d004",
+      "selector_code_bytes": 216,
+      "selector_code_sha256": "6f0b43c5c6b59a8a11c80825b3f95564e2d7f402230cdfc94e735d89bb437463",
+      "state_base": "0x40d9a650",
+      "record_reader": "0x40041994",
+      "power_getter": "0x4001d6d0",
+      "saved_bits_13_14_filter_encoding": "1520d3e5600012e30700001a",
+      "successful_auxiliary_flag_offset": "0x19",
+      "selector_result_flag": "0x40d87874",
+      "selector_consumer_range": [
+        "0x400035fc",
+        "0x4000361c"
+      ],
+      "early_shell_call": "0x401eeaf8",
+      "normal_initialization_call": "0x400cf868",
+      "bootstrap_calls_before_selector": [
+        {
+          "site": "0x4000399c",
+          "target": "0x4000de0c"
+        },
+        {
+          "site": "0x400039a0",
+          "target": "0x4001d27c"
+        },
+        {
+          "site": "0x400039a4",
+          "target": "0x4001d6a4"
+        },
+        {
+          "site": "0x400039a8",
+          "target": "0x4001d6ec"
+        },
+        {
+          "site": "0x400039ac",
+          "target": "0x4001cf2c"
+        }
+      ]
+    },
+    "2.00": {
+      "image_sha256": "80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923",
+      "reset_vector_target": "0x40000ec0",
+      "reset_body_sha256": "400e0190949a397e5b5054eaed1b95ac090d8f8ed7c2248fc0704996e43233ec",
+      "reset_guard_range": [
+        "0x40000f7c",
+        "0x40000fb8"
+      ],
+      "reset_guard_sha256": "8f11058ba7c34f1f55ab0848cd6455351b74fc6479e02ec37a4e1f12fb6748d4",
+      "selector_call": "0x400039ac",
+      "selector": "0x4001d0dc",
+      "selector_end_exclusive": "0x4001d1b4",
+      "selector_code_bytes": 216,
+      "selector_code_sha256": "0a9ac0172e022e02ea932a60cee6f6c923c50caa2956364c8a42756f16cd9b91",
+      "state_base": "0x40e4ae50",
+      "record_reader": "0x40041ca4",
+      "power_getter": "0x4001d880",
+      "saved_bits_13_14_filter_encoding": "1520d3e5600012e30700001a",
+      "successful_auxiliary_flag_offset": "0xd",
+      "selector_result_flag": "0x40e38074",
+      "selector_consumer_range": [
+        "0x400035fc",
+        "0x4000361c"
+      ],
+      "early_shell_call": "0x401efc90",
+      "normal_initialization_call": "0x400f86f4",
+      "bootstrap_calls_before_selector": [
+        {
+          "site": "0x4000399c",
+          "target": "0x4000de0c"
+        },
+        {
+          "site": "0x400039a0",
+          "target": "0x4001d42c"
+        },
+        {
+          "site": "0x400039a4",
+          "target": "0x4001d854"
+        },
+        {
+          "site": "0x400039a8",
+          "target": "0x4001d89c"
+        },
+        {
+          "site": "0x400039ac",
+          "target": "0x4001d0dc"
+        }
+      ]
+    }
+  },
+  "comparisons": {
+    "reset_body_identical_all_four": true,
+    "guard_identical_all_four": true,
+    "selector_code_1_01_equals_1_20": true,
+    "selector_code_differences_1_30_vs_2_00": [
+      {
+        "relative_offset": "0x1c",
+        "1.30": "0xeb009291",
+        "2.00": "0xeb0092e9"
+      },
+      {
+        "relative_offset": "0xb4",
+        "1.30": "0xe5c30019",
+        "2.00": "0xe5c3000d"
+      }
+    ]
+  },
+  "limits": [
+    "Hardware bit names and physical button meanings not established by these slices.",
+    "No live retained-state values, earlier-stage bytes or qualified loader entry.",
+    "Selector controls separately execute original ARM with supplied state and modeled record/power reads."
+  ]
+}

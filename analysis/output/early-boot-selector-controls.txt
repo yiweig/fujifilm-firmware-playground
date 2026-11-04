@@ -1,0 +1,14 @@
+Original ARM guard and early-shell selector only. Synthetic MMIO/power/retained word; record-reader and power getter modeled. No live hardware, USB, persistent writes, shell or whole boot.
+PASS 1.01 hash=64ca08d346075907bbec2dde2db50bc3a5507a93e5d7b2e5024d4a59599125f9 selector=4001cf2c: 256 stable cases, 44 accepted; saved bits 13/14 filter=false.
+PASS 3 changed-sample cases and 1 modeled failed-record case with supplied retained saved=0; read failure is not a live RAM prediction.
+PASS 4 reset guard cases: bit 10401d18.6 or nonzero 100003a2 -> store 1; otherwise repeated store 4 at 100003a0. Stop before later startup.
+PASS 1.20 hash=85d6d280605148d131c28f71b3560742310878340c6de5d1c05faf00d02a2c8f selector=4001cf2c: 256 stable cases, 44 accepted; saved bits 13/14 filter=false.
+PASS 3 changed-sample cases and 1 modeled failed-record case with supplied retained saved=0; read failure is not a live RAM prediction.
+PASS 4 reset guard cases: bit 10401d18.6 or nonzero 100003a2 -> store 1; otherwise repeated store 4 at 100003a0. Stop before later startup.
+PASS 1.30 hash=34034d7d1314485fbbd8167669a83dbea4d3dc80cc9ba3c87c7ded2c96aa9df6 selector=4001cf2c: 256 stable cases, 11 accepted; saved bits 13/14 filter=true.
+PASS 3 changed-sample cases and 1 modeled failed-record case with supplied retained saved=0; read failure is not a live RAM prediction.
+PASS 4 reset guard cases: bit 10401d18.6 or nonzero 100003a2 -> store 1; otherwise repeated store 4 at 100003a0. Stop before later startup.
+PASS 2.00 hash=80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923 selector=4001d0dc: 256 stable cases, 11 accepted; saved bits 13/14 filter=true.
+PASS 3 changed-sample cases and 1 modeled failed-record case with supplied retained saved=0; read failure is not a live RAM prediction.
+PASS 4 reset guard cases: bit 10401d18.6 or nonzero 100003a2 -> store 1; otherwise repeated store 4 at 100003a0. Stop before later startup.
+1056 controls passed. No physical bit/button names, retail reachability, ROM contents, USB initialization or recovery established.

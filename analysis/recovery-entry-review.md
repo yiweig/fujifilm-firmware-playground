@@ -29,6 +29,12 @@ callback registration. Original dispatcher controls with a supplied empty
 table reach a null-initializer assertion, not automatic fallback registration.
 Actual early-shell table contents and optional task behavior remain unknown.
 
+Further [four-version selector comparison](early-boot-selectors-across-versions.md)
+finds that 1.30/2.00 add a saved-word `0x6000` rejection absent from 1.01/1.20,
+and 2.00 moves an auxiliary success flag. A selected earlier reset guard is
+unchanged across releases. Original ARM controls qualify these bounded
+decisions, without identifying a physical key sequence or USB recovery entry.
+
 ```mermaid
 flowchart TD
     A[Power-on: earlier ROM / storage loader<br/>implementation unavailable] --> B[Load main firmware into RAM]

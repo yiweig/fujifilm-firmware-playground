@@ -205,6 +205,14 @@ discovering a camera. No missing entry was recovered, and these host UI branches
 have reached a bounded stopping point; full startup/USB-arrival handling is
 not qualified by this result.
 
+The [four-version early-boot selector review](early-boot-selectors-across-versions.md)
+then checks reset's control-register guard and the known early-shell selector.
+It identifies a saved-state rejection added in 1.30, retained in 2.00, plus
+an auxiliary RAM-flag relocation. The 1,056 original-instruction controls use
+synthetic inputs; they neither recover physical key semantics nor remove the
+known early-shell USB initialization gap. These slices still require the
+installed main image; C1 remains dependent on missing earlier-stage evidence.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically
