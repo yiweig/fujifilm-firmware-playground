@@ -119,6 +119,58 @@ objects and invokes further setup. This pass did not close every event,
 virtual-call, timer or helper edge. It **does not establish either automatic
 erasure on launch or passivity on launch**. FRM and its drivers remain unrun.
 
+## Event-dispatch follow-up: keyboard actions and progress timer
+
+A further bounded pass on 2026-11-03 checked selected message/jump tables and
+their code targets. This supplies concrete UI bindings without treating all
+callbacks as analyzed. The bundled `Download/Readme.txt`, decoded as GB18030,
+line 29 independently labels the shortcuts ISP/F5 and USB/F6.
+
+Both keyboard dispatchers check message `0x100` (WM_KEYDOWN). Their indexed
+tables use virtual-key value minus `0x0d` to select a target:
+
+| Tables (byte indices / address targets) | F5 (`0x74`) | F6 (`0x75`) |
+| --- | --- | --- |
+| `0x0042e9f0` / `0x0042e9e0` | Branch `0x0042e980`, call `0x00429f90` at `0x0042e999` | Branch `0x0042e9ab`, call `0x0042e240` at `0x0042e9c4` |
+| `0x00433a1c` / `0x00433a08` | Branch `0x00433981`, call `0x00429f90` at `0x004339a0` | Branch `0x004339b3`, call `0x0042e240` at `0x004339d2` |
+
+The branches also check control state; this is conditional static behavior,
+not proof that a shortcut always operates regardless of dialog state/focus.
+F6's "USB" label therefore must not be taken to mean passive USB discovery:
+its target is the already traced connection/ISP preparation routine.
+
+F5's target `0x00429f90` checks settings, starts timer 1 with a 100 ms period,
+calls the ISP connection wrapper, and, after success, passes worker entry
+`0x0042a100` to `AfxBeginThread`. A worker branch calls Program All
+`0x0042afa0` at `0x0042a2da`. This ties a documented shortcut to the existing
+programming-capable workflow, rather than discovering a new recovery command.
+
+The 24-byte message entries at `0x00448a28` and `0x00448bd0` contain
+`[0x113,0,0,0,0xd,0x0042e8d0]`, consistent with MFC WM_TIMER entries.
+The selected handler sends progress value `0x00473148` to a progress control;
+when it reaches 100, it delays, resets the display and kills timer 1 before
+forwarding to the framework timer handler. Its inspected instructions contain
+no direct camera query or upload. This describes this handler, not all timers.
+
+REA did not define functions for those two keyboard bodies, the timer body,
+or the worker entry. Their selected ranges were decoded with local LLVM
+objdump and matched to pinned file bytes and table entries; no new Ghidra
+pseudocode is claimed for them. `0x00429f90` has a separate complete REA page.
+The instruction listing stops before inline keyboard jump-table data so those
+bytes are not presented as instructions. Worker coverage is a bounded slice.
+
+Evidence: [selected disassembly/tool identity](output/frm-event-dispatch.asm.txt),
+[jump/message-table and direct-CALL decoding](output/frm-bundle-inventory.json),
+and the added `programming_start` [REA page](output/frm-connection-caller-rea-pages.json).
+Full event-pass Evidence/snapshot are local ignored caches
+`output/rea-frm-event-evidence.json` and `output/frm-events.rea-snapshot`.
+
+No X-half retail-to-loader or cold entry was recovered. The inspected paths
+use the already known vendor interface; they do not make it appear on a retail
+camera. Automatic USB-arrival handling and complete startup effects remain
+unresolved. This is the stopping point for these host UI branches: another
+unrelated callback trace would not supply the missing camera-side entry.
+
 ## Existing upload evidence: confirmed, not a new entry mechanism
 
 The refreshed DLL inspection agrees with the old report:

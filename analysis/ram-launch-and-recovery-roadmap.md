@@ -199,6 +199,12 @@ format and program storage. The driver INF supports `2aad:6500` interface 5,
 but neither that match nor the configurable upload protocol supplies a verified
 X-half retail/cold transition. GUI startup/event passivity remains unqualified.
 
+Its event-dispatch follow-up ties F6/USB to active ISP preparation and F5/ISP
+to the programming workflow. The selected timer updates progress, rather than
+discovering a camera. No missing entry was recovered, and these host UI branches
+have reached a bounded stopping point; full startup/USB-arrival handling is
+not qualified by this result.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

@@ -803,6 +803,142 @@
       "evidence_links": [
         "ev_d996c6544ea0c73dcac29a6a4f1e3bc59506425c1eecd98de83415deaf4070de"
       ]
+    },
+    "programming_start": {
+      "analysis_profile": null,
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "environment": null,
+      "evidence_id": "ev_82ccff3a9bb8ac5362d9b5bb61d0499ffca89d524c222905ceeee86c00af04bf",
+      "evidence_links": [
+        "ev_064bb812cafa4a08ac03ca57842f44c7851a33ad3e6d34aee7de957606f7a238"
+      ],
+      "limitations": [
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+        "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+        "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+        "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+        "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+        "Pseudocode is neither original source nor guaranteed to compile.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+        "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+        "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ],
+      "locations": [
+        {
+          "kind": "artifact-path",
+          "path": "/private/tmp/v50-frm-static/FRM.exe"
+        },
+        {
+          "address": "0x429f90",
+          "kind": "address"
+        }
+      ],
+      "normalized_result": {
+        "artifact": {
+          "path": "/private/tmp/v50-frm-static/FRM.exe",
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "coverage": {
+          "examined": 1870,
+          "exhausted": true,
+          "next_offset": null,
+          "status": "page",
+          "total": 1870
+        },
+        "item": {
+          "text": "\nvoid __fastcall FUN_00429f90(CWnd *param_1)\n\n{\n  int iVar1;\n  CWinThread *pCVar2;\n  CWnd *pCVar3;\n  \n  CWnd::UpdateData(param_1,1);\n  if (*(int *)(param_1 + 0x168) == 3) {\n    *(undefined4 *)(param_1 + 0x1c0) = 1;\n  }\n  iVar1 = FUN_00429d90(param_1);\n  if (iVar1 == 0) {\n    *(undefined4 *)(param_1 + 0x1c0) = 0;\n    return;\n  }\n  *(undefined4 *)(param_1 + 0x1c0) = 0;\n  FUN_0042ea60(param_1,0);\n  DAT_004731c0 = 1;\n  DAT_0047314c = FUN_00429ef0(param_1);\n  DAT_00473148 = 0;\n  *(undefined4 *)(param_1 + 0x1ac) = 0;\n  SetTimer(*(HWND *)(param_1 + 0x20),1,100,(TIMERPROC)0x0);\n  if (*(int *)(param_1 + 0x168) == 0) {\n    *(undefined4 *)(param_1 + 0x174) = *(undefined4 *)(param_1 + 0x188);\n  }\n  else {\n    *(undefined4 *)(param_1 + 0x174) = 0;\n  }\n  *(undefined4 *)(param_1 + 0x23c) = 0;\n  FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Check_ISP_Core____004543c4);\n  iVar1 = FUN_00413580(0x473bf0);\n  if (iVar1 == 0) {\n    pCVar2 = AfxGetThread();\n    if (pCVar2 == (CWinThread *)0x0) {\n      pCVar3 = (CWnd *)0x0;\n    }\n    else {\n      pCVar3 = (CWnd *)(**(code **)(*(int *)pCVar2 + 0x7c))();\n    }\n    FUN_00433bd0(pCVar3);\n    *(undefined4 *)(param_1 + 0x234) = *(undefined4 *)(pCVar3 + 0x228);\n    *(undefined4 *)(param_1 + 0x238) = *(undefined4 *)(pCVar3 + 0x224);\n    FUN_0042e090((int)param_1);\n    pCVar2 = AfxBeginThread((_func_uint_void_ptr *)&LAB_0042a100,param_1,0,0,0,\n                            (_SECURITY_ATTRIBUTES *)0x0);\n    if (pCVar2 != (CWinThread *)0x0) {\n      return;\n    }\n    CWnd::MessageBoxA(param_1,s_Create_ISP_Thread_Error__00454378,(char *)0x0,0x30);\n  }\n  else {\n    AfxMessageBox(s_Check_ISP_Core_Error__004543ac,0x30,0);\n    FUN_0042c8b0((CWnd *)&DAT_004730b0,s_Check_ISPCore_Failed__00454394);\n  }\n  KillTimer(*(HWND *)(param_1 + 0x20),1);\n  FUN_0042ea60(param_1,1);\n  DAT_004731c0 = 0;\n  *(undefined4 *)(param_1 + 0x174) = 0;\n  return;\n}\n\n",
+          "unit": "utf16-code-units"
+        },
+        "kind": "native",
+        "limitations": [
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Def-use links do not cross function boundaries and may omit memory aliasing, call side effects, or unresolved indirect flow.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "High p-code is decompiler-derived, not original source or runtime behavior. is_dead preserves the Java AST flag; decoded block members can retain that flag, so block_membership separately reports actual syntax-tree membership.",
+          "Known omitted-edge counts cover links omitted from retained operations; omitted operations may contain additional uncounted links.",
+          "Memory read/write effects include stack and temporary memory operations; they do not identify persistent state or business meaning.",
+          "Operation, input, and def-use limits can truncate large functions; inspect truncation, omitted lower bounds, and known omitted counts before drawing conclusions.",
+          "Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
+          "Pseudocode is neither original source nor guaranteed to compile.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "Register variables, compiler-generated blocks, and pointer arithmetic remain decompiler artifacts.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program. Decompilation runs until completion or caller cancellation unless REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS sets a per-function limit. That limit stops the requested decompile without requesting session closure; caller cancellation requests session closure.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
+          "Types and calling conventions are Ghidra decompiler observations, not source declarations.",
+          "Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "parent_digest": "064bb812cafa4a08ac03ca57842f44c7851a33ad3e6d34aee7de957606f7a238",
+        "parent_evidence_id": "ev_064bb812cafa4a08ac03ca57842f44c7851a33ad3e6d34aee7de957606f7a238",
+        "parent_operation": "analyze_function",
+        "procedure_address": "0x429f90",
+        "unknowns": [],
+        "view": {
+          "facet": "pseudocode",
+          "kind": "native",
+          "limit": 12000,
+          "offset": 0
+        },
+        "view_digest": "4d6af9eefce2e0254cc659da328ea3962e167fbc12941780dd2138a63842a1d8"
+      },
+      "operation": "inspect_analysis_view",
+      "parameters": {
+        "parent_evidence_id": "ev_064bb812cafa4a08ac03ca57842f44c7851a33ad3e6d34aee7de957606f7a238",
+        "view": {
+          "facet": "pseudocode",
+          "kind": "native",
+          "limit": 12000,
+          "offset": 0
+        }
+      },
+      "predicate_type": "rea.analysis-view",
+      "provider": {
+        "id": "rea-analysis-view",
+        "name": "REA analysis view projection",
+        "version": "1"
+      },
+      "raw_result": null,
+      "relationship_coverage": {
+        "diagnostics": [
+          "Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals."
+        ],
+        "limitations": [
+          "Ghidra's caller inventory omits sources of 2 call reference(s) into this function's body.",
+          "Ghidra's callee inventory omits targets of 1 call reference(s) or decoded call(s) without destinations."
+        ],
+        "limited_directions": [
+          "callers",
+          "callees"
+        ],
+        "status": "partial"
+      },
+      "subject": {
+        "architecture": "x86",
+        "digest": {
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+        },
+        "format": "pe",
+        "local_path": "/private/tmp/v50-frm-static/FRM.exe",
+        "name": "FRM.exe"
+      }
     }
   },
   "usb_library_imports": [

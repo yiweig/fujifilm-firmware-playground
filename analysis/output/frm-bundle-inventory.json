@@ -10,7 +10,115 @@
         {
           "member": "Reflash_V2.6/Download/FRM.exe",
           "bytes": 512000,
-          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365"
+          "sha256": "c5be8958bc694fe0b95a505d05fc475d8279df5f5a065570090aa3a78b392365",
+          "selected_event_tables": {
+            "coordinate_system": "FRM PE32 analysis VA, image base 0x00400000",
+            "key_dispatch_tables": [
+              {
+                "index_table": "0x42e9f0",
+                "target_table": "0x42e9e0",
+                "keys": [
+                  {
+                    "key": "Enter",
+                    "virtual_key": "0xd",
+                    "selector": 0,
+                    "branch_address": "0x42e9d6"
+                  },
+                  {
+                    "key": "Escape",
+                    "virtual_key": "0x1b",
+                    "selector": 0,
+                    "branch_address": "0x42e9d6"
+                  },
+                  {
+                    "key": "F5",
+                    "virtual_key": "0x74",
+                    "selector": 1,
+                    "branch_address": "0x42e980"
+                  },
+                  {
+                    "key": "F6",
+                    "virtual_key": "0x75",
+                    "selector": 2,
+                    "branch_address": "0x42e9ab"
+                  }
+                ]
+              },
+              {
+                "index_table": "0x433a1c",
+                "target_table": "0x433a08",
+                "keys": [
+                  {
+                    "key": "Enter",
+                    "virtual_key": "0xd",
+                    "selector": 0,
+                    "branch_address": "0x4339fd"
+                  },
+                  {
+                    "key": "Escape",
+                    "virtual_key": "0x1b",
+                    "selector": 4,
+                    "branch_address": "0x4339a5"
+                  },
+                  {
+                    "key": "F5",
+                    "virtual_key": "0x74",
+                    "selector": 2,
+                    "branch_address": "0x433981"
+                  },
+                  {
+                    "key": "F6",
+                    "virtual_key": "0x75",
+                    "selector": 3,
+                    "branch_address": "0x4339b3"
+                  }
+                ]
+              }
+            ],
+            "selected_direct_calls": {
+              "0x42e999": "0x429f90",
+              "0x42e9c4": "0x42e240",
+              "0x4339a0": "0x429f90",
+              "0x4339d2": "0x42e240",
+              "0x42a2da": "0x42afa0"
+            },
+            "selected_timer_message_entries": [
+              {
+                "address": "0x4478d8",
+                "words": [
+                  "0x113",
+                  "0x0",
+                  "0x0",
+                  "0x0",
+                  "0xd",
+                  "0x405ba0"
+                ]
+              },
+              {
+                "address": "0x448a28",
+                "words": [
+                  "0x113",
+                  "0x0",
+                  "0x0",
+                  "0x0",
+                  "0xd",
+                  "0x42e8d0"
+                ]
+              },
+              {
+                "address": "0x448bd0",
+                "words": [
+                  "0x113",
+                  "0x0",
+                  "0x0",
+                  "0x0",
+                  "0xd",
+                  "0x42e8d0"
+                ]
+              }
+            ],
+            "limit": "Selected jump/message tables and direct CALL encodings only; no complete UI/event reachability or live behavior."
+          }
         },
         {
           "member": "Reflash_V2.6/Download/USB_CAM.dll",

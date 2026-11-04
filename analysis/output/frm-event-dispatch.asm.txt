@@ -1,0 +1,320 @@
+Apple LLVM version 21.0.0
+  Optimized build.
+
+
+  Registered Targets:
+    aarch64    - AArch64 (little endian)
+    aarch64_32 - AArch64 (little endian ILP32)
+    aarch64_be - AArch64 (big endian)
+    arm        - ARM
+    arm64      - ARM64 (little endian)
+    arm64_32   - ARM64 (little endian ILP32)
+    armeb      - ARM (big endian)
+    thumb      - Thumb
+    thumbeb    - Thumb (big endian)
+    wasm32     - WebAssembly 32-bit
+    wasm64     - WebAssembly 64-bit
+    x86        - 32-bit X86: Pentium-Pro and above
+    x86-64     - 64-bit X86: EM64T and AMD64
+
+
+/private/tmp/v50-frm-static/FRM.exe:	file format coff-i386
+
+Disassembly of section .text:
+
+00401000 <.text>:
+  42e8d0: a1 48 31 47 00               	movl	0x473148, %eax
+  42e8d5: 56                           	pushl	%esi
+  42e8d6: 57                           	pushl	%edi
+  42e8d7: 8b 3d 40 69 44 00            	movl	0x446940, %edi
+  42e8dd: 8b f1                        	movl	%ecx, %esi
+  42e8df: 6a 00                        	pushl	$0x0
+  42e8e1: 8b 0d 28 31 47 00            	movl	0x473128, %ecx
+  42e8e7: 50                           	pushl	%eax
+  42e8e8: 68 02 04 00 00               	pushl	$0x402                  # imm = 0x402
+  42e8ed: 51                           	pushl	%ecx
+  42e8ee: ff d7                        	calll	*%edi
+  42e8f0: 83 3d 48 31 47 00 64         	cmpl	$0x64, 0x473148
+  42e8f7: 75 33                        	jne	0x42e92c <.text+0x2d92c>
+  42e8f9: 68 c8 00 00 00               	pushl	$0xc8
+  42e8fe: ff 15 cc 60 44 00            	calll	*0x4460cc
+  42e904: 8b 15 28 31 47 00            	movl	0x473128, %edx
+  42e90a: 6a 00                        	pushl	$0x0
+  42e90c: 6a 00                        	pushl	$0x0
+  42e90e: 68 02 04 00 00               	pushl	$0x402                  # imm = 0x402
+  42e913: 52                           	pushl	%edx
+  42e914: c7 05 48 31 47 00 00 00 00 00	movl	$0x0, 0x473148
+  42e91e: ff d7                        	calll	*%edi
+  42e920: 8b 46 20                     	movl	0x20(%esi), %eax
+  42e923: 6a 01                        	pushl	$0x1
+  42e925: 50                           	pushl	%eax
+  42e926: ff 15 14 69 44 00            	calll	*0x446914
+  42e92c: 8b ce                        	movl	%esi, %ecx
+  42e92e: e8 c1 21 01 00               	calll	0x440af4 <.text+0x3faf4>
+  42e933: 5f                           	popl	%edi
+  42e934: 5e                           	popl	%esi
+  42e935: c2 04 00                     	retl	$0x4
+
+
+/private/tmp/v50-frm-static/FRM.exe:	file format coff-i386
+
+Disassembly of section .text:
+
+00401000 <.text>:
+  42e940: 56                           	pushl	%esi
+  42e941: 57                           	pushl	%edi
+  42e942: 8b 7c 24 0c                  	movl	0xc(%esp), %edi
+  42e946: 8b f1                        	movl	%ecx, %esi
+  42e948: 57                           	pushl	%edi
+  42e949: 6a 00                        	pushl	$0x0
+  42e94b: 8b 86 f8 01 00 00            	movl	0x1f8(%esi), %eax
+  42e951: 68 07 04 00 00               	pushl	$0x407                  # imm = 0x407
+  42e956: 50                           	pushl	%eax
+  42e957: ff 15 40 69 44 00            	calll	*0x446940
+  42e95d: 81 7f 04 00 01 00 00         	cmpl	$0x100, 0x4(%edi)       # imm = 0x100
+  42e964: 75 38                        	jne	0x42e99e <.text+0x2d99e>
+  42e966: 8b 47 08                     	movl	0x8(%edi), %eax
+  42e969: 83 c0 f3                     	addl	$-0xd, %eax
+  42e96c: 83 f8 68                     	cmpl	$0x68, %eax
+  42e96f: 77 2d                        	ja	0x42e99e <.text+0x2d99e>
+  42e971: 33 c9                        	xorl	%ecx, %ecx
+  42e973: 8a 88 f0 e9 42 00            	movb	0x42e9f0(%eax), %cl
+  42e979: ff 24 8d e0 e9 42 00         	jmpl	*0x42e9e0(,%ecx,4)
+  42e980: 68 f6 03 00 00               	pushl	$0x3f6                  # imm = 0x3F6
+  42e985: 8b ce                        	movl	%esi, %ecx
+  42e987: e8 8a 23 01 00               	calll	0x440d16 <.text+0x3fd16>
+  42e98c: 8b c8                        	movl	%eax, %ecx
+  42e98e: e8 ff 25 01 00               	calll	0x440f92 <.text+0x3ff92>
+  42e993: 85 c0                        	testl	%eax, %eax
+  42e995: 74 07                        	je	0x42e99e <.text+0x2d99e>
+  42e997: 8b ce                        	movl	%esi, %ecx
+  42e999: e8 f2 b5 ff ff               	calll	0x429f90 <.text+0x28f90>
+  42e99e: 57                           	pushl	%edi
+  42e99f: 8b ce                        	movl	%esi, %ecx
+  42e9a1: e8 70 20 01 00               	calll	0x440a16 <.text+0x3fa16>
+  42e9a6: 5f                           	popl	%edi
+  42e9a7: 5e                           	popl	%esi
+  42e9a8: c2 04 00                     	retl	$0x4
+  42e9ab: 68 e8 03 00 00               	pushl	$0x3e8                  # imm = 0x3E8
+  42e9b0: 8b ce                        	movl	%esi, %ecx
+  42e9b2: e8 5f 23 01 00               	calll	0x440d16 <.text+0x3fd16>
+  42e9b7: 8b c8                        	movl	%eax, %ecx
+  42e9b9: e8 d4 25 01 00               	calll	0x440f92 <.text+0x3ff92>
+  42e9be: 85 c0                        	testl	%eax, %eax
+  42e9c0: 74 dc                        	je	0x42e99e <.text+0x2d99e>
+  42e9c2: 8b ce                        	movl	%esi, %ecx
+  42e9c4: e8 77 f8 ff ff               	calll	0x42e240 <.text+0x2d240>
+  42e9c9: 57                           	pushl	%edi
+  42e9ca: 8b ce                        	movl	%esi, %ecx
+  42e9cc: e8 45 20 01 00               	calll	0x440a16 <.text+0x3fa16>
+  42e9d1: 5f                           	popl	%edi
+  42e9d2: 5e                           	popl	%esi
+  42e9d3: c2 04 00                     	retl	$0x4
+  42e9d6: 5f                           	popl	%edi
+  42e9d7: b8 01 00 00 00               	movl	$0x1, %eax
+  42e9dc: 5e                           	popl	%esi
+  42e9dd: c2 04 00                     	retl	$0x4
+
+
+/private/tmp/v50-frm-static/FRM.exe:	file format coff-i386
+
+Disassembly of section .text:
+
+00401000 <.text>:
+  43395e: 81 7f 04 00 01 00 00         	cmpl	$0x100, 0x4(%edi)       # imm = 0x100
+  433965: 75 3e                        	jne	0x4339a5 <.text+0x329a5>
+  433967: 8b 47 08                     	movl	0x8(%edi), %eax
+  43396a: 83 c0 f3                     	addl	$-0xd, %eax
+  43396d: 83 f8 68                     	cmpl	$0x68, %eax
+  433970: 77 33                        	ja	0x4339a5 <.text+0x329a5>
+  433972: 33 c9                        	xorl	%ecx, %ecx
+  433974: 8a 88 1c 3a 43 00            	movb	0x433a1c(%eax), %cl
+  43397a: ff 24 8d 08 3a 43 00         	jmpl	*0x433a08(,%ecx,4)
+  433981: 8d 9e 30 02 00 00            	leal	0x230(%esi), %ebx
+  433987: 68 f6 03 00 00               	pushl	$0x3f6                  # imm = 0x3F6
+  43398c: 8b cb                        	movl	%ebx, %ecx
+  43398e: e8 83 d3 00 00               	calll	0x440d16 <.text+0x3fd16>
+  433993: 8b c8                        	movl	%eax, %ecx
+  433995: e8 f8 d5 00 00               	calll	0x440f92 <.text+0x3ff92>
+  43399a: 85 c0                        	testl	%eax, %eax
+  43399c: 74 07                        	je	0x4339a5 <.text+0x329a5>
+  43399e: 8b cb                        	movl	%ebx, %ecx
+  4339a0: e8 eb 65 ff ff               	calll	0x429f90 <.text+0x28f90>
+  4339a5: 57                           	pushl	%edi
+  4339a6: 8b ce                        	movl	%esi, %ecx
+  4339a8: e8 69 d0 00 00               	calll	0x440a16 <.text+0x3fa16>
+  4339ad: 5f                           	popl	%edi
+  4339ae: 5e                           	popl	%esi
+  4339af: 5b                           	popl	%ebx
+  4339b0: c2 04 00                     	retl	$0x4
+  4339b3: 8d 9e 30 02 00 00            	leal	0x230(%esi), %ebx
+  4339b9: 68 e8 03 00 00               	pushl	$0x3e8                  # imm = 0x3E8
+  4339be: 8b cb                        	movl	%ebx, %ecx
+  4339c0: e8 51 d3 00 00               	calll	0x440d16 <.text+0x3fd16>
+  4339c5: 8b c8                        	movl	%eax, %ecx
+  4339c7: e8 c6 d5 00 00               	calll	0x440f92 <.text+0x3ff92>
+  4339cc: 85 c0                        	testl	%eax, %eax
+  4339ce: 74 d5                        	je	0x4339a5 <.text+0x329a5>
+  4339d0: 8b cb                        	movl	%ebx, %ecx
+  4339d2: e8 69 a8 ff ff               	calll	0x42e240 <.text+0x2d240>
+  4339d7: 57                           	pushl	%edi
+  4339d8: 8b ce                        	movl	%esi, %ecx
+  4339da: e8 37 d0 00 00               	calll	0x440a16 <.text+0x3fa16>
+  4339df: 5f                           	popl	%edi
+  4339e0: 5e                           	popl	%esi
+  4339e1: 5b                           	popl	%ebx
+  4339e2: c2 04 00                     	retl	$0x4
+
+
+/private/tmp/v50-frm-static/FRM.exe:	file format coff-i386
+
+Disassembly of section .text:
+
+00401000 <.text>:
+  42a100: 64 a1 00 00 00 00            	movl	%fs:0x0, %eax
+  42a106: 6a ff                        	pushl	$-0x1
+  42a108: 68 42 4c 44 00               	pushl	$0x444c42               # imm = 0x444C42
+  42a10d: 50                           	pushl	%eax
+  42a10e: 64 89 25 00 00 00 00         	movl	%esp, %fs:0x0
+  42a115: 81 ec 38 01 00 00            	subl	$0x138, %esp            # imm = 0x138
+  42a11b: 53                           	pushl	%ebx
+  42a11c: 56                           	pushl	%esi
+  42a11d: 8b b4 24 50 01 00 00         	movl	0x150(%esp), %esi
+  42a124: 57                           	pushl	%edi
+  42a125: 8b ce                        	movl	%esi, %ecx
+  42a127: e8 44 7c 00 00               	calll	0x431d70 <.text+0x30d70>
+  42a12c: 33 db                        	xorl	%ebx, %ebx
+  42a12e: bf 01 00 00 00               	movl	$0x1, %edi
+  42a133: 84 c0                        	testb	%al, %al
+  42a135: 74 3b                        	je	0x42a172 <.text+0x29172>
+  42a137: 68 80 45 45 00               	pushl	$0x454580               # imm = 0x454580
+  42a13c: 68 b0 30 47 00               	pushl	$0x4730b0               # imm = 0x4730B0
+  42a141: 8b ce                        	movl	%esi, %ecx
+  42a143: e8 68 27 00 00               	calll	0x42c8b0 <.text+0x2b8b0>
+  42a148: 57                           	pushl	%edi
+  42a149: b9 50 31 47 00               	movl	$0x473150, %ecx         # imm = 0x473150
+  42a14e: e8 2d 7b fd ff               	calll	0x401c80 <.text+0xc80>
+  42a153: 8b 88 5c 01 00 00            	movl	0x15c(%eax), %ecx
+  42a159: 89 88 58 01 00 00            	movl	%ecx, 0x158(%eax)
+  42a15f: 8b ce                        	movl	%esi, %ecx
+  42a161: 89 3d 64 3c 47 00            	movl	%edi, 0x473c64
+  42a167: e8 54 09 00 00               	calll	0x42aac0 <.text+0x29ac0>
+  42a16c: 89 1d 64 3c 47 00            	movl	%ebx, 0x473c64
+  42a172: 8b 96 ac 01 00 00            	movl	0x1ac(%esi), %edx
+  42a178: 42                           	incl	%edx
+  42a179: 8b c2                        	movl	%edx, %eax
+  42a17b: 89 96 ac 01 00 00            	movl	%edx, 0x1ac(%esi)
+  42a181: 8d 04 80                     	leal	(%eax,%eax,4), %eax
+  42a184: 8d 04 80                     	leal	(%eax,%eax,4), %eax
+  42a187: c1 e0 02                     	shll	$0x2, %eax
+  42a18a: 99                           	cltd
+  42a18b: f7 3d 4c 31 47 00            	idivl	0x47314c
+  42a191: a3 48 31 47 00               	movl	%eax, 0x473148
+  42a196: 8b 86 68 01 00 00            	movl	0x168(%esi), %eax
+  42a19c: 3b c3                        	cmpl	%ebx, %eax
+  42a19e: 0f 85 76 01 00 00            	jne	0x42a31a <.text+0x2931a>
+  42a1a4: 39 9e 78 01 00 00            	cmpl	%ebx, 0x178(%esi)
+  42a1aa: 74 3a                        	je	0x42a1e6 <.text+0x291e6>
+  42a1ac: 68 68 45 45 00               	pushl	$0x454568               # imm = 0x454568
+  42a1b1: 68 b0 30 47 00               	pushl	$0x4730b0               # imm = 0x4730B0
+  42a1b6: 8b ce                        	movl	%esi, %ecx
+  42a1b8: e8 f3 26 00 00               	calll	0x42c8b0 <.text+0x2b8b0>
+  42a1bd: 53                           	pushl	%ebx
+  42a1be: 8b ce                        	movl	%esi, %ecx
+  42a1c0: e8 7b 76 00 00               	calll	0x431840 <.text+0x30840>
+  42a1c5: 85 c0                        	testl	%eax, %eax
+  42a1c7: 74 1d                        	je	0x42a1e6 <.text+0x291e6>
+  42a1c9: 8b ce                        	movl	%esi, %ecx
+  42a1cb: e8 f0 0b 00 00               	calll	0x42adc0 <.text+0x29dc0>
+  42a1d0: 6a 02                        	pushl	$0x2
+  42a1d2: 68 54 45 45 00               	pushl	$0x454554               # imm = 0x454554
+  42a1d7: 56                           	pushl	%esi
+  42a1d8: 8b ce                        	movl	%esi, %ecx
+  42a1da: e8 51 89 00 00               	calll	0x432b30 <.text+0x31b30>
+  42a1df: 33 c0                        	xorl	%eax, %eax
+  42a1e1: e9 87 04 00 00               	jmp	0x42a66d <.text+0x2966d>
+  42a1e6: 68 38 45 45 00               	pushl	$0x454538               # imm = 0x454538
+  42a1eb: 68 b0 30 47 00               	pushl	$0x4730b0               # imm = 0x4730B0
+  42a1f0: 8b ce                        	movl	%esi, %ecx
+  42a1f2: e8 b9 26 00 00               	calll	0x42c8b0 <.text+0x2b8b0>
+  42a1f7: 8b ce                        	movl	%esi, %ecx
+  42a1f9: e8 02 68 00 00               	calll	0x430a00 <.text+0x2fa00>
+  42a1fe: 3b c3                        	cmpl	%ebx, %eax
+  42a200: 74 1d                        	je	0x42a21f <.text+0x2921f>
+  42a202: 8b ce                        	movl	%esi, %ecx
+  42a204: e8 b7 0b 00 00               	calll	0x42adc0 <.text+0x29dc0>
+  42a209: 6a 02                        	pushl	$0x2
+  42a20b: 68 1c 45 45 00               	pushl	$0x45451c               # imm = 0x45451C
+  42a210: 56                           	pushl	%esi
+  42a211: 8b ce                        	movl	%esi, %ecx
+  42a213: e8 18 89 00 00               	calll	0x432b30 <.text+0x31b30>
+  42a218: 33 c0                        	xorl	%eax, %eax
+  42a21a: e9 4e 04 00 00               	jmp	0x42a66d <.text+0x2966d>
+  42a21f: 39 1d 6c 3d 47 00            	cmpl	%ebx, 0x473d6c
+  42a225: 75 08                        	jne	0x42a22f <.text+0x2922f>
+  42a227: 39 1d 74 3d 47 00            	cmpl	%ebx, 0x473d74
+  42a22d: 74 75                        	je	0x42a2a4 <.text+0x292a4>
+  42a22f: 8b 96 8c 01 00 00            	movl	0x18c(%esi), %edx
+  42a235: a1 70 3d 47 00               	movl	0x473d70, %eax
+  42a23a: 3b d0                        	cmpl	%eax, %edx
+  42a23c: 76 66                        	jbe	0x42a2a4 <.text+0x292a4>
+  42a23e: 8d 4c 24 0c                  	leal	0xc(%esp), %ecx
+  42a242: e8 b7 67 01 00               	calll	0x4409fe <.text+0x3f9fe>
+  42a247: a1 70 3d 47 00               	movl	0x473d70, %eax
+  42a24c: 8b 8e 8c 01 00 00            	movl	0x18c(%esi), %ecx
+  42a252: 50                           	pushl	%eax
+  42a253: 51                           	pushl	%ecx
+  42a254: 8d 54 24 14                  	leal	0x14(%esp), %edx
+  42a258: 68 00 45 45 00               	pushl	$0x454500               # imm = 0x454500
+  42a25d: 52                           	pushl	%edx
+  42a25e: 89 9c 24 5c 01 00 00         	movl	%ebx, 0x15c(%esp)
+  42a265: e8 a2 68 01 00               	calll	0x440b0c <.text+0x3fb0c>
+  42a26a: 83 c4 10                     	addl	$0x10, %esp
+  42a26d: 8b ce                        	movl	%esi, %ecx
+  42a26f: e8 4c 0b 00 00               	calll	0x42adc0 <.text+0x29dc0>
+  42a274: 6a 02                        	pushl	$0x2
+  42a276: 53                           	pushl	%ebx
+  42a277: 8d 4c 24 14                  	leal	0x14(%esp), %ecx
+  42a27b: e8 68 68 01 00               	calll	0x440ae8 <.text+0x3fae8>
+  42a280: 50                           	pushl	%eax
+  42a281: 56                           	pushl	%esi
+  42a282: 8b ce                        	movl	%esi, %ecx
+  42a284: e8 a7 88 00 00               	calll	0x432b30 <.text+0x31b30>
+  42a289: 8d 4c 24 0c                  	leal	0xc(%esp), %ecx
+  42a28d: c7 84 24 4c 01 00 00 ff ff ff ff     	movl	$0xffffffff, 0x14c(%esp) # imm = 0xFFFFFFFF
+  42a298: e8 67 67 01 00               	calll	0x440a04 <.text+0x3fa04>
+  42a29d: 33 c0                        	xorl	%eax, %eax
+  42a29f: e9 c9 03 00 00               	jmp	0x42a66d <.text+0x2966d>
+  42a2a4: 68 ec 44 45 00               	pushl	$0x4544ec               # imm = 0x4544EC
+  42a2a9: 68 b0 30 47 00               	pushl	$0x4730b0               # imm = 0x4730B0
+  42a2ae: 8b ce                        	movl	%esi, %ecx
+  42a2b0: e8 fb 25 00 00               	calll	0x42c8b0 <.text+0x2b8b0>
+  42a2b5: 8b ce                        	movl	%esi, %ecx
+  42a2b7: e8 14 54 00 00               	calll	0x42f6d0 <.text+0x2e6d0>
+  42a2bc: 83 f8 02                     	cmpl	$0x2, %eax
+  42a2bf: 8b ce                        	movl	%esi, %ecx
+  42a2c1: 75 17                        	jne	0x42a2da <.text+0x292da>
+  42a2c3: e8 f8 0a 00 00               	calll	0x42adc0 <.text+0x29dc0>
+  42a2c8: 6a 08                        	pushl	$0x8
+  42a2ca: 53                           	pushl	%ebx
+  42a2cb: 56                           	pushl	%esi
+  42a2cc: 8b ce                        	movl	%esi, %ecx
+  42a2ce: e8 5d 88 00 00               	calll	0x432b30 <.text+0x31b30>
+  42a2d3: 33 c0                        	xorl	%eax, %eax
+  42a2d5: e9 93 03 00 00               	jmp	0x42a66d <.text+0x2966d>
+  42a2da: e8 c1 0c 00 00               	calll	0x42afa0 <.text+0x29fa0>
+  42a2df: 3b c3                        	cmpl	%ebx, %eax
+  42a2e1: 89 9e 74 01 00 00            	movl	%ebx, 0x174(%esi)
+  42a2e7: 8b ce                        	movl	%esi, %ecx
+  42a2e9: 75 1b                        	jne	0x42a306 <.text+0x29306>
+  42a2eb: e8 d0 0a 00 00               	calll	0x42adc0 <.text+0x29dc0>
+  42a2f0: 6a 02                        	pushl	$0x2
+  42a2f2: 68 d8 44 45 00               	pushl	$0x4544d8               # imm = 0x4544D8
+  42a2f7: 56                           	pushl	%esi
+  42a2f8: 8b ce                        	movl	%esi, %ecx
+  42a2fa: e8 31 88 00 00               	calll	0x432b30 <.text+0x31b30>
+  42a2ff: 33 c0                        	xorl	%eax, %eax
+  42a301: e9 67 03 00 00               	jmp	0x42a66d <.text+0x2966d>
+  42a306: e8 b5 0a 00 00               	calll	0x42adc0 <.text+0x29dc0>
+  42a30b: 6a 10                        	pushl	$0x10
+  42a30d: 68 c0 44 45 00               	pushl	$0x4544c0               # imm = 0x4544C0
