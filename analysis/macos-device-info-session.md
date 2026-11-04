@@ -3,6 +3,12 @@
 Date: 2026-11-02. Follow-up to [ImageCaptureCore discovery](macos-imagecapture-ptp-route.md).
 This work does not establish a RAM loader or independent recovery procedure.
 
+Later extension: the [standard StorageIDs live pass](standard-storage-ids-live.md)
+adds a second fixed mode to the same stable application. Each invocation still
+submits only one selected metadata read; the original information mode and
+historical observations below retain their scope. The new live pass sent
+`0x1004`, received one ID and completed explicit session close.
+
 ## Client boundary
 
 [imagecapture_device_info.m](imagecapture_device_info.m) is a separate client

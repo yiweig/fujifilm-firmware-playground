@@ -1,8 +1,8 @@
 opcode	conventional_name_or_observed_role	default_dispatch_site_2_00	handler_or_boundary_2_00	review_note
-1001	GetDeviceInfo	402e7a74	402e8b94	Only explicit operation exercised live; success and explicit session close observed
+1001	GetDeviceInfo	402e7a74	402e8b94	Explicit live information read succeeded and session close completed
 1002	OpenSession	402e7a7c	402e8d60	Framework-managed session; RAM allocation/state plus application notification
 1003	CloseSession	402e7ab4	402e8e80	Framework-managed session; RAM cleanup plus application notification
-1004	GetStorageIDs	402e7ae0	402e8f30	Previously reviewed storage enumeration
+1004	GetStorageIDs	402e7ae0	402e8f30	Reviewed storage enumeration; one explicit live read returned 00010001 and session close completed
 1005	GetStorageInfo	402e7ae8	402e90a4	Storage metadata; not raw storage access
 1006	GetNumObjects	402e7970	402e99f4	Object database count
 1007	GetObjectHandles	402e7af0	402e93bc	Previously reviewed filtered media database

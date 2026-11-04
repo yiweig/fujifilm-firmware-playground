@@ -1,0 +1,36 @@
+{
+  "catalog_complete": true,
+  "catalog_items_reported": 43,
+  "client_has_open_session_at_exit": false,
+  "dataset_bytes": 8,
+  "dataset_saved": true,
+  "discovery_callbacks": 1,
+  "explicit_opcode": "1004",
+  "explicit_ptp_command_count": 1,
+  "model_from_discovery": "X-HF1",
+  "response_code": "2001",
+  "returned_transaction_id": 141,
+  "session_closed": true,
+  "session_opened": true,
+  "status": "ok",
+  "usb_identity": "04cb:030a",
+  "wire_traffic_observed": false,
+  "raw_dataset_retained": false,
+  "storage_ids": {
+    "count": 1,
+    "storage_ids": [
+      "00010001"
+    ]
+  },
+  "observation_kind": "live_standard_metadata_read",
+  "explicit_command_parameters": [],
+  "outgoing_data_bytes": 0,
+  "client_source_sha256": "78b5f40ae9a615270d5c732e34bcda80d57572ff8a86acb84a9b370694ca1bd1",
+  "wrapper_source_sha256": "3e55dc02d41307e553a01c81eddcb06b7291c9930cd3d70714e0b4c51f3da4f9",
+  "limits": [
+    "Framework startup/catalog traffic was not captured on the wire; explicit request count does not count framework traffic.",
+    "Storage identifiers are opaque protocol values, not physical addresses or arbitrary read capabilities.",
+    "The physical storage/firmware release/effective live handler are not attested by this reply.",
+    "dataset_saved refers to a private temporary file removed by the wrapper after decoding."
+  ]
+}

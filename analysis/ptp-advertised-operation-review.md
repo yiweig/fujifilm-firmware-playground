@@ -5,6 +5,11 @@ change, upload, reset or mode switch was performed in this pass. The prior
 [live information reply](output/xhalf-device-info-2026-11-02.json) supplies the
 26 advertised codes. That reply does not attest the installed Fujifilm release.
 
+Later live follow-up: [standard StorageIDs read](standard-storage-ids-live.md)
+submits one explicit `0x1004`, receives ID `00010001`, and completes session
+close. The client now has two fixed metadata modes, one operation per run.
+The historical offline handler review below retains its original scope.
+
 ## Result
 
 All 26 advertised codes are mapped in

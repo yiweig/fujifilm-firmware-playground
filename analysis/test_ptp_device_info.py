@@ -1,7 +1,7 @@
 import struct
 import unittest
 
-from ptp_device_info import decode_device_info, get_device_info_command
+from ptp_device_info import decode_device_info, decode_storage_ids, get_device_info_command
 
 
 def ptp_string(value):
@@ -17,6 +17,14 @@ def fixture():
 
 
 class DeviceInfoTests(unittest.TestCase):
+    def test_storage_ids_boundaries(self):
+        self.assertEqual(decode_storage_ids(struct.pack('<I', 0)), {'count': 0, 'storage_ids': []})
+        raw = struct.pack('<IIII', 3, 0x10001, 0x20001, 0x30001)
+        self.assertEqual(decode_storage_ids(raw)['storage_ids'], ['00010001', '00020001', '00030001'])
+        for broken in [raw[:i] for i in range(len(raw))] + [raw+b'x', struct.pack('<I', 0xffffffff), b'x'*65537]:
+            with self.subTest(length=len(broken)), self.assertRaises(ValueError):
+                decode_storage_ids(broken)
+
     def test_command_and_redacted_decode(self):
         self.assertEqual(get_device_info_command().hex(), '0c0000000100011000000000')
         result = decode_device_info(fixture())

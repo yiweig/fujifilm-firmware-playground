@@ -11,6 +11,16 @@ def get_device_info_command():
     return struct.pack('<IHHI', 12, 1, 0x1001, 0)
 
 
+def decode_storage_ids(data):
+    """Strict selected X-half standard metadata reply, at most three IDs."""
+    if not 4 <= len(data) <= 16:
+        raise ValueError('StorageIDs must contain 4..16 bytes')
+    count = struct.unpack_from('<I', data)[0]
+    if count > 3 or len(data) != 4 + count * 4:
+        raise ValueError('StorageIDs count/length mismatch')
+    return {'count': count, 'storage_ids': [f'{x:08x}' for (x,) in struct.iter_unpack('<I', data[4:])]}
+
+
 def decode_device_info(data):
     """Decode dataset bytes (without a USB container). Do not expose serial."""
     if not 0 < len(data) <= 65536:

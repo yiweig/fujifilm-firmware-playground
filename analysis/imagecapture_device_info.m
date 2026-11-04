@@ -1,4 +1,5 @@
-// Fixed standard GetDeviceInfo only. Apple manages the session and may catalog media.
+// Two fixed standard reads: GetDeviceInfo or GetStorageIDs, one per invocation.
+// Apple manages the session and may catalog media.
 // No vendor operations, property setters, clock sync, uploads, capture or resets.
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
@@ -6,14 +7,19 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-static NSData *InfoCommand(void) {
-    const uint8_t bytes[] = {12,0,0,0,1,0,1,16,0,0,0,0};
+static NSData *InfoCommand(BOOL storageIDs) {
+    const uint8_t bytes[] = {12,0,0,0,1,0,storageIDs ? 4 : 1,16,0,0,0,0};
     return [NSData dataWithBytes:bytes length:sizeof(bytes)];
 }
 static uint32_t U32(const uint8_t *p) {
     return (uint32_t)p[0] | (uint32_t)p[1]<<8 | (uint32_t)p[2]<<16 | (uint32_t)p[3]<<24;
 }
 static uint16_t U16(const uint8_t *p) { return p[0] | (uint16_t)p[1]<<8; }
+static BOOL ValidStorageIDs(NSData *data) {
+    if (data.length < 4 || data.length > 16) return NO;
+    uint32_t count = U32(data.bytes);
+    return count <= 3 && data.length == 4 + 4 * count;
+}
 
 @interface InfoReader : NSObject <ICDeviceBrowserDelegate, ICDeviceDelegate>
 @property(nonatomic, strong) NSMutableArray<ICDevice *> *matches;
@@ -22,6 +28,7 @@ static uint16_t U16(const uint8_t *p) { return p[0] | (uint16_t)p[1]<<8; }
 @property(nonatomic, copy) NSString *datasetPath;
 @property(nonatomic, strong) NSTimer *stageTimer;
 @property(nonatomic) BOOL opening, opened, catalogReady, sent, inFlight, closing, done;
+@property(nonatomic) BOOL readStorageIDs;
 - (void)beginSession;
 - (void)finish:(NSString *)status;
 @end
@@ -100,9 +107,9 @@ static uint16_t U16(const uint8_t *p) { return p[0] | (uint16_t)p[1]<<8; }
     self.sent = YES;
     self.inFlight = YES;
     self.report[@"explicit_ptp_command_count"] = @1;
-    self.report[@"explicit_opcode"] = @"1001";
+    self.report[@"explicit_opcode"] = self.readStorageIDs ? @"1004" : @"1001";
     [self armTimeout:10 status:@"command_timeout_no_explicit_cleanup"];
-    [self.camera requestSendPTPCommand:InfoCommand() outData:nil sendCommandDelegate:self
+    [self.camera requestSendPTPCommand:InfoCommand(self.readStorageIDs) outData:nil sendCommandDelegate:self
         didSendCommandSelector:@selector(didSendPTPCommand:inData:response:error:contextInfo:)
         contextInfo:NULL];
 }
@@ -136,7 +143,8 @@ static uint16_t U16(const uint8_t *p) { return p[0] | (uint16_t)p[1]<<8; }
     if (response.length != 12 || U32(response.bytes) != 12 ||
         U16((const uint8_t *)response.bytes+4) != 3 ||
         U16((const uint8_t *)response.bytes+6) != 0x2001 ||
-        data.length == 0 || data.length > 65536) {
+        data.length == 0 || data.length > 65536 ||
+        (self.readStorageIDs && !ValidStorageIDs(data))) {
         [self finish:@"unexpected_reply_no_explicit_cleanup"]; return;
     }
     self.report[@"response_code"] = @"2001";
@@ -173,13 +181,30 @@ static uint16_t U16(const uint8_t *p) { return p[0] | (uint16_t)p[1]<<8; }
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
-        if (argc != 3 || strcmp(argv[1], "--read-device-info") != 0 || argv[2][0] != '/') {
-            fprintf(stderr, "Usage: imagecapture_device_info --read-device-info /absolute/private/dataset\n");
+        if (argc == 2 && strcmp(argv[1], "--self-test") == 0) {
+            const uint8_t empty[] = {0,0,0,0}, one[] = {1,0,0,0,1,0,1,0};
+            const uint8_t tooMany[] = {4,0,0,0}, trailing[] = {0,0,0,0,0};
+            BOOL ok = U16((const uint8_t *)InfoCommand(NO).bytes+6) == 0x1001 &&
+                U16((const uint8_t *)InfoCommand(YES).bytes+6) == 0x1004 &&
+                InfoCommand(NO).length == 12 && InfoCommand(YES).length == 12 &&
+                ValidStorageIDs([NSData dataWithBytes:empty length:sizeof(empty)]) &&
+                ValidStorageIDs([NSData dataWithBytes:one length:sizeof(one)]) &&
+                !ValidStorageIDs([NSData dataWithBytes:tooMany length:sizeof(tooMany)]) &&
+                !ValidStorageIDs([NSData dataWithBytes:trailing length:sizeof(trailing)]);
+            for (NSUInteger i = 0; i < sizeof(one); ++i)
+                if (ValidStorageIDs([NSData dataWithBytes:one length:i])) ok = NO;
+            puts(ok ? "Fixed metadata command and StorageIDs boundary self-tests passed; no camera access." : "Self-test failed.");
+            return ok ? 0 : 1;
+        }
+        BOOL storageIDs = argc == 3 && strcmp(argv[1], "--read-storage-ids") == 0;
+        if (argc != 3 || (!storageIDs && strcmp(argv[1], "--read-device-info") != 0) || argv[2][0] != '/') {
+            fprintf(stderr, "Usage: imagecapture_device_info {--read-device-info|--read-storage-ids} /absolute/private/dataset\n");
             return 2;
         }
         [NSApplication sharedApplication];
         [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
         InfoReader *reader = [InfoReader new];
+        reader.readStorageIDs = storageIDs;
         reader.datasetPath = [NSString stringWithUTF8String:argv[2]];
         ICDeviceBrowser *browser = [ICDeviceBrowser new];
         browser.delegate = reader;

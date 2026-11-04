@@ -233,6 +233,12 @@ records one real `04cb:030a` arrival with no observed intermediate identity or
 removal/rearrival. It supplies external USB evidence only; no internal status
 values, failed enumeration or boot-ROM activity are captured. R1/C1 remain open.
 
+The first additional [active standard read](standard-storage-ids-live.md) then
+succeeds: `GetStorageIDs` returns `00010001` and the session closes normally.
+This qualifies that bounded metadata operation on the live camera, not raw
+storage access, a physical-medium mapping or a loader transition. No vendor
+request, setter, upload or reset was submitted by the fixed client.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically
