@@ -28,7 +28,13 @@ from pathlib import Path
 VID, PID = 0x2AAD, 0x6500
 INTERFACE = 5
 EP_IN = 0x82
+EP_OUT = 0x03
 TIMEOUT_MS = 3000
+
+# Host-side write allowlist: only the 2.4 MiB zero gap found in the
+# 2026-11-04 loader-mode DRAM dump (analysis/dram-dump-mining.md).
+WRITE_ALLOWED = (0x4106A198, 0x412C26D8)
+WRITE_MAX = 256
 
 # Host-side read allowlist: (start, end) CPU ranges with a reason to read.
 ALLOWED = [
@@ -93,6 +99,41 @@ class Loader:
             raise SystemExit(f'bulk IN stalled at {len(data)}/{length} bytes')
         return data
 
+    def write_mem(self, addr: int, data: bytes):
+        """0x04f5 host-to-memory: payload (length,address), then bulk OUT."""
+        start, end = WRITE_ALLOWED
+        if not (start <= addr and addr + len(data) <= end):
+            raise SystemExit(f'write 0x{addr:08x}+0x{len(data):x} outside scratch allowlist')
+        if addr % 32 or not (1 <= len(data) <= WRITE_MAX):
+            raise SystemExit('write must be 32-byte aligned, 1..256 bytes')
+        payload = struct.pack('<II', len(data), addr)
+        sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F5, payload, timeout=TIMEOUT_MS)
+        if sent != len(payload):
+            raise SystemExit(f'write setup: short control write {sent}')
+        written = self.dev.write(EP_OUT, data, timeout=TIMEOUT_MS)
+        if written != len(data):
+            raise SystemExit(f'bulk OUT stalled at {written}/{len(data)} bytes')
+
+    def write_test(self, addr: int, hold_s: int):
+        """Read, write pattern, read back, hold, re-read. One session."""
+        import time
+        pattern = bytes((i * 7 + 0xA5) & 0xFF for i in range(32))
+        before = self.read_mem(addr, 32)
+        print(f'before 0x{addr:08x}: {before.hex()}')
+        self.write_mem(addr, pattern)
+        print(f'wrote pattern:      {pattern.hex()}')
+        back = self.read_mem(addr, 32)
+        print(f'read-back:          {back.hex()}')
+        if back != pattern:
+            raise SystemExit('READ-BACK MISMATCH')
+        print('read-back match. holding', hold_s, 's...')
+        time.sleep(hold_s)
+        again = self.read_mem(addr, 32)
+        print(f'after hold:         {again.hex()}')
+        if again != pattern:
+            raise SystemExit('PATTERN CHANGED DURING HOLD (another agent touched it)')
+        print('WRITE TEST PASS: pattern stable across hold')
+
     def read_chunked(self, addr: int, length: int, out_path: str, chunk: int = 16):
         """Sequential small reads, appended to OUT as they complete.
 
@@ -137,6 +178,7 @@ def main():
     mode.add_argument('--bootquery', action='store_true')
     mode.add_argument('--read', nargs=3, metavar=('ADDR', 'LEN', 'OUT'))
     mode.add_argument('--read-chunked', nargs=4, metavar=('ADDR', 'LEN', 'OUT', 'CHUNK'))
+    mode.add_argument('--write-test', nargs=2, metavar=('ADDR', 'HOLD_S'))
     args = parser.parse_args()
     if sys.platform != 'linux':
         raise SystemExit('Linux only: run inside the passthrough VM/host')
@@ -149,6 +191,9 @@ def main():
             print(f'bootquery reply: {data.hex()}')
             print(f'boot method byte: {method} (2 = running firmware, per host-DLL classification)')
             print(f'address word: 0x{addr:08x} (0 expected for zero-size query)')
+        elif args.write_test:
+            addr_s, hold_s = args.write_test
+            loader.write_test(int(addr_s, 0), int(hold_s, 0))
         elif args.read_chunked:
             addr_s, len_s, out_path, chunk_s = args.read_chunked
             addr, length, chunk = int(addr_s, 0), int(len_s, 0), int(chunk_s, 0)

@@ -357,6 +357,16 @@ unreadable low region; the DRAM dump is the next artifact to mine for it.
 R3 groundwork (a verified read map of runtime RAM) now exists; write and
 execute rungs (R4/R5) are still untouched and unqualified.
 
+Follow-up 2026-11-04 (live write test): the [scratch write session](loader-write-test-live.md)
+adds the `0x04f5` host-to-memory branch, allowlisted by the client to the
+dump-identified zero gap. A 32-byte pattern at `0x41100000` read back
+identically and stayed stable over a 20-second hold; usbmon shows only the
+intended exchanges. Read and write primitives (R3's prerequisites) are now
+qualified on this unit. What remains before execution is payload design
+(R4/R5): either a restorable function-pointer hijack inside the running
+loader environment, or a qualified use of the receiver's own `0x04f7`
+handoff. SRAM/low-memory contents (R2's bytes) are still unread.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

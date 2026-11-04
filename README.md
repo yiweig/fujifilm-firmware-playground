@@ -217,6 +217,10 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/loader-write-test-live.md`](analysis/loader-write-test-live.md)
+  — first loader write: 32-byte pattern to scratch `0x41100000` via `0x04f5`,
+  read-back identical and stable over a 20 s hold (usbmon-captured).
+  Read and write primitives now qualified on aligned DRAM / scratch range.
 - [`analysis/dram-dump-mining.md`](analysis/dram-dump-mining.md)
   — from the DRAM dump: internal layout solved (512 MiB; headers 2 +
   reserved 487/45/261 = Firmware1 at block 795, length = image size) and
