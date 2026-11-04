@@ -25,6 +25,31 @@ below retain their original scope.
 
 ## Retained V50 corpus
 
+### Explicit recovery hints in the repository (follow-up 2026-11-03)
+
+The [root README's Unbricking section](https://github.com/Linouth/iCatch-V50-Playground/blob/dc437ced8fdc9564e39ca550af6a1d53b1037714/README.md#unbricking)
+repeats a third-party sequence: keep shutter held while connecting USB, press
+power, then release shutter. It claims this produces KX-series bulk/null USB
+devices for FRM flashing. Crucially, the repository author explicitly reports
+that this sequence **does not work on the Akaso V50 Pro**. It is a recovery
+lead for some related devices, not a successful V50 Pro or X-HF1 procedure.
+No button sequence was attempted in this follow-up.
+
+Read-only ZIP member inspection of the retained, hash-verified Reflash archive
+also finds `frm_user.ini` selecting `PlatformName=spca6350` and
+`ISPName=spca6350isp.bin`. The SPCA6350 profile names that ISP payload and a
+`NormalIspParamAddr` of `0xa7ff0000`. The bundled changelog mentions Card ISP
+and DRAM-boot parameters. Those labels show provisioning mechanisms in the
+tool family; their meanings and compatibility with SPCA6500/X-HF1 are not
+established by configuration text. No executable was launched, driver installed
+or ZIP member written to disk. This extends the earlier ZIP name-only inventory.
+
+The [separate V50 ISP code review](v50-package-isp-comparison.md) supplies the
+stronger SPCA6500 comparison: ISP 6500.0021 and a code-referenced USB descriptor
+matching the X-half updater. Neither clue explains a working X-half cold entry.
+
+### Artifact inventory
+
 The previously acquired [V50 repository](https://github.com/Linouth/iCatch-V50-Playground/tree/dc437ced8fdc9564e39ca550af6a1d53b1037714)
 is pinned to `dc437ced8fdc9564e39ca550af6a1d53b1037714`. The repository's
 [hardware note](https://github.com/Linouth/iCatch-V50-Playground/blob/dc437ced8fdc9564e39ca550af6a1d53b1037714/images/Akaso%20M50%20Pro%20SE/README.md)
