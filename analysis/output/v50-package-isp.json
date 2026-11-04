@@ -1,0 +1,173 @@
+{
+  "package_sha256": "1f9db54f710d26af1be9f96a317f838fa52e0ca90225f602c45b287e93f2a2f9",
+  "package_size": 15740152,
+  "regions": [
+    {
+      "source_label": "offset0",
+      "start": "0x200",
+      "end_exclusive": "0x91000",
+      "size": 593408,
+      "prefix_hex": "be0000ea860000ea890000ea900000ea"
+    },
+    {
+      "source_label": "offset1",
+      "start": "0x91000",
+      "end_exclusive": "0x92000",
+      "size": 4096,
+      "prefix_hex": "53554e50204255524e20484452203100"
+    },
+    {
+      "source_label": "offset2",
+      "start": "0x92000",
+      "end_exclusive": "0x612120",
+      "size": 5767456,
+      "prefix_hex": "53554e50204255524e20484452203200"
+    },
+    {
+      "source_label": "offset3",
+      "start": "0x612120",
+      "end_exclusive": "0xf01720",
+      "size": 9369088,
+      "prefix_hex": "de0000ea9b0000eaa20000eaad0000ea"
+    },
+    {
+      "source_label": "offset5",
+      "start": "0xf01720",
+      "end_exclusive": "0xf01970",
+      "size": 592,
+      "prefix_hex": "53554e50204255524e20484452203300"
+    },
+    {
+      "source_label": "offset6",
+      "start": "0xf01970",
+      "end_exclusive": "0xf02cf8",
+      "size": 5000,
+      "prefix_hex": "4452414d504152335606fab680fc0a00"
+    }
+  ],
+  "isp": {
+    "package_start": "0x200",
+    "package_end_exclusive": "0x91000",
+    "size": 593408,
+    "sha256": "2cd3549aac079e1cffdbe6408f8a31c8127db56f635fb6398d26fbebf7c47aa0",
+    "analysis_base": "0x40040000",
+    "reset_offset": "0x300",
+    "reset_address": "0x40040300",
+    "vbar_write_bytes": "003000e3043044e3103f0cee",
+    "vector_copy": {
+      "source_start": "0x40040000",
+      "source_end_exclusive": "0x400402f8",
+      "destination_start": "0x40000000",
+      "destination_end_exclusive": "0x400002f8",
+      "sha256": "8805c62ceb5ef341e19921dbb91c38b78380046a02b16ee922541d749729f0f9"
+    },
+    "banner": {
+      "format": "|  iCatch ISP Version [%s.%s]  |",
+      "arguments": [
+        "6500",
+        "0021"
+      ],
+      "function": "0x4004fc30"
+    },
+    "stored_device_descriptor": {
+      "file_offset_in_isp": "0x8bf6c",
+      "analysis_address": "0x400cbf6c",
+      "hex": "1201000200000040ad2a0065000101020001",
+      "vid": "2aad",
+      "pid": "6500",
+      "getter": "0x4004e0b8"
+    }
+  },
+  "offset1": {
+    "size": 4096,
+    "nonzero_byte_count": 20,
+    "nonzero_bytes": [
+      {
+        "offset": "0x0",
+        "value": "0x53"
+      },
+      {
+        "offset": "0x1",
+        "value": "0x55"
+      },
+      {
+        "offset": "0x2",
+        "value": "0x4e"
+      },
+      {
+        "offset": "0x3",
+        "value": "0x50"
+      },
+      {
+        "offset": "0x4",
+        "value": "0x20"
+      },
+      {
+        "offset": "0x5",
+        "value": "0x42"
+      },
+      {
+        "offset": "0x6",
+        "value": "0x55"
+      },
+      {
+        "offset": "0x7",
+        "value": "0x52"
+      },
+      {
+        "offset": "0x8",
+        "value": "0x4e"
+      },
+      {
+        "offset": "0x9",
+        "value": "0x20"
+      },
+      {
+        "offset": "0xa",
+        "value": "0x48"
+      },
+      {
+        "offset": "0xb",
+        "value": "0x44"
+      },
+      {
+        "offset": "0xc",
+        "value": "0x52"
+      },
+      {
+        "offset": "0xd",
+        "value": "0x20"
+      },
+      {
+        "offset": "0xe",
+        "value": "0x31"
+      },
+      {
+        "offset": "0x20",
+        "value": "0x3"
+      },
+      {
+        "offset": "0x60",
+        "value": "0x2"
+      },
+      {
+        "offset": "0x76",
+        "value": "0x50"
+      },
+      {
+        "offset": "0x7a",
+        "value": "0x8"
+      },
+      {
+        "offset": "0x90",
+        "value": "0x1"
+      }
+    ]
+  },
+  "limits": [
+    "Selected bytes/literals under a pinned mapping, with code interpretation in the companion REA report.",
+    "An ISP executable is not an authenticated internal boot-ROM dump.",
+    "Stored USB identity does not prove live enumeration, retail entry, protocol or payload compatibility.",
+    "No X-half provider at low 0xb34 recovered; no complete ISP side-effect audit."
+  ]
+}

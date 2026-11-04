@@ -186,6 +186,12 @@ the DRAM application but no authenticated earlier-stage provider. Firmware-like
 bytes in the trailing FAT12 data area are all unallocated; they do not establish
 boot ROM or a live fallback slot. R1/R2/C1 remain open.
 
+The [separate V50 package ISP review](v50-package-isp-comparison.md) identifies
+ISP 6500.0021, corroborates its RAM-linked startup and finds an 18-byte USB device
+template identical to the X-half updater's. This strengthens SDK comparison;
+the small high-memory header copy does not supply low `0xb34`. No retail/cold
+entry mechanism or cross-camera payload compatibility was established.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

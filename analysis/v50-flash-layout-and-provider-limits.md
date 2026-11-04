@@ -22,6 +22,11 @@ geometry. It does not change the [X-half provider requirement](low-helper-backin
 
 ## Inputs and coordinates
 
+Follow-up: the [package ISP comparison](v50-package-isp-comparison.md) separately
+examines `offset0`, corroborates its RAM mapping, identifies ISP 6500.0021 and
+compares its stored USB template with the X half. It supplies no verified retail
+entry or authenticated low-memory provider.
+
 Repository: [V50 Playground at dc437ced](https://github.com/Linouth/iCatch-V50-Playground/tree/dc437ced8fdc9564e39ca550af6a1d53b1037714).
 The [hardware note](https://github.com/Linouth/iCatch-V50-Playground/blob/dc437ced8fdc9564e39ca550af6a1d53b1037714/images/Akaso%20M50%20Pro%20SE/README.md)
 describes an external Winbond flash-chip dump, not an internal CPU-ROM dump.
