@@ -219,6 +219,15 @@ USB-presence getter. Forty-six additional controls stop before the retained
 record writer. This explains why specific software reboot requests can bypass
 the newer early-shell branch; it provides no safe retail setter or cold entry.
 
+The [power-source provenance pass](early-power-source-provenance.md) reaches the
+sampling registers: selector bit 24 comes from `0x10401d18.6`; bit 15 combines
+`0x10001304.0` and `0x10000021.5`. A whole constructed zero word takes a
+control-helper path, so earlier supplied zero-word selector cases must not be
+mistaken for complete upstream startup. Five hundred controls check the
+constructor and selected continuations. Physical status meanings, samples and
+a safe way to select them remain unknown; this lead now needs documentation or
+authentic boot-state evidence rather than more synthetic combinations.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

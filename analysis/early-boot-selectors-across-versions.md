@@ -26,6 +26,12 @@ The producer follow-up below connects the rejected bits to factory requests
 for view, playback and calibration startup, and connects the sampled hardware
 bit to the application's USB-presence getter. It supplies no new retail entry.
 
+The subsequent [power-source provenance review](early-power-source-provenance.md)
+traces both tested power bits to sampled registers and finds overlapping input
+fields. It also shows that a constructed whole word of zero takes a control
+path instead of returning normally. The zero-word fixtures below are isolated
+selector inputs, not a demonstrated complete startup state.
+
 ## Scope and identities
 
 All addresses refer to ARM little-endian main images linked at `0x40000000`.
@@ -209,6 +215,12 @@ prefix, supplies a successful record read, and stops **before the retained
 record writer executes**. It then supplies the prepared word to each version's
 actual selector. This deliberately models storage continuity; it neither
 performs nor proves a real persistent write/read cycle or complete reboot.
+
+This composition bypasses the preceding power-source constructor. As the
+provenance follow-up establishes, that constructor does not return normally
+with a whole word zero. The controls qualify the selector with supplied input;
+they do not establish that complete upstream path. Nonzero words with the
+selector's two tested power bits clear remain possible in the software model.
 
 Two incoming words, zero and `0xffffffff`, cover preservation of unrelated
 bits. Ten producer cases include the two disabled-mode cases; 32 selector

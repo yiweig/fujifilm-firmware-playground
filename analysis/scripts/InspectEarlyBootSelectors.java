@@ -115,12 +115,58 @@ public class InspectEarlyBootSelectors extends GhidraScript {
             out.printf("%d controls passed. Masks and sampled input corroborated; no safe state setter or independent recovery entry established.%n",controls);
         }
     }
+    long powerSource(byte[] image,int raw,int event20,int event21,int status1304,int statusD18)throws Exception{
+        int entry=(int)(target(image,0x39a8)-BASE);
+        long readRaw=target(image,entry+4),readEvents=target(image,entry+12),readStatus=target(image,entry+0x20),control=target(image,entry+0x3c);
+        long state=word(image,entry+0x50);
+        long[] starts={BASE+entry,readRaw,readEvents,readStatus};int[] lengths={0x54,12,32,20};
+        Arm a=new Arm();
+        for(int i=0;i<starts.length;i++)a.mem(starts[i],Arrays.copyOfRange(image,(int)(starts[i]-BASE),(int)(starts[i]-BASE)+lengths[i]));
+        a.put(state,0x55555555,4);a.put(0x100003a3L,raw,1);a.put(0x10000020L,event20,1);a.put(0x10000021L,event21,1);a.put(0x10001304L,status1304,1);a.put(0x10401d18L,statusD18,4);
+        a.t.overrideCounter(toAddr(BASE+entry));
+        long expected=raw|((long)event20<<5)|((long)event21<<10)|((long)status1304<<15)|(((long)(statusD18>>>6)&1)<<24);
+        for(int step=0;step<160;step++){
+            monitor.checkCancelled();long pc=a.t.getCounter().getOffset();
+            if(pc==END||pc==control){
+                if(a.get(state,4)!=expected||a.get(0x10000020L,1)!=255||a.get(0x10000021L,1)!=255)throw new Exception("Power source word/status-store mismatch");
+                for(int i=0;i<starts.length;i++)if(!Arrays.equals(Arrays.copyOfRange(image,(int)(starts[i]-BASE),(int)(starts[i]-BASE)+lengths[i]),a.mem(starts[i],lengths[i])))throw new Exception("Power source code changed");
+                if(pc==control){if(expected!=0||a.reg("r0")!=0)throw new Exception("Zero-word boundary");return -1;}
+                if(expected==0||a.reg("sp")!=SP)throw new Exception("Power source return");return expected;
+            }
+            boolean allowed=false;for(int i=0;i<starts.length;i++)if(pc>=starts[i]&&pc<starts[i]+lengths[i])allowed=true;
+            if(!allowed)throw new Exception("Unexpected power source PC "+Long.toHexString(pc));a.t.stepInstruction();
+        }
+        throw new Exception("Power source instruction bound");
+    }
+    void powerSources(String[][] cases)throws Exception{
+        int controls=0;
+        try(PrintWriter out=new PrintWriter(getScriptArgs()[0])){
+            out.println("Original four-version power-source builders and all three original sampling helpers. Supplied MMIO bytes backed by emulator RAM; stores of ff to 10000020/21 are CPU effects only, not modeled hardware acknowledgement semantics.");
+            out.println("Zero-word cases STOP before the first control helper. Nonzero words feed original selectors with modeled RTC/power-getter calls, saved words 0/3/6000 and USB samples 1. Not full boot, real USB or recovery.");
+            for(String[] c:cases){
+                byte[] b=Files.readAllBytes(Path.of(getScriptArgs()[1],c[1]));if(!hash(b).equals(c[2]))throw new Exception("Wrong image");
+                int returned=0,blocked=0,composed=0;boolean newer=c[0].equals("1.30")||c[0].equals("2.00");int entry=(int)(target(b,0x39ac)-BASE);
+                for(int raw:new int[]{0,1})for(int e20:new int[]{0,1})for(int e21:new int[]{0,0x20})for(int r1304:new int[]{0,1})for(int d18:new int[]{0,0x40}){
+                    long actual=powerSource(b,raw,e20,e21,r1304,d18);controls++;
+                    if(actual==-1){blocked++;continue;}returned++;
+                    for(int saved:new int[]{0,3,0x6000}){
+                        int result=selector(b,entry,newer,(int)actual,saved,1,1,false);
+                        if(result!=(expected(newer,(int)actual,saved,1,1)?1:0))throw new Exception("Power/selector composition");controls++;composed++;
+                    }
+                }
+                if(returned!=31||blocked!=1||composed!=93)throw new Exception("Power source coverage");
+                out.printf("PASS %s SHA256=%s: 32 producer cases (31 normal returns, 1 zero-word control boundary), 93 selector continuations; cache word and both ff stores verified; executable bytes unchanged.%n",c[0],c[2]);
+            }
+            out.printf("%d controls passed. A = bit6 of 10401d18; B = bit0 of 10001304 OR bit5 of 10000021. Hardware meanings, actual samples, timing and safe ways to select inputs remain unknown.%n",controls);
+        }
+    }
     public void run()throws Exception{
         String[][] cases={{"1.01","analysis/output/firmware-main-1.01.bin","64ca08d346075907bbec2dde2db50bc3a5507a93e5d7b2e5024d4a59599125f9"},
             {"1.20","analysis/output/firmware-main-1.20.bin","85d6d280605148d131c28f71b3560742310878340c6de5d1c05faf00d02a2c8f"},
             {"1.30","analysis/output/firmware-main-1.30.bin","34034d7d1314485fbbd8167669a83dbea4d3dc80cc9ba3c87c7ded2c96aa9df6"},
             {"2.00","firmware-main.bin","80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923"}};
         if(getScriptArgs().length>2&&getScriptArgs()[2].equals("reboot-record")){records(cases);return;}
+        if(getScriptArgs().length>2&&getScriptArgs()[2].equals("power-source")){powerSources(cases);return;}
         int total=0;
         try(PrintWriter out=new PrintWriter(getScriptArgs()[0])){
             out.println("Original ARM guard and early-shell selector only. Synthetic MMIO/power/retained word; record-reader and power getter modeled. No live hardware, USB, persistent writes, shell or whole boot.");

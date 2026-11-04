@@ -104,6 +104,13 @@ the earlier provider itself is not recovered.
 The allocator boundary remains unsuitable as a presumed safe write or
 RAM-firmware upload boundary without ownership/runtime qualification.
 
+An additional [early power-source trace](early-power-source-provenance.md)
+maps the cached startup word to samples at `0x100003a3`, `0x10000020/21`,
+`0x10001304` and `0x10401d18`. The producer writes `0xff` to the two `20/21`
+status bytes after reading them; physical acknowledgement semantics are not
+established. The selector's bit 15 has two ORed sources. These are observed
+code roles, not newly identified physical buttons or a recovery register recipe.
+
 ## On-chip SRAM (`0x3f...`)
 
 Startup writes translation-table descriptors in the `0x3f004000` and

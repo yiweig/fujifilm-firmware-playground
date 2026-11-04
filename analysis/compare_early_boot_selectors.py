@@ -47,6 +47,13 @@ def compare():
             raise ValueError('selector producer/consumer flag pointers differ')
         gate = data[0xf7c:0xfb8]
         reset = data[0xec0:0x1038]
+        power_builder = branch(data, 0x39a8) - BASE
+        power_helpers = {}
+        for label, offset, length in [('raw_status', 4, 12), ('event_status', 12, 32), ('guard_status', 0x20, 20)]:
+            helper = branch(data, power_builder + offset) - BASE
+            power_helpers[label] = {'address': hex(BASE + helper),
+                                    'sha256_selected_bytes': hashlib.sha256(data[helper:helper + length]).hexdigest(),
+                                    'selected_bytes': length}
         records[version] = {
             'image_sha256': expected,
             'reset_vector_target': hex(branch(data, 0, False)),
@@ -59,6 +66,10 @@ def compare():
             'state_base': hex(word(data, pool)),
             'record_reader': hex(branch(data, entry + 0x1c)),
             'power_getter': hex(branch(data, entry + 0x28)),
+            'power_builder': {'address': hex(BASE + power_builder),
+                              'cache_word': hex(word(data, power_builder + 0x50)),
+                              'zero_word_first_control_helper': hex(branch(data, power_builder + 0x3c)),
+                              'sampling_helpers': power_helpers},
             'saved_bits_13_14_filter_encoding': body[0xa4:0xb0].hex() if len(body) == 0xd8 else None,
             'successful_auxiliary_flag_offset': hex(word(data, entry + (0xb4 if len(body) == 0xd8 else 0xa8)) & 0xfff),
             'selector_result_flag': hex(word(data, 0x3b54)),

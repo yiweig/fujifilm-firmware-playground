@@ -18,6 +18,28 @@
       "state_base": "0x40d8ac50",
       "record_reader": "0x4004198c",
       "power_getter": "0x4001d6c4",
+      "power_builder": {
+        "address": "0x4001d6e0",
+        "cache_word": "0x40d8acac",
+        "zero_word_first_control_helper": "0x40046dac",
+        "sampling_helpers": {
+          "raw_status": {
+            "address": "0x40046d40",
+            "sha256_selected_bytes": "0c117e89add2f00d5a03777d9c4a48ac59eac09099e3c2211d4c012d675b055d",
+            "selected_bytes": 12
+          },
+          "event_status": {
+            "address": "0x40046de0",
+            "sha256_selected_bytes": "7c7bf18546f9ba5c293da88b8109a0e9383df2c374868f293153419e3fc53109",
+            "selected_bytes": 32
+          },
+          "guard_status": {
+            "address": "0x40046e44",
+            "sha256_selected_bytes": "3a6bcf42a70643c10c5d499dd8bb017c49d7a4d03aa483d95699ae3963b6ada6",
+            "selected_bytes": 20
+          }
+        }
+      },
       "saved_bits_13_14_filter_encoding": null,
       "successful_auxiliary_flag_offset": "0x19",
       "selector_result_flag": "0x40d77e74",
@@ -67,6 +89,28 @@
       "state_base": "0x40d920d0",
       "record_reader": "0x4004198c",
       "power_getter": "0x4001d6c4",
+      "power_builder": {
+        "address": "0x4001d6e0",
+        "cache_word": "0x40d9212c",
+        "zero_word_first_control_helper": "0x40046dbc",
+        "sampling_helpers": {
+          "raw_status": {
+            "address": "0x40046d50",
+            "sha256_selected_bytes": "0c117e89add2f00d5a03777d9c4a48ac59eac09099e3c2211d4c012d675b055d",
+            "selected_bytes": 12
+          },
+          "event_status": {
+            "address": "0x40046df0",
+            "sha256_selected_bytes": "7c7bf18546f9ba5c293da88b8109a0e9383df2c374868f293153419e3fc53109",
+            "selected_bytes": 32
+          },
+          "guard_status": {
+            "address": "0x40046e54",
+            "sha256_selected_bytes": "3a6bcf42a70643c10c5d499dd8bb017c49d7a4d03aa483d95699ae3963b6ada6",
+            "selected_bytes": 20
+          }
+        }
+      },
       "saved_bits_13_14_filter_encoding": null,
       "successful_auxiliary_flag_offset": "0x19",
       "selector_result_flag": "0x40d7f2f4",
@@ -116,6 +160,28 @@
       "state_base": "0x40d9a650",
       "record_reader": "0x40041994",
       "power_getter": "0x4001d6d0",
+      "power_builder": {
+        "address": "0x4001d6ec",
+        "cache_word": "0x40d9a6ac",
+        "zero_word_first_control_helper": "0x40046dc4",
+        "sampling_helpers": {
+          "raw_status": {
+            "address": "0x40046d58",
+            "sha256_selected_bytes": "0c117e89add2f00d5a03777d9c4a48ac59eac09099e3c2211d4c012d675b055d",
+            "selected_bytes": 12
+          },
+          "event_status": {
+            "address": "0x40046df8",
+            "sha256_selected_bytes": "7c7bf18546f9ba5c293da88b8109a0e9383df2c374868f293153419e3fc53109",
+            "selected_bytes": 32
+          },
+          "guard_status": {
+            "address": "0x40046e5c",
+            "sha256_selected_bytes": "3a6bcf42a70643c10c5d499dd8bb017c49d7a4d03aa483d95699ae3963b6ada6",
+            "selected_bytes": 20
+          }
+        }
+      },
       "saved_bits_13_14_filter_encoding": "1520d3e5600012e30700001a",
       "successful_auxiliary_flag_offset": "0x19",
       "selector_result_flag": "0x40d87874",
@@ -165,6 +231,28 @@
       "state_base": "0x40e4ae50",
       "record_reader": "0x40041ca4",
       "power_getter": "0x4001d880",
+      "power_builder": {
+        "address": "0x4001d89c",
+        "cache_word": "0x40e4aeac",
+        "zero_word_first_control_helper": "0x4004712c",
+        "sampling_helpers": {
+          "raw_status": {
+            "address": "0x400470c0",
+            "sha256_selected_bytes": "0c117e89add2f00d5a03777d9c4a48ac59eac09099e3c2211d4c012d675b055d",
+            "selected_bytes": 12
+          },
+          "event_status": {
+            "address": "0x40047160",
+            "sha256_selected_bytes": "7c7bf18546f9ba5c293da88b8109a0e9383df2c374868f293153419e3fc53109",
+            "selected_bytes": 32
+          },
+          "guard_status": {
+            "address": "0x400471c4",
+            "sha256_selected_bytes": "3a6bcf42a70643c10c5d499dd8bb017c49d7a4d03aa483d95699ae3963b6ada6",
+            "selected_bytes": 20
+          }
+        }
+      },
       "saved_bits_13_14_filter_encoding": "1520d3e5600012e30700001a",
       "successful_auxiliary_flag_offset": "0xd",
       "selector_result_flag": "0x40e38074",
