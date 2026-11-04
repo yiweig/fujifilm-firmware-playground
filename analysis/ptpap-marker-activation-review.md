@@ -4,6 +4,15 @@
 loads/writes, firmware patches or activation were performed in this pass. The
 user confirmed installed firmware 2.00 during the preceding live probe.
 
+
+Follow-up 2026-11-03: [integrated read emulation](ptpap-integrated-read-emulation.md)
+connects the marker/registration slice to normal dynamic dispatch, the factory
+callback, original file wrapper and response setter/extractor in one emulated
+memory instance. Eight checks pass, including complete synthetic record
+reconstruction, retained registration after marker removal and the misleading
+success response on a modeled file-open failure. Physical USB/storage, host
+traffic, startup/revocation and recovery remain outside these controls.
+
 ## Finding
 
 The inspected marker-controlled branch enables a factory command interface in

@@ -1,0 +1,12 @@
+Original 2.00 SHA-256: 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923
+Integrated software path: marker gate -> actual registration -> normal dispatcher -> factory callback -> original file wrapper -> actual response setter/extractor.
+Modeled: filesystem primitives, logging/first-use helper, memcpy/memset, shared initialization calls and notification delivery. Synthetic RAM/session/request/disk; no real USB/storage/boot.
+PASS absent marker: actual default dispatcher returns 2005, no factory callback/file read; cached buffer preserved.
+PASS present marker: actual dynamic lookup calls 405ca67c; 1027(0) returns five parameters containing first cached chunk, no file read.
+PASS 1025(0): dispatcher reaches actual file wrapper; modeled successful lower read fills all 1024 bytes; response 2001 with zero parameters.
+PASS 64 bounded chunk requests through dispatcher reconstruct synthetic disk exactly; factory buffer/table preserved; no additional file reads.
+PASS marker removed/re-entry: flag zero but actual dispatcher still reaches cached-read callback; registration survives.
+PASS selected CloseSession does not revoke callback; subsequent direct dispatcher control still reaches it. This is not a host-session acceptance test.
+PASS failed file open through integrated path: wrapper reports error 1 internally, PTP still 2001; next chunk returns old cached bytes.
+PASS synthetic forbidden-write control: dispatcher routes 1025(1) to persistent writer 40125e4c; stopped BEFORE writer executes.
+No physical camera data or commands. Does not prove storage freshness, all shared initialization effects, automatic host traffic, USB/session transport, cold restart, RAM boot or recovery.

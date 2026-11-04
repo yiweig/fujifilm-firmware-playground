@@ -1,0 +1,163 @@
+2.00 main SHA256 80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923; base 40000000; ELF text verified equal to entire raw main at ELF offset 0x100.
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+402e77f4: e59f35e4     	ldr	r3, [pc, #0x5e4]        @ 0x402e7de0 <.text+0x2e7de0>
+402e77f8: e1a00004     	mov	r0, r4
+402e77fc: e1c340b0     	strh	r4, [r3]
+402e7800: ebffff78     	bl	0x402e75e8 <.text+0x2e75e8> @ imm = #-0x220
+402e7804: e250a000     	subs	r10, r0, #0
+402e7808: 01a0600a     	moveq	r6, r10
+402e780c: 0a000011     	beq	0x402e7858 <.text+0x2e7858> @ imm = #0x44
+402e7810: e1a00004     	mov	r0, r4
+402e7814: ebffff93     	bl	0x402e7668 <.text+0x2e7668> @ imm = #-0x1b4
+402e7818: e3500001     	cmp	r0, #1
+402e781c: e1a06000     	mov	r6, r0
+402e7820: 0a000005     	beq	0x402e783c <.text+0x2e783c> @ imm = #0x14
+402e7824: e2443a01     	sub	r3, r4, #4096
+402e7828: e243300c     	sub	r3, r3, #12
+402e782c: e3012016     	movw	r2, #0x1016
+402e7830: e1540002     	cmp	r4, r2
+402e7834: 13530001     	cmpne	r3, #1
+402e7838: 9a000006     	bls	0x402e7858 <.text+0x2e7858> @ imm = #0x18
+402e783c: e247000c     	sub	r0, r7, #12
+402e7840: e1a01008     	mov	r1, r8
+402e7844: e1a02005     	mov	r2, r5
+402e7848: e12fff3a     	blx	r10
+402e784c: e59f357c     	ldr	r3, [pc, #0x57c]        @ 0x402e7dd0 <.text+0x2e7dd0>
+402e7850: e5830030     	str	r0, [r3, #0x30]
+402e7854: eaffffff     	b	0x402e7858 <.text+0x2e7858> @ imm = #-0x4
+402e7858: e1a00004     	mov	r0, r4
+402e785c: ebffffb8     	bl	0x402e7744 <.text+0x2e7744> @ imm = #-0x120
+402e7860: e59f357c     	ldr	r3, [pc, #0x57c]        @ 0x402e7de4 <.text+0x2e7de4>
+402e7864: e3500000     	cmp	r0, #0
+402e7868: e593500c     	ldr	r5, [r3, #0xc]
+402e786c: 16ff4070     	uxthne	r4, r0
+402e7870: e3550000     	cmp	r5, #0
+402e7874: 0a000011     	beq	0x402e78c0 <.text+0x2e78c0> @ imm = #0x44
+402e7878: e3560000     	cmp	r6, #0
+402e787c: 13a05000     	movne	r5, #0
+402e7880: 1a00000e     	bne	0x402e78c0 <.text+0x2e78c0> @ imm = #0x38
+402e7884: e1a00004     	mov	r0, r4
+402e7888: e59f3558     	ldr	r3, [pc, #0x558]        @ 0x402e7de8 <.text+0x2e7de8>
+402e788c: e12fff33     	blx	r3
+402e7890: e3500000     	cmp	r0, #0
+402e7894: 1a000008     	bne	0x402e78bc <.text+0x2e78bc> @ imm = #0x20
+402e7898: e58d6000     	str	r6, [sp]
+402e789c: e1a01006     	mov	r1, r6
+402e78a0: e1a02006     	mov	r2, r6
+402e78a4: e1a03006     	mov	r3, r6
+402e78a8: e3020005     	movw	r0, #0x2005
+402e78ac: e59fc538     	ldr	r12, [pc, #0x538]       @ 0x402e7dec <.text+0x2e7dec>
+402e78b0: e12fff3c     	blx	r12
+402e78b4: e3a06001     	mov	r6, #1
+402e78b8: eaffffff     	b	0x402e78bc <.text+0x2e78bc> @ imm = #-0x4
+402e78bc: e1a05006     	mov	r5, r6
+
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+405e6ac0: e92d000e     	push	{r1, r2, r3}
+405e6ac4: e92d4030     	push	{r4, r5, lr}
+405e6ac8: e24dd028     	sub	sp, sp, #40
+405e6acc: e3a02014     	mov	r2, #20
+405e6ad0: e1a05000     	mov	r5, r0
+405e6ad4: e3a01000     	mov	r1, #0
+405e6ad8: e28d0014     	add	r0, sp, #20
+405e6adc: e59d4034     	ldr	r4, [sp, #0x34]
+405e6ae0: ebe898c2     	bl	0x4000cdf0 <.text+0xcdf0> @ imm = #-0x5d9cf8
+405e6ae4: e28d2038     	add	r2, sp, #56
+405e6ae8: e58d2010     	str	r2, [sp, #0x10]
+405e6aec: e3a03000     	mov	r3, #0
+405e6af0: ea000005     	b	0x405e6b0c <.text+0x5e6b0c> @ imm = #0x14
+405e6af4: e28d0028     	add	r0, sp, #40
+405e6af8: e0801103     	add	r1, r0, r3, lsl #2
+405e6afc: e5120004     	ldr	r0, [r2, #-0x4]
+405e6b00: e2833001     	add	r3, r3, #1
+405e6b04: e5010014     	str	r0, [r1, #-0x14]
+405e6b08: e6ef3073     	uxtb	r3, r3
+405e6b0c: e1530004     	cmp	r3, r4
+405e6b10: e2822004     	add	r2, r2, #4
+405e6b14: 3afffff6     	blo	0x405e6af4 <.text+0x5e6af4> @ imm = #-0x28
+405e6b18: e59d301c     	ldr	r3, [sp, #0x1c]
+405e6b1c: e6ff0075     	uxth	r0, r5
+405e6b20: e58d3000     	str	r3, [sp]
+405e6b24: e59d3020     	ldr	r3, [sp, #0x20]
+405e6b28: e6ef1074     	uxtb	r1, r4
+405e6b2c: e58d3004     	str	r3, [sp, #0x4]
+405e6b30: e59d3024     	ldr	r3, [sp, #0x24]
+405e6b34: e59d2014     	ldr	r2, [sp, #0x14]
+405e6b38: e58d3008     	str	r3, [sp, #0x8]
+405e6b3c: e59d3018     	ldr	r3, [sp, #0x18]
+405e6b40: ebf538fb     	bl	0x40334f34 <.text+0x334f34> @ imm = #-0x2b1c14
+405e6b44: e3a00000     	mov	r0, #0
+405e6b48: e28dd028     	add	sp, sp, #40
+405e6b4c: e8bd4030     	pop	{r4, r5, lr}
+405e6b50: e28dd00c     	add	sp, sp, #12
+405e6b54: e12fff1e     	bx	lr
+
+
+/Users/yiweigao/Code/scratch/fujifilm-firmware-playground/analysis/output/firmware-main.elf:	file format elf32-littlearm
+
+Disassembly of section .text:
+
+40000000 <.text>:
+40334f34: e92d000e     	push	{r1, r2, r3}
+40334f38: e24dd00c     	sub	sp, sp, #12
+40334f3c: e5dd200c     	ldrb	r2, [sp, #0xc]
+40334f40: e28d3010     	add	r3, sp, #16
+40334f44: e58d3004     	str	r3, [sp, #0x4]
+40334f48: e3520005     	cmp	r2, #5
+40334f4c: e59f3040     	ldr	r3, [pc, #0x40]         @ 0x40334f94 <.text+0x334f94>
+40334f50: 83a02005     	movhi	r2, #5
+40334f54: e5c32002     	strb	r2, [r3, #0x2]
+40334f58: e1c300b0     	strh	r0, [r3]
+40334f5c: e5d32002     	ldrb	r2, [r3, #0x2]
+40334f60: e59d0004     	ldr	r0, [sp, #0x4]
+40334f64: e3a03000     	mov	r3, #0
+40334f68: e59fc028     	ldr	r12, [pc, #0x28]        @ 0x40334f98 <.text+0x334f98>
+40334f6c: ea000002     	b	0x40334f7c <.text+0x334f7c> @ imm = #0x8
+40334f70: e7901103     	ldr	r1, [r0, r3, lsl #2]
+40334f74: e78c1103     	str	r1, [r12, r3, lsl #2]
+40334f78: e2833001     	add	r3, r3, #1
+40334f7c: e6ef1073     	uxtb	r1, r3
+40334f80: e1510002     	cmp	r1, r2
+40334f84: 3afffff9     	blo	0x40334f70 <.text+0x334f70> @ imm = #-0x1c
+40334f88: e28dd00c     	add	sp, sp, #12
+40334f8c: e28dd00c     	add	sp, sp, #12
+40334f90: e12fff1e     	bx	lr
+40334f94: 4138debc     	ldrhmi	sp, [r8, -r12]!
+40334f98: 4138dec0     	teqmi	r8, r0, asr #29
+40334f9c: e92d4010     	push	{r4, lr}
+40334fa0: e59fc05c     	ldr	r12, [pc, #0x5c]        @ 0x40335004 <.text+0x335004>
+40334fa4: e1dc30b0     	ldrh	r3, [r12]
+40334fa8: e1c030b0     	strh	r3, [r0]
+40334fac: e5dc0002     	ldrb	r0, [r12, #0x2]
+40334fb0: e3a03000     	mov	r3, #0
+40334fb4: e28cc004     	add	r12, r12, #4
+40334fb8: ea000002     	b	0x40334fc8 <.text+0x334fc8> @ imm = #0x8
+40334fbc: e79c4103     	ldr	r4, [r12, r3, lsl #2]
+40334fc0: e7814103     	str	r4, [r1, r3, lsl #2]
+40334fc4: e2833001     	add	r3, r3, #1
+40334fc8: e6ef4073     	uxtb	r4, r3
+40334fcc: e1540000     	cmp	r4, r0
+40334fd0: 3afffff9     	blo	0x40334fbc <.text+0x334fbc> @ imm = #-0x1c
+40334fd4: e1a03000     	mov	r3, r0
+40334fd8: e3a0c000     	mov	r12, #0
+40334fdc: ea000003     	b	0x40334ff0 <.text+0x334ff0> @ imm = #0xc
+40334fe0: e6bf4073     	sxth	r4, r3
+40334fe4: e2833001     	add	r3, r3, #1
+40334fe8: e781c104     	str	r12, [r1, r4, lsl #2]
+40334fec: e6ef3073     	uxtb	r3, r3
+40334ff0: e3530004     	cmp	r3, #4
+40334ff4: 9afffff9     	bls	0x40334fe0 <.text+0x334fe0> @ imm = #-0x1c
+40334ff8: e1a00100     	lsl	r0, r0, #2
+40334ffc: e5820000     	str	r0, [r2]
+40335000: e8bd8010     	pop	{r4, pc}
+40335004: 4138debc     	ldrhmi	sp, [r8, -r12]!

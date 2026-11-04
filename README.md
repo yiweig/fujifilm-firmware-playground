@@ -51,6 +51,7 @@ for those access/earlier-stage gaps before automatically expanding another calle
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
 | Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md) |
 | Observed ordinary USB startup | One normal `04cb:030a` arrival during user-performed power-on; no intermediate identity/removal observed. Registry events cannot expose internal startup or failed enumeration. | [Live startup observation](analysis/usb-normal-startup-observation.md) |
+| Emulated factory-read route | Original marker/registration code now connects to normal dispatch and response construction in one model. Eight checks pass, including full synthetic record reconstruction and failed-open stale-data behavior. | [Integrated emulation](analysis/ptpap-integrated-read-emulation.md) |
 | Factory marker activation | Offline ARM controls: marker adds seven command registrations; removing it or closing a session preserves them. Startup requests a table-covering zero-fill, but physical revocation and host traffic remain unqualified. | [Activation review and draft experiment](analysis/ptpap-marker-activation-review.md) |
 | Factory read availability | One fixed `1027(0)` probe returned `2005` (unsupported) in normal USB mode, then closed normally. No factory record acquired or SD marker created. | [Availability probe](analysis/factory-chunk-availability-probe.md) |
 | Read-only vendor property | `GetDevicePropDesc(d220)` succeeded: UINT32, current 0, range 0–1. Static code suggests transfer/status bookkeeping; exact semantics unresolved. Session closed normally. | [Property investigation](analysis/d220-property-investigation.md) |
@@ -429,6 +430,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/service-entry-initialization-writes.md`](analysis/service-entry-initialization-writes.md)
   — initialization attempts a whole cold-data save even with automatic
   calibration off; RTC wakeup control and before/after-USB ordering.
+- [`analysis/ptpap-integrated-read-emulation.md`](analysis/ptpap-integrated-read-emulation.md)
+  — connected original-ARM registration/dispatch/file-wrapper/response path;
+  eight synthetic controls, exact modeled/stubbed boundary, no physical camera access.
 - [`analysis/ptpap-marker-activation-review.md`](analysis/ptpap-marker-activation-review.md)
   — marker semantics, eleven original-ARM lifecycle checks, non-immediate
   revocation, intended startup table clear and a draft activation/deactivation test.

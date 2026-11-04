@@ -24,6 +24,15 @@ revocation. The current ImageCapture client can generate unmeasured framework tr
 and is not yet qualified for factory-enabled operation. No marker was created;
 the report includes a draft activation/deactivation test and its transport gap.
 
+
+Follow-up 2026-11-03: [integrated read emulation](ptpap-integrated-read-emulation.md)
+connects the marker/registration slice to normal dynamic dispatch, the factory
+callback, original file wrapper and response setter/extractor in one emulated
+memory instance. Eight checks pass, including complete synthetic record
+reconstruction, retained registration after marker removal and the misleading
+success response on a modeled file-open failure. Physical USB/storage, host
+traffic, startup/revocation and recovery remain outside these controls.
+
 ## Finding
 
 The existing factory PTP callback has a narrowly identifiable read path for
