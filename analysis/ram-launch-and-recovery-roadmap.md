@@ -179,6 +179,13 @@ X-half access/recovery record or provider artifact; the latter softmod is MIPS,
 not an ARM loader. A separate RAW-research claim does not establish recovery.
 The report includes an unsent question for a researcher with exact-body evidence.
 
+The subsequent [V50 external-flash layout review](v50-flash-layout-and-provider-limits.md)
+checks a previously unparsed part of the retained comparison evidence: reserved
+headers, resource-volume geometry and the trailing filesystem. It identifies
+the DRAM application but no authenticated earlier-stage provider. Firmware-like
+bytes in the trailing FAT12 data area are all unallocated; they do not establish
+boot ROM or a live fallback slot. R1/R2/C1 remain open.
+
 ## Decision for the next research pass
 
 Prioritize evidence that could close **R1/R2 or C1**, rather than automatically

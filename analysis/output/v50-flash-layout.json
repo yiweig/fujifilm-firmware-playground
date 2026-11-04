@@ -1,0 +1,156 @@
+{
+  "source_repository": "https://github.com/Linouth/iCatch-V50-Playground",
+  "source_commit": "dc437ced8fdc9564e39ca550af6a1d53b1037714",
+  "dump_sha256": "ef8ee75f9cd5a59c633b6b79ea0130c9605d3a86bfe2b9bbfc1498e51587fbf8",
+  "dump_size": 16777216,
+  "package_sha256": "1f9db54f710d26af1be9f96a317f838fa52e0ca90225f602c45b287e93f2a2f9",
+  "coordinate_system": "file offsets only; no CPU ROM/load mapping inferred",
+  "header_field_hypothesis": {
+    "block_size": 4096,
+    "total_blocks": 4096,
+    "header_blocks": 8,
+    "reserved_a_blocks": 1280,
+    "reserved_b_blocks": 128,
+    "reserved_c_blocks": 0,
+    "slot1_start_block": 1416,
+    "slot1_length": 9369600,
+    "slot1_reserved_blocks": 2288,
+    "slot2_start_block": 0,
+    "slot2_length": 0,
+    "slot2_reserved_blocks": 0,
+    "limit": "Roles borrowed from related eSD/NAND schema and corroborated by actual region boundaries; not all header semantics/checksums decoded."
+  },
+  "first_header_copy_difference_offsets": [
+    "0x41",
+    "0x4a",
+    "0x4b"
+  ],
+  "early_drampar_markers": [
+    "0x200",
+    "0x866",
+    "0x8ea",
+    "0xcf0",
+    "0xf56",
+    "0x11bc",
+    "0x12ca",
+    "0x13e0",
+    "0x4200",
+    "0x4866",
+    "0x48ea",
+    "0x4cf0",
+    "0x4f56",
+    "0x51bc",
+    "0x52ca",
+    "0x53e0"
+  ],
+  "volumes": [
+    {
+      "start": "0x8000",
+      "end_exclusive": "0x508000",
+      "type": "FAT16",
+      "bytes_per_sector": 512,
+      "sectors_per_cluster": 2,
+      "sectors": 10240,
+      "root_offset": "0xd200",
+      "data_offset": "0x11200",
+      "fat_mirrors_equal": false,
+      "cluster_count": 5083,
+      "free_clusters": 752,
+      "nonzero_cluster_entries": 4331,
+      "allocation_count_basis": "First FAT only; differing mirrors are not reconciled.",
+      "root_live_short_names": [
+        "RO_RES"
+      ],
+      "limit": "Root metadata and allocation counts only; no recursion, file extraction or recovery of deleted content."
+    },
+    {
+      "start": "0x508000",
+      "end_exclusive": "0x588000",
+      "type": "FAT12",
+      "bytes_per_sector": 512,
+      "sectors_per_cluster": 1,
+      "sectors": 1024,
+      "root_offset": "0x508e00",
+      "data_offset": "0x50ce00",
+      "fat_mirrors_equal": true,
+      "cluster_count": 985,
+      "free_clusters": 969,
+      "nonzero_cluster_entries": 16,
+      "allocation_count_basis": "First FAT only; differing mirrors are not reconciled.",
+      "root_live_short_names": [
+        "UDF",
+        "USER_RES"
+      ],
+      "limit": "Root metadata and allocation counts only; no recursion, file extraction or recovery of deleted content."
+    },
+    {
+      "start": "0xe78000",
+      "end_exclusive": "0x1000000",
+      "type": "FAT12",
+      "bytes_per_sector": 512,
+      "sectors_per_cluster": 1,
+      "sectors": 3136,
+      "root_offset": "0xe7aa00",
+      "data_offset": "0xe7ea00",
+      "fat_mirrors_equal": true,
+      "cluster_count": 3083,
+      "free_clusters": 3083,
+      "nonzero_cluster_entries": 0,
+      "allocation_count_basis": "First FAT only; differing mirrors are not reconciled.",
+      "root_live_short_names": [],
+      "limit": "Root metadata and allocation counts only; no recursion, file extraction or recovery of deleted content."
+    }
+  ],
+  "selected_main": {
+    "start": "0x588000",
+    "declared_end_exclusive": "0xe77800",
+    "reserved_end_exclusive": "0xe78000",
+    "sha256_declared_bytes": "736318865a79aefcb1966381ba291bc9bba2e07061fefcfed3165ffe0a02985a",
+    "prefix_hex": "de0000ea9b0000eaa20000eaad0000eab80000eac40000ea86a419ea04e04ee2",
+    "markers": [
+      "SPCA6500 V000",
+      "DRAM CODE"
+    ],
+    "limit": "DRAM image identification, not earlier-stage or CPU-ROM provenance."
+  },
+  "package_main_comparison": {
+    "start": "0x612120",
+    "end_exclusive": "0xf01720",
+    "sha256": "38c289af809bab856a3c7f6d4233838c7204737df9679472b9b870126df217b7",
+    "same_as_dump_prefix": false,
+    "same_length_as_declared_dump_main": false
+  },
+  "seven_aligned_arm_B_vector_encoding_candidates": [
+    "0x588000",
+    "0x758250",
+    "0x939930",
+    "0x939b94",
+    "0x947e2c",
+    "0x9dbab0",
+    "0xa215d4",
+    "0xb0f158",
+    "0xb0f1d8"
+  ],
+  "all_ff_full_4k_runs": [
+    [
+      "0x44c000",
+      "0x508000"
+    ],
+    [
+      "0x50f000",
+      "0x588000"
+    ],
+    [
+      "0xfb2000",
+      "0x1000000"
+    ]
+  ],
+  "result": "Known layout resolves resource volumes and DRAM application. No authenticated low-address provider recovered; trailing free-cluster bytes are not a currently referenced boot executable.",
+  "limits": [
+    "Different camera/revision; no X-HF1 compatibility established.",
+    "FAT directory/allocation metadata does not assign provenance to unallocated bytes.",
+    "No extraction/decompression of all resources, general executable scan or complete code analysis.",
+    "Exact vector-encoding candidate search is not proof no other executable format exists.",
+    "No device operation, payload, vendor program, third-party script or emulator executes."
+  ]
+}

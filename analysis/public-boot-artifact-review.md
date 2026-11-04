@@ -16,6 +16,13 @@ Follow-up: [public entry/provider refresh](public-entry-evidence-refresh.md) che
 new FujiMod metadata, confirms the same upstream V50 HEAD, and reads older MIPS
 softmod source. No newly verified X-half provider or recovery route was obtained.
 
+A separate [flash-layout follow-up](v50-flash-layout-and-provider-limits.md)
+now checks reserved-header fields and filesystem boundaries in the retained
+Winbond dump. It identifies resource volumes and the DRAM application; trailing
+firmware-like bytes are unallocated in an empty FAT12 volume. It recovers no
+authenticated X-half earlier-stage provider. The bounded raw-search findings
+below retain their original scope.
+
 ## Retained V50 corpus
 
 The previously acquired [V50 repository](https://github.com/Linouth/iCatch-V50-Playground/tree/dc437ced8fdc9564e39ca550af6a1d53b1037714)

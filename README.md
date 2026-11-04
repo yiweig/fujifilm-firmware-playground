@@ -112,6 +112,7 @@ the versioned copy is `firmware/2.00/FPUPDATE.DAT`.
 | [fat16_read.py](analysis/fat16_read.py), [squashfs_list.py](analysis/squashfs_list.py) | Read packaged resources and Linux filesystem metadata without mounting them |
 | [map_hardware.py](analysis/map_hardware.py), [find_usb_flag_stores.py](analysis/find_usb_flag_stores.py) | Heuristic address/store searches. Manually validate candidates; stale register tracking and missed dynamic paths limit completeness |
 | [audit_public_boot_candidates.py](analysis/audit_public_boot_candidates.py) | Bounded audit of a separately supplied V50 comparison corpus; distinguishes real files from Git LFS placeholders |
+| [inspect_v50_flash_layout.py](analysis/inspect_v50_flash_layout.py) | Hash-checked offline V50 external-flash layout parser; resource volumes, main image and unallocated trailing data, without inferring CPU-ROM mapping |
 | [ptp_cold_reader.py](analysis/ptp_cold_reader.py), [ptp_usb_transport.py](analysis/ptp_usb_transport.py) | Restricted read-protocol model and adapter for an already supplied transport. No turnkey live discovery/acquisition client; success/checksum do not attest fresh storage data |
 | [usb_registry_inventory.py](analysis/usb_registry_inventory.py), [read_usb_configuration.c](analysis/read_usb_configuration.c) | macOS USB metadata helpers with different access behavior; read [descriptor API limits](analysis/macos-descriptor-api.md) before considering device access |
 | [run-imagecapture-inventory.sh](analysis/run-imagecapture-inventory.sh), [imagecapture_inventory.m](analysis/imagecapture_inventory.m) | Builds and launches a discovery-only Mac application; successfully identified the X-HF1 through Apple's service. No session-open or PTP command code; incidental framework traffic is unmeasured |
@@ -276,6 +277,9 @@ UI features can continue offline, but deployment remains gated on recovery.
 - [`analysis/public-entry-evidence-refresh.md`](analysis/public-entry-evidence-refresh.md)
   — current pinned public catalog/source review, MIPS softmod incompatibility,
   and an unsent request for exact-body entry/provider evidence.
+- [`analysis/v50-flash-layout-and-provider-limits.md`](analysis/v50-flash-layout-and-provider-limits.md)
+  — retained external-flash geometry and allocation review; trailing firmware-like
+  bytes are unallocated, and no authenticated earlier-stage provider was recovered.
 - [`analysis/resident-file-update-path.md`](analysis/resident-file-update-path.md)
   — actual file-wrapper/parser controls reach the resident update engine;
   packaged updater bytes remain data, and cold recovery is still separate.
