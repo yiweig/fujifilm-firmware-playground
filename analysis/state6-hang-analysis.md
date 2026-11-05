@@ -223,6 +223,20 @@ Same signature as the prior three: the stub never jumped, so
 the payload never ran. The screen stayed on the debug list and
 never changed; normal boot was confirmed after OFF/unplug.
 Main-image state 6 is now **0/4**;
+
+## Addendum 6 (2026-11-05, night): the SRAM refresh is not the
+updater's missing preparation (offline)
+
+[updater-sram-startup-q1.md](updater-sram-startup-q1.md):
+updater startup reads nothing data-dependent from the
+op-10 refreshed range `0x3f000000–0x3f004000` when the gate is
+stamped (the only reader, the DRAM-parameter restore in
+`FUN_4000125c`, is gate-skipped; all other `0x3f000200` sites
+are post-startup programming machinery). Replicating the
+refresh (former Option C) is therefore **closed**. The
+direct-handoff failure is left attributable to the park's
+quiesce — unreachable from every available context — or to
+unisolated helper-context differences.
 updater on the same path remains **2/3**. A fourth silent hang
 does not isolate which preparation abort fired. No retry in
 that boot.
