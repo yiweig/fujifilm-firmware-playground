@@ -1,0 +1,90 @@
+PROGRAM firmware-main.bin
+
+FUNCTION 4015be34
+
+bool FUN_4015be34(int param_1,int param_2)
+
+{
+  int iVar1;
+  int iVar2;
+  int iStack_c;
+  
+  iStack_c = param_2;
+  iVar2 = FUN_40183744(&iStack_c);
+  iVar1 = iStack_c;
+  if (iVar2 != 0) {
+    FUN_40004064(uRam4015be70);
+  }
+  return iVar2 == 0 && param_1 == iVar1;
+}
+
+
+
+FUNCTION 4015bbd8
+
+undefined8 FUN_4015bbd8(undefined4 param_1,undefined4 param_2,undefined4 param_3)
+
+{
+  undefined4 uStack_c;
+  undefined4 uStack_8;
+  
+  uStack_c = param_2;
+  uStack_8 = param_3;
+  FUN_40183744(&uStack_c);
+  return CONCAT44(param_1,uStack_c);
+}
+
+
+
+FUNCTION 4018381c
+
+undefined4 FUN_4018381c(undefined4 param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  undefined4 uVar1;
+  int iVar2;
+  undefined4 uVar3;
+  
+  uVar3 = param_1;
+  uVar1 = FUN_4018323c();
+  FUN_4000e164(1,uRam401838c0,*(undefined1 *)(iRam401838bc + *(int *)(iRam401838b8 + 0x18)),param_1,
+               uVar3,param_2,param_3);
+  FUN_400591f8(1);
+  iVar2 = FUN_401837ec(param_1);
+  if (iVar2 == -1) {
+    FUN_400070d8(uRam401838c4,0x1ed,uRam401838c8,param_1,0xffffffff);
+    FUN_40007148(0);
+  }
+  *(undefined4 *)(iRam401838b8 + 0x34) = 0;
+  FUN_4018331c(uVar1);
+  FUN_401833f8(iVar2,param_4);
+  return 0;
+}
+
+
+
+FUNCTION 40183768
+
+void FUN_40183768(int param_1)
+
+{
+  int iVar1;
+  uint uVar2;
+  int aiStack_1c [2];
+  
+  iVar1 = iRam401837e0;
+  uVar2 = 0;
+  while( true ) {
+    FUN_40183710(aiStack_1c);
+    if ((aiStack_1c[0] == param_1) && (*(int *)(iVar1 + 0x34) != 0)) break;
+    uVar2 = uVar2 + 1;
+    FUN_4000c450(10);
+    if (1999 < uVar2) {
+      FUN_400070d8(uRam401837e4,0x251,uRam401837e8,param_1,uVar2);
+      FUN_40007148(0);
+    }
+  }
+  return;
+}
+
+

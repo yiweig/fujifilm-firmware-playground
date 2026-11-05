@@ -1,0 +1,94 @@
+PROGRAM firmware-main.bin
+
+FUNCTION 401837ec
+
+int FUN_401837ec(uint param_1)
+
+{
+  int iVar1;
+  
+  iVar1 = 0;
+  do {
+    if (*(byte *)(iVar1 + iRam40183818) == param_1) {
+      return iVar1;
+    }
+    iVar1 = iVar1 + 1;
+  } while (iVar1 != 7);
+  return -1;
+}
+
+
+
+FUNCTION 4018323c
+
+int FUN_4018323c(void)
+
+{
+  int iVar1;
+  int iVar2;
+  
+  FUN_4000c30c(0);
+  iVar2 = iRam4018330c;
+  if (*(int *)(iRam4018330c + 0x28) == 0) {
+    *(undefined4 *)(iRam4018330c + 0x28) = 0xffffffff;
+    FUN_4000c30c();
+    iVar1 = FUN_4002dab4(uRam40183310,0);
+    if (iVar1 == 0) {
+      FUN_400070d8(uRam40183314,0xd2,0);
+      FUN_40007148(0);
+    }
+  }
+  else {
+    FUN_4000c30c();
+    while (iVar1 = *(int *)(iVar2 + 0x28), iVar1 == -1) {
+      FUN_4000c450(10);
+    }
+  }
+  iVar2 = FUN_4002db24(iVar1,30000);
+  if (iVar2 != 0) {
+    FUN_400070d8(uRam40183314,0xda,uRam40183318);
+    FUN_40007148(0);
+  }
+  iVar2 = iRam4018330c;
+  if (*(int *)(iRam4018330c + 0x28) == -1) {
+    *(int *)(iRam4018330c + 0x28) = iVar1;
+    if (*(int *)(iVar2 + 0x14) == 0) {
+      FUN_40183004();
+    }
+  }
+  return iVar1;
+}
+
+
+
+FUNCTION 401833f8
+
+void FUN_401833f8(undefined4 param_1,undefined4 param_2)
+
+{
+  int iVar1;
+  undefined4 uStack_10;
+  undefined4 uStack_c;
+  
+  uStack_10 = param_1;
+  uStack_c = param_2;
+  iVar1 = FUN_4002a3c4(*(undefined4 *)(iRam40183448 + 0x1c),&uStack_10,60000);
+  if (iVar1 != 0) {
+    FUN_400070d8(uRam4018344c,0x109,0);
+    FUN_40007148(0);
+  }
+  return;
+}
+
+
+
+FUNCTION 40183744
+
+undefined4 FUN_40183744(uint *param_1)
+
+{
+  *param_1 = (uint)*(byte *)(iRam40183764 + *(int *)(iRam40183760 + 0x18));
+  return 0;
+}
+
+
