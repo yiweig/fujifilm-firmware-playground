@@ -386,7 +386,15 @@ def open_device():
             dev.detach_kernel_driver(INTERFACE)
     except Exception:
         pass
-    dev.set_configuration()
+    try:
+        active = dev.get_active_configuration()
+    except Exception:
+        active = None
+    if active is None:
+        dev.set_configuration()
+    # NOTE: set_configuration on an already-configured loader makes the
+    # device re-run target init, which tears down the APITEST bridge.
+    # Never reconfigure when a configuration is already active.
     usb.util.claim_interface(dev, INTERFACE)
     return dev
 

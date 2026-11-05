@@ -74,29 +74,37 @@ def main():
     if sys.platform != 'linux':
         raise SystemExit('Linux only')
     commands = sys.argv[1:]
+    cont = bool(commands and commands[0] == '--continue')
+    if cont:
+        commands = commands[1:]
     if not commands:
         raise SystemExit('give at least one shell command to send')
     LOG.write_bytes(b'')
     loader = L.Loader(L.open_device())
     console = Console(loader)
     try:
-        print('--- baseline'); loader.apitest_state()
-        try:
-            loader.apitest_ctrl(b'\x00', wvalue=2)
-            print('--- teardown sent')
-        except Exception as exc:
-            print(f'--- teardown skipped ({type(exc).__name__})')
-        loader._apitest_set_mode2()
-        print('--- mode=2 poked'); loader.apitest_state()
-        console.thread.start()
-        loader.apitest_ctrl(b'\x00')
-        print('--- [0x00] init(1) sent')
-        loader._apitest_set_mode2()
-        print('--- mode=2 poked again')
-        if console.wait_for(b'cmd>', 25) < 0:
-            print('WARNING: no cmd> prompt seen in 25 s; continuing anyway')
+        if cont:
+            print('--- continue mode: bridge assumed active')
+            console.thread.start()
+            time.sleep(2)
         else:
-            print('--- cmd> prompt observed')
+            print('--- baseline'); loader.apitest_state()
+            try:
+                loader.apitest_ctrl(b'\x00', wvalue=2)
+                print('--- teardown sent')
+            except Exception as exc:
+                print(f'--- teardown skipped ({type(exc).__name__})')
+            loader._apitest_set_mode2()
+            print('--- mode=2 poked'); loader.apitest_state()
+            console.thread.start()
+            loader.apitest_ctrl(b'\x00')
+            print('--- [0x00] init(1) sent')
+            loader._apitest_set_mode2()
+            print('--- mode=2 poked again')
+            if console.wait_for(b'cmd>', 25) < 0:
+                print('WARNING: no cmd> prompt seen in 25 s; continuing anyway')
+            else:
+                print('--- cmd> prompt observed')
         for cmd in commands:
             since = console.mark()
             loader.apitest_ctrl(cmd.encode() + b'\n')
