@@ -1,0 +1,6 @@
+Full updater SHA-256: 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+A mailbox=MAIN.BIN exists: boundary=4000f270 loaderPath=D:\MAIN.BIN dest=00000000 -> PASS
+B default firmware.brn exists: boundary=4000f270 checked=D:\firmware.brn loader=D:\firmware.brn -> PASS
+D explicit firmware/brn exists: boundary=40009ca0 loader=null -> PASS
+C mailbox=MAIN.BIN absent: boundary=40069374 loader=null -> PASS
+DUAL-BOOT P3 PASS

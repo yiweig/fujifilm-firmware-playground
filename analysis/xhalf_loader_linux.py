@@ -318,6 +318,65 @@ class Loader:
             except Exception as exc:
                 print(f'WARNING: slot restore failed: {exc}')
 
+    MAILBOX_STAGE = 0x41124000
+
+    def set_mailbox(self, name: str, ext: str):
+        """Write the boot-info filename mailbox (0x100040b9..0x100040c3)
+        via trampoline v3, preserving surrounding bytes, and verify by
+        re-staging. Emulator-qualified branch behavior:
+        scripts/ReproduceDualBootP3.java (DUAL-BOOT P3 PASS)."""
+        import re as _re
+        if not _re.fullmatch(r'[A-Z0-9]{1,8}', name) or not _re.fullmatch(r'[A-Z0-9]{1,3}', ext):
+            raise SystemExit('mailbox name/ext must be uppercase 8.3')
+        self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP3_HEX))
+        self.write_mem(self.COUNTER_ADDR, bytes(32))
+        if self.read_mem(self.TRAMP_ADDR, 32) != bytes.fromhex(self.TRAMP3_HEX)[:32]:
+            raise SystemExit('trampoline read-back mismatch; abort')
+        originals = []
+        for block, off in self.SLOT_BLOCKS:
+            data = self.read_mem(block, 32)
+            if struct.unpack_from('<I', data, off)[0] != self.HANDLER:
+                raise SystemExit('slot does not hold handler; abort')
+            originals.append(data)
+        try:
+            for (block, off), _ in zip(self.SLOT_BLOCKS, originals):
+                data = bytearray(self.read_mem(block, 32))
+                struct.pack_into('<I', data, off, self.TRAMP_ADDR)
+                self._write_block32(block, bytes(data))
+            print('trampoline v3 installed')
+            # Read current page, patch mailbox bytes in the staged copy.
+            self._set_stage(0x10004000, self.BOOTINFO_STAGE, 0x100)
+            self.bootquery()
+            if not self._wait_done():
+                raise SystemExit('bootinfo stage did not complete; battery pull may be needed')
+            page = bytearray(self.read_mem(self.BOOTINFO_STAGE, 0x100))
+            page[0xB9:0xC1] = name.encode().ljust(8, b'\x00')
+            page[0xC1:0xC4] = ext.encode().ljust(3, b'\x00')
+            # Copy back only 0xb8..0xc3 (preserves neighbours at both ends).
+            self.write_mem(self.MAILBOX_STAGE, bytes(page[0xB8:0xC4]))
+            self._set_stage(self.MAILBOX_STAGE, 0x100040B8, 12)
+            self.bootquery()
+            if not self._wait_done():
+                raise SystemExit('mailbox write did not complete; battery pull may be needed')
+            # Verify.
+            self._set_stage(0x10004000, self.BOOTINFO_STAGE, 0x100)
+            self.bootquery()
+            if not self._wait_done():
+                raise SystemExit('verify stage did not complete')
+            check = self.read_mem(self.BOOTINFO_STAGE, 0x100)
+            got_name = check[0xB9:0xC1].split(b'\x00')[0].decode()
+            got_ext = check[0xC1:0xC4].split(b'\x00')[0].decode()
+            print(f'mailbox now: {got_name}.{got_ext} (page bytes b8..c8: {check[0xB8:0xC8].hex()})')
+            if (got_name, got_ext) != (name, ext):
+                raise SystemExit('mailbox verify mismatch; do not proceed to ram-push')
+        finally:
+            try:
+                for (block, _), orig in zip(self.SLOT_BLOCKS, originals):
+                    self._write_block32(block, orig)
+                print('slots restored')
+            except Exception as exc:
+                print(f'WARNING: slot restore failed: {exc}')
+
     def stage_copy(self):
         """Install trampoline v2; CMD=1 stages SRAM, CMD=2 stages low 256B."""
         self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP2_HEX))
@@ -545,6 +604,7 @@ def main():
     mode.add_argument('--stage-copy', action='store_true')
     mode.add_argument('--stage-bootinfo', action='store_true')
     mode.add_argument('--ram-push', metavar='PAYLOAD')
+    mode.add_argument('--set-mailbox', nargs=2, metavar=('NAME', 'EXT'))
     mode.add_argument('--apitest-init', action='store_true')
     mode.add_argument('--apitest-state', action='store_true')
     mode.add_argument('--apitest-send', metavar='TEXT')
@@ -575,6 +635,8 @@ def main():
             loader.stage_bootinfo()
         elif args.ram_push:
             loader.ram_push(args.ram_push)
+        elif args.set_mailbox:
+            loader.set_mailbox(args.set_mailbox[0], args.set_mailbox[1])
         elif args.hijack_test:
             loader.hijack_test()
         elif args.write_test:
