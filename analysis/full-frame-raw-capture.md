@@ -149,6 +149,20 @@ Findings, in order:
 RGGB, BlackLevel 6/5/5/5, WhiteLevel 4095, AsShotNeutral from a
 mid-tone gray-world estimate, generic daylight ColorMatrix1 —
 both color items are placeholders pending chart calibration).
+**Extreme-index follow-up (next morning, bright window scene):**
+`aeset cap 265 60` and `aeset cap 272 60` (the table maximum)
+produced statistically identical frames (saturation 67.2% vs
+68.5%, medians both pinned at 4095, channel means within 2%;
+`AWB CapG` 1018 vs 1019). In bright light the calibration capture's
+own metering overrides the indices entirely; in the dim room the
+210→235 step moved brightness only ~5%. Conclusion: `aeset cap`
+rescues the catastrophic default but is **not** a working exposure
+control — capture at a fixed sane index (210–235) in moderate light
+and carry exposure in the DNG instead. `raw2dng.py` therefore
+supports `--baseline-ev` (emits BaselineExposure, tag 50730) so the
+default Lightroom rendering starts compensated; genuinely clipped
+highlights (bright sources) remain clipped, as in any raw file.
+
 `/private/tmp/xhalf-exp235.dng` renders under macOS Core Image
 (dark/purple with its generic profile) but was **rejected by
 Lightroom** ("!" badge): the first converter build mis-numbered the

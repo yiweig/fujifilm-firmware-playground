@@ -121,9 +121,13 @@ def rat(x, scale=10000):
 def main():
     args = sys.argv[1:]
     size = None
-    if args[:1] == ['--size']:
-        ws, hs = args[1].lower().split('x')
-        size = (int(ws), int(hs))
+    baseline_ev = 0.0
+    while args[:1] in (['--size'], ['--baseline-ev']):
+        if args[0] == '--size':
+            ws, hs = args[1].lower().split('x')
+            size = (int(ws), int(hs))
+        else:
+            baseline_ev = float(args[1])
         args = args[2:]
     if len(args) != 2:
         raise SystemExit(__doc__)
@@ -172,6 +176,9 @@ def main():
             (-395, 1000), (1182, 1000), (213, 1000),
             (-62, 1000), (186, 1000), (714, 1000)])
         t.add(50728, 5, [rat(1 / gains[0]), (1, 1), rat(1 / gains[2])])  # AsShotNeutral
+        if baseline_ev:
+            ev = rat(baseline_ev)  # (num, den) with den > 0; keep sign on num
+            t.add(50730, 10, [ev])      # BaselineExposure (SRATIONAL)
         t.add(50778, 3, [21])           # CalibrationIlluminant1 = D65
         t.add(50829, 4, [0, 0, h, w])   # ActiveArea
         return t.build()
