@@ -112,3 +112,45 @@ these mechanical now (~4 min per 15 MB observed). The SD marker
 was intentionally left in place after this session for near-term
 reuse; normal camera operation is unaffected (debug entry still
 requires the switch/button combination).
+
+## Probe map (2026-11-05, second session): where content lives
+
+512 KiB probes (`nandpr` via the same tool) at block-aligned
+offsets. "Erased" = uniformly `0xFF` (SHA-256 `043e238a…`, the same
+hash as the Reserved B head).
+
+| Area | Blocks probed | Result |
+| --- | --- | --- |
+| Reserved A (2–488) | head, 60, 250, 450 | Content throughout: `PHYTABLE` pages, then smooth ASCII-range ramp data (consistent with ISP calibration tables, e.g. lens-shading meshes; not further identified). No firmware/updater signatures |
+| Reserved B (489–533) | head | Erased |
+| Reserved C (534–794) | head, 598, 662 | `PHYTABLE` pages then erased |
+| Reserved C | **694, 710, 722, 726, 734, 746** | **Content: the firstburn payload** (below) |
+| Reserved C | 758, 770, 782, 790 | Erased |
+| Post-FW1 (852–2047) | 852, 1100, 1400, 1700, 2000 | Block 852 starts another `PHYTABLE` region; the rest erased |
+
+**Firstburn region (Reserved C, starts between blocks 662–694,
+ends between 746–758 — roughly 13–24 MB):** the block-694 probe
+begins with the ASCII manifest `firstburn\n2084976\n9497344\n
+4194304\n33554432\n` — exactly the package's firstburn values
+(kernel size, rootfs size, and the two unknown fields) — followed
+by the ARM Linux zImage ("Uncompressing Linux...", gzip streams).
+So Reserved C holds the factory-burn Linux payload for the
+co-processor subsystem, installed at first burn and presumably
+re-flashed from the package on updates.
+
+**Updater residency: negative so far.** No probed region contains
+the card-updater image (no matching 4 KiB blocks, no
+`firmware.brn`/`cardISP` strings). Combined with the erased
+Reserved B and the empty post-FW1 head, the working model updates
+to: *the updater is probably not resident on this device* — it
+arrives via the SD package (run by the resident engine in the main
+firmware) or via the vendor ISP/FRM host flow. A ROM→updater cold
+recovery path would therefore need the ROM to load the updater
+from SD itself, for which there is still no evidence. Gaps remain
+(unprobed Reserved C stretches, most of the post-FW1 range), so
+this is a bounded negative, not a proof.
+
+Probe artifacts in `/private/tmp`: `xhalf-probe-c694.bin`
+(`b0fbff7a…`), `xhalf-probe-c726.bin` (`69ce5733…`),
+`xhalf-probe-c746.bin` (`89dff8da…`), `xhalf-probe-p852.bin`
+(`873bc525…`), `xhalf-probe-a60.bin` (`b360f26b…`).
