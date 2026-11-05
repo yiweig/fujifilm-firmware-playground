@@ -126,3 +126,36 @@ written by this flow.
 
 Only after P1 passes does P2 (the live run) get proposed for
 explicit go-ahead.
+
+## P1 result (2026-11-05): PASS, with stated boundaries
+
+`scripts/ReproduceRamPushP1.java`, output
+[output/ram-push-p1-emulator.txt](output/ram-push-p1-emulator.txt):
+
+- **Consumer control (backends `0x00` and `0x40`)**: with the exact
+  live fixture (gate `0x88888888`, status `0x0100`, button bytes 0,
+  mailbox empty, file absent), the original consumer instructions
+  reach the continuation call `0x40069374` via the file-not-exist
+  path on pathname `D:\firmware.brn`, having installed the
+  selection callback and entered NAND registration, and **without
+  reaching the loader `0x4000f270`, the update wrapper `0x4000fc70`,
+  or any modeled storage operation**. Loaded image bytes unchanged.
+- **Callback control (RawCBoot absent)**: the original callback
+  ends in exactly one loader call, `(":DEF_FW2", 0x40000000)`,
+  which the live loader rejects (zero Firmware2 length); no drive
+  selector is invoked. Item 2(b) (synthetic RawCBoot) was not run:
+  the block was not found in any storage dump of this unit, so the
+  absent case is the expected live one, and the record-present
+  behavior is bounded by the disassembly (per-record parameter-image
+  loads, `:NO_BOOT` abort).
+- Boundaries, honestly: the controls start at the consumer and
+  callback entries, not at the updater reset vector; the
+  initialization preceding the consumer in `FUN_4000125c` and the
+  real NAND-registration callback invocation are modeled, not
+  executed. Item 3 is covered only to the extent that the consumer
+  path itself performs no parameter restore when the gate is
+  stamped (static + control agreement).
+
+P1 is therefore **passed for the purpose of proposing P2**, with
+the residual unknowns carried into the live run's abort criteria
+rather than resolved on paper.

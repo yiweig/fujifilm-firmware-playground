@@ -1,0 +1,7 @@
+Full updater SHA-256: 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+P1 fixture: gate=0x88888888, status=0x0100, button bytes 0, mailbox empty, file absent. MMIO is synthetic emulator memory.
+consumer backend=0x00: boundary=40069374 pathname=D:\firmware.brn installer=true nandReg=true image-unchanged=true -> PASS
+consumer backend=0x40: boundary=40069374 pathname=D:\firmware.brn installer=true nandReg=true image-unchanged=true -> PASS
+callback RawCBoot-absent: boundary=4000f270 loader-calls=1 name=:DEF_FW2 dest=40000000 driveSelector=false -> PASS
+Modeled (not executed): log prints, callback installer, storage-init/NAND-registration entries, drive probe, file check, cleanup. Registration's real callback invocation and all USB/storage hardware effects are outside this control.
+RAM-PUSH P1 PASS
