@@ -359,12 +359,21 @@ class Loader:
 
     def bootquery_alloc(self, size: int) -> int:
         """Bootquery with a payload size: device allocates the staging
-        buffer and returns its address (0 = allocation failure)."""
-        data = bytes(self.dev.ctrl_transfer(0xC0, 0x70, (size >> 16) & 0xFFFF,
-                                            size & 0xFFFF, 5, timeout=TIMEOUT_MS))
+        buffer and returns its address (0 = allocation failure).
+        Receiver size encoding is wValue=low16, wIndex=high16
+        (0x401e1558: size = wValue | wIndex<<16). Getting this wrong
+        wedged the receiver live on 2026-11-05 (it tried to zero
+        724 MiB); the 1 MiB cap below is the guard against recurrence."""
+        if not (0 < size <= 0x100000):
+            raise SystemExit('payload size outside 1..1 MiB guard')
+        data = bytes(self.dev.ctrl_transfer(0xC0, 0x70, size & 0xFFFF,
+                                            (size >> 16) & 0xFFFF, 5, timeout=TIMEOUT_MS))
         if len(data) != 5:
             raise SystemExit(f'bootquery-alloc: expected 5 bytes, got {data.hex()}')
-        return struct.unpack_from('<I', data, 1)[0]
+        addr = struct.unpack_from('<I', data, 1)[0]
+        if addr and not (0x40000000 <= addr < 0x44000000):
+            raise SystemExit(f'bootquery returned implausible buffer 0x{addr:08x}; abort')
+        return addr
 
     def _write_payload(self, addr: int, data: bytes, expect_base: int, expect_size: int):
         """0x04f5 host-to-memory, restricted to the bootquery buffer."""

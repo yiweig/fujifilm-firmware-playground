@@ -13,13 +13,19 @@ access, nothing sent to the device. Decompilations:
 All requests are vendor control transfers on interface 5, as with
 our existing loader client.
 
-1. **Bootquery with size** — `IN 0x70`, `wValue = size>>16`,
-   `wIndex = size & 0xffff` (receiver: `size = wIndex | wValue<<16`,
-   `FUN_401e1548`). Device allocates buffer **A** (`size` bytes,
-   zeroed) and workspace **B** (64 KiB, stored at state `+0x20`),
-   returns A's address in reply bytes 1–4. Zero reply address =
-   allocation failure → abort. (Our previous zero-size queries
-   skipped this entirely.)
+1. **Bootquery with size** — `IN 0x70`, `wValue = size & 0xffff`,
+   `wIndex = size >> 16` (receiver: `size = wValue | wIndex<<16`,
+   from the setup parse at `0x401e12c0` and combine at `0x401e1558`).
+   Device allocates buffer **A** (`size` bytes, zeroed) and
+   workspace **B** (64 KiB, stored at state `+0x20`), returns A's
+   address in reply bytes 1–4. Zero reply address = allocation
+   failure → abort. (Our previous zero-size queries skipped this
+   entirely.) **Live correction (2026-11-05):** the first P2 attempt
+   sent the halves swapped; the receiver tried to allocate/zero
+   724 MiB and wedged (control path dead, device still enumerating;
+   battery-pull recovery, no payload downloaded, `0x04f7` never
+   sent). The client now caps payload size at 1 MiB and validates
+   the returned buffer address range.
 2. **Parameter download — deliberately skipped.** The vendor flow
    sends `0x04f3` with the package `DRAMPAR3` block (locally
    verified at `FPUPDATE.DAT` offset `0x09e1ca70`) because a mask-ROM
