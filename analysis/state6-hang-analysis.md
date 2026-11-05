@@ -98,3 +98,27 @@ waiting 6–8 minutes.
 - The updater-payload path (state 6, park on) remains the only
   proven route and succeeded 2 of 3 times; it is available if a
   one-off need justifies the coin flip, with the 90 s rule.
+
+## Addendum (2026-11-05, later): transport fragility in the client sequence
+
+The first `--direct-handoff` live attempts exposed a *separate,
+earlier* failure that cost several boots: after a
+`bootquery-alloc`, a small number of small bulk-OUT writes
+(trampoline/control-block writes via `0x04f5`) leaves the next
+control setup unanswered (timeout, once an immediate EP0 stall).
+The identical write pattern without a preceding alloc — and the
+alloc → bulk-download → bulk-readback flow itself (ram-push) —
+are both proven reliable over many sessions. Bisects narrowed it
+to the alloc + small-writes combination; the exact receiver-side
+mechanism was not isolated, and in-boot retries after a stall
+make it worse (dangling bulk state), so **one attempt per boot**
+is now a hard rule for this client family.
+
+Mitigation (built, not yet run live): `--direct-handoff` gains a
+fixed-staging mode that never calls `bootquery-alloc`: payload
+staging at `0x41130000` and helper workspace at `0x411E0000`,
+both inside the verified 2.4 MiB scratch gap (updater payload
+666 KiB fits; the 14.9 MB main image still needs the alloc path
+later). Sequence uses only never-failed patterns in order:
+install trampoline (small writes) → bulk download → bulk
+read-back → one arm write → one trigger.

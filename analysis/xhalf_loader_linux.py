@@ -532,22 +532,32 @@ class Loader:
                   '08c09fe51cff2fe100011041ecb11e4080121e40')
     LOADER_STATE = 0x40FD0D50
 
-    def direct_handoff(self, payload_path: str):
+    FIXED_STAGE = 0x41130000
+    FIXED_WORKSPACE = 0x411E0000
+
+    def direct_handoff(self, payload_path: str, fixed: bool = False):
         """Bypass state 6: download payload, verify, then invoke the
         handoff helper FUN_401eb1ec directly via trampoline v4.
-        See analysis/state6-hang-analysis.md."""
+        See analysis/state6-hang-analysis.md. With fixed=True, no
+        bootquery-alloc is used: fixed scratch staging/workspace
+        (payload must fit 0x41130000..0x411E0000)."""
         payload = Path(payload_path).read_bytes()
         size = len(payload)
         want = hashlib.sha256(payload).hexdigest()
         print(f'payload {payload_path}: {size} bytes sha256 {want}')
-        base = self.bootquery_alloc(size)
-        if base == 0:
-            raise SystemExit('bootquery allocation failed (address 0); abort')
-        # NOTE: tiny (4-byte) bulk reads stall this receiver; read a block.
-        workspace = struct.unpack_from('<I', self.read_mem(self.LOADER_STATE, 64), 0x20)[0]
+        if fixed:
+            if size > self.FIXED_WORKSPACE - self.FIXED_STAGE:
+                raise SystemExit('payload too large for fixed staging')
+            base, workspace = self.FIXED_STAGE, self.FIXED_WORKSPACE
+        else:
+            base = self.bootquery_alloc(size)
+            if base == 0:
+                raise SystemExit('bootquery allocation failed (address 0); abort')
+            # NOTE: tiny (4-byte) bulk reads stall this receiver; read a block.
+            workspace = struct.unpack_from('<I', self.read_mem(self.LOADER_STATE, 64), 0x20)[0]
+            if not (0x40000000 <= workspace < 0x60000000):
+                raise SystemExit('implausible workspace pointer; abort')
         print(f'payload buffer 0x{base:08x}, handoff workspace 0x{workspace:08x}')
-        if not (0x40000000 <= workspace < 0x60000000):
-            raise SystemExit('implausible workspace pointer; abort')
         # Install v4 BEFORE the bulk storm: repeated bulk transfers can
         # desync this receiver and kill later control transfers (seen
         # live). With CMD=0 the installed trampoline only forwards, so
@@ -717,6 +727,8 @@ def main():
                         help='with --ram-push: zero the mode-0x88 preparation callback first')
     parser.add_argument('--settle', type=int, default=0, metavar='SEC',
                         help='with --ram-push: idle wait + bootquery between verify and run')
+    parser.add_argument('--fixed-staging', action='store_true',
+                        help='with --direct-handoff: use fixed scratch staging, no bootquery-alloc')
     mode.add_argument('--apitest-init', action='store_true')
     mode.add_argument('--apitest-state', action='store_true')
     mode.add_argument('--apitest-send', metavar='TEXT')
@@ -748,7 +760,7 @@ def main():
         elif args.ram_push:
             loader.ram_push(args.ram_push, skip_prep=args.skip_prep, settle_s=args.settle)
         elif args.direct_handoff:
-            loader.direct_handoff(args.direct_handoff)
+            loader.direct_handoff(args.direct_handoff, fixed=args.fixed_staging)
         elif args.set_mailbox:
             loader.set_mailbox(args.set_mailbox[0], args.set_mailbox[1])
         elif args.hijack_test:
