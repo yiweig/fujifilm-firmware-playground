@@ -450,7 +450,32 @@ class Loader:
         if self.dev.write(EP_OUT, data, timeout=TIMEOUT_MS) != len(data):
             raise SystemExit('payload bulk OUT stalled')
 
-    def ram_push(self, payload_path: str):
+    STATE_BLOCK = 0x40FD0D80  # loader state +0x30..; callback word at +0x40 (block +0x10)
+    EXPECTED_CALLBACK = 0x405DA53C
+
+    def skip_prep(self):
+        """Zero the optional state-6 preparation callback (mode-0x88
+        park). Its 20 s wait can abort the receiver task and hang the
+        handoff (observed live twice); NULL is a designed configuration
+        (FUN_401e1f40 checks). Identity-checked against the known
+        callback so an unexpected state layout aborts instead."""
+        block = bytearray(self.read_mem(self.STATE_BLOCK, 32))
+        current = struct.unpack_from('<I', block, 0x10)[0]
+        print(f'preparation callback currently 0x{current:08x}')
+        if current != self.EXPECTED_CALLBACK:
+            raise SystemExit('unexpected callback pointer; abort (state layout changed?)')
+        struct.pack_into('<I', block, 0x10, 0)
+        payload = struct.pack('<II', 32, self.STATE_BLOCK)
+        if self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F5, payload, timeout=TIMEOUT_MS) != 8:
+            raise SystemExit('state-block setup: short control write')
+        if self.dev.write(EP_OUT, bytes(block), timeout=TIMEOUT_MS) != 32:
+            raise SystemExit('state-block write: short bulk OUT')
+        check = struct.unpack_from('<I', self.read_mem(self.STATE_BLOCK, 32), 0x10)[0]
+        if check != 0:
+            raise SystemExit('callback did not clear; abort')
+        print('preparation callback cleared (park skipped for this boot)')
+
+    def ram_push(self, payload_path: str, skip_prep: bool = False):
         """P2 of analysis/ram-push-sd-boot-plan.md: download a payload
         into the bootquery buffer, verify it by read-back, then issue
         the 0x04f7 upload/run handoff (dest 0x40000000). The handoff
@@ -459,6 +484,8 @@ class Loader:
         size = len(payload)
         want = hashlib.sha256(payload).hexdigest()
         print(f'payload {payload_path}: {size} bytes sha256 {want}')
+        if skip_prep:
+            self.skip_prep()
         base = self.bootquery_alloc(size)
         if base == 0:
             raise SystemExit('bootquery allocation failed (address 0); abort')
@@ -605,6 +632,8 @@ def main():
     mode.add_argument('--stage-bootinfo', action='store_true')
     mode.add_argument('--ram-push', metavar='PAYLOAD')
     mode.add_argument('--set-mailbox', nargs=2, metavar=('NAME', 'EXT'))
+    parser.add_argument('--skip-prep', action='store_true',
+                        help='with --ram-push: zero the mode-0x88 preparation callback first')
     mode.add_argument('--apitest-init', action='store_true')
     mode.add_argument('--apitest-state', action='store_true')
     mode.add_argument('--apitest-send', metavar='TEXT')
@@ -634,7 +663,7 @@ def main():
         elif args.stage_bootinfo:
             loader.stage_bootinfo()
         elif args.ram_push:
-            loader.ram_push(args.ram_push)
+            loader.ram_push(args.ram_push, skip_prep=args.skip_prep)
         elif args.set_mailbox:
             loader.set_mailbox(args.set_mailbox[0], args.set_mailbox[1])
         elif args.hijack_test:
