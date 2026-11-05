@@ -165,7 +165,7 @@ def main():
         t.add(50711, 3, [1])            # CFALayout
         t.add(50713, 3, [2, 2])         # BlackLevelRepeatDim
         t.add(50714, 5, [(6, 1), (5, 1), (5, 1), (5, 1)])  # BlackLevel R,G1,G2,B
-        t.add(50715, 4, [4095])         # WhiteLevel
+        t.add(50717, 4, [4095])         # WhiteLevel (50715/6 are BlackLevelDeltaH/V)
         t.add(50721, 10, [              # ColorMatrix1 (generic, D65)
             (737, 1000), (-256, 1000), (-84, 1000),
             (-395, 1000), (1182, 1000), (213, 1000),

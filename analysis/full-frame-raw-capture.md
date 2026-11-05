@@ -149,9 +149,14 @@ Findings, in order:
 RGGB, BlackLevel 6/5/5/5, WhiteLevel 4095, AsShotNeutral from a
 mid-tone gray-world estimate, generic daylight ColorMatrix1 —
 both color items are placeholders pending chart calibration).
-`/private/tmp/xhalf-exp235.dng` passes ExifTool tag validation and
-renders under macOS Core Image (dark/purple with its generic
-profile). Human validation in Lightroom / Capture One is next,
+`/private/tmp/xhalf-exp235.dng` renders under macOS Core Image
+(dark/purple with its generic profile) but was **rejected by
+Lightroom** ("!" badge): the first converter build mis-numbered the
+black/white-level tags (50715 is BlackLevelDeltaH; WhiteLevel is
+50717, BlackLevel 50714, BlackLevelRepeatDim 50713). Fixed in
+`raw2dng.py`; `/private/tmp/xhalf-exp235-v2.dng` passes ExifTool
+`-validate` with no warnings. Human validation in Lightroom /
+Capture One is next,
 followed by: orientation determination, white-balance/color
 calibration against the paired companion JPEG, and if needed an
 exposure-index sweep to characterize the re-metering behavior.
