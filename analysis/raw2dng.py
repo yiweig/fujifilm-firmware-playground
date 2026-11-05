@@ -121,7 +121,7 @@ def rat(x, scale=10000):
 def main():
     args = sys.argv[1:]
     size = None
-    baseline_ev = 0.0
+    baseline_ev = -1.0  # accepted default from Lightroom validation; --baseline-ev 0 disables
     while args[:1] in (['--size'], ['--baseline-ev']):
         if args[0] == '--size':
             ws, hs = args[1].lower().split('x')

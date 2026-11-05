@@ -168,9 +168,17 @@ highlights (bright sources) remain clipped, as in any raw file.
 Lightroom** ("!" badge): the first converter build mis-numbered the
 black/white-level tags (50715 is BlackLevelDeltaH; WhiteLevel is
 50717, BlackLevel 50714, BlackLevelRepeatDim 50713). Fixed in
-`raw2dng.py`; `/private/tmp/xhalf-exp235-v2.dng` passes ExifTool
-`-validate` with no warnings. Human validation in Lightroom /
-Capture One is next,
-followed by: orientation determination, white-balance/color
-calibration against the paired companion JPEG, and if needed an
-exposure-index sweep to characterize the re-metering behavior.
+`raw2dng.py`; v2 passes ExifTool `-validate` clean, v3 added
+Orientation 8, and **v4 (with `--baseline-ev -1.0`, now the
+converter default) is validated in Lightroom**: opens as a raw,
+correctly oriented, WB neutral (the earlier purple cast is gone),
+default exposure close (still slightly hot — revisit later).
+
+Color calibration status: the 640×480 companion JPEG written by the
+snap is **not spatially the same frame** as the RAW dump
+(log-luminance correlation ≈ 0 under all 8 rotation/flip mappings),
+so it cannot be used for per-pixel WB/color fitting. The gray-world
+AsShotNeutral in the converter is what Lightroom validated. A
+proper calibration needs a controlled neutral target (white/gray
+card filling the frame) captured in a future session; until then
+the generic ColorMatrix1 stands.
