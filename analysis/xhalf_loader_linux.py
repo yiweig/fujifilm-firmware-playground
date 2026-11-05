@@ -475,7 +475,7 @@ class Loader:
             raise SystemExit('callback did not clear; abort')
         print('preparation callback cleared (park skipped for this boot)')
 
-    def ram_push(self, payload_path: str, skip_prep: bool = False):
+    def ram_push(self, payload_path: str, skip_prep: bool = False, settle_s: int = 0):
         """P2 of analysis/ram-push-sd-boot-plan.md: download a payload
         into the bootquery buffer, verify it by read-back, then issue
         the 0x04f7 upload/run handoff (dest 0x40000000). The handoff
@@ -503,7 +503,13 @@ class Loader:
         print(f'read-back sha256 {got}')
         if got != want:
             raise SystemExit('read-back mismatch; aborting before 0x04f7')
-        print('read-back verified. Sending 0x04f7 upload/run NOW '
+        print('read-back verified.')
+        if settle_s:
+            import time
+            print(f'settling {settle_s}s before run...')
+            time.sleep(settle_s)
+            print(f'pre-run bootquery: {self.bootquery().hex()}')
+        print('Sending 0x04f7 upload/run NOW '
               '(device will leave USB as the environment is replaced)...')
         try:
             sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F7,
@@ -634,6 +640,8 @@ def main():
     mode.add_argument('--set-mailbox', nargs=2, metavar=('NAME', 'EXT'))
     parser.add_argument('--skip-prep', action='store_true',
                         help='with --ram-push: zero the mode-0x88 preparation callback first')
+    parser.add_argument('--settle', type=int, default=0, metavar='SEC',
+                        help='with --ram-push: idle wait + bootquery between verify and run')
     mode.add_argument('--apitest-init', action='store_true')
     mode.add_argument('--apitest-state', action='store_true')
     mode.add_argument('--apitest-send', metavar='TEXT')
@@ -663,7 +671,7 @@ def main():
         elif args.stage_bootinfo:
             loader.stage_bootinfo()
         elif args.ram_push:
-            loader.ram_push(args.ram_push, skip_prep=args.skip_prep)
+            loader.ram_push(args.ram_push, skip_prep=args.skip_prep, settle_s=args.settle)
         elif args.set_mailbox:
             loader.set_mailbox(args.set_mailbox[0], args.set_mailbox[1])
         elif args.hijack_test:
