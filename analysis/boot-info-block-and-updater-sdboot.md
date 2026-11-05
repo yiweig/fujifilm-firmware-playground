@@ -111,3 +111,31 @@ image +0x200 entry stamps gate (main 0x12345678 / updater 0x88888888)
 
 Still excluded, unchanged: testing fallback by damaging Firmware1,
 any internal-storage write, opening the body / UART.
+
+## Addendum (same day): boot-status layout and RawCBoot source
+
+Decompilation:
+[output/rawcboot-getter-decomp.txt](output/rawcboot-getter-decomp.txt).
+
+- The boot-status halfword is at **`0x10004054`** (base `0x10004000`
+  confirmed from literal pools). Reader `0x4006b194` returns it;
+  writer `0x4006b1a4(value, mask)` does a masked halfword write.
+  From the loader's calls, the layout is: **bit 1** = Firmware2
+  selected (value `0x80` vs `0x82` written with mask `0x82`),
+  **bits 4–6** = selected image class (rawC index encoded `<<4`,
+  mask `0x70`), **bit 7** = set in both variants (a "selection
+  valid/done" flag, set by the loader after a verified load).
+- The RawCBoot getter (`0x4001c78c`, source file `disk_cmd_rawc.c`)
+  reads a 4 KiB block through the storage-interface vtable
+  (`0x4001a874(1)`, the same abstraction used for installed-image
+  reads), trying a primary offset (0) and a backup offset derived
+  from a map query, validates the `RawCBoot` magic and a 4 KiB
+  word-sum (`0x4006b130`), then indexes six 672-byte records at
+  `+0x40` (record name at `+0`, a flag word at `+0x64`; `:NO_BOOT`
+  is the abort record). So boot policy is a small redundant
+  configuration block on the storage device — its exact physical
+  offsets come free with the storage dump in step 2 above.
+- The SPBoot SRAM page (`0x3f00c000`) is a sparse register-init
+  record set (4 KiB, mostly zero); without the vendor record format
+  it enumerates hardware setup, not the load plan. Deprioritized
+  relative to the live boot-info read (step 1).
