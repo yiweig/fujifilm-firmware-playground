@@ -103,21 +103,55 @@ sensor's exposure/gain tables (snap sensor mode is 46 per the console
 identification), so the table lookups must be read live before picking
 values.
 
-## Next live session (designed, not yet run)
+## Follow-up sessions (run): `aeset cap` controls the capture
 
-One loader entry, console client, in order:
+The designed session ran the same evening, plus one more entry.
+Findings, in order:
 
-1. `aeset` — record current PV/Cap exp/agc indices and limits.
-2. `aeset explist 46` and `aeset agclist 46` — index ranges for the
-   snap sensor mode; `aeset exp <idx> 46` spot lookups to convert a
-   candidate index to an exposure time.
-3. `aeset cap <low exp> <low agc>` — short exposure, low gain.
-4. `rcaraw 19 D: x` — capture; expect a new `W` (it overwrites).
-5. Exit, inspect the card offline as before.
+1. **`aeset` info (live):** sensor modes are printed in hex — preview
+   mode `0x32`, snap mode `0x46` = decimal **70** (the handler parses
+   decimal input, so `aeset explist 70` is correct; `46` silently
+   queries a different mode). Snap exposure index range 64–272, gain
+   index range 24–144; the AE default was exp 80 / agc 24. Table
+   lookups (`aeset exp <idx> 70`): idx 64 → VCcount 39999, idx 80 →
+   19999, idx 159 → 652, idx 272 → 4 — higher index = shorter
+   exposure, so the default sat near the long-exposure end, which
+   explains the blown first capture without invoking any metering
+   mystery.
+2. **`aeset cap 210 60` + `rcaraw 19 D: x`:** accepted ("Snap Test
+   mode En=1", readback Exp=210/AGC=60). Result: saturation
+   99.96% → **25.1%**, median 1391, channel means R/G/B =
+   1972/2264/1212. A demosaiced render is a recognizable room scene.
+   `aeset cap` TestMode indices **do** govern the calibration
+   capture. (`/private/tmp/xhalf-snap-exp210.bin`, SHA-256 `41b44009…`)
+3. **`aeset cap 235 60` + capture:** barely changed (saturation
+   23.5%, means ×0.95 vs exp 210) despite a nominal ~3× shorter
+   exposure — the calibration capture evidently re-meters/normalizes
+   around the indices (both runs report `AWB CapG: 869–871`), so
+   index changes near an already-sane exposure mostly cancel out.
+   The clipped 23% is spatially concentrated in the central bright
+   region (lit wall/lamps) of this high-dynamic-range room scene.
+   (`/private/tmp/xhalf-snap-exp235.bin`, SHA-256 `7707f8c8…`)
+4. **Dark frame** at the same settings, lens covered (`AWB CapG:0`
+   confirms darkness): per-channel means R 6.4 / G 5.0 / B 5.1
+   (12-bit), median 0, σ ≈ 10, spatially uniform within ~1 count —
+   **black level ≈ 5**, white level 4095, for the DNG converter.
+   Only 66 hot pixels above 500 in 17.7 M.
+   (`/private/tmp/xhalf-snap-dark235.bin`, SHA-256 `489b44cf…`)
+5. **In-shell file ops work:** `ren W W235` renamed the scene capture
+   on-card mid-session (verified via `dir`, current path `D:`), and
+   the APITEST bridge now survives across console-client processes
+   (`--continue`), so multiple captures per boot are practical.
 
-Success criterion: per-channel means well below 4095 with scene
-structure present. A too-dark frame is also a pass for control
-purposes (it proves the indices govern the calibration capture) and
-brackets the usable range. Fallback if TestMode indices are ignored
-by the calibration item: reduce light physically (dim scene) — the
-preview path proves the sensor/AE side is healthy.
+## DNG conversion
+
+`analysis/raw2dng.py` converts a dump to DNG (true 12-bit samples,
+RGGB, BlackLevel 6/5/5/5, WhiteLevel 4095, AsShotNeutral from a
+mid-tone gray-world estimate, generic daylight ColorMatrix1 —
+both color items are placeholders pending chart calibration).
+`/private/tmp/xhalf-exp235.dng` passes ExifTool tag validation and
+renders under macOS Core Image (dark/purple with its generic
+profile). Human validation in Lightroom / Capture One is next,
+followed by: orientation determination, white-balance/color
+calibration against the paired companion JPEG, and if needed an
+exposure-index sweep to characterize the re-metering behavior.
