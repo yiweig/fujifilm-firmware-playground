@@ -146,7 +146,7 @@ class Loader:
     LOW_STAGE = 0x41121000
 
     def _ctrl(self):
-        return bytearray(self.read_mem(self.COUNTER_ADDR, 32))
+        return bytearray(self.read_mem(self.COUNTER_ADDR, 64))
 
     def _set_cmd(self, cmd):
         block = self._ctrl()
@@ -533,10 +533,49 @@ class Loader:
     TRAMP4_SHA256 = 'ca23a7057d3001ea2f30aac5d1bcf464cb9b9d59d0b9ded50ba2f37728995644'
     LOADER_STATE = 0x40FD0D50
 
+    # Trampoline v5: v4 with call target taken from control +0x20.
+    # Emulator-qualified: scripts/ReproduceTrampoline5.java (PASS).
+    TRAMP5_HEX = ('0f002de9a8009fe5001090e5011081e2001080e5041090e5000051e3'
+                  '2100001a081090e5010051e30200000a020051e30c00000a1b0000ea'
+                  '0110a0e3041080e50c1090e5102090e5143090e504c091e404c082e4'
+                  '043053e2fbffff1a0210a0e3041080e50f0000ea0110a0e3041080e5'
+                  '101090e5142090e5183090e51cc090e508d04de200c08de520c090e5'
+                  '0c0090e53cff2fe108d08de214009fe50310a0e3041080e5ffffffea'
+                  '0f00bde804c09fe51cff2fe10001104180121e40')
+    TRAMP5_SHA256 = 'b7fd40e7c63ee30a4f907d96990950c5df3655b55c517054724f553456c57b5d'
+    HANDOFF_HELPER = 0x401EB1EC
+    PARK_FUNCTION = 0x4015BF04
+
+    def _trampoline_call(self, target, a0, a1, a2, a3, stack_arg):
+        ctrl = self._ctrl()
+        struct.pack_into('<I', ctrl, 4, 0)          # DONE
+        struct.pack_into('<I', ctrl, 8, 2)          # CMD = call
+        struct.pack_into('<I', ctrl, 0xC, a0)
+        struct.pack_into('<I', ctrl, 0x10, a1)
+        struct.pack_into('<I', ctrl, 0x14, a2)
+        struct.pack_into('<I', ctrl, 0x18, a3)
+        struct.pack_into('<I', ctrl, 0x1C, stack_arg)
+        struct.pack_into('<I', ctrl, 0x20, target)
+        self.write_mem(self.COUNTER_ADDR, bytes(ctrl))
+        try:
+            self.bootquery()
+        except Exception as exc:
+            print(f'call trigger ended with {type(exc).__name__} (may still be running)')
+
+    def _wait_call_done(self, timeout_s=45):
+        import time
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            done = struct.unpack_from('<I', self._ctrl(), 4)[0]
+            if done == 3:
+                return True
+            time.sleep(1)
+        return False
+
     FIXED_STAGE = 0x41130000
     FIXED_WORKSPACE = 0x411E0000
 
-    def direct_handoff(self, payload_path: str, fixed: bool = False):
+    def direct_handoff(self, payload_path: str, fixed: bool = False, park_first: bool = False):
         """Bypass state 6: download payload, verify, then invoke the
         handoff helper FUN_401eb1ec directly via trampoline v4.
         See analysis/state6-hang-analysis.md. With fixed=True, no
@@ -563,9 +602,9 @@ class Loader:
         # desync this receiver and kill later control transfers (seen
         # live). With CMD=0 the installed trampoline only forwards, so
         # an abort anywhere below still leaves a safe state.
-        tramp = bytes.fromhex(self.TRAMP4_HEX)
-        if len(tramp) != 192 or hashlib.sha256(tramp).hexdigest() != self.TRAMP4_SHA256:
-            raise SystemExit('embedded trampoline v4 bytes failed self-check; abort')
+        tramp = bytes.fromhex(self.TRAMP5_HEX)
+        if len(tramp) != 188 or hashlib.sha256(tramp).hexdigest() != self.TRAMP5_SHA256:
+            raise SystemExit('embedded trampoline v5 bytes failed self-check; abort')
         self.write_mem(self.TRAMP_ADDR, tramp)
         self.write_mem(self.COUNTER_ADDR, bytes(32))
         if self.read_mem(self.TRAMP_ADDR, 32) != tramp[:32]:
@@ -580,7 +619,13 @@ class Loader:
             data = bytearray(self.read_mem(block, 32))
             struct.pack_into('<I', data, off, self.TRAMP_ADDR)
             self._write_block32(block, bytes(data))
-        print('trampoline v4 installed (idle, CMD=0)')
+        print('trampoline v5 installed (idle, CMD=0)')
+        if park_first:
+            print('parking camera via FUN_4015bf04 (mode 0x88)...')
+            self._trampoline_call(self.PARK_FUNCTION, 0, 0, 0, 0, 0)
+            if not self._wait_call_done(45):
+                raise SystemExit('park call did not complete in 45 s (DONE!=3); aborting before handoff')
+            print('park complete (DONE=3)')
         chunk = 0x8000
         for off in range(0, size, chunk):
             part = payload[off:off + chunk]
@@ -592,21 +637,9 @@ class Loader:
         print(f'read-back sha256 {got}')
         if got != want:
             raise SystemExit('read-back mismatch; aborting before handoff')
-        ctrl = bytearray(self._ctrl())
-        struct.pack_into('<I', ctrl, 4, 0)            # DONE
-        struct.pack_into('<I', ctrl, 8, 2)            # CMD = call
-        struct.pack_into('<I', ctrl, 0xC, base)       # arg0 payload
-        struct.pack_into('<I', ctrl, 0x10, workspace)  # arg1 workspace
-        struct.pack_into('<I', ctrl, 0x14, size)      # arg2 size
-        struct.pack_into('<I', ctrl, 0x18, 0x40000000)  # arg3 dest
-        struct.pack_into('<I', ctrl, 0x1C, 2)         # stack arg (mode 2)
-        self.write_mem(self.COUNTER_ADDR, bytes(ctrl))
-        print(f'armed: helper(0x{base:08x}, 0x{workspace:08x}, 0x{size:x}, 0x40000000, 2). Triggering...')
-        try:
-            self.bootquery()
-            print('trigger bootquery returned (helper may have returned or not fired)')
-        except Exception as exc:
-            print(f'trigger ended with {type(exc).__name__} (expected if handoff started)')
+        print(f'calling helper(0x{base:08x}, 0x{workspace:08x}, 0x{size:x}, 0x40000000, 2) via trampoline...')
+        self._trampoline_call(self.HANDOFF_HELPER, base, workspace, size, 0x40000000, 2)
+        print('helper call triggered (device should drop off USB if handoff started)')
 
     def hijack_test(self):
         tramp = b''.join(struct.pack('<I', w) for w in self.TRAMP_WORDS)
@@ -733,6 +766,8 @@ def main():
                         help='with --ram-push: idle wait + bootquery between verify and run')
     parser.add_argument('--fixed-staging', action='store_true',
                         help='with --direct-handoff: use fixed scratch staging, no bootquery-alloc')
+    parser.add_argument('--park-first', action='store_true',
+                        help='with --direct-handoff: park to mode 0x88 via trampoline call first')
     mode.add_argument('--apitest-init', action='store_true')
     mode.add_argument('--apitest-state', action='store_true')
     mode.add_argument('--apitest-send', metavar='TEXT')
@@ -764,7 +799,8 @@ def main():
         elif args.ram_push:
             loader.ram_push(args.ram_push, skip_prep=args.skip_prep, settle_s=args.settle)
         elif args.direct_handoff:
-            loader.direct_handoff(args.direct_handoff, fixed=args.fixed_staging)
+            loader.direct_handoff(args.direct_handoff, fixed=args.fixed_staging,
+                                  park_first=args.park_first)
         elif args.set_mailbox:
             loader.set_mailbox(args.set_mailbox[0], args.set_mailbox[1])
         elif args.hijack_test:
