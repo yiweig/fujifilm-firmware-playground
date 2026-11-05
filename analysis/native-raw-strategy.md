@@ -82,6 +82,12 @@ that is an acceptable final answer.
    if available, BaselineExposure fine-tune (currently −1 EV,
    slightly hot).
 
+> **Sequencing update (2026-11-05):** the user has reprioritized —
+> RAM-pushed firmware / SD dual boot first, then a confirmed recovery
+> path. That plan now lives in
+> [ram-push-sd-boot-plan.md](ram-push-sd-boot-plan.md) and takes
+> precedence; the Level-2 lane below is parked, not cancelled.
+
 ## Recommended sequence
 
 - **Phase A (offline):** steps 5, 2, 7-design. No camera.
