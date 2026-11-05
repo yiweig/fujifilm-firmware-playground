@@ -1,0 +1,74 @@
+PROGRAM firmware-main.bin
+
+FUNCTION 401846a0
+
+undefined8 FUN_401846a0(uint param_1,int param_2,undefined4 param_3,int param_4)
+
+{
+  uint uVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  undefined4 extraout_r1;
+  undefined4 extraout_r2;
+  undefined4 unaff_r4;
+  undefined4 unaff_r5;
+  undefined4 unaff_lr;
+  undefined4 uVar5;
+  undefined4 uVar6;
+  
+  iVar4 = FUN_400cbf18(1);
+  FUN_4006f4bc();
+  if (param_4 == 0) {
+    (**(code **)(iVar4 + 0x2c))(iVar4,param_1,param_2,param_3);
+  }
+  else {
+    uVar1 = 1 << (*(uint *)(iVar4 + 0x8c) & 0xff);
+    (**(code **)(iVar4 + 0x38))(iVar4,param_1 / uVar1,((uVar1 + param_2) - 1) / uVar1,param_3);
+  }
+  FUN_4000b608(0x8000000,0);
+  iVar3 = *piRam4006f568;
+  iVar4 = iVar3;
+  uVar5 = extraout_r1;
+  uVar6 = extraout_r2;
+  iVar2 = FUN_4005945c();
+  if (iVar2 != 0) {
+    iVar4 = iVar2;
+    FUN_400070d8(uRam4002dbdc,0x99,uRam4002dbe0,iVar3,iVar2,uVar5,uVar6,unaff_r4,unaff_r5,unaff_lr);
+    FUN_40007148(0);
+  }
+  return CONCAT44(iVar4,iVar2);
+}
+
+
+
+FUNCTION 400cbf18
+
+int FUN_400cbf18(int param_1)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  
+  iVar1 = iRam400cbf8c;
+  if (param_1 == 1) {
+    return iRam400cbf8c;
+  }
+  if (param_1 == 0) {
+    return iRam400cbf98;
+  }
+  if (param_1 == 7) {
+    return iRam400cbf90;
+  }
+  if (param_1 == 99) {
+    return iRam400cbf94;
+  }
+  if (*(int *)(iRam400cbf8c + 0x228) == 0) {
+    uVar2 = FUN_40020e28(0x200);
+    *(undefined4 *)(iVar1 + 0x228) = uVar2;
+    FUN_4000cdf0(uVar2,0,0x200);
+  }
+  return *(int *)(iVar1 + 0x228);
+}
+
+
