@@ -80,15 +80,12 @@ our boot (DRAM parameters already in SRAM, gate stamped by its
 card). Predict: reaches its USB/service continuation without any
 storage write. Reuse the `InspectUpdater*.java` emulator family.
 
-**P2 — Live RAM-push of the stock updater (explicit user go-ahead
-required; replaces the running environment).**
-Success = the updater visibly runs (USB re-enumeration and/or its
-service behavior; *no* `firmware.brn` on the card, so its update
-branch cannot fire). Exit = power cycle, then the normal
-boot/shoot/playback sanity check. Worst case is a wedge and a
-battery pull; nothing persistent is written by this flow unless a
-`.brn` file is present or programming commands are sent — neither
-will be.
+**P2 — Live RAM-push of the stock updater. DONE 2026-11-05**
+([ram-push-live.md](ram-push-live.md)): updater booted from RAM
+and reached its USB service personality; recovery by battery pull
+(updater does not service the power switch in that state); normal
+boot verified afterwards. Two host-side client bugs (size-field
+order, stale allowlists) were wedged/aborted safely along the way.
 
 **P3 — SD dual boot of the stock main image.**
 Qualify the updater's file-boot format and command surface offline
