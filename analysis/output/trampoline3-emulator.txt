@@ -1,0 +1,6 @@
+run1 bootinfo: DONE=2 staging match=true regs/stack ok=true
+DONE!=0 re-invoke: staging untouched=true counter=2
+run2 gate: DONE=2 staging match=true
+CMD=0: staging untouched=true
+counter total=4
+TRAMPOLINE3 PASS

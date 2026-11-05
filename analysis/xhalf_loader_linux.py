@@ -254,6 +254,70 @@ class Loader:
         text = ''.join(chr(b) if 32 <= b < 127 or b in (10, 13) else '.' for b in data)
         print(text[:2000])
 
+    # Trampoline v3: parameterized copier. Control block at COUNTER_ADDR:
+    # +0 counter, +4 DONE, +8 CMD (nonzero=run), +0xc SRC, +0x10 DST, +0x14 LEN.
+    # Emulator-qualified: scripts/ReproduceTrampoline3.java (TRAMPOLINE3 PASS).
+    TRAMP3_HEX = ('0f002de958009fe5001090e5011081e2001080e5041090e5000051e3'
+                  '0d00001a081090e5000051e30a00000a0110a0e3041080e50c1090e5'
+                  '102090e5143090e504c091e404c082e4043053e2fbffff1a0210a0e3'
+                  '041080e50f00bde804c09fe51cff2fe10001104180121e40')
+    BOOTINFO_STAGE = 0x41122000
+    GATE_STAGE = 0x41123000
+
+    def _set_stage(self, src, dst, length):
+        if length <= 0 or length % 4:
+            raise SystemExit('stage length must be a positive multiple of 4')
+        block = self._ctrl()
+        struct.pack_into('<I', block, 4, 0)        # DONE = 0
+        struct.pack_into('<I', block, 8, 1)        # CMD = run
+        struct.pack_into('<I', block, 0xC, src)    # SRC
+        struct.pack_into('<I', block, 0x10, dst)   # DST
+        struct.pack_into('<I', block, 0x14, length)  # LEN
+        self.write_mem(self.COUNTER_ADDR, bytes(block))
+
+    def stage_bootinfo(self):
+        """Install trampoline v3; stage boot-info (0x10004000) and gate
+        (0x10001000) pages to DRAM, then read them back via the loader.
+        MMIO sources: if a copy faults, DONE never reaches 2 and the
+        camera may need a battery pull (same contract as the low copy)."""
+        self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP3_HEX))
+        self.write_mem(self.COUNTER_ADDR, bytes(32))
+        if self.read_mem(self.TRAMP_ADDR, 32) != bytes.fromhex(self.TRAMP3_HEX)[:32]:
+            raise SystemExit('trampoline read-back mismatch; abort')
+        originals = []
+        for block, off in self.SLOT_BLOCKS:
+            data = self.read_mem(block, 32)
+            if struct.unpack_from('<I', data, off)[0] != self.HANDLER:
+                raise SystemExit('slot does not hold handler; abort')
+            originals.append(data)
+        try:
+            for (block, off), _ in zip(self.SLOT_BLOCKS, originals):
+                data = bytearray(self.read_mem(block, 32))
+                struct.pack_into('<I', data, off, self.TRAMP_ADDR)
+                self._write_block32(block, bytes(data))
+            print('trampoline v3 installed')
+            stages = [
+                (0x10004000, self.BOOTINFO_STAGE, 0x100, 'bootinfo-staged.bin'),
+                (0x10001000, self.GATE_STAGE, 0x304, 'gate-staged.bin'),
+            ]
+            for src, dst, length, name in stages:
+                self._set_stage(src, dst, length)
+                self.bootquery()
+                if not self._wait_done():
+                    raise SystemExit(
+                        f'stage 0x{src:08x} did not complete (DONE!=2); '
+                        'previously saved stages are safe; battery pull may be needed')
+                data = self.read_mem(dst, length)
+                Path(name).write_bytes(data)
+                print(f'staged 0x{src:08x}..+0x{length:x} -> {name}: {data[:32].hex()}')
+        finally:
+            try:
+                for (block, _), orig in zip(self.SLOT_BLOCKS, originals):
+                    self._write_block32(block, orig)
+                print('slots restored')
+            except Exception as exc:
+                print(f'WARNING: slot restore failed: {exc}')
+
     def stage_copy(self):
         """Install trampoline v2; CMD=1 stages SRAM, CMD=2 stages low 256B."""
         self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP2_HEX))
@@ -408,6 +472,7 @@ def main():
     mode.add_argument('--write-test', nargs=2, metavar=('ADDR', 'HOLD_S'))
     mode.add_argument('--hijack-test', action='store_true')
     mode.add_argument('--stage-copy', action='store_true')
+    mode.add_argument('--stage-bootinfo', action='store_true')
     mode.add_argument('--apitest-init', action='store_true')
     mode.add_argument('--apitest-state', action='store_true')
     mode.add_argument('--apitest-send', metavar='TEXT')
@@ -434,6 +499,8 @@ def main():
             loader.apitest_output()
         elif args.stage_copy:
             loader.stage_copy()
+        elif args.stage_bootinfo:
+            loader.stage_bootinfo()
         elif args.hijack_test:
             loader.hijack_test()
         elif args.write_test:
