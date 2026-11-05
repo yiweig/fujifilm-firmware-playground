@@ -543,22 +543,15 @@ class Loader:
         base = self.bootquery_alloc(size)
         if base == 0:
             raise SystemExit('bootquery allocation failed (address 0); abort')
-        workspace = struct.unpack('<I', self.read_mem(self.LOADER_STATE + 0x20, 4))[0]
+        # NOTE: tiny (4-byte) bulk reads stall this receiver; read a block.
+        workspace = struct.unpack_from('<I', self.read_mem(self.LOADER_STATE, 64), 0x20)[0]
         print(f'payload buffer 0x{base:08x}, handoff workspace 0x{workspace:08x}')
         if not (0x40000000 <= workspace < 0x60000000):
             raise SystemExit('implausible workspace pointer; abort')
-        chunk = 0x8000
-        for off in range(0, size, chunk):
-            part = payload[off:off + chunk]
-            self._write_payload(base + off, part, base, size)
-        print(f'downloaded 0x{size:x} bytes')
-        tmp = Path('direct-handoff-readback.bin')
-        self.read_chunked(base, size, str(tmp), 0x10000)
-        got = hashlib.sha256(tmp.read_bytes()).hexdigest()
-        print(f'read-back sha256 {got}')
-        if got != want:
-            raise SystemExit('read-back mismatch; aborting before handoff')
-        # Install v4 and arm the call.
+        # Install v4 BEFORE the bulk storm: repeated bulk transfers can
+        # desync this receiver and kill later control transfers (seen
+        # live). With CMD=0 the installed trampoline only forwards, so
+        # an abort anywhere below still leaves a safe state.
         self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP4_HEX))
         self.write_mem(self.COUNTER_ADDR, bytes(32))
         if self.read_mem(self.TRAMP_ADDR, 32) != bytes.fromhex(self.TRAMP4_HEX)[:32]:
@@ -573,7 +566,18 @@ class Loader:
             data = bytearray(self.read_mem(block, 32))
             struct.pack_into('<I', data, off, self.TRAMP_ADDR)
             self._write_block32(block, bytes(data))
-        print('trampoline v4 installed')
+        print('trampoline v4 installed (idle, CMD=0)')
+        chunk = 0x8000
+        for off in range(0, size, chunk):
+            part = payload[off:off + chunk]
+            self._write_payload(base + off, part, base, size)
+        print(f'downloaded 0x{size:x} bytes')
+        tmp = Path('direct-handoff-readback.bin')
+        self.read_chunked(base, size, str(tmp), 0x10000)
+        got = hashlib.sha256(tmp.read_bytes()).hexdigest()
+        print(f'read-back sha256 {got}')
+        if got != want:
+            raise SystemExit('read-back mismatch; aborting before handoff')
         ctrl = bytearray(self._ctrl())
         struct.pack_into('<I', ctrl, 4, 0)            # DONE
         struct.pack_into('<I', ctrl, 8, 2)            # CMD = call
