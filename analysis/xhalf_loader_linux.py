@@ -523,13 +523,14 @@ class Loader:
     # Trampoline v4: v3 copier + CMD=2 direct call of the handoff helper
     # FUN_401eb1ec(arg0..arg3, stack arg4) from control block fields.
     # Emulator-qualified: scripts/ReproduceTrampoline4.java (PASS).
-    TRAMP4_HEX = ('0f002de9a8009fe5001090e5011081e2001080e5041090e52100001a'
-                  '081090e5010051e30200000a020051e30c00000a1b0000ea0110a0e3'
-                  '041080e50c1090e5102090e5143090e504c091e404c082e4043053e2'
-                  'fbffff1a0210a0e3041080e50f0000ea0110a0e3041080e5101090e5'
-                  '142090e5183090e51cc090e508d04de200c08de50c0090e524c09fe5'
-                  '3cff2fe108d08de214009fe50310a0e3041080e5ffffffea0f00bde8'
-                  '08c09fe51cff2fe100011041ecb11e4080121e40')
+    TRAMP4_HEX = ('0f002de9a8009fe5001090e5011081e2001080e5041090e5000051e3'
+                  '2100001a081090e5010051e30200000a020051e30c00000a1b0000ea'
+                  '0110a0e3041080e50c1090e5102090e5143090e504c091e404c082e4'
+                  '043053e2fbffff1a0210a0e3041080e50f0000ea0110a0e3041080e5'
+                  '101090e5142090e5183090e51cc090e508d04de200c08de50c0090e5'
+                  '24c09fe53cff2fe108d08de214009fe50310a0e3041080e5ffffffea'
+                  '0f00bde808c09fe51cff2fe100011041ecb11e4080121e40')
+    TRAMP4_SHA256 = 'ca23a7057d3001ea2f30aac5d1bcf464cb9b9d59d0b9ded50ba2f37728995644'
     LOADER_STATE = 0x40FD0D50
 
     FIXED_STAGE = 0x41130000
@@ -562,9 +563,12 @@ class Loader:
         # desync this receiver and kill later control transfers (seen
         # live). With CMD=0 the installed trampoline only forwards, so
         # an abort anywhere below still leaves a safe state.
-        self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP4_HEX))
+        tramp = bytes.fromhex(self.TRAMP4_HEX)
+        if len(tramp) != 192 or hashlib.sha256(tramp).hexdigest() != self.TRAMP4_SHA256:
+            raise SystemExit('embedded trampoline v4 bytes failed self-check; abort')
+        self.write_mem(self.TRAMP_ADDR, tramp)
         self.write_mem(self.COUNTER_ADDR, bytes(32))
-        if self.read_mem(self.TRAMP_ADDR, 32) != bytes.fromhex(self.TRAMP4_HEX)[:32]:
+        if self.read_mem(self.TRAMP_ADDR, 32) != tramp[:32]:
             raise SystemExit('trampoline read-back mismatch; abort')
         originals = []
         for block, off in self.SLOT_BLOCKS:
