@@ -88,14 +88,26 @@ not needed); normal boot verified afterwards. Two host-side
 client bugs (size-field order, stale allowlists) were
 wedged/aborted safely along the way.
 
-**P3 — SD dual boot of the stock main image.**
-Qualify the updater's file-boot format and command surface offline
-(the auto-checked path is `firmware.brn`, which takes the *update*
-branch — the load-and-boot branch needs a non-`.brn` file invoked
-through the updater's own command/USB surface; that surface is
-traced before use). Then: SD-boot the *stock* main image file.
-Internal Firmware1 is never written; verify stock internal boot
-after a power cycle. This is the dual-boot proof.
+**P3 — SD dual boot of the stock main image (attempted 2026-11-05;
+file boot did not take).** Emulator controls passed for all
+mailbox branches ([output/dual-boot-p3-emulator.txt](output/dual-boot-p3-emulator.txt)),
+the mailbox write was verified live, and the RAM-push completed on
+retry — but the updater settled into service mode instead of
+booting `D:\MAIN.BIN`. Failure point not isolated (drive mapping
+vs file-format expectations vs mailbox persistence across the
+handoff); the first attempt that day also hung >8 min in the
+state-6 preparation wait and the retry did not, for reasons not
+identified. The SD-file path is **parked** with the question open.
+
+**P3′ — Direct RAM-push of the stock main image (current).**
+Skip the updater for the boot step: download `firmware-main.bin`
+itself into the bootquery buffer and `0x04f7` it at `0x40000000`.
+Only proven primitives are used; the payload is the platform's own
+DRAM image, designed for exactly this load address and entry. The
+updater/SD path remains the autonomy option for later (booting
+without a host), but the host-assisted push is the direct vehicle
+for a modified image. Verify normal boot; power cycle restores
+internal stock.
 
 **P4 — SD boot of a modified main image.**
 First modification must be inert-but-observable (e.g. a version

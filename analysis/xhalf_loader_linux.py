@@ -423,8 +423,8 @@ class Loader:
         (0x401e1558: size = wValue | wIndex<<16). Getting this wrong
         wedged the receiver live on 2026-11-05 (it tried to zero
         724 MiB); the 1 MiB cap below is the guard against recurrence."""
-        if not (0 < size <= 0x100000):
-            raise SystemExit('payload size outside 1..1 MiB guard')
+        if not (0 < size <= 0x1000000):
+            raise SystemExit('payload size outside 1..16 MiB guard')
         data = bytes(self.dev.ctrl_transfer(0xC0, 0x70, size & 0xFFFF,
                                             (size >> 16) & 0xFFFF, 5, timeout=TIMEOUT_MS))
         if len(data) != 5:
