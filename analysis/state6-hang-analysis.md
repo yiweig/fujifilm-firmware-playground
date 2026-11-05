@@ -220,7 +220,9 @@ read-back matched, `0x04f7` setup accepted (12 bytes). USB
 never dropped. Control was dead on a bootquery probe past 90 s
 (`USBTimeoutError`), device still enumerated as `2aad:6500`.
 Same signature as the prior three: the stub never jumped, so
-the payload never ran. Main-image state 6 is now **0/4**;
+the payload never ran. The screen stayed on the debug list and
+never changed; normal boot was confirmed after OFF/unplug.
+Main-image state 6 is now **0/4**;
 updater on the same path remains **2/3**. A fourth silent hang
 does not isolate which preparation abort fired. No retry in
 that boot.
