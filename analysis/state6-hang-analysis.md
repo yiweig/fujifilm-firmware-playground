@@ -86,9 +86,15 @@ waiting 6–8 minutes.
 
 ## Status / next
 
-- Live pushes are paused until the direct-helper path is built
-  and emulator-qualified (offline), per the commitment made when
-  the third consecutive hang occurred.
+- **Direct-helper path built (2026-11-05):** trampoline v4
+  (copy + direct-call modes) passed emulator qualification
+  ([output/trampoline4-emulator.txt](output/trampoline4-emulator.txt),
+  `scripts/ReproduceTrampoline4.java`), and the client gained
+  `--direct-handoff` (alloc → download → read-back verify →
+  arm v4 with `(A, B, size, 0x40000000, 2)` → one bootquery
+  trigger). First live use should be the stock updater payload,
+  then the main image. Live pushes remain paused until that run
+  is explicitly approved.
 - The updater-payload path (state 6, park on) remains the only
   proven route and succeeded 2 of 3 times; it is available if a
   one-off need justifies the coin flip, with the 90 s rule.
