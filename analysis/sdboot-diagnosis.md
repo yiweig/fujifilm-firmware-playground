@@ -84,3 +84,18 @@ observed outcome, with no SD or format fault required.
    detect/mount inside the updater, the one remaining branch.
 4. Exit and normal-boot sanity check as usual. No vendor
    commands to the updater; no storage writes.
+
+## Live attempt 1 (2026-11-05, night): push hung; SD not reached
+
+Card verified on the host beforehand: FAT32, `EnableTest.txt`
+present, `MAIN.BIN` SHA-256 `80350bd2…`, no `firmware.brn`
+(also re-verified clean after an unclean card removal; fsck
+exit 0). In one boot: `--set-mailbox MAIN BIN` verified
+(`mailbox now: MAIN.BIN`), then `--ram-push` of the updater:
+download and read-back verified, `0x04f7` accepted. USB never
+dropped; a bootquery probe after 90 s timed out with the
+device still enumerated — the state-6 preparation hang, on the
+updater payload this time. The updater never ran, so the
+mailbox hypothesis remains **untested**. Recovery is the usual
+power cycle, which also clears the mailbox: any retry restarts
+from the mailbox step in a fresh boot.
