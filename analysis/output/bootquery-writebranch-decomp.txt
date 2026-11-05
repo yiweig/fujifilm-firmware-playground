@@ -1,0 +1,102 @@
+PROGRAM firmware-main.bin
+
+FUNCTION 401e1548
+
+void FUN_401e1548(void)
+
+{
+  code *pcVar1;
+  code *pcVar2;
+  int iVar3;
+  undefined4 uVar4;
+  undefined1 *unaff_r4;
+  int unaff_r5;
+  uint uVar5;
+  int unaff_r7;
+  uint unaff_r10;
+  
+  *unaff_r4 = 2;
+  pcVar1 = pcRam401e202c;
+  if (unaff_r5 != 0 || unaff_r10 != 0) {
+    uVar5 = unaff_r10 | unaff_r5 << 0x10;
+    iVar3 = (*pcRam401e202c)(uVar5);
+    pcVar2 = pcRam401e2030;
+    (*pcRam401e2030)(uRam401e2034,uVar5);
+    (*pcRam401e2038)(iVar3,0,uVar5);
+    (*pcVar2)(uRam401e203c,iVar3);
+    uVar4 = (*pcVar1)(0x10000);
+    *(undefined4 *)(unaff_r7 + 0x20) = uVar4;
+    (*pcVar2)(uRam401e2040,uVar4);
+    if ((iVar3 == 0) || (*(int *)(unaff_r7 + 0x20) == 0)) {
+      unaff_r4[1] = 0;
+      unaff_r4[2] = 0;
+      unaff_r4[3] = 0;
+      unaff_r4[4] = 0;
+    }
+    else {
+      unaff_r4[1] = (char)iVar3;
+      unaff_r4[2] = (char)((uint)iVar3 >> 8);
+      unaff_r4[3] = (char)((uint)iVar3 >> 0x10);
+      unaff_r4[4] = (char)((uint)iVar3 >> 0x18);
+    }
+  }
+  (*pcRam401e207c)(0);
+  *puRam401e2000 = 2;
+  return;
+}
+
+
+
+FUNCTION 401e1ce4
+
+void FUN_401e1ce4(void)
+
+{
+  int iVar1;
+  code *pcVar2;
+  undefined4 uVar3;
+  int unaff_r4;
+  
+  pcVar2 = pcRam401e2098;
+  uVar3 = (*pcRam401e2098)();
+  iVar1 = iRam401e2004;
+  *(undefined4 *)(iRam401e2004 + 0x2c) = uVar3;
+  uVar3 = (*pcVar2)(unaff_r4 + 4);
+  *(undefined4 *)(iVar1 + 0x28) = uVar3;
+  (*pcRam401e207c)(3,uVar3,*(undefined4 *)(iVar1 + 0x2c));
+  *pcRam401e2000 = '\x05';
+  if (*pcRam401e2000 == '\x03') {
+    *pcRam401e2000 = '\x02';
+    *(undefined1 *)(iRam401e2004 + 4) = 0;
+  }
+  return;
+}
+
+
+
+FUNCTION 401e1ca8
+
+void FUN_401e1ca8(void)
+
+{
+  int iVar1;
+  code *pcVar2;
+  undefined4 uVar3;
+  int unaff_r4;
+  
+  pcVar2 = pcRam401e2098;
+  uVar3 = (*pcRam401e2098)();
+  iVar1 = iRam401e2004;
+  *(undefined4 *)(iRam401e2004 + 0x2c) = uVar3;
+  uVar3 = (*pcVar2)(unaff_r4 + 4);
+  *(undefined4 *)(iVar1 + 0x28) = uVar3;
+  (*pcRam401e207c)(2,uVar3,*(undefined4 *)(iVar1 + 0x2c));
+  *pcRam401e2000 = '\x04';
+  if (*pcRam401e2000 == '\x03') {
+    *pcRam401e2000 = '\x02';
+    *(undefined1 *)(iRam401e2004 + 4) = 0;
+  }
+  return;
+}
+
+

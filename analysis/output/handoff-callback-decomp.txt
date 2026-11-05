@@ -1,0 +1,35 @@
+PROGRAM firmware-main.bin
+
+FUNCTION 405da53c
+
+void FUN_405da53c(void)
+
+{
+  uint uVar1;
+  int iVar2;
+  undefined4 uVar3;
+  undefined1 auStack_68 [92];
+  undefined4 uStack_c;
+  
+  FUN_40205fc4(0);
+  FUN_405e6fa0();
+  iVar2 = FUN_4015be34(0x88);
+  if (iVar2 != 0) {
+    return;
+  }
+  uVar3 = FUN_4015bbd8();
+  FUN_40004064(uRam4015bf68,uVar3);
+  FUN_40184de4(0,0,0,100);
+  FUN_400410cc(0,uRam4015bf6c);
+  FUN_4018381c(0x88);
+  FUN_40183768(0x88);
+  uStack_c = uRam4015bf70;
+  uVar1 = FUN_4002a308(auStack_68,0x50,uRam4015bf70);
+  if (0x4e < uVar1) {
+    uVar1 = 0x4f;
+  }
+  FUN_4000459c(6,auStack_68,uVar1);
+  return;
+}
+
+
