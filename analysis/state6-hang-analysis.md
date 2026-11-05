@@ -210,3 +210,17 @@ remains in the calibration personality afterwards. **No
 shell-issued park has been found.** The park therefore remains
 available only through state 6's own callback, with its
 observed intermittency.
+
+## Addendum 5 (2026-11-05, night): main-image state-6 push, 0/4
+
+One fresh-boot `--ram-push` of stock `firmware-main.bin`
+(14,910,464 bytes, SHA-256 `80350bd2…`), park left on, no
+`--skip-prep`, no direct handoff. Alloc at `0x45cc2cc0`,
+read-back matched, `0x04f7` setup accepted (12 bytes). USB
+never dropped. Control was dead on a bootquery probe past 90 s
+(`USBTimeoutError`), device still enumerated as `2aad:6500`.
+Same signature as the prior three: the stub never jumped, so
+the payload never ran. Main-image state 6 is now **0/4**;
+updater on the same path remains **2/3**. A fourth silent hang
+does not isolate which preparation abort fired. No retry in
+that boot.
