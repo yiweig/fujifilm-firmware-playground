@@ -40,7 +40,7 @@ WRITE_MAX = 256
 ALLOWED = [
     (0x00000000, 0x00010000, 'low memory / earlier-stage helper area'),
     (0x3F000000, 0x3F010000, 'SRAM'),
-    (0x40000000, 0x44000000, 'main image, runtime RAM, and heap (allocations seen to 0x42e757c0)'),
+    (0x40000000, 0x60000000, 'main image, runtime RAM, and heap (loader arena seen at 0x45cc2cc0)'),
 ]
 MAX_LEN = 0x10000
 
@@ -371,7 +371,10 @@ class Loader:
         if len(data) != 5:
             raise SystemExit(f'bootquery-alloc: expected 5 bytes, got {data.hex()}')
         addr = struct.unpack_from('<I', data, 1)[0]
-        if addr and not (0x40000000 <= addr < 0x44000000):
+        # Live 2026-11-05: the loader heap arena sits at 0x45cc2cc0 on
+        # this boot (write/read pattern-verified over the full span);
+        # DRAM addresses here span 0x40000000..0x60000000.
+        if addr and not (0x40000000 <= addr < 0x60000000):
             raise SystemExit(f'bootquery returned implausible buffer 0x{addr:08x}; abort')
         return addr
 
