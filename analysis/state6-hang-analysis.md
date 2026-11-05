@@ -176,3 +176,37 @@ mode-switch issued from the Cmd task, where the transition
 cannot deadlock against the USB receiver — then direct-trigger
 in the same boot. No live attempts until that is designed and
 its mode-switch command is identified in the shell tables.
+
+## Addendum 4 (2026-11-05, evening): park from USB context is a
+dead end (live result)
+
+Trampoline v5 (call target from control block; emulator PASS,
+`scripts/ReproduceTrampoline5.java`) invoked the clean park
+utility `FUN_4015bf04` from the handler-hijack context. The
+trigger setup was accepted; control then stayed dead for 80+ s
+(park's own worst case is ~50 s of timeouts) and the device
+needed power recovery. **A mode-`0x88` transition cannot be
+driven from the USB receiver task** — it deadlocks against that
+task or aborts it. This retroactively explains part of the
+state-6 flakiness: its preparation callback runs in exactly
+this context, so its success depends on whether the transition
+happens to complete without needing the receiver task.
+
+Remaining park lever: issue a mode switch from the **Cmd shell
+task** (where `rcaraw`'s `0x11` switches demonstrably complete),
+then push. Whether the right switch is a `clbt`-family command
+or a mode change that merely exits calibration state is an
+offline question. Live pushes stay paused until that design
+exists on paper.
+
+Checked: the `clbt` factory command (`0x40522ba8`) has no
+mode/idle subcommand — its subcommands are calibration-data
+operations (`aflockdump afctrl info barcodeset boxsnset entest
+distest boottype usbmode modeltypeset colddata dbgbufget
+dbgbufset adc usbid usb`), several of which write persistent
+data. CDSP shell mode switches exist only as capture side
+effects (`snap`/`rcaraw` to `0x11`/`0x13`), and the camera
+remains in the calibration personality afterwards. **No
+shell-issued park has been found.** The park therefore remains
+available only through state 6's own callback, with its
+observed intermittency.
