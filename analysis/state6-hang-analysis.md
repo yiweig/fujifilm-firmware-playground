@@ -237,6 +237,21 @@ refresh (former Option C) is therefore **closed**. The
 direct-handoff failure is left attributable to the park's
 quiesce — unreachable from every available context — or to
 unisolated helper-context differences.
+
+## Addendum 7 (2026-11-05, night): quiesce traced; trampoline
+replication not credible (offline)
+
+[quiesce-trace.md](quiesce-trace.md): the park is an SP5K
+modeSw task-driven transition (mutex + queue post + sleep
+poll; ready flag at `0x40f80d28+0x34`). The helper already
+does config bytes, cache/MMU preparation, `cpsid i`, and GIC
+disable — but stops no task, core, or DMA master. The gap is
+secondaries executing old text (and armed DMA) while the stub
+overwrites `0x40000000`. A handler-context trampoline cannot
+drive the modeSw machinery (proven live, Addendum 4) and no
+in-firmware core-park primitive exists for it to invoke. The
+trampoline-quiesce line is **closed**; state 6's own sequence
+remains the only path, at its observed odds.
 updater on the same path remains **2/3**. A fourth silent hang
 does not isolate which preparation abort fired. No retry in
 that boot.
