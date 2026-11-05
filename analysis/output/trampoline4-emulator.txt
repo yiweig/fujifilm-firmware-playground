@@ -1,0 +1,6 @@
+CMD=0: stub-called=false regs ok=true counter=1
+CMD=2 call: args=[aaaa0001,bbbb0002,12340,40000000,stack=2] DONE=3 regs ok=true
+DONE!=0 re-invoke: stub untouched=true counter=3
+CMD=1 copy: DONE=2 staging match=true regs ok=true
+counter total=4
+TRAMPOLINE4 PASS

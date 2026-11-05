@@ -520,6 +520,76 @@ class Loader:
             print(f'0x04f7 transfer ended with {type(exc).__name__}: {exc} '
                   '(expected if the handoff already started)')
 
+    # Trampoline v4: v3 copier + CMD=2 direct call of the handoff helper
+    # FUN_401eb1ec(arg0..arg3, stack arg4) from control block fields.
+    # Emulator-qualified: scripts/ReproduceTrampoline4.java (PASS).
+    TRAMP4_HEX = ('0f002de9a8009fe5001090e5011081e2001080e5041090e52100001a'
+                  '081090e5010051e30200000a020051e30c00000a1b0000ea0110a0e3'
+                  '041080e50c1090e5102090e5143090e504c091e404c082e4043053e2'
+                  'fbffff1a0210a0e3041080e50f0000ea0110a0e3041080e5101090e5'
+                  '142090e5183090e51cc090e508d04de200c08de50c0090e524c09fe5'
+                  '3cff2fe108d08de214009fe50310a0e3041080e5ffffffea0f00bde8'
+                  '08c09fe51cff2fe100011041ecb11e4080121e40')
+    LOADER_STATE = 0x40FD0D50
+
+    def direct_handoff(self, payload_path: str):
+        """Bypass state 6: download payload, verify, then invoke the
+        handoff helper FUN_401eb1ec directly via trampoline v4.
+        See analysis/state6-hang-analysis.md."""
+        payload = Path(payload_path).read_bytes()
+        size = len(payload)
+        want = hashlib.sha256(payload).hexdigest()
+        print(f'payload {payload_path}: {size} bytes sha256 {want}')
+        base = self.bootquery_alloc(size)
+        if base == 0:
+            raise SystemExit('bootquery allocation failed (address 0); abort')
+        workspace = struct.unpack('<I', self.read_mem(self.LOADER_STATE + 0x20, 4))[0]
+        print(f'payload buffer 0x{base:08x}, handoff workspace 0x{workspace:08x}')
+        if not (0x40000000 <= workspace < 0x60000000):
+            raise SystemExit('implausible workspace pointer; abort')
+        chunk = 0x8000
+        for off in range(0, size, chunk):
+            part = payload[off:off + chunk]
+            self._write_payload(base + off, part, base, size)
+        print(f'downloaded 0x{size:x} bytes')
+        tmp = Path('direct-handoff-readback.bin')
+        self.read_chunked(base, size, str(tmp), 0x10000)
+        got = hashlib.sha256(tmp.read_bytes()).hexdigest()
+        print(f'read-back sha256 {got}')
+        if got != want:
+            raise SystemExit('read-back mismatch; aborting before handoff')
+        # Install v4 and arm the call.
+        self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP4_HEX))
+        self.write_mem(self.COUNTER_ADDR, bytes(32))
+        if self.read_mem(self.TRAMP_ADDR, 32) != bytes.fromhex(self.TRAMP4_HEX)[:32]:
+            raise SystemExit('trampoline read-back mismatch; abort')
+        originals = []
+        for block, off in self.SLOT_BLOCKS:
+            data = self.read_mem(block, 32)
+            if struct.unpack_from('<I', data, off)[0] != self.HANDLER:
+                raise SystemExit('slot does not hold handler; abort')
+            originals.append(data)
+        for (block, off), _ in zip(self.SLOT_BLOCKS, originals):
+            data = bytearray(self.read_mem(block, 32))
+            struct.pack_into('<I', data, off, self.TRAMP_ADDR)
+            self._write_block32(block, bytes(data))
+        print('trampoline v4 installed')
+        ctrl = bytearray(self._ctrl())
+        struct.pack_into('<I', ctrl, 4, 0)            # DONE
+        struct.pack_into('<I', ctrl, 8, 2)            # CMD = call
+        struct.pack_into('<I', ctrl, 0xC, base)       # arg0 payload
+        struct.pack_into('<I', ctrl, 0x10, workspace)  # arg1 workspace
+        struct.pack_into('<I', ctrl, 0x14, size)      # arg2 size
+        struct.pack_into('<I', ctrl, 0x18, 0x40000000)  # arg3 dest
+        struct.pack_into('<I', ctrl, 0x1C, 2)         # stack arg (mode 2)
+        self.write_mem(self.COUNTER_ADDR, bytes(ctrl))
+        print(f'armed: helper(0x{base:08x}, 0x{workspace:08x}, 0x{size:x}, 0x40000000, 2). Triggering...')
+        try:
+            self.bootquery()
+            print('trigger bootquery returned (helper may have returned or not fired)')
+        except Exception as exc:
+            print(f'trigger ended with {type(exc).__name__} (expected if handoff started)')
+
     def hijack_test(self):
         tramp = b''.join(struct.pack('<I', w) for w in self.TRAMP_WORDS)
         # Stage trampoline + zeroed counter in scratch (normal write path).
@@ -637,6 +707,7 @@ def main():
     mode.add_argument('--stage-copy', action='store_true')
     mode.add_argument('--stage-bootinfo', action='store_true')
     mode.add_argument('--ram-push', metavar='PAYLOAD')
+    mode.add_argument('--direct-handoff', metavar='PAYLOAD')
     mode.add_argument('--set-mailbox', nargs=2, metavar=('NAME', 'EXT'))
     parser.add_argument('--skip-prep', action='store_true',
                         help='with --ram-push: zero the mode-0x88 preparation callback first')
@@ -672,6 +743,8 @@ def main():
             loader.stage_bootinfo()
         elif args.ram_push:
             loader.ram_push(args.ram_push, skip_prep=args.skip_prep, settle_s=args.settle)
+        elif args.direct_handoff:
+            loader.direct_handoff(args.direct_handoff)
         elif args.set_mailbox:
             loader.set_mailbox(args.set_mailbox[0], args.set_mailbox[1])
         elif args.hijack_test:
