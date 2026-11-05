@@ -151,6 +151,7 @@ def main():
         t.add(262, 3, [32803])          # CFA
         t.add(271, 2, 'FUJIFILM\x00')
         t.add(272, 2, 'X-HF1\x00')      # EXIF model string of the X half
+        t.add(274, 3, [8])              # Orientation: stored frame is 90 CW; view 90 CCW
         t.add(273, 4, [strip_off])
         t.add(277, 3, [1])
         t.add(278, 4, [h])
