@@ -63,10 +63,14 @@ qualify syntax in the emulator first (as was done for this capture).
 
 ## Next
 
-1. Still-capture RAW via selector 19 (`snap attr raw=1; snap cap`):
+1. ~~Still-capture RAW via selector 19 (`snap attr raw=1; snap cap`):
    full-frame 4864×3648 class output (console sizing), same
-   pre-qualification discipline; check file name/size/format.
-2. Characterize black level/CFA phase/orientation precisely; pair a
-   same-scene JPEG for white balance and color reference.
+   pre-qualification discipline; check file name/size/format.~~ Done —
+   the capture works but is exposure-blown by the calibration capture
+   profile; see [full-frame-raw-capture.md](full-frame-raw-capture.md).
+2. Re-capture selector 19 under `aeset cap` TestMode exposure indices
+   (see the full-frame report), then characterize
+   black level/CFA phase/orientation precisely; pair a same-scene JPEG
+   for white balance and color reference.
 3. Build the desktop RAW→DNG converter (open format, no RAF writer
    needed) and validate in a standard editor.
