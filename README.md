@@ -217,6 +217,12 @@ UI features can continue offline, but deployment remains gated on recovery.
 
 ## Current research notes
 
+- [`analysis/first-raw-capture.md`](analysis/first-raw-capture.md)
+  — **first RAW file captured**: `rcaraw 17 D: x` via the shell wrote a
+  1,325,184-byte preview frame (file named `D`); decoded as 12-bit
+  left-justified RGGB — block-demosaic render shows a real, recognizable
+  scene. Bare `rcaraw` crashes the handler (garbage argv) — syntax was
+  emulator-qualified after that. Next: full-frame selector 19 + DNG.
 - [`analysis/apitest-shell-live.md`](analysis/apitest-shell-live.md)
   — APITEST bridge activated live: shell task woke, emitted `cmd>` as
   per-char records on EP `0x84`; console stream decoded — sensor is
