@@ -82,10 +82,11 @@ storage write. Reuse the `InspectUpdater*.java` emulator family.
 
 **P2 — Live RAM-push of the stock updater. DONE 2026-11-05**
 ([ram-push-live.md](ram-push-live.md)): updater booted from RAM
-and reached its USB service personality; recovery by battery pull
-(updater does not service the power switch in that state); normal
-boot verified afterwards. Two host-side client bugs (size-field
-order, stale allowlists) were wedged/aborted safely along the way.
+and reached its USB service personality; exit was OFF switch
+and/or USB unplug (delayed response; battery pull prepared but
+not needed); normal boot verified afterwards. Two host-side
+client bugs (size-field order, stale allowlists) were
+wedged/aborted safely along the way.
 
 **P3 — SD dual boot of the stock main image.**
 Qualify the updater's file-boot format and command surface offline

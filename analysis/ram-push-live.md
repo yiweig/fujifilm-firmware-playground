@@ -50,16 +50,23 @@ written.**
   does not drive the display in this state, so the main firmware's
   last framebuffer persists. Screen content is therefore not a
   personality indicator here; USB is.
-- **Exit required a battery pull** — the updater in service mode
-  does not service the power switch (same symptom as a wedged
-  loader, different cause). After the pull: normal boot, camera
-  fully normal (shoot/playback verified by the user).
+- **Exit (corrected after the user's clarification):** the OFF
+  switch did not respond immediately; as the user went to unplug
+  the USB cable the camera shut off — *before* any battery pull.
+  So the battery pull was prepared but **not needed**: the shutdown
+  coincided with the cable unplug (or with a delayed switch
+  response completing at that moment). Whether the updater polls
+  the switch slowly or treats USB disconnect as a shutdown trigger
+  is unresolved; either way, exit from the updater service mode is
+  "OFF switch and/or unplug", with battery pull only as fallback.
+  Afterwards: normal boot, camera fully normal (shoot/playback
+  verified by the user).
 
 ## Conclusions
 
 - **RAM-pushed firmware is proven on this device**, end to end:
   allocation, download, read-back verification, `0x04f7` handoff,
-  environment replacement, and clean recovery by power cycle with
+  environment replacement, and clean recovery by power-off with
   zero persistent writes.
 - The two client wedges were host-side bugs (field order, stale
   allowlists), each diagnosed from the receiver's own code and
