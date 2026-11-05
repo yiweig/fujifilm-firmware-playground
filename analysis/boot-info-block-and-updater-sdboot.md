@@ -100,6 +100,10 @@ image +0x200 entry stamps gate (main 0x12345678 / updater 0x88888888)
    If the updater is resident in storage, a ROM→updater cold path is
    physically plausible; if it is not, the updater can only arrive
    via SD/ISP and the recovery model changes.
+   **Status 2026-11-05: headers + Firmware1 dumped and verified**
+   ([storage-dump-qualification.md](storage-dump-qualification.md));
+   reserved-area heads start with `PHYTABLE` pages, updater
+   residency still open (full C dump pending).
 3. **(Offline)** Decode the SPBoot register script at SRAM
    `0x3f00c000` (record format) — it may enumerate the earlier
    stage's load operations (sources/destinations), i.e. the ROM's

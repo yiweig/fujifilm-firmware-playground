@@ -62,3 +62,53 @@ before the next is issued; a stall costs only the in-flight chunk.
   SRAM/DRAM copies stops the plan.
 - If a read wedges the shell/USB (the known failure mode), recovery
   is the battery pull; nothing persistent has been written.
+
+## Live result (2026-11-05): chain validated, Firmware1 backed up
+
+Executed with `analysis/xhalf_nand_dump_linux.py` (shell `nandpr` into
+staging `0x41130000`, loader read-back in 64 KiB sub-chunks,
+512 KiB per chunk, per-chunk SHA-256 logged). One operational lesson:
+re-running the full APITEST activation in the same boot did not
+produce a prompt within 25 s (bridge was already active); the dump
+script's `--continue` mode (assume live bridge) is the correct
+second-run path, as with the console client.
+
+Results:
+
+1. **`rsvhdr`** printed the driver's header struct: `nrHdr 2`,
+   `nrRsvA/B/C 487/45/261`, `nrFw1 57`, `nrFw2 0`, checksums
+   `38706/14376/16291/0` (`0x9732/0x3828/0x3fa3/0`), `tolblk 2048` —
+   matching the offline DRAM decode field-for-field.
+2. **Header sectors (0–1023, 512 KiB)** dumped; the first 512 bytes
+   are byte-identical to the parsed copy in the DRAM dump
+   (`NAND RSV` + `0xBEEF`). Storage ↔ running-system cross-check
+   passes.
+3. **Firmware1 (sector 407040, 29,122 sectors, 14,910,464 bytes)**
+   dumped. **SHA-256
+   `80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923`
+   — byte-identical to the official package's main DRAM image**
+   (and to the local `firmware-main.bin`). The installed firmware
+   on this unit is pristine, and the backup is cryptographically
+   verified against an independent source.
+4. **Reserved-area heads (first 512 KiB each):** A and C both begin
+   with repeating `PHYTABLE` table pages (the NAND layer's physical
+   tables; payloads, if any, sit behind them — no updater-image
+   blocks matched in the probed ranges). B's head is uniformly
+   `0xFF` (erased).
+
+Artifacts (preserved outside git in `/private/tmp`):
+`xhalf-nand-headers-2026-11-05.bin` (`5f1169c5…`),
+`xhalf-nand-fw1-2026-11-05.bin` (`80350bd2…`),
+`xhalf-nand-rsvA-head-2026-11-05.bin` (`5184e2a5…`),
+`xhalf-nand-rsvB-head-2026-11-05.bin` (`043e238a…`),
+`xhalf-nand-rsvC-head-2026-11-05.bin` (`25c36bc1…`).
+
+Remaining for a complete C3 backup: full Reserved A/C (the A/B
+contents likely mirror package regions we already hold; C is the
+interesting one for updater residency), the post-Firmware1 range
+(blocks 852–2047, mostly package filesystems), and identification
+of what lives behind the `PHYTABLE` pages. The dump tool makes
+these mechanical now (~4 min per 15 MB observed). The SD marker
+was intentionally left in place after this session for near-term
+reuse; normal camera operation is unaffected (debug entry still
+requires the switch/button combination).
