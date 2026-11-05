@@ -122,3 +122,57 @@ both inside the verified 2.4 MiB scratch gap (updater payload
 later). Sequence uses only never-failed patterns in order:
 install trampoline (small writes) → bulk download → bulk
 read-back → one arm write → one trigger.
+
+## Addendum 2 (2026-11-05, evening): root cause of the "transport
+fragility" — a truncated trampoline in the client
+
+The direct-handoff deaths were **not** transport fragility.
+usbmon ground truth (failing run): every transfer completed
+cleanly, including the slot-patch write; the *next* setup was
+simply never answered. Diffing the client's embedded
+`TRAMP4_HEX` against the emulator-qualified binary showed the
+client copy was **188 bytes, missing one instruction word**
+(`cmp r1, #0` at offset `0x18`, dropped when the hex was split
+into string chunks by hand). Every later instruction therefore
+executed 4 bytes early with stale pc-relative offsets: the
+trampoline loaded its "control block" pointer from the helper's
+address literal, incremented a word of the real helper's code on
+each invocation, and branched on garbage — killing the USB task
+on the first setup dispatched through a patched slot. The
+emulator had validated the correct `.bin`; the client's embedded
+copy was never compared. (The identical transcription method had
+produced a correct `TRAMP3_HEX` — verified intact — which is why
+stage sessions never failed.)
+
+Fix: embedded bytes regenerated from the qualified binary,
+verified byte-identical by SHA-256, and the client now refuses
+to write the trampoline unless its embedded copy matches the
+recorded hash (`dec0561`). The alloc/timeout/VM-degradation
+theories from earlier today are all **retracted** — the sequence
+is sound; one boot's earlier 4-byte-read stall remains a minor
+open nit, nothing more.
+
+## Addendum 3 (2026-11-05, evening): direct handoff reaches the
+helper; payload doesn't come up
+
+With the corrected trampoline, `--direct-handoff --fixed-staging`
+ran cleanly end to end: install, download, read-back verified,
+armed, trigger — and the **device dropped off USB at the
+trigger**, i.e. the helper executed its teardown. But the
+updater never re-enumerated (P2 took ~60 s; we waited >4 min)
+and the screen went black (in P2 the stale debug framebuffer
+persisted). So the helper was reached in a state where the
+payload couldn't complete startup. The two state-6 steps the
+direct path deliberately skipped are the suspects, in order:
+
+1. **Mode park (callback).** Unparked tasks/cores of the old
+   firmware are still live when the payload starts; the
+   updater's storage/task init may conflict with them.
+2. **SRAM boot-block refresh (op 10).** Runtime-mutated SRAM
+   boot structures are what the payload's startup parses.
+
+Next design (offline first): park via the APITEST shell — a
+mode-switch issued from the Cmd task, where the transition
+cannot deadlock against the USB receiver — then direct-trigger
+in the same boot. No live attempts until that is designed and
+its mode-switch command is identified in the shell tables.
