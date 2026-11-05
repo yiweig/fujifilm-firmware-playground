@@ -20,13 +20,16 @@ our existing loader client.
    returns A's address in reply bytes 1–4. Zero reply address =
    allocation failure → abort. (Our previous zero-size queries
    skipped this entirely.)
-2. **Parameter download (include it; see SRAM note below)** —
-   `OUT 0xfd`, index `0x04f3`, words `(0, param_len)`: first use
-   copies the parameter block toward `0x3f000200` (capped `0x3e00`)
-   and records the staging pointer for the handoff parameter block.
-   Payload: the package's `DRAMPAR3` block (`FPUPDATE.DAT` offset
-   `0x09e1ca70`, magic verified locally) — exactly what the vendor
-   flow sends.
+2. **Parameter download — deliberately skipped.** The vendor flow
+   sends `0x04f3` with the package `DRAMPAR3` block (locally
+   verified at `FPUPDATE.DAT` offset `0x09e1ca70`) because a mask-ROM
+   ISP boot starts with uninitialized DRAM. Our handoff starts from
+   a fully booted unit whose SRAM already holds *this unit's* DRAM
+   parameters, and state 6's header refresh reconstructs the SRAM
+   boot block from storage as the ROM-side load does. Writing the
+   package's generic parameters over the unit's own would add risk,
+   not remove it. (If P2 ever shows parameter-related instability,
+   this decision gets revisited with the emulator, not improvised.)
 3. **Payload download** — repeated `OUT 0xfd`, index `0x04f5`,
    payload `(length, address)` + bulk OUT data (the branch our
    `write_mem` already uses live), writing the payload image into

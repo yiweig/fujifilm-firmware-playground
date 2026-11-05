@@ -357,6 +357,65 @@ class Loader:
             except Exception as exc:
                 print(f'WARNING: slot restore failed: {exc}')
 
+    def bootquery_alloc(self, size: int) -> int:
+        """Bootquery with a payload size: device allocates the staging
+        buffer and returns its address (0 = allocation failure)."""
+        data = bytes(self.dev.ctrl_transfer(0xC0, 0x70, (size >> 16) & 0xFFFF,
+                                            size & 0xFFFF, 5, timeout=TIMEOUT_MS))
+        if len(data) != 5:
+            raise SystemExit(f'bootquery-alloc: expected 5 bytes, got {data.hex()}')
+        return struct.unpack_from('<I', data, 1)[0]
+
+    def _write_payload(self, addr: int, data: bytes, expect_base: int, expect_size: int):
+        """0x04f5 host-to-memory, restricted to the bootquery buffer."""
+        if not (expect_base <= addr and addr + len(data) <= expect_base + expect_size):
+            raise SystemExit('payload write outside bootquery buffer')
+        if not (1 <= len(data) <= 0x8000):
+            raise SystemExit('payload write must be 1..0x8000 bytes')
+        payload = struct.pack('<II', len(data), addr)
+        sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F5, payload, timeout=TIMEOUT_MS)
+        if sent != len(payload):
+            raise SystemExit(f'payload setup: short control write {sent}')
+        if self.dev.write(EP_OUT, data, timeout=TIMEOUT_MS) != len(data):
+            raise SystemExit('payload bulk OUT stalled')
+
+    def ram_push(self, payload_path: str):
+        """P2 of analysis/ram-push-sd-boot-plan.md: download a payload
+        into the bootquery buffer, verify it by read-back, then issue
+        the 0x04f7 upload/run handoff (dest 0x40000000). The handoff
+        replaces the running environment; no reply is expected."""
+        payload = Path(payload_path).read_bytes()
+        size = len(payload)
+        want = hashlib.sha256(payload).hexdigest()
+        print(f'payload {payload_path}: {size} bytes sha256 {want}')
+        base = self.bootquery_alloc(size)
+        if base == 0:
+            raise SystemExit('bootquery allocation failed (address 0); abort')
+        print(f'bootquery buffer at 0x{base:08x}')
+        chunk = 0x8000
+        for off in range(0, size, chunk):
+            part = payload[off:off + chunk]
+            # 0x04f5 requires 32-byte alignment of address and length
+            # handling: all chunks except possibly the last are 0x8000.
+            self._write_payload(base + off, part, base, size)
+            print(f'  downloaded 0x{off + len(part):x}/0x{size:x}', flush=True)
+        tmp = Path('ram-push-readback.bin')
+        self.read_chunked(base, size, str(tmp), 0x10000)
+        got = hashlib.sha256(tmp.read_bytes()).hexdigest()
+        print(f'read-back sha256 {got}')
+        if got != want:
+            raise SystemExit('read-back mismatch; aborting before 0x04f7')
+        print('read-back verified. Sending 0x04f7 upload/run NOW '
+              '(device will leave USB as the environment is replaced)...')
+        try:
+            sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F7,
+                                          struct.pack('<III', base, size, 0),
+                                          timeout=TIMEOUT_MS)
+            print(f'0x04f7 setup sent ({sent} bytes); waiting for the device to drop off USB...')
+        except Exception as exc:
+            print(f'0x04f7 transfer ended with {type(exc).__name__}: {exc} '
+                  '(expected if the handoff already started)')
+
     def hijack_test(self):
         tramp = b''.join(struct.pack('<I', w) for w in self.TRAMP_WORDS)
         # Stage trampoline + zeroed counter in scratch (normal write path).
@@ -473,6 +532,7 @@ def main():
     mode.add_argument('--hijack-test', action='store_true')
     mode.add_argument('--stage-copy', action='store_true')
     mode.add_argument('--stage-bootinfo', action='store_true')
+    mode.add_argument('--ram-push', metavar='PAYLOAD')
     mode.add_argument('--apitest-init', action='store_true')
     mode.add_argument('--apitest-state', action='store_true')
     mode.add_argument('--apitest-send', metavar='TEXT')
@@ -501,6 +561,8 @@ def main():
             loader.stage_copy()
         elif args.stage_bootinfo:
             loader.stage_bootinfo()
+        elif args.ram_push:
+            loader.ram_push(args.ram_push)
         elif args.hijack_test:
             loader.hijack_test()
         elif args.write_test:
