@@ -1,0 +1,5 @@
+Full updater SHA-256: 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+A tiny file: boundary=task-created task=boot size=2000 dest=40000000 ops=[bootstatus 128/130, op10] logs=[%s FW size [%d]Bytes] -> PASS
+B firmware-main.bin (14910464 bytes): boundary=task-created task=boot size=e38400 dest=40000000 bufspot=true ops=[bootstatus 128/130, op10] -> PASS
+C file absent: boundary=returned taskCreated=false logs=[%s file open error, assert-log] -> PASS
+SD-BOOT LOADER PASS

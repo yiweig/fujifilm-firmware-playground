@@ -99,6 +99,14 @@ handoff); the first attempt that day also hung >8 min in the
 state-6 preparation wait and the retry did not, for reasons not
 identified. The SD-file path is **parked** with the question open.
 
+**Reopened 2026-11-05 (night)** — see
+[sdboot-diagnosis.md](sdboot-diagnosis.md): the loader accepts a
+raw main image (emulator PASS, no content validation on the
+plain-file path), and the leading hypothesis is now that the
+volatile register mailbox was cleared by the hang-recovery
+power cycle before the successful retry push. Next attempt
+sets the mailbox and pushes in the same boot.
+
 **P3′ — Direct RAM-push of the stock main image (current).**
 Skip the updater for the boot step: download `firmware-main.bin`
 itself into the bootquery buffer and `0x04f7` it at `0x40000000`.
