@@ -139,3 +139,35 @@ Decompilation:
   record set (4 KiB, mostly zero); without the vendor record format
   it enumerates hardware setup, not the load plan. Deprioritized
   relative to the live boot-info read (step 1).
+
+## Live result (2026-11-05): boot-info pages staged and read
+
+Step 1 above is done. In a loader session, trampoline v3
+(parameterized copier, emulator-qualified —
+[output/trampoline3-emulator.txt](output/trampoline3-emulator.txt),
+`scripts/ReproduceTrampoline3.java`) staged `0x10004000..+0x100`
+and `0x10001000..+0x304` to DRAM; both copies completed, handler
+slots restored, no wedge. Files preserved outside git:
+`/private/tmp/xhalf-bootinfo-2026-11-05.bin` (SHA-256 `12d69083…`)
+and `/private/tmp/xhalf-gate-2026-11-05.bin` (SHA-256 `c3a413f0…`).
+Boot type was the calibration entry (MOVIE/flash-ON/PLAY-hold).
+
+Observed values that carry boot meaning (the rest of both pages is
+live SoC register state, not boot data):
+
+| Field | Value | Reading |
+| --- | --- | --- |
+| Gate `0x10001300` | `0x12345678` | The main image's own stamp: on this cold boot the earlier stage loaded Firmware1 and entered it via the loader-facing `+0x200` entry, not the bare reset vector |
+| Status `0x10004054` | `0x0100` | Bit 1 clear → **Firmware1 selected**; bit 7 (selection-valid) clear; bit 8 set (meaning unassigned) |
+| Mailbox `0x100040b9..0x100040c3` | all zero | An updater run on this boot would use default `D:\firmware.brn` |
+| Button bytes `0x100040b4..0x100040b8` | all zero | No ROM-level button condition latched; PLAY-hold is consumed by the main firmware's calibration check, not by the earlier stage for updater selection |
+
+Net effect on the model: the cold-boot handoff into the main image
+is now *observed*, not inferred (gate stamp + FW1-selected status +
+SRAM descriptor/header copies all agree). The producer is still
+unseen, and whether a *normal* (non-calibration) boot stamps the
+same values is formally open — the button combo is handled inside
+the main firmware, so the ROM side is expected to be identical, but
+only a normal-boot staging read would prove it, and staging requires
+the loader, which requires the calibration entry. Treat as
+strongly-supported, not measured.
