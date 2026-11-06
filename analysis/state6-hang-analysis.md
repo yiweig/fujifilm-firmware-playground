@@ -321,3 +321,15 @@ A standalone `--drain-only SEC` mode does the same EP 0x84 read
 with **no control requests**, for the updater's post-handoff log.
 It is safe against the updater's service personality, which does not
 answer the loader `0x04f2` read.
+
+## Addendum 11 (2026-11-06): FAT16 card test — push succeeded, file boot failed
+
+The updater push with the 1.5 GB FAT16 card succeeded: mailbox
+verified, download/read-back clean, `0x04f7` accepted, and the
+device re-enumerated with the 3-interface updater service
+personality. The updater still settled into service mode; a 20 s
+EP 0x84 drain captured 0 packets, and there was no main-image boot.
+The card format/volume is eliminated. The remaining suspects are the
+updater's SD driver/controller state after the RAM handoff, the live
+storage init, the file open, and the boot handoff. Tally is now
+updater 4/8, main image 0/4.

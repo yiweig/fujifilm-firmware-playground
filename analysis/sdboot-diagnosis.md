@@ -137,7 +137,7 @@ with the device still enumerated. Second consecutive state-6
 hang; live attempts stopped for the night per the stated
 budget. These attempts never reached the updater, so they add no
 evidence about the mailbox; the 19:31 run already falsified the
-volatility hypothesis. Running tally for state 6: updater 3
+volatility hypothesis. Running tally for state 6: updater 4
 successes / 4 stalls, main image 0/4.
 
 ## Emulator scope correction (2026-11-06)
@@ -159,6 +159,44 @@ branch, not a model of the live startup. This is consistent with
 [updater-startup-storage-routing.md](updater-startup-storage-routing.md)'s
 note that the earlier fixtures deliberately avoided the
 initialization block.
+
+## Live card test (2026-11-06): 1.5 GB FAT16 still did not boot
+
+The 31.9 GB FAT32 card was backed up and repartitioned to a
+1.5 GB FAT16 volume (MBR, 32 KB clusters, 30.4 GB free), with
+`EnableTest.txt` and `MAIN.BIN` (SHA-256 `80350bd2…`) at the root
+and no `firmware.brn`. The push ran with the mailbox verified and
+the camera auto-attached at boot: download/read-back clean,
+`0x04f7` accepted, and the device re-enumerated with the updater's
+3-interface service personality. The updater was running.
+
+After 30 s the device was still `2aad:6500` with 3 interfaces; a
+20 s `--drain-only` on EP 0x84 captured 0 packets; there was no
+main-image boot (`04cb`) and no second handoff. The FAT16/1.5 GB
+volume is therefore **not** the cause. The current 31.9 GB FAT32
+volume and the FAT32-vs-FAT16 question are eliminated as well.
+
+What remains:
+
+- the updater's SD driver/controller state after the RAM handoff
+  (the main firmware's SD controller was already initialized; the
+  updater's `sdVfsMount`/`sdDetect`/`sdReMount` path may not reset
+  it the way a cold boot does);
+- the updater's storage initialization in the live path;
+- the file open or the boot handoff.
+
+The EP 0x84 log service is not running in the service personality
+(0 packets); the `Cmd` task/log service is only started by the
+`.brn`/`isp` path, not the plain-file path. The FRM/ISP service is
+the only remaining route to the updater's own state, and the
+`0x04f2` loader read does not work there.
+
+Next options: a true 2 GB SDSC card (the current card is a 31.9 GB
+SDHC; repartitioning does not change the SD protocol), an offline
+trace of the updater's `FUN_4000e5a4(2)` → `sdVfsMount` →
+`sdDetect`/`sdReMount` path for a controller reset/init dependency,
+or a `--skip-prep` updater push to test whether the mode-0x88 park
+leaves the SD controller in a bad state.
 
 ## Status and next live attempt
 
