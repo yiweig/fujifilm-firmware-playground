@@ -333,3 +333,19 @@ The card format/volume is eliminated. The remaining suspects are the
 updater's SD driver/controller state after the RAM handoff, the live
 storage init, the file open, and the boot handoff. Tally is now
 updater 4/8, main image 0/4.
+
+## Addendum 12 (2026-11-06): patched updater push succeeded, SD mount still failed
+
+The `--sd-remount-first` patched updater payload (sha256
+`6f11c808…`) was RAM-pushed with the mailbox set and the 1.5 GB
+FAT16 card. The payload read back clean, the `0x411f0000` stub was
+verified, and `0x04f7` was accepted; the updater re-enumerated with
+its 3-interface service personality. After 90 s there was no
+main-image boot and no second handoff.
+
+The branch/stub executed (the patched mount wrapper was the only
+mount path, and the updater reached service mode rather than
+crashing), so the `sdReMount(2,0)` pre-call returned but did not
+make the SD mount succeed. The re-mount hypothesis is not
+sufficient; the deeper SD controller/CMD state or the SDHC card
+protocol remains. Tally is now updater 5/9, main image 0/4.

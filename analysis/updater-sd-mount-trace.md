@@ -223,6 +223,24 @@ The stub is in the loader's scratch gap; the updater's heap could
 in principle overwrite it before the mount, so a hang/crash is
 possible. Power cycle recovers; internal storage is untouched.
 
+## Live patch result (2026-11-06): negative
+
+The patched payload (`sha256 6f11c808…`, read-back verified) was
+RAM-pushed with the FAT16 card and the mailbox set. The stub was
+written to `0x411f0000` and read back; `0x04f7` was accepted. The
+device re-enumerated with the updater's 3-interface service
+personality. After 90 s there was still no main-image boot
+(`04cb`) and no second handoff; the updater was in service mode.
+
+The branch/stub clearly executed (the patched mount wrapper was the
+only mount path, and the updater reached service mode rather than
+crashing), so the `sdReMount(2,0)` pre-call returned but did not
+make the SD mount succeed. **The re-mount hypothesis is not
+sufficient.** The remaining suspects are the deeper SD controller/
+CMD state after the RAM handoff, or the SDHC card protocol (the
+current card is a 31.9 GB SDHC; the 1.5 GB FAT16 volume does not
+change that).
+
 ## Boundary
 
 Original-byte disassembly, a Ghidra reference query, and call-graph

@@ -54,8 +54,8 @@ dies). Completion therefore depends on system state at push
 time — other tasks, mutexes, secondary cores — not on the
 payload, which is hash-verified identical every time.
 
-**Live tally for state 6: 4 completions in 12 attempts**
-(updater payload 4/8, main image 0/4). Every stall has the
+**Live tally for state 6: 5 completions in 13 attempts**
+(updater payload 5/9, main image 0/4). Every stall has the
 same signature: setup accepted, device still enumerated,
 control dead, screen unchanged — failure in preparation,
 before the stub jumps. ([state6-hang-analysis.md](state6-hang-analysis.md))
@@ -67,7 +67,7 @@ main-image pushes show termination/arrival events at 15–20 s;
 they may be VM passthrough events, but the interface count and
 descriptor after the event were never captured. Until that is
 done, treat main-image 0/4 as "did not come up", not as "never
-ran". The updater's 4/8 and the main image's 0/4 may not share
+ran". The updater's 5/9 and the main image's 0/4 may not share
 one failure mode.
 
 One more unproven variable, recorded 2026-11-06: the updater push
@@ -172,12 +172,23 @@ loads that file from SD to `0x40000000` and boots it.
   updater's SD driver/controller state after the RAM handoff, the
   live storage init, the file open, and the boot handoff.
   ([sdboot-diagnosis.md](sdboot-diagnosis.md))
+- **SD re-mount patch (2026-11-06) failed.** The updater payload
+  was patched to call `0x4001f1d0(2,0)` (`sdReMount`/`sdReDetect`)
+  before the mount wrapper, with a 32-byte stub in the loader
+  scratch gap. The patched payload read back clean (`sha256
+  6f11c808…`), the stub was verified, and `0x04f7` was accepted;
+  the updater still settled into service mode after 90 s. The
+  branch/stub executed, so the re-mount returned but did not make
+  the SD mount succeed. **The re-mount hypothesis is not
+  sufficient.** The remaining suspects are the deeper SD
+  controller/CMD state or the SDHC card protocol.
+  ([updater-sd-mount-trace.md](updater-sd-mount-trace.md))
 
 ## What remains open
 
 | Item | State |
 | --- | --- |
-| SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. SD driver/controller state, storage init, file open, and boot remain. Retries blocked by state-6 prep |
+| SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call also failed, so the simple re-mount hypothesis is eliminated. Remaining: deeper SD controller/CMD state or SDHC card protocol, storage init, file open, boot. Retries blocked by state-6 prep |
 | RAM-pushed main image (stock or modified) | 0/4 via state 6; direct path lacks quiesce. Post-event descriptor not captured, so prep-hang vs post-handoff crash is unresolved |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | Closed: ROM/FRM cold entry never established, so no recovery would exist |
