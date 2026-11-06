@@ -73,17 +73,54 @@ direct callers of `0x40070ee4` in the image are:
 - `0x4000ea64` inside the `0x4000e7dc` SD shell-command dispatcher
   (the `sd...`/`sdio...` commands).
 
-`0x4006ed88` has **no direct BL/B callers** in the image. It is
-therefore reached through a table or an indirect pointer, or it is
-only invoked by the SD shell commands. If the plain-file consumer's
-mount path never runs `0x4006ed88(0)` before `0x4006de3c`, the
-callback at `0x400ba2a0` is still zero and the SD power-on is a
-no-op. That is the leading hypothesis for the FAT16 card failure.
+`0x4006ed88` has **no direct BL/B callers** in the image. A
+Ghidra reference query after auto-analysis confirms **zero
+references** to `0x4006ed88` (not a direct call, not an absolute
+pointer, not a data reference). The only write to `0x400ba2a0` is
+inside `0x40070ee4`, whose only callers are `0x4006edac` (inside
+the unreferenced `0x4006ed88`) and `0x4000ea64` (the SD shell
+command). So the power-callback hypothesis is **weakened**: the
+cold boot also leaves the callback null, and the `0x40070d18`
+early-return is likely benign because the SD power is already on.
 
-This is not yet proven: the `0x40021d78` state machine is large and
-may call `0x4006ed88(0)` indirectly. The next offline step is to
-resolve that indirect call (table entry, function pointer, or
-startup path) before proposing a payload patch.
+That makes the callback-null theory a dead end. The next lead is
+the card-detect path.
+
+## New lead: `0x10000058` bit 2 is a media-present latch
+
+`0x4006f938` is a media detect used by the id-1/disk path. It reads
+the halfword at `0x10000058`, masks bit 2, and branches:
+
+```text
+4006f968: ldrh r3, [0x10000000 + 0x58]   ; 0x10000058
+4006f96c: and  r3, r3, #4
+4006f974: cmp  r3, #0
+4006f978: bne  0x4006f984 -> 0x4006f89c  ; set state=1 / power bits
+4006f97c: bl   0x4006f8e4                ; clear state / power bits
+```
+
+The live calibration read was `0x10000058 = 0x0000`, so bit 2 is
+clear. If the id-2 SD path uses the same latch, the updater would
+report "no card" before it ever reaches the FAT stack. The id-2
+path's detect state machine is `0x40022b40` (called from the
+`0x40021d78` init); the next question is whether it reads
+`0x10000058` bit 2 or uses the SD controller's CMD response. The
+`0x40022b40` snippet seen so far reads record+0x70 and calls
+`0x4006de3c`/`0x4006f89c`; the card-present source is not yet
+identified.
+
+If `0x10000058` bit 2 is the source, the fix is a pre-handoff latch
+write (via the loader trampoline) or a payload patch to ignore the
+latch. If the source is the SD controller response, the failure is
+controller state/CMD timing after the RAM handoff.
+
+This is not yet proven: the id-2 detect state machine
+(`0x40022b40` and the `sdDetect` body at `0x40022e60`; `0x40022d58`
+is its literal pool, not the entry) has not been fully traced to
+its card-present source. The Ghidra zero-reference result makes the
+`0x4006ed88(0)` init an unlikely explanation; the `0x10000058`
+bit-2 latch and the SD controller's CMD response are the remaining
+candidates. Resolve that source before proposing a payload patch.
 
 ## What the cold boot does differently
 
