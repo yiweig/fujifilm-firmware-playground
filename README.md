@@ -37,7 +37,7 @@ state are intentionally excluded from version control.
 
 ## Start here: handoff overview
 
-Last overview refresh: **2026-11-03**. This is a research notebook and collection
+Last overview refresh: **2026-11-06**. This is a research notebook and collection
 of analysis tools, not a firmware patcher or a deployable camera modification.
 Most firmware investigations are offline; live observations are explicitly
 identified in their reports. A camera is not required for the static tools.
@@ -50,13 +50,16 @@ The user excludes opening the camera, wiring UART or sending it to a repair lab.
 
 Read these first:
 
-1. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
+1. [Current findings](analysis/current-findings.md) — the state of record for the
+   RAM-push, SD-boot and recovery work: what is proven, what is blocked, and which
+   earlier hypotheses have been corrected. Read this before any older report.
+2. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
    beginner-oriented account of the package, startup, tasks, imaging, USB and storage.
-2. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
+3. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
    the proposed launch path with evidence levels, ranked blockers, and which leads
    have already been examined. Temporary execution and independent recovery are
    separate outcomes; neither has been established end to end.
-3. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
+4. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
    [memory map](analysis/memory-and-hardware-map.md) — physical/address-space
    orientation, with unresolved regions explicitly marked.
 

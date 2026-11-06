@@ -93,19 +93,26 @@ file boot did not take).** Emulator controls passed for all
 mailbox branches ([output/dual-boot-p3-emulator.txt](output/dual-boot-p3-emulator.txt)),
 the mailbox write was verified live, and the RAM-push completed on
 retry — but the updater settled into service mode instead of
-booting `D:\MAIN.BIN`. Failure point not isolated (drive mapping
-vs file-format expectations vs mailbox persistence across the
-handoff); the first attempt that day also hung >8 min in the
-state-6 preparation wait and the retry did not, for reasons not
-identified. The SD-file path is **parked** with the question open.
+booting `D:\MAIN.BIN`. The file-format question is eliminated
+(the loader accepts a raw image); the mailbox question is also
+eliminated (the 19:31 retry set and verified `MAIN.BIN` in the same
+boot as a successful handoff, and the updater still went to service
+mode). The remaining candidates are the drive-5/backend branch,
+the updater's storage initialization, SD mount/FAT, and the file
+boot. The first attempt that day also hung >8 min in the state-6
+preparation wait and the retry did not, for reasons not identified.
+The SD-file path is **parked** with the question open.
 
 **Reopened 2026-11-05 (night)** — see
 [sdboot-diagnosis.md](sdboot-diagnosis.md): the loader accepts a
 raw main image (emulator PASS, no content validation on the
-plain-file path), and the leading hypothesis is now that the
-volatile register mailbox was cleared by the hang-recovery
-power cycle before the successful retry push. Next attempt
-sets the mailbox and pushes in the same boot.
+plain-file path). **Corrected 2026-11-06:** the mailbox-volatility
+hypothesis is falsified by the 19:31 run; the next diagnostic is a
+read-only loader session to read `0x10000058 & 0xe0` and the
+`0x10004000` boot-info page, plus a rerun of the mailbox emulator
+with the live status (`0x0100`) and button bytes (zero) instead of
+its `0x80`/`0xb8=1` fixtures. The P3 emulator only models the
+drive-2 probe; the drive-5 branch is untested.
 
 **P3′ — Direct RAM-push of the stock main image (current).**
 Skip the updater for the boot step: download `firmware-main.bin`

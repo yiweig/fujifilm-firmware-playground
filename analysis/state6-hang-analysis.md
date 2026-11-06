@@ -22,11 +22,19 @@ But the race theory weakened under inspection:
   the main image's (same MPIDR test, same `0x100002f0` WFE mailbox,
   same release helper shape; updater `0x40000340`). Reset-level
   core handling therefore cannot explain a payload difference.
-- In all four hangs the USB never dropped, i.e. the stub never
-  jumped — the payload never ran. The apparent payload correlation
-  (updater 2/3, main image 0/3) is small-sample and may be noise;
-  it must not be read as "the main image crashes on entry" without
-  a completed handoff to observe.
+- The original inference was that in all four hangs the USB never
+  dropped, i.e. the stub never jumped and the payload never ran.
+  **Corrected 2026-11-06:** that inference is weaker than the
+  original wording. The host-side observer logs for the later
+  main-image pushes
+  (`output/usb-startup/main-push-1.jsonl`, `main-push-3.jsonl`)
+  show termination/arrival events at 15–20 s after the push.
+  They may be VM passthrough events, but the interface count and
+  descriptor after the event were never captured. Treat the
+  main-image 0/4 as "did not come up", not as "never ran"; the
+  prep-hang and post-handoff-crash explanations are not yet
+  separated. The apparent payload correlation (updater 2/3,
+  main image 0/3) is small-sample and may be noise.
 
 Verdict: cores are real; the race remains unproven and is no longer
 the leading explanation.
@@ -220,7 +228,11 @@ read-back matched, `0x04f7` setup accepted (12 bytes). USB
 never dropped. Control was dead on a bootquery probe past 90 s
 (`USBTimeoutError`), device still enumerated as `2aad:6500`.
 Same signature as the prior three: the stub never jumped, so
-the payload never ran. The screen stayed on the debug list and
+the payload never ran. **Corrected 2026-11-06:** the "never
+jumped" part is an inference from enumeration and a dead control
+path, not a measured payload entry. The observer log for this
+push shows a 15 s termination/arrival; the post-event descriptor
+was not captured. Keep the result as "did not come up". The screen stayed on the debug list and
 never changed; normal boot was confirmed after OFF/unplug.
 Main-image state 6 is now **0/4**;
 

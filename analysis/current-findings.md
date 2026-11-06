@@ -1,10 +1,15 @@
 # Current findings: Fujifilm X half firmware playground
 
-Date: 2026-11-05 (night). Consolidation of the RAM-push,
-SD-boot, and recovery investigation. Detail lives in the linked
-documents; this file is the state of record. No internal storage
-was written at any point in this project; every live experiment
-recovered by power cycle, and the camera is on stock firmware.
+Date: 2026-11-05 (night); corrected 2026-11-06. Consolidation of
+the RAM-push, SD-boot, and recovery investigation. Detail lives in
+the linked documents; this file is the state of record. No
+persistent change has been observed: every live experiment
+recovered by power cycle and the camera still boots the same stock
+firmware hash. That is an observation, not a proof that the
+updater's storage initialization performed no write; the risk
+assessment records a conditional NAND erase branch and does not
+treat stock-updater RAM execution as proven write-free
+([brick-risk-and-recovery.md](brick-risk-and-recovery.md)).
 
 Objective: prove RAM-pushed firmware and/or SD dual boot, then a
 confirmed recovery path. RAW support is the longer-term goal;
@@ -55,6 +60,16 @@ same signature: setup accepted, device still enumerated,
 control dead, screen unchanged — failure in preparation,
 before the stub jumps. ([state6-hang-analysis.md](state6-hang-analysis.md))
 
+Caveat added 2026-11-06: the "before the stub jumps" part is an
+inference from enumeration and control timeouts, not a measured
+payload entry. The host-side observer logs for the later
+main-image pushes show termination/arrival events at 15–20 s;
+they may be VM passthrough events, but the interface count and
+descriptor after the event were never captured. Until that is
+done, treat main-image 0/4 as "did not come up", not as "never
+ran". The updater's 2/5 and the main image's 0/4 may not share
+one failure mode.
+
 ## Bypasses, each closed with evidence
 
 - **Direct helper call (skip park + refresh):** reached the
@@ -102,27 +117,35 @@ loads that file from SD to `0x40000000` and boots it.
   no content validation. File format is eliminated.
   ([sdboot-diagnosis.md](sdboot-diagnosis.md),
   [output/sdboot-loader-emulator.txt](output/sdboot-loader-emulator.txt))
-- **Leading hypothesis for the original P3 failure:** the
-  mailbox (`0x100040b9`, volatile registers) was set, the
-  first push hung, and the recovery power cycle cleared it
-  before the successful retry push — so the updater used the
-  default `D:\firmware.brn`, found none, and took its service
-  continuation. The record does not show a re-set in the retry
-  boot.
-- **Two corrected attempts (2026-11-05 night)** set and
-  verified the mailbox (`MAIN.BIN`) in the same boot as the
-  push, with the card verified byte-for-byte beforehand
-  (FAT32, `MAIN.BIN` = `80350bd2…`, `EnableTest.txt` present,
-  no `firmware.brn`). Both hung in state 6 before the updater
-  ran. The mailbox hypothesis therefore remains **untested**:
-  SD boot has still never executed under known-good inputs.
+- **The original mailbox hypothesis is falsified.** The earlier
+  P3 retry at 19:31 wrote and verified `MAIN.BIN` in the same
+  boot as a successful `0x04f7` handoff; the updater
+  re-enumerated as its service personality and settled into
+  service mode. That is the construction the hypothesis required,
+  and the file boot still did not take. The remaining candidates
+  are the drive-5/backend branch, the updater's storage
+  initialization, SD mount/FAT, and the file-boot path.
+  ([sdboot-diagnosis.md](sdboot-diagnosis.md))
+- **Drive-letter correction.** The drive-5 fallback, on success,
+  rewrites the pathname prefix to `G` at `0x400010c8..0x400010d8`;
+  it does not still check `D:`. The live value of
+  `0x10000058 & 0xe0` has never been read, and the P3 emulator
+  only models the drive-2 probe. With live status `0x0100`
+  (bit 2 clear), a backend of `0x80/0xa0/0xc0` would try
+  `G:\MAIN.bin` first and could never look at the SD card.
+- **Two later corrected attempts (2026-11-05 night)** set and
+  verified the mailbox in the same boot as the push, but both
+  hung in state 6 before the updater ran. They add no evidence
+  either way; the 19:31 run is the known-good-input test and it
+  failed downstream. SD boot has therefore been attempted under
+  known-good inputs, but has not executed.
 
 ## What remains open
 
 | Item | State |
 | --- | --- |
-| SD boot of stock main image | Untested under known-good inputs; blocked by state-6 lottery |
-| RAM-pushed main image (stock or modified) | 0/4 via state 6; direct path lacks quiesce |
+| SD boot of stock main image | Updater ran with the mailbox set (19:31) but did not boot the file; mailbox eliminated. Backend/drive-5, storage init, mount/FAT, and boot remain. Retries blocked by state-6 prep |
+| RAM-pushed main image (stock or modified) | 0/4 via state 6; direct path lacks quiesce. Post-event descriptor not captured, so prep-hang vs post-handoff crash is unresolved |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | Closed: ROM/FRM cold entry never established, so no recovery would exist |
 | Mode `0x88` stop list, helper indirects | Partially traced; do not change any conclusion |
@@ -132,7 +155,8 @@ loads that file from SD to `0x40000000` and boots it.
 RAM-push works for Fujifilm's updater; getting our own main
 image running — by RAM, SD, or flash — has no proven path.
 The blockers are identified rather than mysterious:
-preparation intermittency (state 6), quiesce that only a
-task-level service can perform, and an SD test that has yet to
-get its updater running. The working deliverable remains
-session RAW capture through the calibration shell.
+preparation intermittency (state 6), an SD file-boot path that
+fails after the updater runs (the mailbox is no longer a
+candidate), and a main-image push whose post-handoff state is
+not yet instrumented. The working deliverable remains session
+RAW capture through the calibration shell.

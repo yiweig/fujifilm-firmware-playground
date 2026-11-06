@@ -7,8 +7,12 @@ Date: 2026-11-05. Phase P2 of
 Explicit user go-ahead obtained (and re-obtained after the first
 wedge). Payload: stock card updater
 (`analysis/output/card-updater-full.bin`, 666,112 bytes, SHA-256
-`4bdcdb06…`), loaded at `0x40000000`. **Internal storage was never
-written.** 
+`4bdcdb06…`), loaded at `0x40000000`. **No persistent change was
+observed**: no write was deliberately issued, the camera still boots
+the same stock firmware, and every experiment recovered by power
+cycle. The updater's own storage initialization is not proven
+write-free, however — see the conditional NAND erase branch in
+[brick-risk-and-recovery.md](brick-risk-and-recovery.md).
 
 ## Attempts
 
@@ -67,7 +71,8 @@ written.**
 - **RAM-pushed firmware is proven on this device**, end to end:
   allocation, download, read-back verification, `0x04f7` handoff,
   environment replacement, and clean recovery by power-off with
-  zero persistent writes.
+  no observed persistent change. The updater's storage
+  initialization is not proven write-free.
 - The two client wedges were host-side bugs (field order, stale
   allowlists), each diagnosed from the receiver's own code and
   fixed with guards; neither reached a device-side write.
