@@ -285,3 +285,18 @@ passthrough attached before/at boot, while this attempt attached a
 already-running loader. The next attempt should attach the
 passthrough before entering debug mode and keep it attached through
 the push.
+
+## Addendum 9 (2026-11-06): attach-at-boot retry succeeded
+
+Fresh boot with the camera auto-attached to the VM before/at debug
+entry. The mailbox was verified (`MAIN.BIN`), the updater downloaded
+and read back clean, `0x04f7` was accepted, and the device
+re-enumerated with the updater's 3-interface service personality.
+The attach-order hypothesis is supported by one data point; it is
+not isolated.
+
+The read-only `0x04f2` probe of `0x40000000` then timed out, so the
+updater's service personality does not speak the loader read
+dialect. The read-only debug-port idea is closed; the next P3
+diagnostic is the card/FAT test. Tally is now updater 3/7, main
+image 0/4.

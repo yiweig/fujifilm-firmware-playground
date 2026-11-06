@@ -54,8 +54,8 @@ dies). Completion therefore depends on system state at push
 time — other tasks, mutexes, secondary cores — not on the
 payload, which is hash-verified identical every time.
 
-**Live tally for state 6: 2 completions in 10 attempts**
-(updater payload 2/6, main image 0/4). Every stall has the
+**Live tally for state 6: 3 completions in 11 attempts**
+(updater payload 3/7, main image 0/4). Every stall has the
 same signature: setup accepted, device still enumerated,
 control dead, screen unchanged — failure in preparation,
 before the stub jumps. ([state6-hang-analysis.md](state6-hang-analysis.md))
@@ -67,7 +67,7 @@ main-image pushes show termination/arrival events at 15–20 s;
 they may be VM passthrough events, but the interface count and
 descriptor after the event were never captured. Until that is
 done, treat main-image 0/4 as "did not come up", not as "never
-ran". The updater's 2/5 and the main image's 0/4 may not share
+ran". The updater's 3/7 and the main image's 0/4 may not share
 one failure mode.
 
 One more unproven variable, recorded 2026-11-06: the updater push
@@ -75,9 +75,12 @@ that hung that day ran after the camera was already in debug mode
 and was attached to the VM with `utmctl usb connect`. The 19:31
 successful run likely had the passthrough attached before/at boot.
 The post-boot attach may reset the USB/receiver state in a way that
-makes the state-6 park hang. The next attempt should attach the
-passthrough before entering debug mode; this is a hypothesis, not a
-conclusion.
+makes the state-6 park hang. The next attempt (same day) had the
+camera auto-attached at boot and **succeeded** — the updater
+enumerated with its 3-interface service personality. That is one
+data point in favour of the attach-order hypothesis, not a
+conclusion. The next attempt should keep the passthrough attached
+before/at boot.
 
 ## Bypasses, each closed with evidence
 
@@ -154,12 +157,18 @@ loads that file from SD to `0x40000000` and boots it.
   either way; the 19:31 run is the known-good-input test and it
   failed downstream. SD boot has therefore been attempted under
   known-good inputs, but has not executed.
+- **The updater ran again on 2026-11-06** (3-interface service
+  personality, descriptor hash `f0100172…`). The read-only
+  `0x04f2` probe of `0x40000000` timed out: the service does not
+  speak the loader read dialect. The read-only debug-port idea is
+  closed; the next P3 diagnostic is the card/FAT test, not another
+  read attempt. ([updater-service-read-probe.md](updater-service-read-probe.md))
 
 ## What remains open
 
 | Item | State |
 | --- | --- |
-| SD boot of stock main image | Updater ran with the mailbox set (19:31) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. Storage init, SD1 mount/FAT, file open, and boot remain. Retries blocked by state-6 prep |
+| SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out. Storage init, SD1 mount/FAT, file open, and boot remain. Retries blocked by state-6 prep |
 | RAM-pushed main image (stock or modified) | 0/4 via state 6; direct path lacks quiesce. Post-event descriptor not captured, so prep-hang vs post-handoff crash is unresolved |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | Closed: ROM/FRM cold entry never established, so no recovery would exist |

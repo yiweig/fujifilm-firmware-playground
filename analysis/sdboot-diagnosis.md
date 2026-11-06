@@ -137,7 +137,7 @@ with the device still enumerated. Second consecutive state-6
 hang; live attempts stopped for the night per the stated
 budget. These attempts never reached the updater, so they add no
 evidence about the mailbox; the 19:31 run already falsified the
-volatility hypothesis. Running tally for state 6: updater 2
+volatility hypothesis. Running tally for state 6: updater 3
 successes / 4 stalls, main image 0/4.
 
 ## Emulator scope correction (2026-11-06)
@@ -181,13 +181,14 @@ initialization block.
 3. With backend `0x00`, the consumer takes the drive-2 path. The
    next target is the SD1 mount, the FAT stack, the file open, or
    the boot handoff; the mailbox and drive-5 branch are eliminated.
-4. Only then run another mailbox + updater push. If the updater
-   comes up, treat its service personality as a read-only debug
-   port: the `0x04f2` family may work even though the `0x70`
-   bootquery timed out. The prepared probe and address list are in
-   [updater-service-read-probe.md](updater-service-read-probe.md):
-   a read of `0x40000000` verifies the dialect; aligned reads of
-   the log state (`0x400ba7d8`) and log task (`0x400a29ac`) would
-   expose the failure reason. This is read-only: no `0x04f5`
-   writes, no `0x04f7` run, and no storage or erase commands to
-   the updater.
+4. The updater ran again on 2026-11-06 (3-interface service
+   personality). The read-only `0x04f2` probe of `0x40000000`
+   timed out; the service does not speak the loader read dialect.
+   The read-only debug-port idea is closed
+   ([updater-service-read-probe.md](updater-service-read-probe.md)).
+5. The next experiment is the card/FAT test: a smaller FAT16/FAT32
+   card (or a smaller partition) with `EnableTest.txt` and
+   `MAIN.BIN` at the root, then the same mailbox + updater push.
+   If that boots, the issue is the current card/FAT stack; if it
+   still goes to service mode, the issue is the updater's SD
+   driver/state.

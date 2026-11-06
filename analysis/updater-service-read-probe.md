@@ -44,6 +44,23 @@ the receiver ([loader-memory-read-live.md](loader-memory-read-live.md)).
 The boot-info page must come from the loader's trampoline stage
 before the push, not from the updater's read.
 
+## Live result (2026-11-06): the updater does not answer `0x04f2`
+
+The updater was RAM-pushed successfully and enumerated with its
+3-interface service personality (interface 0, interface 2 alt
+settings, interface 5 with 3 endpoints; descriptor saved outside git
+as `/private/tmp/xhalf-updater-service-descriptors-2026-11-06.txt`,
+SHA-256 `f0100172…`). The first probe read,
+`0x40000000 + 0x100`, timed out at the control transfer; the probe
+stopped as designed.
+
+**The updater's service personality does not speak the loader's
+`0x04f2` read family.** The `0x70` bootquery timeout was not a
+one-off; the read-only debug-port idea is closed for this dialect.
+The control path may be desynced after the timeout; recover by
+power cycle. The next P3 diagnostic is the card/FAT test, not
+another read attempt.
+
 ## Safety rules
 
 - Read-only: no `0x04f5` writes, no `0x04f7` run, no storage or

@@ -114,7 +114,12 @@ hypothesis is falsified by the 19:31 run, and the read-only
 unit takes the drive-2 path; the drive-5 branch is eliminated
 ([updater-sd-path-backend.md](updater-sd-path-backend.md)). The
 next target is the updater's storage initialization, the SD1
-mount, the FAT stack, the file open, or the boot handoff.
+mount, the FAT stack, the file open, or the boot handoff. A
+2026-11-06 retry ran the updater again (3-interface service
+personality), but the read-only `0x04f2` probe timed out; the
+service does not speak the loader read dialect. The next experiment
+is the card/FAT test
+([updater-service-read-probe.md](updater-service-read-probe.md)).
 
 **P3′ — Direct RAM-push of the stock main image (current).**
 Skip the updater for the boot step: download `firmware-main.bin`
