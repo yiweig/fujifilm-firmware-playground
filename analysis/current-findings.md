@@ -54,8 +54,8 @@ dies). Completion therefore depends on system state at push
 time — other tasks, mutexes, secondary cores — not on the
 payload, which is hash-verified identical every time.
 
-**Live tally for state 6: 6 completions in 14 attempts**
-(updater payload 6/10, main image 0/4). Every stall has the
+**Live tally for state 6: 7 completions in 15 attempts**
+(updater payload 7/11, main image 0/4). Every stall has the
 same signature: setup accepted, device still enumerated,
 control dead, screen unchanged — failure in preparation,
 before the stub jumps. ([state6-hang-analysis.md](state6-hang-analysis.md))
@@ -67,7 +67,7 @@ main-image pushes show termination/arrival events at 15–20 s;
 they may be VM passthrough events, but the interface count and
 descriptor after the event were never captured. Until that is
 done, treat main-image 0/4 as "did not come up", not as "never
-ran". The updater's 6/10 and the main image's 0/4 may not share
+ran". The updater's 7/11 and the main image's 0/4 may not share
 one failure mode.
 
 One more unproven variable, recorded 2026-11-06: the updater push
@@ -205,12 +205,23 @@ loads that file from SD to `0x40000000` and boots it.
   the `0x400715c8` no-card branch, or bypass the updater with the
   main firmware's shell `read` path.
   ([updater-sd-mount-trace.md](updater-sd-mount-trace.md))
+- **SD ready-gate patch (2026-11-06) failed.** A `--sd-ready-gate`
+  payload NOP'd the low-nibble-0 no-card branch at `0x400715c8`;
+  the patched push succeeded (`sha256 363950f1…`, read-back
+  verified, `0x04f7` accepted) but the updater still settled into
+  service mode after 90 s. The gate is not the mount path's gate,
+  or the `0x40072914` wait still blocks before the command sequence
+  completes. The mount path likely uses the driver state field
+  `0x400ba140+id*4+0x120` rather than the hardware `0x10004365`
+  ready gate. The cheap software gates are exhausted; the
+  remaining SD-adjacent path is the main firmware shell `read`
+  architecture, or a pivot to Level 2 RAW.
 
 ## What remains open
 
 | Item | State |
 | --- | --- |
-| SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call and the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`) both failed. Live status shows `0x10004365=0x00` (card state 0), so the `0x400715b4` ready gate returns before commands. Remaining: patch the `0x400715c8` gate, or bypass the updater with the main firmware's shell `read` path. Retries blocked by state-6 prep |
+| SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call, the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`), and the `0x400715c8` ready-gate NOP all failed. Live status shows `0x10004365=0x00` (card state 0); the mount path likely uses the driver state field, not the hardware gate. Remaining: the main firmware shell `read` architecture, or Level 2 RAW pivot; SDHC protocol is secondary. Retries blocked by state-6 prep |
 | RAM-pushed main image (stock or modified) | 0/4 via state 6; direct path lacks quiesce. Post-event descriptor not captured, so prep-hang vs post-handoff crash is unresolved |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | Closed: ROM/FRM cold entry never established, so no recovery would exist |

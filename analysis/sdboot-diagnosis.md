@@ -137,7 +137,7 @@ with the device still enumerated. Second consecutive state-6
 hang; live attempts stopped for the night per the stated
 budget. These attempts never reached the updater, so they add no
 evidence about the mailbox; the 19:31 run already falsified the
-volatility hypothesis. Running tally for state 6: updater 6
+volatility hypothesis. Running tally for state 6: updater 7
 successes / 4 stalls, main image 0/4.
 
 ## Emulator scope correction (2026-11-06)
@@ -203,6 +203,13 @@ blocks on a completion that never posts. The remaining options are
 a payload patch to the `0x400715c8` no-card branch or bypassing the
 updater with the main firmware's shell `read` path. The SDHC card
 protocol is a secondary suspect.
+
+The `0x400715c8` gate patch was tested and also settled into
+service mode. The mount path likely uses the driver state field
+`0x400ba140+id*4+0x120` rather than the hardware `0x10004365`
+ready gate. The cheap software gates are exhausted; the remaining
+SD-adjacent path is the main firmware shell `read` architecture,
+or a pivot to Level 2 RAW.
 
 The EP 0x84 log service is not running in the service personality
 (0 packets); the `Cmd` task/log service is only started by the

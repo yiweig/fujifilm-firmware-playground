@@ -407,6 +407,20 @@ The true 2 GB SDSC card remains the hardware control, but the live
 status suggests the card protocol is not the first problem: the
 controller is reporting state 0 before any card command runs.
 
+## Live ready-gate result (2026-11-06): negative
+
+The `--sd-ready-gate` payload (`sha256 363950f1…`, NOP at
+`0x400715c8`) read back clean and `0x04f7` was accepted. The
+updater re-enumerated with its 3-interface service personality;
+after 90 s there was no main-image boot and no second handoff.
+
+The low-nibble-0 no-card branch at `0x400715c8` is therefore not
+the mount path's gate, or the wait at `0x40072914` still blocks
+before the command sequence can complete. The mount path's
+`sdDetect` likely uses the driver state field
+`0x400ba140+id*4+0x120` rather than the hardware `0x10004365`
+ready gate. The cheap software gates are now exhausted.
+
 ## Boundary
 
 Original-byte disassembly, a Ghidra reference query, and call-graph
