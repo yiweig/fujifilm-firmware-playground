@@ -349,3 +349,19 @@ crashing), so the `sdReMount(2,0)` pre-call returned but did not
 make the SD mount succeed. The re-mount hypothesis is not
 sufficient; the deeper SD controller/CMD state or the SDHC card
 protocol remains. Tally is now updater 5/9, main image 0/4.
+
+## Addendum 13 (2026-11-06): full SD init patch — push succeeded, mount still failed
+
+The `--sd-init-first` payload (same `0x4000e5a4 -> b 0x411f0000`
+branch; stub calls `0x4006ed88(0)`, the full SD init including
+`0x4007155c(0)` controller config) was RAM-pushed with the mailbox
+set and the 1.5 GB FAT16 card. The stub was verified, `0x04f7` was
+accepted, and the updater re-enumerated with its 3-interface service
+personality. After 90 s there was no main-image boot and no second
+handoff.
+
+The branch/stub executed, so the full SD init/config ran and the
+mount still failed. The controller clock/bus-width configuration is
+not the missing piece. The remaining path is the SD command/response
+state (`0x10004364`/`0x10004365`, `0x4007284c`/`0x40072914`) or the
+SDHC protocol. Tally is now updater 6/10, main image 0/4.

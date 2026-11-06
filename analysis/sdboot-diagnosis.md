@@ -137,7 +137,7 @@ with the device still enumerated. Second consecutive state-6
 hang; live attempts stopped for the night per the stated
 budget. These attempts never reached the updater, so they add no
 evidence about the mailbox; the 19:31 run already falsified the
-volatility hypothesis. Running tally for state 6: updater 5
+volatility hypothesis. Running tally for state 6: updater 6
 successes / 4 stalls, main image 0/4.
 
 ## Emulator scope correction (2026-11-06)
@@ -188,10 +188,15 @@ What remains:
 A follow-up `--sd-remount-first` patch called `0x4001f1d0(2,0)`
 (`sdReMount`/`sdReDetect`) before the mount wrapper; it also settled
 into service mode after a clean patched-payload push. The simple
-re-mount reset is therefore **not sufficient**. The remaining
-suspects are the deeper SD controller/CMD state or the SDHC card
-protocol (the current card is a 31.9 GB SDHC; the 1.5 GB FAT16
-volume does not change that).
+re-mount reset is therefore **not sufficient**. A second
+`--sd-init-first` patch called the full SD init `0x4006ed88(0)`,
+including the `0x4007155c(0)` controller clock/bus-width
+configuration; it also settled into service mode. The controller
+init/config is not the missing piece either. The remaining suspects
+are the SD command/response state (`0x10004364`/`0x10004365`,
+`0x4007284c`/`0x40072914`) or the SDHC card protocol (the current
+card is a 31.9 GB SDHC; the 1.5 GB FAT16 volume does not change
+that).
 
 The EP 0x84 log service is not running in the service personality
 (0 packets); the `Cmd` task/log service is only started by the

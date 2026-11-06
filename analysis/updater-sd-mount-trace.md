@@ -293,6 +293,35 @@ CMD state after the RAM handoff, or the SDHC card protocol (the
 current card is a 31.9 GB SDHC; the 1.5 GB FAT16 volume does not
 change that).
 
+## Live init-patch result (2026-11-06): negative
+
+The `--sd-init-first` payload (same `0x4000e5a4 -> b 0x411f0000`
+branch; `sha256 6f11c808…` because the stub is written separately)
+was RAM-pushed with the FAT16 card and the mailbox set. The stub
+called `0x4006ed88(0)` — the full SD init, including the
+`0x4007155c(0)` controller clock/bus-width configuration — then
+resumed the mount wrapper. The stub was verified, `0x04f7` was
+accepted, and the updater re-enumerated with its 3-interface
+service personality. After 90 s there was no main-image boot and no
+second handoff.
+
+The branch/stub executed (the updater reached service mode rather
+than crashing), so the full SD init/config ran and the mount still
+failed. **The controller clock/bus-width configuration is not the
+missing piece.** The remaining path is the SD command/response
+state itself:
+
+- `0x4007149c` checks `0x10004364` bit `0x20` and calls
+  `0x4007284c`/`0x40072914`;
+- `0x400715b4` checks `0x10004365` low nibble (card state) and
+  calls the same;
+- `0x400718b4` is the id-2 data-transfer path.
+
+The next trace target is the controller status bits
+(`0x10004364`/`0x10004365`) and the command/response timeout in
+`0x4007284c`/`0x40072914`, or the SDHC protocol. The `--skip-prep`
+push remains a cheap live alternative.
+
 ## Boundary
 
 Original-byte disassembly, a Ghidra reference query, and call-graph
