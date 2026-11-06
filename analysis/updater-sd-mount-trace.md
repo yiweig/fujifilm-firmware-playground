@@ -322,6 +322,43 @@ The next trace target is the controller status bits
 `0x4007284c`/`0x40072914`, or the SDHC protocol. The `--skip-prep`
 push remains a cheap live alternative.
 
+## Command/response wait: `0x40072914` and the SD status bits
+
+`0x40072914` is the SD command completion wait, not a raw
+register poll:
+
+- It takes the semaphore at `0x400ba2f0 + 0x78` (created lazily by
+  `0x4007284c`) with a timeout derived from `r0`.
+- It reads `0x10004365` low nibble and `0x1000436a` low nibble.
+  If both are zero, it releases the semaphore and blocks on it
+  (`0x40082868` with timeout 0) until a command completion posts.
+- On timeout it logs, calls `0x40070f70`, writes
+  `0x10004012 = 3` via `0x40071474`, and returns 1.
+
+The wrappers are:
+
+- `0x4007149c`: reads `0x10004364` bit `0x20`; if set, returns 0
+  (busy/inhibit); if `r0 == 0`, returns 1; otherwise takes the
+  semaphore and calls the wait.
+- `0x400715b4`: reads `0x10004365` low nibble; if zero, returns 1
+  (no card); if six, returns 1; if `0x10004364` bit `0x80` is set,
+  logs an error; otherwise takes the semaphore and calls the wait.
+
+So the failure is now a **state wait**: the updater's SD command
+completion waits on `0x10004365`/`0x1000436a` (and the `0x10004364`
+busy bit). If the main firmware's controller leaves those bits in a
+state the updater does not recognize, the wait times out and the
+mount fails — exactly the observed service-mode outcome.
+
+The next diagnostic is read-only: stage `0x10004300..+0x100` in a
+loader session and capture `0x10004364`, `0x10004365` and
+`0x1000436a` at debug entry. The client's `--stage-bootinfo` now
+includes this page (`sdstatus-staged.bin`). If the bits are stuck
+(e.g. `0x10004364` bit `0x20` set or `0x10004365` low nibble
+unexpected), the fix is a pre-handoff clear/write or a payload
+patch to the wait; if they look normal, the failure is the SDHC/CMD
+protocol itself.
+
 ## Boundary
 
 Original-byte disassembly, a Ghidra reference query, and call-graph
