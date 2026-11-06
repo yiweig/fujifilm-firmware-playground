@@ -99,3 +99,15 @@ updater payload this time. The updater never ran, so the
 mailbox hypothesis remains **untested**. Recovery is the usual
 power cycle, which also clears the mailbox: any retry restarts
 from the mailbox step in a fresh boot.
+
+## Live attempt 2 (2026-11-05, night): push hung again
+
+Identical construction in a fresh boot: mailbox verified as
+`MAIN.BIN`, updater download/read-back verified, `0x04f7`
+accepted, no USB drop, bootquery probe timed out past 90 s
+with the device still enumerated. Second consecutive state-6
+hang; live attempts stopped for the night per the stated
+budget. The mailbox hypothesis remains untested — the updater
+has still never run with a provably set mailbox. Running
+tally for state 6: updater 2 successes / 3 stalls, main image
+0/4.
