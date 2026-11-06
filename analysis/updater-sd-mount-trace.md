@@ -187,6 +187,58 @@ boot but not after the RAM handoff.
    recoverable this way and the true 2 GB SDSC card is the next
    hardware control.
 
+## New lead: the SD init `0x4006ed88(0)` and controller config `0x4007155c`
+
+The `0x4006ed88` function is the **SD init/configure** entry, not
+just a power-callback registrar. With `r0 = 0` it:
+
+1. calls `0x40070f14` ("already initialized?"),
+2. if not initialized, registers the power callback via
+   `0x40070ee4(-1, 0, 1, 0)`,
+3. calls `0x4007155c(0)` — the **controller clock/bus-width
+   configuration**,
+4. calls `0x4006e248(0, 0)`.
+
+`0x4007155c` writes the SD controller registers:
+
+| Address | Value | Likely role |
+| --- | --- | --- |
+| `0x10004165`, `0x10004185` | `0x10` | bus/clock config |
+| `0x10004362` | `0x200` | clock divider |
+| `0x10004360` | `1` (`r0=0`) / `17` (`r0=64`) | bus width/power |
+| `0x10004361` | `22` (`r0=0`) / `30` (`r0=64`) | timing |
+| `0x10004368`, `0x10004369` | `0xff` | timing |
+
+It ends by calling `0x40070dfc` (the power/deinit helper). The
+`0x4006ed88` zero-reference result means the init is **not called
+directly**; it is table/ops-called, or the plain-file mount path
+never runs it. The mount path `0x40021d78` does not call
+`0x4006ed88(0)` or `0x4007155c` directly — it calls `0x4006de3c`
+(power state) and the command functions. That is now the strongest
+candidate: the RAM-pushed updater's mount path may run the SD
+commands without the controller clock/bus-width configuration that
+the cold boot's SD init performs.
+
+The next test is a `--sd-init-first` payload patch that calls
+`0x4006ed88(0)` before the mount wrapper, instead of the failed
+`sdReMount(2,0)` call. The stub is:
+
+```text
+411f0000: push {lr}
+411f0004: mov  r0, #0
+411f0008: bl   0x4006ed88
+411f000c: mov  r0, #2
+411f0010: pop  {lr}
+411f0014: b    0x4001c594
+```
+
+Branch encodings: `bl 0x4006ed88` = `ebb9fb5e`,
+`b 0x4001c594` = `eab8b15e`. This is a stronger test than the
+re-mount call because it includes the controller configuration.
+The client now has `--sd-init-first`; the 32-byte stub disassembles
+correctly with llvm-objdump, and the payload branch at `0x4000e5a4`
+is the same `b 0x411f0000`.
+
 ## Patch built (2026-11-06)
 
 The client now has `--ram-push --sd-remount-first`. It:
