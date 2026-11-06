@@ -187,6 +187,42 @@ boot but not after the RAM handoff.
    recoverable this way and the true 2 GB SDSC card is the next
    hardware control.
 
+## Patch built (2026-11-06)
+
+The client now has `--ram-push --sd-remount-first`. It:
+
+- patches the updater payload at `0x4000e5a4` from `b 0x4001c594`
+  to `b 0x411f0000` (`ea478695`);
+- writes a 32-byte stub to `0x411f0000` (scratch gap, inside the
+  loader write allowlist) after the payload read-back and before
+  `0x04f7`;
+- reads the stub back before the handoff.
+
+The stub disassembles as:
+
+```text
+411f0000: push {lr}
+411f0004: mov  r0, #2
+411f0008: mov  r1, #0
+411f000c: bl   0x4001f1d0
+411f0010: mov  r0, #2
+411f0014: pop  {lr}
+411f0018: b    0x4001c594
+411f001c: nop
+```
+
+The live command is:
+
+```sh
+sudo python3 ~/xhalf_loader_linux.py --set-mailbox MAIN BIN
+sudo python3 ~/xhalf_loader_linux.py --ram-push ~/updater.bin \
+    --sd-remount-first --drain-log
+```
+
+The stub is in the loader's scratch gap; the updater's heap could
+in principle overwrite it before the mount, so a hang/crash is
+possible. Power cycle recovers; internal storage is untouched.
+
 ## Boundary
 
 Original-byte disassembly, a Ghidra reference query, and call-graph

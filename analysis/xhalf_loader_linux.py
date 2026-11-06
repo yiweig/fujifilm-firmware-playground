@@ -529,8 +529,28 @@ class Loader:
             raise SystemExit('callback did not clear; abort')
         print('preparation callback cleared (park skipped for this boot)')
 
+    SD_REMOUNT_STUB = 0x411F0000
+    SD_REMOUNT_PATCH = 0x4000E5A4
+
+    @staticmethod
+    def _sd_remount_stub() -> bytes:
+        """Stub: call the updater's sdReMount/sdReDetect(2,0), then
+        resume the original mount wrapper FUN_4001c594 with r0=2.
+        Branch encodings verified against the updater image."""
+        words = [
+            0xE92D4000,  # push {lr}
+            0xE3A00002,  # mov r0, #2
+            0xE3A01000,  # mov r1, #0
+            0xEBB8BC6F,  # bl 0x4001f1d0
+            0xE3A00002,  # mov r0, #2
+            0xE8BD4000,  # pop {lr}
+            0xEAB8B15D,  # b 0x4001c594
+            0xE320F000,  # nop padding
+        ]
+        return b''.join(struct.pack('<I', w) for w in words)
+
     def ram_push(self, payload_path: str, skip_prep: bool = False, settle_s: int = 0,
-                 drain_log: bool = False):
+                 drain_log: bool = False, sd_remount_first: bool = False):
         """P2 of analysis/ram-push-sd-boot-plan.md: download a payload
         into the bootquery buffer, verify it by read-back, then issue
         the 0x04f7 upload/run handoff (dest 0x40000000). The handoff
@@ -539,6 +559,14 @@ class Loader:
         the firmware's assert/log output is captured if a preparation
         wait aborts the receiver task."""
         payload = Path(payload_path).read_bytes()
+        if sd_remount_first:
+            if len(payload) < self.SD_REMOUNT_PATCH + 4 - 0x40000000:
+                raise SystemExit('payload too small for the SD remount patch')
+            payload = bytearray(payload)
+            off = self.SD_REMOUNT_PATCH - 0x40000000
+            struct.pack_into('<I', payload, off, 0xEA478695)  # b 0x411f0000
+            payload = bytes(payload)
+            print('SD remount patch: 0x4000e5a4 -> b 0x411f0000')
         size = len(payload)
         want = hashlib.sha256(payload).hexdigest()
         print(f'payload {payload_path}: {size} bytes sha256 {want}')
@@ -568,6 +596,13 @@ class Loader:
             if got != want:
                 raise SystemExit('read-back mismatch; aborting before 0x04f7')
             print('read-back verified.')
+            if sd_remount_first:
+                stub = self._sd_remount_stub()
+                self.write_mem(self.SD_REMOUNT_STUB, stub)
+                check = self.read_mem(self.SD_REMOUNT_STUB, 32)
+                if check != stub:
+                    raise SystemExit('SD remount stub read-back mismatch; abort')
+                print(f'SD remount stub installed at 0x{self.SD_REMOUNT_STUB:08x}')
             if settle_s:
                 import time
                 print(f'settling {settle_s}s before run...')
@@ -877,6 +912,8 @@ def main():
                         help='with --ram-push: idle wait + bootquery between verify and run')
     parser.add_argument('--drain-log', action='store_true',
                         help='with --ram-push: drain EP 0x84 diagnostic log during the run')
+    parser.add_argument('--sd-remount-first', action='store_true',
+                        help='with --ram-push: patch the updater mount wrapper to call sdReMount(2,0) first')
     parser.add_argument('--fixed-staging', action='store_true',
                         help='with --direct-handoff: use fixed scratch staging, no bootquery-alloc')
     parser.add_argument('--park-first', action='store_true',
@@ -915,7 +952,8 @@ def main():
             loader.drain_only(args.drain_only)
         elif args.ram_push:
             loader.ram_push(args.ram_push, skip_prep=args.skip_prep,
-                            settle_s=args.settle, drain_log=args.drain_log)
+                            settle_s=args.settle, drain_log=args.drain_log,
+                            sd_remount_first=args.sd_remount_first)
         elif args.direct_handoff:
             loader.direct_handoff(args.direct_handoff, fixed=args.fixed_staging,
                                   park_first=args.park_first)
