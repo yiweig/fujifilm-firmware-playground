@@ -736,6 +736,20 @@ class Loader:
                            for b in data)
             print(f'  ascii: {text}')
 
+    def drain_only(self, seconds: int):
+        """Read-only: drain EP 0x84 for the given number of seconds and
+        print the firmware log records. Sends no control requests, so it
+        is safe against the updater's service personality (which does not
+        answer the loader 0x04f2 read)."""
+        import time
+        stop, packets = self._start_log_drain()
+        print(f'draining EP 0x84 for {seconds}s...')
+        try:
+            time.sleep(seconds)
+        finally:
+            stop.set()
+        print(f'captured {len(packets)} packet(s)')
+
     def hijack_test(self):
         tramp = b''.join(struct.pack('<I', w) for w in self.TRAMP_WORDS)
         # Stage trampoline + zeroed counter in scratch (normal write path).
@@ -853,6 +867,7 @@ def main():
     mode.add_argument('--stage-copy', action='store_true')
     mode.add_argument('--stage-bootinfo', action='store_true')
     mode.add_argument('--updater-probe', action='store_true')
+    mode.add_argument('--drain-only', type=int, metavar='SEC')
     mode.add_argument('--ram-push', metavar='PAYLOAD')
     mode.add_argument('--direct-handoff', metavar='PAYLOAD')
     mode.add_argument('--set-mailbox', nargs=2, metavar=('NAME', 'EXT'))
@@ -896,6 +911,8 @@ def main():
             loader.stage_bootinfo()
         elif args.updater_probe:
             loader.updater_probe()
+        elif args.drain_only:
+            loader.drain_only(args.drain_only)
         elif args.ram_push:
             loader.ram_push(args.ram_push, skip_prep=args.skip_prep,
                             settle_s=args.settle, drain_log=args.drain_log)

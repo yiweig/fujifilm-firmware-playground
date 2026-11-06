@@ -316,3 +316,8 @@ file/line or timeout message before the task died; that would name
 the failing stage (park acquire/post/poll vs. storage read vs.
 helper resource 17) instead of leaving it unknowable. The drain is
 read-only and does not change the push sequence.
+
+A standalone `--drain-only SEC` mode does the same EP 0x84 read
+with **no control requests**, for the updater's post-handoff log.
+It is safe against the updater's service personality, which does not
+answer the loader `0x04f2` read.
