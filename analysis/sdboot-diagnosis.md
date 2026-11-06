@@ -192,11 +192,17 @@ re-mount reset is therefore **not sufficient**. A second
 `--sd-init-first` patch called the full SD init `0x4006ed88(0)`,
 including the `0x4007155c(0)` controller clock/bus-width
 configuration; it also settled into service mode. The controller
-init/config is not the missing piece either. The remaining suspects
-are the SD command/response state (`0x10004364`/`0x10004365`,
-`0x4007284c`/`0x40072914`) or the SDHC card protocol (the current
-card is a 31.9 GB SDHC; the 1.5 GB FAT16 volume does not change
-that).
+init/config is not the missing piece either. The read-only
+`--stage-bootinfo` live status is `0x10004364=0x15` (bit5 clear),
+`0x10004365=0x00` (low nibble 0), `0x1000436a=0x00`; the config is
+`0x10004360=0x40`, `0x10004361=0x00`, `0x10004362=0x0200`,
+`0x10004165/185=0x10`. The main firmware leaves the controller
+**card state at 0**, not ready (6); the updater's `0x400715b4`
+ready gate returns before the command sequence, and `0x40072914`
+blocks on a completion that never posts. The remaining options are
+a payload patch to the `0x400715c8` no-card branch or bypassing the
+updater with the main firmware's shell `read` path. The SDHC card
+protocol is a secondary suspect.
 
 The EP 0x84 log service is not running in the service personality
 (0 packets); the `Cmd` task/log service is only started by the

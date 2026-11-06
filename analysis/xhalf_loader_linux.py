@@ -300,6 +300,7 @@ class Loader:
     GATE_STAGE = 0x41123000
     SYSINFO_STAGE = 0x41125000
     SDSTATUS_STAGE = 0x41126000
+    SDCONFIG_STAGE = 0x41127000
 
     def _set_stage(self, src, dst, length):
         if length <= 0 or length % 4:
@@ -340,6 +341,7 @@ class Loader:
                 (0x10004000, self.BOOTINFO_STAGE, 0x100, 'bootinfo-staged.bin'),
                 (0x10001000, self.GATE_STAGE, 0x304, 'gate-staged.bin'),
                 (0x10004300, self.SDSTATUS_STAGE, 0x100, 'sdstatus-staged.bin'),
+                (0x10004100, self.SDCONFIG_STAGE, 0x100, 'sdconfig-staged.bin'),
             ]
             for src, dst, length, name in stages:
                 self._set_stage(src, dst, length)
@@ -356,6 +358,7 @@ class Loader:
             bootinfo = Path('bootinfo-staged.bin').read_bytes()
             gate = Path('gate-staged.bin').read_bytes()
             sdstatus = Path('sdstatus-staged.bin').read_bytes()
+            sdconfig = Path('sdconfig-staged.bin').read_bytes()
             backend = struct.unpack_from('<H', sysinfo, 0x58)[0]
             status = struct.unpack_from('<H', bootinfo, 0x54)[0]
             buttons = bootinfo[0xB4:0xB9]
@@ -371,6 +374,10 @@ class Loader:
             print(f'sdstatus: 0x10004364=0x{sd64:02x} (bit5={bool(sd64 & 0x20)}, '
                   f'bit7={bool(sd64 & 0x80)}) 0x10004365=0x{sd65:02x} '
                   f'(low={sd65 & 0xF}) 0x1000436a=0x{sd6a:02x} (low={sd6a & 0xF})')
+            print(f'sdconfig: 0x10004360=0x{sdstatus[0x60]:02x} '
+                  f'0x10004361=0x{sdstatus[0x61]:02x} '
+                  f'0x10004362=0x{struct.unpack_from("<H", sdstatus, 0x62)[0]:04x} '
+                  f'0x10004165=0x{sdconfig[0x65]:02x} 0x10004185=0x{sdconfig[0x85]:02x}')
         finally:
             try:
                 for (block, _), orig in zip(self.SLOT_BLOCKS, originals):

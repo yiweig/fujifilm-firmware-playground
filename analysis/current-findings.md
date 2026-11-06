@@ -192,12 +192,25 @@ loads that file from SD to `0x40000000` and boots it.
   piece; the remaining path is the SD command/response state
   (`0x10004364`/`0x10004365`, `0x4007284c`/`0x40072914`) or the
   SDHC protocol.
+- **Live SD status (2026-11-06): the card state is 0, not ready.**
+  The read-only `--stage-bootinfo` captured
+  `0x10004364=0x15` (bit5 clear), `0x10004365=0x00` (low nibble 0)
+  and `0x1000436a=0x00`. The config registers are plausible
+  (`0x10004360=0x40`, `0x10004362=0x0200`, `0x10004165/185=0x10`),
+  but the main firmware leaves the controller card state at 0. The
+  updater's `0x400715b4` ready gate treats low nibble 0 as
+  not-ready and returns before the command sequence; `0x40072914`
+  then blocks on a completion that never posts. The mount failure
+  is the ready-gate state, not the controller config. Next: patch
+  the `0x400715c8` no-card branch, or bypass the updater with the
+  main firmware's shell `read` path.
+  ([updater-sd-mount-trace.md](updater-sd-mount-trace.md))
 
 ## What remains open
 
 | Item | State |
 | --- | --- |
-| SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call and the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`) both failed, so the simple reset/init hypotheses are eliminated. Remaining: SD command/response state (`0x10004364`/`0x10004365`, `0x4007284c`/`0x40072914`) or SDHC protocol. Retries blocked by state-6 prep |
+| SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call and the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`) both failed. Live status shows `0x10004365=0x00` (card state 0), so the `0x400715b4` ready gate returns before commands. Remaining: patch the `0x400715c8` gate, or bypass the updater with the main firmware's shell `read` path. Retries blocked by state-6 prep |
 | RAM-pushed main image (stock or modified) | 0/4 via state 6; direct path lacks quiesce. Post-event descriptor not captured, so prep-hang vs post-handoff crash is unresolved |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | Closed: ROM/FRM cold entry never established, so no recovery would exist |

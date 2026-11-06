@@ -359,6 +359,50 @@ unexpected), the fix is a pre-handoff clear/write or a payload
 patch to the wait; if they look normal, the failure is the SDHC/CMD
 protocol itself.
 
+## Live SD status/config (2026-11-06): card state is 0, not ready
+
+Read-only `--stage-bootinfo` in a calibration boot, with the FAT16
+card inserted:
+
+```text
+sdstatus: 0x10004364=0x15 (bit5=False, bit7=False)
+          0x10004365=0x00 (low=0) 0x1000436a=0x00 (low=0)
+sdconfig: 0x10004360=0x40 0x10004361=0x00 0x10004362=0x0200
+          0x10004165=0x10 0x10004185=0x10
+```
+
+The page is saved outside git as
+`/private/tmp/xhalf-sdstatus-2026-11-06.bin` (SHA-256
+`4685c5d8…`).
+
+The main firmware leaves the SD controller **card state at 0**
+(`0x10004365` low nibble), not the ready state 6. The updater's
+`0x400715b4` reads that low nibble and, at 0, takes the no-card/
+not-ready path before the command sequence can run; `0x40072914`
+then sees `0x10004365`/`0x1000436a` both zero and blocks on the
+completion semaphore. The config registers are plausible
+(`0x10004360=0x40`, divider `0x200`, interrupt/clock `0x10`), and
+the init patches wrote their own values, but the **card state never
+transitioned from 0**. The mount failure is therefore the ready-gate
+state, not the controller clock/bus-width configuration.
+
+Two ways forward:
+
+1. **Patch the ready gate.** NOP the `beq 0x4007163c` at
+   `0x400715c8` (the low-nibble-0 no-card branch) and test whether
+   the command sequence starts. The wait at `0x40072914` may still
+   block if no completion posts, so this may need a second patch.
+2. **Bypass the updater's SD driver.** Use the main firmware's
+   APITEST shell `read MAIN.BIN 0x41000000` command (the main
+   firmware's SD driver works), then `0x04f7` from that DRAM buffer
+   instead of the updater's mount. This is a new architecture: the
+   shell bridge must be stabilized, and the state-6 prep lottery
+   remains, but it removes the updater's SD mount entirely.
+
+The true 2 GB SDSC card remains the hardware control, but the live
+status suggests the card protocol is not the first problem: the
+controller is reporting state 0 before any card command runs.
+
 ## Boundary
 
 Original-byte disassembly, a Ghidra reference query, and call-graph
