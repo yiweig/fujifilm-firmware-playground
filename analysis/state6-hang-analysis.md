@@ -267,3 +267,21 @@ remains the only path, at its observed odds.
 updater on the same path remains **2/3**. A fourth silent hang
 does not isolate which preparation abort fired. No retry in
 that boot.
+
+## Addendum 8 (2026-11-06): post-boot USB attach attempt hung
+
+One fresh-boot updater push with the mailbox verified and the card
+in place. The camera had been attached to the VM with
+`utmctl usb connect` **after** it was already in debug mode. The
+payload downloaded and read back clean; `0x04f7` was accepted; no
+drop occurred, and a bootquery probe past 90 s timed out with the
+device still enumerated as `2aad:6500`. The updater never ran, so
+the read-only updater probe was not reachable. Tally is now
+updater 2/6, main image 0/4.
+
+This is a data point, not an isolation: the attach order is a
+candidate variable because the 19:31 successful run likely had the
+passthrough attached before/at boot, while this attempt attached a
+already-running loader. The next attempt should attach the
+passthrough before entering debug mode and keep it attached through
+the push.

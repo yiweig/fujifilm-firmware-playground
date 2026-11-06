@@ -54,8 +54,8 @@ dies). Completion therefore depends on system state at push
 time — other tasks, mutexes, secondary cores — not on the
 payload, which is hash-verified identical every time.
 
-**Live tally for state 6: 2 completions in 9 attempts**
-(updater payload 2/5, main image 0/4). Every stall has the
+**Live tally for state 6: 2 completions in 10 attempts**
+(updater payload 2/6, main image 0/4). Every stall has the
 same signature: setup accepted, device still enumerated,
 control dead, screen unchanged — failure in preparation,
 before the stub jumps. ([state6-hang-analysis.md](state6-hang-analysis.md))
@@ -69,6 +69,15 @@ descriptor after the event were never captured. Until that is
 done, treat main-image 0/4 as "did not come up", not as "never
 ran". The updater's 2/5 and the main image's 0/4 may not share
 one failure mode.
+
+One more unproven variable, recorded 2026-11-06: the updater push
+that hung that day ran after the camera was already in debug mode
+and was attached to the VM with `utmctl usb connect`. The 19:31
+successful run likely had the passthrough attached before/at boot.
+The post-boot attach may reset the USB/receiver state in a way that
+makes the state-6 park hang. The next attempt should attach the
+passthrough before entering debug mode; this is a hypothesis, not a
+conclusion.
 
 ## Bypasses, each closed with evidence
 

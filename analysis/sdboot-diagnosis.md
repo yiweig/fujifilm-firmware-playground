@@ -138,7 +138,7 @@ hang; live attempts stopped for the night per the stated
 budget. These attempts never reached the updater, so they add no
 evidence about the mailbox; the 19:31 run already falsified the
 volatility hypothesis. Running tally for state 6: updater 2
-successes / 3 stalls, main image 0/4.
+successes / 4 stalls, main image 0/4.
 
 ## Emulator scope correction (2026-11-06)
 
