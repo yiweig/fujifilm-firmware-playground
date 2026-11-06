@@ -188,7 +188,8 @@ initialization block.
    ([updater-service-read-probe.md](updater-service-read-probe.md)).
 5. The next experiment is the card/FAT test: a smaller FAT16/FAT32
    card (or a smaller partition) with `EnableTest.txt` and
-   `MAIN.BIN` at the root, then the same mailbox + updater push.
-   If that boots, the issue is the current card/FAT stack; if it
-   still goes to service mode, the issue is the updater's SD
+   `MAIN.BIN` at the root, then the same mailbox + updater push
+   with `--drain-log` so the EP 0x84 log is captured if the push
+   stalls. If that boots, the issue is the current card/FAT stack;
+   if it still goes to service mode, the issue is the updater's SD
    driver/state.

@@ -300,3 +300,19 @@ updater's service personality does not speak the loader read
 dialect. The read-only debug-port idea is closed; the next P3
 diagnostic is the card/FAT test. Tally is now updater 3/7, main
 image 0/4.
+
+## Addendum 10 (2026-11-06): EP 0x84 log drain added to `--ram-push`
+
+The client now has `--ram-push --drain-log`: a background thread
+reads only EP 0x84 (the firmware diagnostic log) for the whole run,
+prints each packet as hex plus a best-effort decode of the 4-byte
+`00 01 01 <char>` records, and reports the packet count at the end.
+It never reads the payload bulk endpoint, so it cannot consume
+download/read-back data.
+
+The next push should use it. If a preparation wait aborts the
+receiver task, the assert path `FUN_400070d8` may have emitted a
+file/line or timeout message before the task died; that would name
+the failing stage (park acquire/post/poll vs. storage read vs.
+helper resource 17) instead of leaving it unknowable. The drain is
+read-only and does not change the push sequence.

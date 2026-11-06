@@ -205,6 +205,43 @@ class Loader:
         thread.start()
         return stop, packets
 
+    LOG_EP = 0x84
+
+    @staticmethod
+    def _decode_log_records(data: bytes) -> str:
+        """Best-effort decode of the firmware's 4-byte log records."""
+        chars = []
+        for i in range(0, len(data) - 3, 4):
+            rec = data[i:i + 4]
+            if rec[0] == 0 and rec[1] == 1 and rec[2] == 1:
+                b = rec[3]
+                chars.append(chr(b) if 32 <= b < 127 or b in (10, 13) else '.')
+        return ''.join(chars)
+
+    def _start_log_drain(self):
+        """Continuously drain EP 0x84 (firmware diagnostic log) during a
+        push. Reads only the interrupt endpoint, never the payload bulk
+        endpoint, so it cannot consume download/read-back data."""
+        import threading
+        packets = []
+        stop = threading.Event()
+
+        def run():
+            while not stop.is_set():
+                try:
+                    d = bytes(self.dev.read(self.LOG_EP, 512, timeout=300))
+                    if d:
+                        packets.append(d)
+                        text = self._decode_log_records(d)
+                        print(f'  [log] {d.hex()}' + (f'  {text!r}' if text else ''),
+                              flush=True)
+                except Exception:
+                    pass
+
+        thread = threading.Thread(target=run, daemon=True)
+        thread.start()
+        return stop, packets
+
     def apitest_init(self):
         # Correct order learned live: init(0)-first makes init(1) early-exit
         # before installing the shell input/output hooks. So: teardown (if
@@ -492,50 +529,66 @@ class Loader:
             raise SystemExit('callback did not clear; abort')
         print('preparation callback cleared (park skipped for this boot)')
 
-    def ram_push(self, payload_path: str, skip_prep: bool = False, settle_s: int = 0):
+    def ram_push(self, payload_path: str, skip_prep: bool = False, settle_s: int = 0,
+                 drain_log: bool = False):
         """P2 of analysis/ram-push-sd-boot-plan.md: download a payload
         into the bootquery buffer, verify it by read-back, then issue
         the 0x04f7 upload/run handoff (dest 0x40000000). The handoff
-        replaces the running environment; no reply is expected."""
+        replaces the running environment; no reply is expected.
+        With drain_log=True, EP 0x84 is drained during the whole run so
+        the firmware's assert/log output is captured if a preparation
+        wait aborts the receiver task."""
         payload = Path(payload_path).read_bytes()
         size = len(payload)
         want = hashlib.sha256(payload).hexdigest()
         print(f'payload {payload_path}: {size} bytes sha256 {want}')
-        if skip_prep:
-            self.skip_prep()
-        base = self.bootquery_alloc(size)
-        if base == 0:
-            raise SystemExit('bootquery allocation failed (address 0); abort')
-        print(f'bootquery buffer at 0x{base:08x}')
-        chunk = 0x8000
-        for off in range(0, size, chunk):
-            part = payload[off:off + chunk]
-            # 0x04f5 requires 32-byte alignment of address and length
-            # handling: all chunks except possibly the last are 0x8000.
-            self._write_payload(base + off, part, base, size)
-            print(f'  downloaded 0x{off + len(part):x}/0x{size:x}', flush=True)
-        tmp = Path('ram-push-readback.bin')
-        self.read_chunked(base, size, str(tmp), 0x10000)
-        got = hashlib.sha256(tmp.read_bytes()).hexdigest()
-        print(f'read-back sha256 {got}')
-        if got != want:
-            raise SystemExit('read-back mismatch; aborting before 0x04f7')
-        print('read-back verified.')
-        if settle_s:
-            import time
-            print(f'settling {settle_s}s before run...')
-            time.sleep(settle_s)
-            print(f'pre-run bootquery: {self.bootquery().hex()}')
-        print('Sending 0x04f7 upload/run NOW '
-              '(device will leave USB as the environment is replaced)...')
+        log_stop = None
+        log_packets = []
+        if drain_log:
+            log_stop, log_packets = self._start_log_drain()
+            print('log drain started on EP 0x84')
         try:
-            sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F7,
-                                          struct.pack('<III', base, size, 0),
-                                          timeout=TIMEOUT_MS)
-            print(f'0x04f7 setup sent ({sent} bytes); waiting for the device to drop off USB...')
-        except Exception as exc:
-            print(f'0x04f7 transfer ended with {type(exc).__name__}: {exc} '
-                  '(expected if the handoff already started)')
+            if skip_prep:
+                self.skip_prep()
+            base = self.bootquery_alloc(size)
+            if base == 0:
+                raise SystemExit('bootquery allocation failed (address 0); abort')
+            print(f'bootquery buffer at 0x{base:08x}')
+            chunk = 0x8000
+            for off in range(0, size, chunk):
+                part = payload[off:off + chunk]
+                # 0x04f5 requires 32-byte alignment of address and length
+                # handling: all chunks except possibly the last are 0x8000.
+                self._write_payload(base + off, part, base, size)
+                print(f'  downloaded 0x{off + len(part):x}/0x{size:x}', flush=True)
+            tmp = Path('ram-push-readback.bin')
+            self.read_chunked(base, size, str(tmp), 0x10000)
+            got = hashlib.sha256(tmp.read_bytes()).hexdigest()
+            print(f'read-back sha256 {got}')
+            if got != want:
+                raise SystemExit('read-back mismatch; aborting before 0x04f7')
+            print('read-back verified.')
+            if settle_s:
+                import time
+                print(f'settling {settle_s}s before run...')
+                time.sleep(settle_s)
+                print(f'pre-run bootquery: {self.bootquery().hex()}')
+            print('Sending 0x04f7 upload/run NOW '
+                  '(device will leave USB as the environment is replaced)...')
+            try:
+                sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F7,
+                                              struct.pack('<III', base, size, 0),
+                                              timeout=TIMEOUT_MS)
+                print(f'0x04f7 setup sent ({sent} bytes); waiting for the device to drop off USB...')
+            except Exception as exc:
+                print(f'0x04f7 transfer ended with {type(exc).__name__}: {exc} '
+                      '(expected if the handoff already started)')
+        finally:
+            if log_stop is not None:
+                import time
+                time.sleep(0.5)
+                log_stop.set()
+                print(f'log drain captured {len(log_packets)} packet(s)')
 
     # Trampoline v4: v3 copier + CMD=2 direct call of the handoff helper
     # FUN_401eb1ec(arg0..arg3, stack arg4) from control block fields.
@@ -807,6 +860,8 @@ def main():
                         help='with --ram-push: zero the mode-0x88 preparation callback first')
     parser.add_argument('--settle', type=int, default=0, metavar='SEC',
                         help='with --ram-push: idle wait + bootquery between verify and run')
+    parser.add_argument('--drain-log', action='store_true',
+                        help='with --ram-push: drain EP 0x84 diagnostic log during the run')
     parser.add_argument('--fixed-staging', action='store_true',
                         help='with --direct-handoff: use fixed scratch staging, no bootquery-alloc')
     parser.add_argument('--park-first', action='store_true',
@@ -842,7 +897,8 @@ def main():
         elif args.updater_probe:
             loader.updater_probe()
         elif args.ram_push:
-            loader.ram_push(args.ram_push, skip_prep=args.skip_prep, settle_s=args.settle)
+            loader.ram_push(args.ram_push, skip_prep=args.skip_prep,
+                            settle_s=args.settle, drain_log=args.drain_log)
         elif args.direct_handoff:
             loader.direct_handoff(args.direct_handoff, fixed=args.fixed_staging,
                                   park_first=args.park_first)
