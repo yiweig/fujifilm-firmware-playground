@@ -545,6 +545,8 @@ class Loader:
 
     SD_REMOUNT_STUB = 0x411F0000
     SD_REMOUNT_PATCH = 0x4000E5A4
+    SD_READY_GATE_PATCH = 0x400715C8
+    SD_READY_GATE_NOP = 0xE1A00000
 
     @staticmethod
     def _sd_remount_stub() -> bytes:
@@ -582,7 +584,7 @@ class Loader:
 
     def ram_push(self, payload_path: str, skip_prep: bool = False, settle_s: int = 0,
                  drain_log: bool = False, sd_remount_first: bool = False,
-                 sd_init_first: bool = False):
+                 sd_init_first: bool = False, sd_ready_gate: bool = False):
         """P2 of analysis/ram-push-sd-boot-plan.md: download a payload
         into the bootquery buffer, verify it by read-back, then issue
         the 0x04f7 upload/run handoff (dest 0x40000000). The handoff
@@ -594,15 +596,22 @@ class Loader:
         if sd_remount_first and sd_init_first:
             raise SystemExit('choose one of --sd-remount-first / --sd-init-first')
         sd_patch = sd_remount_first or sd_init_first
-        if sd_patch:
-            if len(payload) < self.SD_REMOUNT_PATCH + 4 - 0x40000000:
+        if sd_patch or sd_ready_gate:
+            if len(payload) < max(self.SD_REMOUNT_PATCH, self.SD_READY_GATE_PATCH) + 4 - 0x40000000:
                 raise SystemExit('payload too small for the SD patch')
             payload = bytearray(payload)
-            off = self.SD_REMOUNT_PATCH - 0x40000000
-            struct.pack_into('<I', payload, off, 0xEA478695)  # b 0x411f0000
+            if sd_patch:
+                off = self.SD_REMOUNT_PATCH - 0x40000000
+                struct.pack_into('<I', payload, off, 0xEA478695)  # b 0x411f0000
+            if sd_ready_gate:
+                off = self.SD_READY_GATE_PATCH - 0x40000000
+                struct.pack_into('<I', payload, off, self.SD_READY_GATE_NOP)
             payload = bytes(payload)
-            label = 'SD init' if sd_init_first else 'SD remount'
-            print(f'{label} patch: 0x4000e5a4 -> b 0x411f0000')
+            if sd_patch:
+                label = 'SD init' if sd_init_first else 'SD remount'
+                print(f'{label} patch: 0x4000e5a4 -> b 0x411f0000')
+            if sd_ready_gate:
+                print('SD ready-gate patch: 0x400715c8 -> nop')
         size = len(payload)
         want = hashlib.sha256(payload).hexdigest()
         print(f'payload {payload_path}: {size} bytes sha256 {want}')
@@ -952,6 +961,8 @@ def main():
                         help='with --ram-push: patch the updater mount wrapper to call sdReMount(2,0) first')
     parser.add_argument('--sd-init-first', action='store_true',
                         help='with --ram-push: patch the updater mount wrapper to call SD init 0x4006ed88(0) first')
+    parser.add_argument('--sd-ready-gate', action='store_true',
+                        help='with --ram-push: NOP the updater SD ready gate at 0x400715c8 (test)')
     parser.add_argument('--fixed-staging', action='store_true',
                         help='with --direct-handoff: use fixed scratch staging, no bootquery-alloc')
     parser.add_argument('--park-first', action='store_true',
@@ -992,7 +1003,8 @@ def main():
             loader.ram_push(args.ram_push, skip_prep=args.skip_prep,
                             settle_s=args.settle, drain_log=args.drain_log,
                             sd_remount_first=args.sd_remount_first,
-                            sd_init_first=args.sd_init_first)
+                            sd_init_first=args.sd_init_first,
+                            sd_ready_gate=args.sd_ready_gate)
         elif args.direct_handoff:
             loader.direct_handoff(args.direct_handoff, fixed=args.fixed_staging,
                                   park_first=args.park_first)

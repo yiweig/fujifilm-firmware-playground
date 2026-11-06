@@ -390,8 +390,12 @@ Two ways forward:
 
 1. **Patch the ready gate.** NOP the `beq 0x4007163c` at
    `0x400715c8` (the low-nibble-0 no-card branch) and test whether
-   the command sequence starts. The wait at `0x40072914` may still
-   block if no completion posts, so this may need a second patch.
+   the command sequence starts. The client now has
+   `--sd-ready-gate` for this. It is a test, not a confirmed fix:
+   the low-0 path may still return early through the `r0 == 0`
+   check at `0x400715f0`, and the mount path's `sdDetect` may use
+   the driver state field `0x400ba140+id*4+0x120` rather than this
+   gate. The wait at `0x40072914` may also still block.
 2. **Bypass the updater's SD driver.** Use the main firmware's
    APITEST shell `read MAIN.BIN 0x41000000` command (the main
    firmware's SD driver works), then `0x04f7` from that DRAM buffer
