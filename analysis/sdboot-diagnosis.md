@@ -198,6 +198,15 @@ trace of the updater's `FUN_4000e5a4(2)` → `sdVfsMount` →
 or a `--skip-prep` updater push to test whether the mode-0x88 park
 leaves the SD controller in a bad state.
 
+The offline trace is done:
+[updater-sd-mount-trace.md](updater-sd-mount-trace.md). The mount
+path does attempt an SD power/init (`0x4006de3c` → `0x40070d18`),
+but that helper returns early if the callback at `0x400ba2a0` is
+zero. The callback is registered by `0x4006ed88(0)` and the SD
+shell command; `0x4006ed88` has no direct callers. If the plain-file
+path never runs it before the mount, the SD power-on is a no-op.
+That is the leading hypothesis and the next thing to resolve.
+
 ## Status and next live attempt
 
 1. The read-only loader session is done (2026-11-06). The client's
