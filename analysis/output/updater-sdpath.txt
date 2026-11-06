@@ -1,0 +1,24 @@
+Full updater SHA-256: 4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976
+Original consumer 400009c4; MMIO fixtures only; no hardware access.
+CASE status=0100 backend=00 ready=1 d2=0 d5=0 file=0 probes=[2] -> D:\MAIN.BIN, boundary=4000f270
+PASS status=0100 backend=00 ready=1 d2=0 d5=0 file=0 probes=[2] -> D:\MAIN.BIN, boundary=4000f270
+CASE status=0100 backend=00 ready=1 d2=-1 d5=0 file=0 probes=[2, 5] -> G:\MAIN.BIN, boundary=4000f270
+PASS status=0100 backend=00 ready=1 d2=-1 d5=0 file=0 probes=[2, 5] -> G:\MAIN.BIN, boundary=4000f270
+CASE status=0100 backend=00 ready=1 d2=-1 d5=-1 file=0 probes=[2, 5] -> null, boundary=40075ea4
+PASS status=0100 backend=00 ready=1 d2=-1 d5=-1 file=0 probes=[2, 5] -> null, boundary=40075ea4
+CASE status=0100 backend=80 ready=1 d2=0 d5=0 file=0 probes=[5] -> G:\MAIN.BIN, boundary=4000f270
+PASS status=0100 backend=80 ready=1 d2=0 d5=0 file=0 probes=[5] -> G:\MAIN.BIN, boundary=4000f270
+CASE status=0100 backend=80 ready=1 d2=0 d5=-1 file=0 probes=[5] -> null, boundary=40075ea4
+PASS status=0100 backend=80 ready=1 d2=0 d5=-1 file=0 probes=[5] -> null, boundary=40075ea4
+CASE status=0104 backend=80 ready=1 d2=0 d5=0 file=0 probes=[2] -> D:\MAIN.BIN, boundary=4000f270
+PASS status=0104 backend=80 ready=1 d2=0 d5=0 file=0 probes=[2] -> D:\MAIN.BIN, boundary=4000f270
+CASE status=0100 backend=40 ready=1 d2=0 d5=0 file=0 probes=[2] -> D:\MAIN.BIN, boundary=4000f270
+PASS status=0100 backend=40 ready=1 d2=0 d5=0 file=0 probes=[2] -> D:\MAIN.BIN, boundary=4000f270
+CASE status=0100 backend=80 ready=1 d2=0 d5=0 file=1 probes=[5] -> G:\MAIN.BIN, boundary=40075ea4
+PASS status=0100 backend=80 ready=1 d2=0 d5=0 file=1 probes=[5] -> G:\MAIN.BIN, boundary=40075ea4
+CASE status=0100 backend=00 ready=0 d2=0 d5=0 file=0 probes=[2] -> D:\MAIN.BIN, boundary=4000f270
+PASS status=0100 backend=00 ready=0 d2=0 d5=0 file=0 probes=[2] -> D:\MAIN.BIN, boundary=4000f270
+CASE status=0100 backend=80 ready=0 d2=0 d5=0 file=0 probes=[5] -> G:\MAIN.BIN, boundary=4000f270
+PASS status=0100 backend=80 ready=0 d2=0 d5=0 file=0 probes=[5] -> G:\MAIN.BIN, boundary=4000f270
+10 controls passed. The live calibration fixture (status 0100, zero buttons) takes the button/init branch; the backend 0x80 cases model drive 5 first.
+Modeled: registration/init/log calls return 0; drive probes and file-check results are supplied. No mount, FAT, file read, boot task or USB startup executes.

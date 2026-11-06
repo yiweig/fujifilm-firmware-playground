@@ -170,18 +170,24 @@ initialization block.
    ([loader-memory-read-live.md](loader-memory-read-live.md)).
    The existing `stage_bootinfo` already copies the `0x10004000`
    and `0x10001000` pages; extend it with the `0x10000000` page.
-2. Rerun the mailbox emulator with the live fixtures: status
-   `0x0100`, button bytes zero, storage readiness 0 (or model the
-   init), and backend values `0x00/0x20/0x40/0x80/0xa0/0xc0`
-   with both drive-2 and drive-5 probes.
+2. The live-fixture rerun is done:
+   [updater-sd-path-backend.md](updater-sd-path-backend.md) runs the
+   consumer with status `0x0100`, zero button bytes, readiness 0/1,
+   backend values `0x00/0x20/0x40/0x80/0xa0/0xc0` and drive-2/5
+   probes. Ten controls pass. The live status/button fixture does
+   not change the post-init path; backend `0x80` selects drive 5
+   first and has **no drive-2 fallback**. The live
+   `0x10000058` value is the remaining input.
 3. If the backend points at drive 5, fix that before another push.
    If it points at drive 2, the next live attempt should target
    mount/FAT/file-open; the mailbox is already set correctly.
 4. Only then run another mailbox + updater push. If the updater
    comes up, treat its service personality as a read-only debug
    port: the `0x04f2` family may work even though the `0x70`
-   bootquery timed out. A read of `0x40000000` verifies the
-   dialect; aligned reads of the log state (`0x400ba7d8`) and log
-   task (`0x400a29ac`) would expose the failure reason. This is
-   read-only: no `0x04f5` writes, no `0x04f7` run, and no storage
-   or erase commands to the updater.
+   bootquery timed out. The prepared probe and address list are in
+   [updater-service-read-probe.md](updater-service-read-probe.md):
+   a read of `0x40000000` verifies the dialect; aligned reads of
+   the log state (`0x400ba7d8`) and log task (`0x400a29ac`) would
+   expose the failure reason. This is read-only: no `0x04f5`
+   writes, no `0x04f7` run, and no storage or erase commands to
+   the updater.

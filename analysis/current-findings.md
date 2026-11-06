@@ -129,10 +129,15 @@ loads that file from SD to `0x40000000` and boots it.
 - **Drive-letter correction.** The drive-5 fallback, on success,
   rewrites the pathname prefix to `G` at `0x400010c8..0x400010d8`;
   it does not still check `D:`. The live value of
-  `0x10000058 & 0xe0` has never been read, and the P3 emulator
-  only models the drive-2 probe. With live status `0x0100`
+  `0x10000058 & 0xe0` has never been read; the original mailbox
+  emulator only modeled the drive-2 probe, which is why this
+  branch went untested. With live status `0x0100`
   (bit 2 clear), a backend of `0x80/0xa0/0xc0` would try
   `G:\MAIN.bin` first and could never look at the SD card.
+  Live-fixture controls confirm backend `0x80` has **no drive-2
+  fallback**: drive-5 success gives `G:\MAIN.bin`; drive-5 failure
+  goes to cleanup/service. The live `0x10000058` value is the
+  remaining input. ([updater-sd-path-backend.md](updater-sd-path-backend.md))
 - **Two later corrected attempts (2026-11-05 night)** set and
   verified the mailbox in the same boot as the push, but both
   hung in state 6 before the updater ran. They add no evidence

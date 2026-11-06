@@ -1,19 +1,17 @@
 """Restricted Linux/pyusb client for the X half target-0 loader (2aad:6500).
 
-Read-only first rung. Linux only; run inside the passthrough VM.
+Linux only; run inside the passthrough VM. The client covers the proven
+read-only loader requests, the scratch-only write path, the
+emulator-qualified trampolines, and the RAM-push/direct-handoff
+experiments. Address/length are allowlisted host-side; the firmware
+parser itself applies no bounds, so the allowlist is the safety boundary.
 
-Modes:
-  --bootquery       Vendor IN 0x70 with wValue=wIndex=0 (zero size: skips the
-                    receiver's allocation branch). Prints boot-method byte
-                    and the returned address word.
-  --read ADDR LEN OUT.bin
-                    Vendor OUT 0xfd, wIndex=0x04f2, 8-byte payload
-                    (address,length LE), then reads LEN bytes from bulk IN
-                    0x82 (interface 5) into OUT.bin.
-
-There is intentionally no memory-write, upload, or execute mode in this
-client. Address/length are allowlisted host-side; the firmware parser itself
-applies no bounds, so this allowlist is the safety boundary.
+Read-only modes: --bootquery, --read, --read-chunked, --stage-copy,
+--stage-bootinfo, --updater-probe, --apitest-*.
+Write/execute modes: --write-test (scratch), --hijack-test (handler slots),
+--set-mailbox (boot-info mailbox), --ram-push (payload handoff),
+--direct-handoff (helper call). Read the linked reports before using these
+live; they replace the running environment or patch handler slots.
 
 Receiver basis: analysis/xhalf-usb-ram-receiver.md and
 analysis/loader-memory-read-boundary.md (2.00 main image).
@@ -263,6 +261,7 @@ class Loader:
                   '041080e50f00bde804c09fe51cff2fe10001104180121e40')
     BOOTINFO_STAGE = 0x41122000
     GATE_STAGE = 0x41123000
+    SYSINFO_STAGE = 0x41125000
 
     def _set_stage(self, src, dst, length):
         if length <= 0 or length % 4:
@@ -276,10 +275,12 @@ class Loader:
         self.write_mem(self.COUNTER_ADDR, bytes(block))
 
     def stage_bootinfo(self):
-        """Install trampoline v3; stage boot-info (0x10004000) and gate
-        (0x10001000) pages to DRAM, then read them back via the loader.
-        MMIO sources: if a copy faults, DONE never reaches 2 and the
-        camera may need a battery pull (same contract as the low copy)."""
+        """Install trampoline v3; stage boot-info (0x10004000), gate
+        (0x10001000) and system-info (0x10000000) pages to DRAM, then
+        read them back via the loader. The system-info page carries
+        the storage backend selector at 0x10000058. MMIO sources: if a
+        copy faults, DONE never reaches 2 and the camera may need a
+        battery pull (same contract as the low copy)."""
         self.write_mem(self.TRAMP_ADDR, bytes.fromhex(self.TRAMP3_HEX))
         self.write_mem(self.COUNTER_ADDR, bytes(32))
         if self.read_mem(self.TRAMP_ADDR, 32) != bytes.fromhex(self.TRAMP3_HEX)[:32]:
@@ -297,6 +298,7 @@ class Loader:
                 self._write_block32(block, bytes(data))
             print('trampoline v3 installed')
             stages = [
+                (0x10000000, self.SYSINFO_STAGE, 0x100, 'sysinfo-staged.bin'),
                 (0x10004000, self.BOOTINFO_STAGE, 0x100, 'bootinfo-staged.bin'),
                 (0x10001000, self.GATE_STAGE, 0x304, 'gate-staged.bin'),
             ]
@@ -310,6 +312,21 @@ class Loader:
                 data = self.read_mem(dst, length)
                 Path(name).write_bytes(data)
                 print(f'staged 0x{src:08x}..+0x{length:x} -> {name}: {data[:32].hex()}')
+            # Decode the fields that decide the updater's SD path.
+            sysinfo = Path('sysinfo-staged.bin').read_bytes()
+            bootinfo = Path('bootinfo-staged.bin').read_bytes()
+            gate = Path('gate-staged.bin').read_bytes()
+            backend = struct.unpack_from('<H', sysinfo, 0x58)[0]
+            status = struct.unpack_from('<H', bootinfo, 0x54)[0]
+            buttons = bootinfo[0xB4:0xB9]
+            name = bootinfo[0xB9:0xC1].split(b'\x00')[0].decode(errors='replace')
+            ext = bootinfo[0xC1:0xC4].split(b'\x00')[0].decode(errors='replace')
+            gate_word = struct.unpack_from('<I', gate, 0x300)[0]
+            print(f'sysinfo: 0x10000058=0x{backend:04x} (backend=0x{backend & 0xE0:02x})')
+            print(f'bootinfo: status=0x{status:04x} (bit2={bool(status & 4)}, '
+                  f'bit7={bool(status & 0x80)}) buttons={buttons.hex()} '
+                  f'mailbox={name or "<empty>"}.{ext or "<empty>"}')
+            print(f'gate 0x10001300=0x{gate_word:08x}')
         finally:
             try:
                 for (block, _), orig in zip(self.SLOT_BLOCKS, originals):
@@ -641,6 +658,31 @@ class Loader:
         self._trampoline_call(self.HANDOFF_HELPER, base, workspace, size, 0x40000000, 2)
         print('helper call triggered (device should drop off USB if handoff started)')
 
+    def updater_probe(self):
+        """Read-only probe of the RAM-pushed updater's service personality.
+        The 0x70 bootquery timed out on the updater, but the 0x04f2 DRAM
+        read family may still work (updater handler 0x40010678 -> send
+        path 0x40075138). Only aligned DRAM addresses: SRAM/MMIO reads
+        wedge the receiver. No writes, no run requests."""
+        blocks = [
+            (0x40000000, 0x100, 'updater reset/vector'),
+            (0x4009d6a0, 0x20, 'log/console config'),
+            (0x400a2980, 0x40, 'log task state'),
+            (0x400ba7c0, 0x40, 'log state'),
+        ]
+        for addr, length, label in blocks:
+            try:
+                data = self.read_mem(addr, length)
+            except BaseException as exc:
+                print(f'{label} 0x{addr:08x}+0x{length:x}: FAILED '
+                      f'{type(exc).__name__}: {exc}')
+                print('stopping probe; later reads would run against a desynced receiver')
+                return
+            print(f'{label} 0x{addr:08x}+0x{length:x}: {data.hex()}')
+            text = ''.join(chr(b) if 32 <= b < 127 or b in (10, 13) else '.'
+                           for b in data)
+            print(f'  ascii: {text}')
+
     def hijack_test(self):
         tramp = b''.join(struct.pack('<I', w) for w in self.TRAMP_WORDS)
         # Stage trampoline + zeroed counter in scratch (normal write path).
@@ -757,6 +799,7 @@ def main():
     mode.add_argument('--hijack-test', action='store_true')
     mode.add_argument('--stage-copy', action='store_true')
     mode.add_argument('--stage-bootinfo', action='store_true')
+    mode.add_argument('--updater-probe', action='store_true')
     mode.add_argument('--ram-push', metavar='PAYLOAD')
     mode.add_argument('--direct-handoff', metavar='PAYLOAD')
     mode.add_argument('--set-mailbox', nargs=2, metavar=('NAME', 'EXT'))
@@ -796,6 +839,8 @@ def main():
             loader.stage_copy()
         elif args.stage_bootinfo:
             loader.stage_bootinfo()
+        elif args.updater_probe:
+            loader.updater_probe()
         elif args.ram_push:
             loader.ram_push(args.ram_push, skip_prep=args.skip_prep, settle_s=args.settle)
         elif args.direct_handoff:
