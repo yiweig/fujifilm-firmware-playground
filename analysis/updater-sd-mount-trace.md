@@ -86,7 +86,7 @@ early-return is likely benign because the SD power is already on.
 That makes the callback-null theory a dead end. The next lead is
 the card-detect path.
 
-## New lead: `0x10000058` bit 2 is a media-present latch
+## New lead: `0x10000058` bit 2 is an id-1 media latch, not the id-2 path
 
 `0x4006f938` is a media detect used by the id-1/disk path. It reads
 the halfword at `0x10000058`, masks bit 2, and branches:
@@ -95,32 +95,72 @@ the halfword at `0x10000058`, masks bit 2, and branches:
 4006f968: ldrh r3, [0x10000000 + 0x58]   ; 0x10000058
 4006f96c: and  r3, r3, #4
 4006f974: cmp  r3, #0
-4006f978: bne  0x4006f984 -> 0x4006f89c  ; set state=1 / power bits
-4006f97c: bl   0x4006f8e4                ; clear state / power bits
+4006f978: bne  0x4006f984 -> 0x4006f89c  ; set state/power bits
+4006f97c: bl   0x4006f8e4                ; clear state/power bits
 ```
 
 The live calibration read was `0x10000058 = 0x0000`, so bit 2 is
-clear. If the id-2 SD path uses the same latch, the updater would
-report "no card" before it ever reaches the FAT stack. The id-2
-path's detect state machine is `0x40022b40` (called from the
-`0x40021d78` init); the next question is whether it reads
-`0x10000058` bit 2 or uses the SD controller's CMD response. The
-`0x40022b40` snippet seen so far reads record+0x70 and calls
-`0x4006de3c`/`0x4006f89c`; the card-present source is not yet
-identified.
+clear. However, the id-2 SD path does **not** use this detect:
 
-If `0x10000058` bit 2 is the source, the fix is a pre-handoff latch
-write (via the loader trampoline) or a payload patch to ignore the
-latch. If the source is the SD controller response, the failure is
-controller state/CMD timing after the RAM handoff.
+- The id-2 detect state machine is `0x40022b40`; its `sdDetect` body
+  is at `0x40022e60` (`0x40022d58` is its literal pool).
+- `0x40022e60` calls `0x4006ee80`, which reads the **driver state
+  field** at `0x400ba140 + id*4 + 0x120`, not `0x10000058`.
+- The card-status bit it tests (`tst r0, #0x40`) is a driver state
+  flag, and the actual SD command/transfer path tail-calls
+  `0x40071474`/`0x400718b4` for id 2.
 
-This is not yet proven: the id-2 detect state machine
-(`0x40022b40` and the `sdDetect` body at `0x40022e60`; `0x40022d58`
-is its literal pool, not the entry) has not been fully traced to
-its card-present source. The Ghidra zero-reference result makes the
-`0x4006ed88(0)` init an unlikely explanation; the `0x10000058`
-bit-2 latch and the SD controller's CMD response are the remaining
-candidates. Resolve that source before proposing a payload patch.
+So the `0x10000058` bit-2 latch is an id-1/disk media flag, not the
+id-2 SD card-present source. It does not explain the FAT16 failure.
+The id-2 source is the SD controller's command/response state.
+
+## Remaining suspect: SD controller state / CMD timing
+
+The id-2 `sdDetect` path reads a driver state field and runs the SD
+command/transfer functions; it does not consult the `0x10000058`
+latch. The mount path (`0x40021d78`) does an SD power/init
+(`0x4006de3c` -> `0x40070d18`) but the power callback is null on a
+cold boot too, so that early-return is likely benign. The remaining
+difference is the controller state left by the main firmware: the
+updater's `sdDetect` may not reset the clock/bus-width/power state
+that the main firmware's SD driver established.
+
+The `sdReMount`/`sdReDetect` path at `0x4001f1d0` is the candidate
+reset: it calls `0x4006de3c`, `0x4006eea8`, and `0x4001fbc8`, and is
+reachable from the SD shell commands but not from the plain-file
+mount. If that path performs the controller reset the mount path
+lacks, a RAM-only payload patch that calls `0x4001f1d0(2)` before
+the consumer's `func_0x4000e5a4(2)` is the test. Emulator-qualify
+the call first.
+
+Signature: `0x4001f1d0(r0 = id, r1 = flags)`. The SD shell command
+calls it with `r0 = 2` and `r1 = [command arg]`; `flags` bit 0
+selects a branch. A call with `r0 = 2, r1 = 0` is the re-mount/
+re-detect path. `func_0x4000e5a4` is only a 4-byte tail branch to
+`0x4001c594`, so the patch shape is a small stub in the payload's
+code padding:
+
+```text
+push {lr}
+mov  r0, #2
+mov  r1, #0
+bl   0x4001f1d0
+mov  r0, #2
+pop  {lr}
+b    0x4001c594
+```
+
+The stub preserves the mount wrapper's `r0 = 2` contract. The SD
+effect is live-only; the emulator can qualify only the register and
+stack behavior. The patch is RAM-only; internal storage is untouched.
+
+The hardware control remains a true 2 GB SDSC card: the current
+card is a 31.9 GB SDHC, and repartitioning does not change the SD
+protocol. If the controller state is the issue, the card type will
+not matter; if the SDHC detect is the issue, it will.
+
+The signature is now known (`r0 = id, r1 = flags`); the
+controller-reset effect is the remaining live/emulator question.
 
 ## What the cold boot does differently
 
@@ -134,24 +174,22 @@ boot but not after the RAM handoff.
 
 ## Next steps
 
-1. Resolve the `0x4006ed88` caller: inspect the `0x40021d78` call
-   graph and any function-pointer table; check whether the updater's
-   reset/startup path calls `0x4006ed88(0)`. If it does, the callback
-   is set and the failure is downstream (card detect/CMD timing).
-2. If `0x4006ed88(0)` is not called before the mount, the test is a
-   RAM-only payload patch that calls it (or pre-registers the
-   `0x400ba2a0` callback) before `func_0x4000e5a4(2)`. Emulator-
-   qualify the instruction sequence first; the patch changes only
-   the RAM payload, not internal storage.
-3. In parallel, a true 2 GB SDSC card is the hardware control: the
-   current card is a 31.9 GB SDHC, and repartitioning does not
-   change the SD protocol. If the power callback is the issue, the
-   card type will not matter; if the SDHC detect is the issue, it
-   will.
+1. `0x4006ed88` is resolved: zero references; the power-callback
+   hypothesis is eliminated.
+2. The `0x10000058` bit-2 latch is id-1 only; eliminated for id-2.
+3. The id-2 `sdDetect` uses the SD controller state/CMD response.
+   The `0x4001f1d0` re-mount/re-detect is the candidate reset the
+   plain-file mount lacks.
+4. Next test: emulator-qualify the stub's register/stack behavior,
+   then RAM-push the patched updater with the FAT16 card. If the
+   mount succeeds, the controller-reset hypothesis is confirmed;
+   if it still goes to service mode, the controller state is not
+   recoverable this way and the true 2 GB SDSC card is the next
+   hardware control.
 
 ## Boundary
 
-This is original-byte disassembly and call-graph tracing. No
-emulator execution, no camera access, no hardware register writes.
-The `0x400ba2a0` early-return is a concrete code path; whether the
-live updater reaches the registering init is still unresolved.
+Original-byte disassembly, a Ghidra reference query, and call-graph
+tracing. No emulator execution of the proposed patch, no camera
+access, no hardware register writes. The patch is proposed, not
+built.

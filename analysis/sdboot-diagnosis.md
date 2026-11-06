@@ -201,11 +201,16 @@ leaves the SD controller in a bad state.
 The offline trace is done:
 [updater-sd-mount-trace.md](updater-sd-mount-trace.md). The mount
 path does attempt an SD power/init (`0x4006de3c` → `0x40070d18`),
-but that helper returns early if the callback at `0x400ba2a0` is
-zero. The callback is registered by `0x4006ed88(0)` and the SD
-shell command; `0x4006ed88` has no direct callers. If the plain-file
-path never runs it before the mount, the SD power-on is a no-op.
-That is the leading hypothesis and the next thing to resolve.
+but the `0x400ba2a0` callback is only registered by the
+unreferenced `0x4006ed88(0)` and the SD shell command, so the
+early-return is likely benign.
+The `0x10000058` bit-2 latch is an id-1/disk media flag, not the
+id-2 SD source. The id-2 `sdDetect` reads a driver state field and
+runs the SD command/transfer functions; the remaining suspect is
+the SD controller state/CMD timing after the RAM handoff. The
+`sdReMount`/`sdReDetect` path at `0x4001f1d0` is the candidate
+controller reset; a RAM-only payload patch that calls it before the
+mount is the next test, after its signature/effects are traced.
 
 ## Status and next live attempt
 
