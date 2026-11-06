@@ -123,21 +123,22 @@ loads that file from SD to `0x40000000` and boots it.
   re-enumerated as its service personality and settled into
   service mode. That is the construction the hypothesis required,
   and the file boot still did not take. The remaining candidates
-  are the drive-5/backend branch, the updater's storage
-  initialization, SD mount/FAT, and the file-boot path.
+  were the drive-5/backend branch, the updater's storage
+  initialization, SD mount/FAT, and the file-boot path; the live
+  read below eliminated the backend branch, leaving the storage
+  init, SD1 mount/FAT, and the file boot.
   ([sdboot-diagnosis.md](sdboot-diagnosis.md))
-- **Drive-letter correction.** The drive-5 fallback, on success,
-  rewrites the pathname prefix to `G` at `0x400010c8..0x400010d8`;
-  it does not still check `D:`. The live value of
-  `0x10000058 & 0xe0` has never been read; the original mailbox
-  emulator only modeled the drive-2 probe, which is why this
-  branch went untested. With live status `0x0100`
-  (bit 2 clear), a backend of `0x80/0xa0/0xc0` would try
-  `G:\MAIN.bin` first and could never look at the SD card.
-  Live-fixture controls confirm backend `0x80` has **no drive-2
-  fallback**: drive-5 success gives `G:\MAIN.bin`; drive-5 failure
-  goes to cleanup/service. The live `0x10000058` value is the
-  remaining input. ([updater-sd-path-backend.md](updater-sd-path-backend.md))
+- **Drive-letter/backend correction.** The drive-5 fallback, on
+  success, rewrites the pathname prefix to `G` at
+  `0x400010c8..0x400010d8`; it does not still check `D:`. The
+  live read (2026-11-06) is `0x10000058 = 0x0000`, backend
+  `0x00`, so this unit takes the drive-2 path. The drive-5
+  branch only runs if drive 2 fails, and `G:` is a different
+  logical drive. Live-fixture controls confirm backend `0x80`
+  would have no drive-2 fallback, but that is not this unit's
+  value. The remaining P3 candidates are the updater's storage
+  init, the SD1 mount, the FAT stack, the file open, and the
+  boot handoff. ([updater-sd-path-backend.md](updater-sd-path-backend.md))
 - **Two later corrected attempts (2026-11-05 night)** set and
   verified the mailbox in the same boot as the push, but both
   hung in state 6 before the updater ran. They add no evidence
@@ -149,7 +150,7 @@ loads that file from SD to `0x40000000` and boots it.
 
 | Item | State |
 | --- | --- |
-| SD boot of stock main image | Updater ran with the mailbox set (19:31) but did not boot the file; mailbox eliminated. Backend/drive-5, storage init, mount/FAT, and boot remain. Retries blocked by state-6 prep |
+| SD boot of stock main image | Updater ran with the mailbox set (19:31) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. Storage init, SD1 mount/FAT, file open, and boot remain. Retries blocked by state-6 prep |
 | RAM-pushed main image (stock or modified) | 0/4 via state 6; direct path lacks quiesce. Post-event descriptor not captured, so prep-hang vs post-handoff crash is unresolved |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | Closed: ROM/FRM cold entry never established, so no recovery would exist |

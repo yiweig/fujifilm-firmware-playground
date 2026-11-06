@@ -72,12 +72,46 @@ Ten controls pass ([output](output/updater-sdpath.txt)):
 4. **Status bit 2 overrides the backend-`0x80` shortcut.** With
    status `0x0104` (bit 2 set), the drive-5-first condition is false
    and drive 2 is tried first.
-5. **The missing input is the live `0x10000058` value.** If this
-   unit's backend is `0x80/0xa0/0xc0` and the live status is `0x0100`
-   (bit 2 clear), the SD card on drive 2 is never tried. That is a
-   deterministic P3 failure, not a state-6 lottery. If the backend is
-   `0x00/0x20/0x40`, the drive-2 path is used and the failure is
-   downstream: mount, FAT, file open, or the boot handoff.
+5. **The live `0x10000058` value was the missing input.** If the
+   backend is `0x80/0xa0/0xc0` and the live status is `0x0100`
+   (bit 2 clear), the SD card on drive 2 is never tried. If the
+   backend is `0x00/0x20/0x40`, the drive-2 path is used and the
+   failure is downstream: mount, FAT, file open, or the boot
+   handoff. The live read (below) settles this for the current
+   unit.
+
+## Live result (2026-11-06): backend is `0x00`, drive 5 is not the blocker
+
+A read-only `--stage-bootinfo` session in a calibration boot staged
+`0x10000000..+0x100`, `0x10004000..+0x100` and
+`0x10001000..+0x304` via trampoline v3 and read them back:
+
+```text
+sysinfo: 0x10000058=0x0000 (backend=0x00)
+bootinfo: status=0x0100 (bit2=False, bit7=False) buttons=0000000000 mailbox=<empty>.<empty>
+gate 0x10001300=0x12345678
+```
+
+The sysinfo page is saved outside git as
+`/private/tmp/xhalf-sysinfo-2026-11-06.bin` (SHA-256
+`1b5c3a94…`); the bootinfo and gate pages are
+`xhalf-bootinfo-2026-11-06.bin` (`e30e61aa…`) and
+`xhalf-gate-2026-11-06.bin` (`c3a413f0…`, identical to the
+2026-11-05 gate page).
+
+**This eliminates the backend/drive-5 branch on this unit.** With
+`0x10000058 & 0xe0 == 0x00` and status bit 2 clear, the consumer
+takes the drive-2 path (`func_0x4000e5a4(2)`). The drive-5 branch
+would only run if drive 2 failed; `G:` is a different logical drive,
+and this pass does not establish which physical medium it maps to.
+The P3 failure is downstream: the updater's
+storage initialization, the SD1 mount, the FAT stack, the file open,
+or the boot handoff.
+
+The next diagnostic is the read-only updater probe after the next
+successful push ([updater-service-read-probe.md](updater-service-read-probe.md)),
+or a controlled card/FAT test. Do not spend another push on the
+drive-5 hypothesis.
 
 ## What this does and does not establish
 
@@ -88,10 +122,9 @@ startup, or any hardware. The `G:` path is a logical drive after a
 successful `func_0x4000e5a4(5)`; this pass does not prove which
 physical medium drive 5 is on this camera.
 
-The next step is a read-only loader session: `--stage-bootinfo`
-now copies `0x10000000..+0x100` and prints `0x10000058`, the
-backend mask, the status/button bytes, the mailbox and the gate. If
-the backend is `0x80/0xa0/0xc0`, the SD-file path is blocked by
-drive selection and the fix is to change the backend (or make drive
-5 point at the card); if it is `0x00/0x20/0x40`, the next live
-attempt should target mount/FAT/file-open.
+The read-only loader session is done: `--stage-bootinfo` copied
+`0x10000000..+0x100` and printed `0x10000058 = 0x0000`. This unit's
+backend is `0x00`, so the drive-2 path is used and the drive-5
+branch is eliminated. The next live attempt should target the SD1
+mount, the FAT stack, the file open, or the boot handoff; the
+read-only updater probe is the prepared diagnostic.

@@ -28,15 +28,13 @@ question.
 
 What remains, in order:
 
-1. **Storage backend / drive selection.** The consumer chooses
-   drive 2 or drive 5 from `0x10000058 & 0xe0` and boot-status
-   bit 2. On a successful drive-5 activation it rewrites the
-   pathname prefix to `G`, not `D`. The live value of
-   `0x10000058` has never been read, and the P3 emulator only
-   models the drive-2 probe. If the backend is `0x80/0xa0/0xc0`
-   and bit 2 is clear (the live calibration status is `0x0100`),
-   the updater tries `G:\MAIN.bin` first and may never look at the
-   SD card. This is a deterministic candidate, not a lottery.
+1. **Storage backend / drive selection — eliminated on this unit
+   (2026-11-06).** The read-only `--stage-bootinfo` session read
+   `0x10000058 = 0x0000` (backend `0x00`), status `0x0100`, zero
+   button bytes, empty mailbox and gate `0x12345678`. With backend
+   `0x00` the consumer takes the drive-2 path; the drive-5 branch
+   only runs if drive 2 fails. The full live-fixture controls are
+   in [updater-sd-path-backend.md](updater-sd-path-backend.md).
 2. **The updater's storage initialization.** The live calibration
    boot has status `0x0100` (bit 7 clear) and button bytes
    `0x100040b4..b8` all zero; that path runs the button branch
@@ -45,9 +43,10 @@ What remains, in order:
    which skips that branch, and supplies storage readiness = 1.
    Its PASS is a conditional path control, not a model of the
    live path.
-3. **SD detect/mount inside the RAM-pushed updater.** Both the
-   "SD1 detect fail" and "SD2 detect fail" paths end in the
-   service continuation.
+3. **SD1 detect/mount inside the RAM-pushed updater.** With backend
+   `0x00`, drive 2 is the first mount. A failure logs "SD1 detect
+   fail" and falls back to drive 5, then cleanup/service. The live
+   P3 observable (service mode) is consistent with this.
 4. **Card filesystem unsupported by the updater's FAT stack.**
    The card was FAT32 and the main firmware read it, but the
    updater's FAT stack is a separate build and was not exercised
@@ -161,26 +160,27 @@ branch, not a model of the live startup. This is consistent with
 note that the earlier fixtures deliberately avoided the
 initialization block.
 
-## Next live attempt (revised)
+## Status and next live attempt
 
-1. In a loader session, stage `0x10000000..+0x100` (read-only) and
-   read `0x10000058`, `0x10004054`, `0x100040b4..b8`, and the
-   post-extension boot-info bytes. Use the trampoline stage, not
-   `0x04f2`: direct SRAM/MMIO reads wedge the receiver
-   ([loader-memory-read-live.md](loader-memory-read-live.md)).
-   The existing `stage_bootinfo` already copies the `0x10004000`
-   and `0x10001000` pages; extend it with the `0x10000000` page.
+1. The read-only loader session is done (2026-11-06). The client's
+   `--stage-bootinfo` now copies `0x10000000..+0x100`,
+   `0x10004000..+0x100` and `0x10001000..+0x304` via trampoline v3
+   and prints the fields. The live read is `0x10000058=0x0000`
+   (backend `0x00`), status `0x0100`, zero button bytes, empty
+   mailbox and gate `0x12345678`. Direct `0x04f2` SRAM/MMIO reads
+   still wedge the receiver; the trampoline stage is the right
+   tool ([loader-memory-read-live.md](loader-memory-read-live.md)).
 2. The live-fixture rerun is done:
    [updater-sd-path-backend.md](updater-sd-path-backend.md) runs the
    consumer with status `0x0100`, zero button bytes, readiness 0/1,
    backend values `0x00/0x20/0x40/0x80/0xa0/0xc0` and drive-2/5
    probes. Ten controls pass. The live status/button fixture does
-   not change the post-init path; backend `0x80` selects drive 5
-   first and has **no drive-2 fallback**. The live
-   `0x10000058` value is the remaining input.
-3. If the backend points at drive 5, fix that before another push.
-   If it points at drive 2, the next live attempt should target
-   mount/FAT/file-open; the mailbox is already set correctly.
+   not change the post-init path; backend `0x80` would select
+   drive 5 first with **no drive-2 fallback**, but this unit reads
+   backend `0x00`.
+3. With backend `0x00`, the consumer takes the drive-2 path. The
+   next target is the SD1 mount, the FAT stack, the file open, or
+   the boot handoff; the mailbox and drive-5 branch are eliminated.
 4. Only then run another mailbox + updater push. If the updater
    comes up, treat its service personality as a read-only debug
    port: the `0x04f2` family may work even though the `0x70`
