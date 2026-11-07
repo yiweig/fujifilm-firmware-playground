@@ -154,3 +154,32 @@ Probe artifacts in `/private/tmp`: `xhalf-probe-c694.bin`
 (`b0fbff7a…`), `xhalf-probe-c726.bin` (`69ce5733…`),
 `xhalf-probe-c746.bin` (`89dff8da…`), `xhalf-probe-p852.bin`
 (`873bc525…`), `xhalf-probe-a60.bin` (`b360f26b…`).
+
+## Full Reserved C dump (2026-11-06): updater not resident
+
+The full C range (blocks 534–794) was dumped read-only with the same
+`nandpr` tool: 68,419,584 bytes, SHA-256
+`a0cdbeeb49dec66d6642fd514caacbedc310443ebb100abe7267e31543f25fa2`.
+Content map:
+
+| Blocks | Content |
+| --- | --- |
+| 534 | `PHYTABLE` page |
+| 535–693 (159 blocks) | erased (`0xFF`) |
+| 694 | `firstburn` manifest |
+| 695–747 (53 blocks) | firstburn Linux payload (zImage/rootfs, 13.9 MB) |
+| 748–794 (47 blocks) | erased |
+
+The full 65.25 MiB contains **no updater image**, no main-image
+copy, no `RawCBoot`/`:NO_BOOT`/`:DEF_FW1`/`:DEF_FW2`, no `SPBoot>`
+descriptor block, and no `DRAM CODE`/`DRAMPAR3`/`SUNP BURN`.
+
+This closes updater residency in reserved C. The updater must arrive
+via the SD package or the FRM/ISP host flow; there is no resident
+updater in C. The firstburn region is 13.9 MB, not the earlier
+13–24 MB estimate; the rest of C is erased.
+
+Remaining storage evidence: full Reserved A (487 blocks, 121.75 MB;
+the likely home of the rawC/RawCBoot volume), the post-Firmware1
+range (mostly erased per probes), and a targeted rawC-volume read
+for `RawCBoot` once its logical offset is decoded.

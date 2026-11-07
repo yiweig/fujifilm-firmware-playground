@@ -240,11 +240,22 @@ loads that file from SD to `0x40000000` and boots it.
   has block size `0x40000` at `+0x18` and the recognized NAND
   primitives `0x4654`/`0x421c` at `+0x1c/+0x20`; the first `0x18`
   bytes are a packed geometry header whose field map is unresolved.
-- **Updater residency remains a bounded negative.** The updater is
-  not in the probed NAND ranges; reserved C holds the firstburn
-  Linux payload, not the updater. The cold updater source is still
-  unknown; the SPBoot USB/FRM path is one candidate, the SD package
-  the other.
+- **Updater residency in reserved C is closed negative (2026-11-06).**
+  The full C range was dumped read-only: 68,419,584 bytes,
+  SHA-256 `a0cdbeeb…`. Content: block 534 `PHYTABLE`; blocks
+  535–693 erased; block 694 `firstburn` manifest; blocks 695–747
+  firstburn Linux payload (13.9 MB); blocks 748–794 erased. No
+  updater image, main-image copy, `RawCBoot`, `:DEF_FW`, `SPBoot>`,
+  `DRAM CODE`, or `DRAMPAR3` anywhere in the 65.25 MiB. The updater
+  must arrive via SD or the FRM/ISP host flow; there is no resident
+  updater in C for a ROM→updater cold path. The firstburn region is
+  13.9 MB, not the earlier 13–24 MB estimate.
+  ([storage-dump-qualification.md](storage-dump-qualification.md))
+- **RawCBoot is not in C.** The getter `0x4001c78c` reads a logical
+  storage volume at offset 0 or one block size; the magic is absent
+  from C, so the rawC volume is likely in reserved A or another
+  logical area. A full A dump (121.75 MB) or a targeted rawC-volume
+  read is the next storage step.
 
 ## What remains open
 
@@ -264,5 +275,9 @@ The blockers are identified rather than mysterious:
 preparation intermittency (state 6), an SD file-boot path that
 fails after the updater runs (the mailbox is no longer a
 candidate), and a main-image push whose post-handoff state is
-not yet instrumented. The working deliverable remains session
-RAW capture through the calibration shell.
+not yet instrumented. Reserved C is fully mapped (`PHYTABLE` head
+plus firstburn Linux only; no resident updater, main-image copy, or
+RawCBoot), and the earlier stage has a `2aad:6500` SPBoot USB
+template — a recovery lead, not a proven entry. The working
+deliverable remains session RAW capture through the calibration
+shell.

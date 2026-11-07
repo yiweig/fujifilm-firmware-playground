@@ -148,6 +148,47 @@ can upload/run the updater. That is a host-assisted cold path, not a
 standalone recovery. The other possibility remains the SD package
 run by the resident engine in the main firmware.
 
+## Finding 5: full reserved C dump — the updater is not resident
+
+The full C range (blocks 534–794) was dumped read-only via the
+APITEST shell `nandpr` path: 68,419,584 bytes, SHA-256
+`a0cdbeeb49dec66d6642fd514caacbedc310443ebb100abe7267e31543f25fa2`.
+Content map:
+
+| Blocks | Content |
+| --- | --- |
+| 534 | `PHYTABLE` page |
+| 535–693 (159 blocks) | erased (`0xFF`) |
+| 694 | `firstburn` manifest (`firstburn\n2084976\n9497344\n4194304\n33554432\n`) |
+| 695–747 (53 blocks) | firstburn Linux payload (zImage/rootfs, 13.9 MB) |
+| 748–794 (47 blocks) | erased |
+
+Searches across the full 65.25 MiB found:
+
+- **no updater image** (no first/mid 4 KiB block matches, no
+  `firmware.brn`/`cardISP`/`iCatch ISP` strings);
+- **no main-image copy** (no first/mid 4 KiB matches);
+- **no `RawCBoot`/`:NO_BOOT`/`:DEF_FW1`/`:DEF_FW2`**;
+- **no `SPBoot>`** descriptor block;
+- no `DRAM CODE`/`DRAMPAR3`/`SUNP BURN`.
+
+This **closes updater residency in reserved C**. The updater must
+arrive via the SD package or the FRM/ISP host flow; there is no
+resident updater in C for a ROM→updater cold path. The firstburn
+region is 13.9 MB, not the earlier 13–24 MB estimate; the rest of C
+is erased.
+
+The `RawCBoot` getter reads a logical storage volume at offset 0 or
+one block size (`0x4001c78c`: command 4/0/1 geometry, 4 KiB read,
+`RawCBoot` magic at +0). Since the magic is not in C, the rawC
+volume is likely in reserved A or another logical area. A full
+reserved A dump or a targeted rawC-volume read is the next storage
+step.
+
+The SPBoot USB descriptor block is not in C either; it is
+ROM/earlier-stage resident. The SPBoot lead remains, but its
+template is not in this reserved area.
+
 ## What this changes in the stage model
 
 - Stage 0 is not "no USB evidence." It has a **USB descriptor
@@ -175,19 +216,29 @@ run by the resident engine in the main firmware.
    mode.
 3. **NAND header tables**: decode the `0x62..0x8f8` table area
    (bad-block map vs reserved map) and the `0x6FA`/`0x5859` fields.
-4. **Full reserved C dump**: the unprobed blocks between the firstburn
-   probes; confirm updater residency and the firstburn boundaries.
+4. **Full reserved C dump — done (2026-11-06).** 68,419,584 bytes,
+   SHA-256 `a0cdbeeb…`; content is a `PHYTABLE` head plus the
+   13.9 MB firstburn Linux payload, with 40.7 MB and 12.3 MB erased
+   before/after. No updater, main-image copy, `RawCBoot`, `SPBoot>`,
+   or `DRAM CODE`. Updater residency in C is **closed negative**.
 5. **Storage descriptor geometry**: decode the first `0x18` bytes and
    compare with the main image's `0x40029e04`/`0x40029314` field
    usage.
-6. **Cold updater launch**: if the SPBoot USB mode is host-assisted,
-   the FRM host flow becomes the cold recovery/update path; if not,
-   the SD package path remains.
+6. **Cold updater launch**: C has no resident updater, so the
+   updater must arrive via the SD package or the FRM/ISP host flow.
+   If the SPBoot USB mode is host-assisted, that host flow becomes
+   the cold recovery/update path; if not, the SD package path
+   remains.
+7. **Full reserved A dump or targeted rawC-volume read**: the
+   `RawCBoot` magic is not in C; the getter reads a logical volume
+   at offset 0/block size, likely in reserved A. A is 487 blocks
+   (121.75 MB), only heads/probes done. Decode the rawC volume
+   offset first to avoid a full A dump if possible.
 
 ## Boundary
 
 The SPBoot descriptor block, NAND header, and storage descriptor are
 observed in local dumps. The earlier-stage USB behavior, entry
-conditions, and command protocol are inferred or unknown. The
-updater-residency negative is bounded by the probed ranges. No
-camera access, no storage writes.
+conditions, and command protocol are inferred or unknown. Updater
+residency in C is closed negative; reserved A and the post-FW1 range
+remain bounded by their probes. No camera access, no storage writes.
