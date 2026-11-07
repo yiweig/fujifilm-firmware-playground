@@ -53,13 +53,16 @@ Read these first:
 1. [Current findings](analysis/current-findings.md) — the state of record for the
    RAM-push, SD-boot and recovery work: what is proven, what is blocked, and which
    earlier hypotheses have been corrected. Read this before any older report.
-2. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
+2. [Boot architecture review, piece 1](analysis/boot-architecture-review.md) — the
+   boot-stage and handoff-contract map: which stage owns what, what state passes
+   between stages, and why the SD failure is a stage/ownership problem.
+3. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
    beginner-oriented account of the package, startup, tasks, imaging, USB and storage.
-3. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
+4. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
    the proposed launch path with evidence levels, ranked blockers, and which leads
    have already been examined. Temporary execution and independent recovery are
    separate outcomes; neither has been established end to end.
-4. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
+5. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
    [memory map](analysis/memory-and-hardware-map.md) — physical/address-space
    orientation, with unresolved regions explicitly marked.
 

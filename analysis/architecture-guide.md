@@ -16,6 +16,10 @@ We can explain selected behaviors as connected chains of instructions, not
 just associate strings with addresses. We have not reconstructed all firmware,
 observed those chains end to end on hardware, or established recovery.
 
+For the stage/state/ownership map and the boot handoff contract, see
+[boot architecture review, piece 1](boot-architecture-review.md). It is the
+system-level companion to this guide.
+
 ## How to read the evidence
 
 | Evidence | What it establishes | What it does not establish |
