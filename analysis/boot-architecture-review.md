@@ -32,7 +32,7 @@ flowchart TD
   power["Power-on"] --> rom["Stage 0: mask ROM / SPBoot<br/>bytes unavailable"]
   rom --> select["Boot-source and slot selection<br/>NAND / SD / recovery"]
   select --> early["Earlier loader / reserved NAND code<br/>location and validation unknown"]
-  early -->|"writes boot-info, SRAM descriptor,<br/>storage header, DRAM parameters"| main["Stage 1: main image at 0x40000000<br/>reset 0x40000ec0; +0x200 -> 0x40000338"]
+  early -->|"writes boot-info, SRAM descriptor,<br/>SPBoot USB block, storage header, DRAM params"| main["Stage 1: main image at 0x40000000<br/>reset 0x40000ec0; +0x200 -> 0x40000338"]
   main --> camera["Camera OS, drivers, UI, imaging<br/>USB PTP/UVC, loader target 0, shell"]
   main -->|"0x04f7 handoff:<br/>park, op-10 header, helper, stub"| updater["Stage 2: updater at 0x40000000<br/>reset 0x40000340; +0x200 gate 0x88888888"]
   updater --> storage["Storage init, SD mount, file boot,<br/>USB service, command task"]
@@ -49,7 +49,7 @@ cold-updater arrows are inferred. Stage 0 is the largest unknown.
 
 | Stage | Entry / coordinates | Initializes or owns | Passes on | Evidence | Main gaps |
 | --- | --- | --- | --- | --- | --- |
-| 0. Mask ROM / SPBoot / earlier loader | Unknown bytes; SRAM remnants at `0x3f00c000`, `0x3f00c518` | DRAM init, boot-source/slot selection, storage descriptor, boot-info block, DRAM parameters; possibly SD/clock/GPIO init | Boot-info `0x10004000`, SRAM descriptor `0x3f00c518`, SPBoot script `0x3f00c000`, storage header, DRAM params `0x3f000200` | Inferred from the main image's loader-facing entry, SRAM dump, boot-info live read | Bytes/behavior, selection/validation/fallback, updater cold source, low helper `0xb34`, descriptor producer |
+| 0. Mask ROM / SPBoot / earlier loader | Unknown bytes; SRAM remnants at `0x3f00c000`, `0x3f00c518` | DRAM init, boot-source/slot selection, storage descriptor, boot-info block, DRAM parameters; possibly SD/clock/GPIO init; **USB descriptor block** | Boot-info `0x10004000`, SPBoot USB descriptor block `0x3f00c000`, SRAM descriptor `0x3f00c518`, storage header, DRAM params `0x3f000200` | Inferred from the main image's loader-facing entry, SRAM dump, boot-info live read; SPBoot USB descriptors observed in SRAM | Bytes/behavior, selection/validation/fallback, updater cold source, low helper `0xb34`, descriptor producer, SPBoot entry/protocol |
 | 1. Main image | Reset `0x40000ec0`; loader-facing `+0x200` -> `0x40000338` | CPU/SRAM/MMU/GIC/tasks, drivers, UI/imaging, USB personalities, loader target 0, calibration/debug, shell | Gate `0x12345678`; SD controller/task state; clock/power state; storage descriptor consumption; loader receiver | Static + live (loader, shell, boot-info, SD status) | Most of the RTOS/imaging/drivers; normal-vs-debug state; SD controller ownership; park stop list |
 | 2. Updater | Reset `0x40000340`; `+0x200` gate `0x88888888` | Own CPU/SRAM/MMU/GIC/tasks, storage init, SD mount, file boot, USB service, command task | Gate `0x88888888`; service mode; file-boot attempt | Static + live (RAM-push 7/11, service mode, SD mount failure) | SD command/response state, driver state fields, FRM/ISP protocol, command-task transport, full startup effects |
 | 3. Payload | `+0x200` / destination | Payload startup, staged sections, task init | — | Static + emulator; main image 0/4; updater 7/11 | Post-handoff environment; park/quiesce; earlier-stage descriptor/NAND state |
@@ -70,7 +70,7 @@ from static/inferred producers.
 | `0x10004360..6a` SD controller | — | main firmware / controller | updater SD driver | `0x40`, `0x00`, `0x0200`, `0x15`, `0x00`, `0x00` live | observed; semantics partial |
 | `0x3f000000` storage header | 512 | earlier stage or op-10 read | main-image staged loader | NAND RSV header in DRAM `0x40000c80` | static/live |
 | `0x3f00c518` descriptor | 36 | earlier stage | main-image staged loader | valid `+0x1c=0x4654`, `+0x20=0x421c` | observed SRAM dump |
-| `0x3f00c000` SPBoot script | 4 KiB | earlier stage | earlier stage / ROM | sparse register-init records | static; format unknown |
+| `0x3f00c000` SPBoot USB block | ~0x100 | earlier stage / ROM | earlier stage / host | `SPBoot>` prompt, `2aad:6500` device descriptor, 167-byte config, interface 5 | observed in SRAM; entry/protocol unknown |
 | `0x3f000200` DRAM parameters | — | earlier stage / updater | updater startup restore | restore gate-skipped when stamped | static |
 | `0x3f00d000` helper block | 20 | handoff helper | copy stub | source, size, dest, params | static |
 | `0x100002f0` secondary mailbox | 4 | reset code | secondary cores | spin-table/WFE | static |
@@ -135,8 +135,8 @@ This reframes the remaining SD options:
    SD task/controller? What state does it leave?
 6. What is the normal retail boot's boot-info/SD state? (Not
    measured; the loader entry requires the calibration personality.)
-7. What is the low helper `0xb34`, and what is the SPBoot script
-   format at `0x3f00c000`?
+7. What is the low helper `0xb34`, and what are the SPBoot USB
+   entry conditions and command protocol at `0x3f00c000`?
 8. What is the FRM/ISP device protocol, and can it query storage or
    boot state?
 
@@ -145,7 +145,7 @@ This reframes the remaining SD options:
 - **Piece 2: storage, slots, and recovery.** NAND header, Firmware1/
   Firmware2, reserved A/B/C, RawCBoot, updater residency, slot
   selector, cold recovery. The highest-value read-only evidence is a
-  full storage dump plus the SPBoot script/descriptor decode.
+  full storage dump plus the SPBoot USB/storage descriptor decode.
 - **Piece 3: runtime subsystems and ownership.** RTOS/tasks, USB,
   SD/NAND, display, sensor/ISP, clock/power/DMA/GIC; which stage owns
   what; the park stop list; the normal imaging pipeline.

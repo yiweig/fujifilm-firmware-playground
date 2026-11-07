@@ -35,6 +35,17 @@ and 2.00 moves an auxiliary success flag. A selected earlier reset guard is
 unchanged across releases. Original ARM controls qualify these bounded
 decisions, without identifying a physical key sequence or USB recovery entry.
 
+**Follow-up 2026-11-06: the SPBoot USB descriptor block.** The SRAM page at
+`0x3f00c000`, previously described as a SPBoot register script, is the
+earlier stage's USB descriptor block: `SPBoot>` prompt, `2aad:6500` device
+descriptor, 167-byte configuration with 3 interfaces, interface 5
+(`0x82/0x03/0x84`), and the `iCatch  CA6500A` product string. The same
+descriptor layout is used by the updater's stored template. This is a new
+candidate for the unproved independent USB recovery arrow: the earlier stage
+has a vendor USB personality the FRM/ISP host tool could talk to. Entry
+conditions and command protocol are unknown; it does not establish a recovery
+procedure. See [storage-and-spboot-review.md](storage-and-spboot-review.md).
+
 ```mermaid
 flowchart TD
     A[Power-on: earlier ROM / storage loader<br/>implementation unavailable] --> B[Load main firmware into RAM]

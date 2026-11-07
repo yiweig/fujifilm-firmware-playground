@@ -277,6 +277,16 @@ unproven**. It does not clear the cold-recovery safety gate. Details and pinned
 sources are in
 [`spca6500-package-and-recovery-comparison.md`](spca6500-package-and-recovery-comparison.md).
 
+**X-half-specific follow-up (2026-11-06):** the earlier-stage SPBoot USB
+descriptor block is present in the SRAM dump at `0x3f00c000` — `SPBoot>`
+prompt, `2aad:6500` device descriptor, 167-byte configuration, 3 interfaces,
+interface 5 (`0x82/0x03/0x84`), and the `iCatch  CA6500A` product string. The
+layout matches the updater's stored template. This is the X half's own
+evidence for the chipset-family USB recovery lead: the earlier stage has a
+vendor USB personality the FRM/ISP host tool could talk to. Entry conditions
+and command protocol are unqualified; it does not establish a recovery
+procedure. See [storage-and-spboot-review.md](storage-and-spboot-review.md).
+
 Follow-up (2026-11-04, live): the [DRAM dump mining](dram-dump-mining.md)
 recovers this unit's parsed `NAND RSV` header from running memory:
 Firmware1 sits at block 795 with length equal to the packaged image, while

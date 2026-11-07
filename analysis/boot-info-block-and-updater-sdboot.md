@@ -73,8 +73,9 @@ hypothesis to test with a storage dump, not a mapping.
 ```text
 mask ROM / SPBoot (bytes unavailable, non-invasive boundary)
   |  reads storage header, loads an image (main FW1 or updater),
-  |  writes boot-info block (0x10001xxx/0x10004xxx), SPBoot script
-  |  and descriptor into SRAM, stamps nothing itself
+  |  writes boot-info block (0x10001xxx/0x10004xxx), SPBoot USB
+  |  descriptor block (0x3f00c000) and storage descriptor
+  |  (0x3f00c518) into SRAM, stamps nothing itself
   v
 image +0x200 entry stamps gate (main 0x12345678 / updater 0x88888888)
   |  staged loader validates sections against SRAM-copied header,
@@ -104,10 +105,14 @@ image +0x200 entry stamps gate (main 0x12345678 / updater 0x88888888)
    ([storage-dump-qualification.md](storage-dump-qualification.md));
    reserved-area heads start with `PHYTABLE` pages, updater
    residency still open (full C dump pending).
-3. **(Offline)** Decode the SPBoot register script at SRAM
-   `0x3f00c000` (record format) — it may enumerate the earlier
-   stage's load operations (sources/destinations), i.e. the ROM's
-   load plan, even though the ROM code itself is unavailable.
+3. **(Offline, corrected 2026-11-06)** Decode the SPBoot USB
+   descriptor block at SRAM `0x3f00c000` — it is the earlier
+   stage's `2aad:6500` USB descriptor set (`SPBoot>` prompt, device
+   descriptor, 167-byte config, interface 5), not a register script.
+   It is a cold recovery/ISP lead; see
+   [storage-and-spboot-review.md](storage-and-spboot-review.md).
+   The storage descriptor at `0x3f00c518` is a separate 36-byte
+   structure.
 4. **(Offline)** Identify the RawCBoot configuration's storage
    location (getter `0x4001c78c`, six 672-byte records, `RawCBoot`
    magic + word-sum) — it is boot-policy data the selector consumes;
@@ -139,10 +144,13 @@ Decompilation:
   is the abort record). So boot policy is a small redundant
   configuration block on the storage device — its exact physical
   offsets come free with the storage dump in step 2 above.
-- The SPBoot SRAM page (`0x3f00c000`) is a sparse register-init
-  record set (4 KiB, mostly zero); without the vendor record format
-  it enumerates hardware setup, not the load plan. Deprioritized
-  relative to the live boot-info read (step 1).
+- The SPBoot SRAM page (`0x3f00c000`) is the **SPBoot USB
+  descriptor block** (`SPBoot>` prompt, `2aad:6500` device
+  descriptor, 167-byte config, interface 5), not a register-init
+  record set. **Corrected 2026-11-06**; see
+  [storage-and-spboot-review.md](storage-and-spboot-review.md).
+  It is a cold recovery/ISP lead. The storage descriptor at
+  `0x3f00c518` is a separate 36-byte structure.
 
 ## Live result (2026-11-05): boot-info pages staged and read
 

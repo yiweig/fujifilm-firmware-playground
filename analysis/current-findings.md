@@ -217,6 +217,35 @@ loads that file from SD to `0x40000000` and boots it.
   remaining SD-adjacent path is the main firmware shell `read`
   architecture, or a pivot to Level 2 RAW.
 
+## Earlier stage / storage (2026-11-06)
+
+- **`0x3f00c000` is the SPBoot USB descriptor block, not a register
+  script.** The SRAM page contains the `SPBoot>` prompt, a
+  `2aad:6500` device descriptor, a 167-byte configuration with
+  3 interfaces, interface 5 (`0x82/0x03/0x84`), and the
+  `iCatch  CA6500A` product string. The same descriptor layout is
+  used by the updater's stored template (`0x4009da30`). The block is
+  not in the package, main image, updater, or probed NAND; it is
+  likely ROM/earlier-stage resident. This is a new cold recovery/ISP
+  lead: the earlier stage has a vendor USB personality the FRM host
+  tool could talk to. Entry conditions and command protocol remain
+  unqualified. ([storage-and-spboot-review.md](storage-and-spboot-review.md))
+- **NAND header parsed.** Two byte-identical 256 KiB header copies;
+  Firmware1 length is in 256-byte units (`0xE384 * 0x100 =
+  0xE38400`); reserved counts 487/45/261; FW1 start 795, blocks 57;
+  FW2 start 2048, length/blocks 0; checksums `0x3828/0x3FA3`. The
+  header table area (`0x62..0x8f8`) and the `0x6FA`/`0x5859` fields
+  are not decoded.
+- **Storage descriptor parsed.** The 36-byte block at `0x3f00c518`
+  has block size `0x40000` at `+0x18` and the recognized NAND
+  primitives `0x4654`/`0x421c` at `+0x1c/+0x20`; the first `0x18`
+  bytes are a packed geometry header whose field map is unresolved.
+- **Updater residency remains a bounded negative.** The updater is
+  not in the probed NAND ranges; reserved C holds the firstburn
+  Linux payload, not the updater. The cold updater source is still
+  unknown; the SPBoot USB/FRM path is one candidate, the SD package
+  the other.
+
 ## What remains open
 
 | Item | State |
@@ -224,7 +253,7 @@ loads that file from SD to `0x40000000` and boots it.
 | SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call, the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`), and the `0x400715c8` ready-gate NOP all failed. Live status shows `0x10004365=0x00` (card state 0); the mount path likely uses the driver state field, not the hardware gate. Remaining: the main firmware shell `read` architecture, or Level 2 RAW pivot; SDHC protocol is secondary. Retries blocked by state-6 prep |
 | RAM-pushed main image (stock or modified) | 0/4 via state 6; direct path lacks quiesce. Post-event descriptor not captured, so prep-hang vs post-handoff crash is unresolved |
 | Modified firmware by any route | No proven path |
-| Flashed mod + cold recovery | Closed: ROM/FRM cold entry never established, so no recovery would exist |
+| Flashed mod + cold recovery | No proven recovery. New lead: the earlier stage's SPBoot `2aad:6500` USB descriptor block in SRAM suggests a host-assisted cold/ISP entry; entry conditions and protocol are unqualified. Firmware2 empty, slot selector unknown |
 | Mode `0x88` stop list, helper indirects | Partially traced; do not change any conclusion |
 
 ## Bottom line
