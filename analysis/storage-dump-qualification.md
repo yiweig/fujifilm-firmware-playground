@@ -179,7 +179,36 @@ via the SD package or the FRM/ISP host flow; there is no resident
 updater in C. The firstburn region is 13.9 MB, not the earlier
 13–24 MB estimate; the rest of C is erased.
 
-Remaining storage evidence: full Reserved A (487 blocks, 121.75 MB;
-the likely home of the rawC/RawCBoot volume), the post-Firmware1
-range (mostly erased per probes), and a targeted rawC-volume read
-for `RawCBoot` once its logical offset is decoded.
+## Full Reserved A and B dumps (2026-11-07)
+
+Reserved A (blocks 2–488, 121.75 MiB) was dumped read-only:
+127,664,128 bytes, SHA-256
+`90ebcff3325b8a62d86b32e3511be6acdb9ca750379cdf26e4f80f71737c59d0`.
+It is the `A:\RO_RES` factory resource/calibration volume:
+`PHYTABLE` at block 2, calibration/resource tables, fonts, images,
+audio and a 27.4 MB high-entropy blob. **No** `RawCBoot`, updater,
+main-image copy, `SPBoot>`, firstburn or DRAM-parameter data.
+
+Reserved B (blocks 489–533, 11.25 MiB) was dumped read-only:
+11,796,480 bytes, SHA-256
+`0dbc49bf2e8ac0fe168c656e674d5f0e4aad54dfeeda582bb563734d0fbbf7a6`.
+44 of 45 blocks are erased. Block 522 is a complete FAT16
+`B:\USER_RES` volume: root `USER_RES` + `SD_CID.DAT`; the directory
+holds `LOG_DSC0.BIN`, `LOG_FMT0.BIN`, `UIDATA.BIN`, `UIBTGPS.BIN`,
+`UIBTRES.BIN`, `UIWPASS.BIN` and an empty `RES_JPG`. No boot policy.
+
+`SD_CID.DAT` is `03 53 44 53 4b 33 32 47 85 74 05 5f a2 01 93 3f`
+— a SanDisk `SDSK32G` CID. A live shell `sddetect` read the inserted
+card as the **same CID**, CSD
+`40 0e 00 32 db 79 00 00 ed c8 7f 80 0a 40 40 e5`, SDHC 30,436 MB,
+SDR104, 198 MHz, and reported `SD detect ---Pass`. The camera's
+specific-card binding is satisfied. `sdhdr` then crashed on a null
+SD-header pointer (debug-shell fault, no write).
+
+The `RawCBoot` block is therefore not in A, B or C. It remains a raw
+device read in the updater (`FUN_4001c78c`, device 1, offset 0 or one
+block size) whose device is runtime-initialized and unresolved. The
+remaining candidates are a hidden logical volume, the C: DCIM
+volume, or the SD card's raw/reserved area (`eSD RSV`).
+
+Details: [rsv-a-b-content-and-sd-cid.md](rsv-a-b-content-and-sd-cid.md).

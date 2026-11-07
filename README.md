@@ -59,13 +59,17 @@ Read these first:
 3. [Storage and SPBoot review, piece 2](analysis/storage-and-spboot-review.md) —
    the NAND header, storage descriptor, updater residency, and the earlier-stage
    SPBoot `2aad:6500` USB descriptor block, a new cold recovery/ISP lead.
-4. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
+4. [Reserved A/B content and the SD CID binding](analysis/rsv-a-b-content-and-sd-cid.md) —
+   the full A/B dumps: A is the `RO_RES` factory resource volume, B is the FAT16
+   `USER_RES` volume holding `SD_CID.DAT`; the inserted card's CID matches, and
+   the SD reserved-header (`eSD RSV`) path is a new SD-boot lead.
+5. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
    beginner-oriented account of the package, startup, tasks, imaging, USB and storage.
-5. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
+6. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
    the proposed launch path with evidence levels, ranked blockers, and which leads
    have already been examined. Temporary execution and independent recovery are
    separate outcomes; neither has been established end to end.
-6. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
+7. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
    [memory map](analysis/memory-and-hardware-map.md) — physical/address-space
    orientation, with unresolved regions explicitly marked.
 
@@ -88,7 +92,7 @@ for those access/earlier-stage gaps before automatically expanding another calle
 | RAM loader | Device-side USB transfer and copy/execute code identified. Temporary retail entry, full handoff effects and payload safety remain unqualified. | [Receiver](analysis/xhalf-usb-ram-receiver.md), [handoff](analysis/ram-handoff-copy-boundary.md) |
 | Handoff preparation | Optional callback lifetime, sensor timeout, candidate mode exits, playback cleanup, mutex/wait cleanup and clock synchronization traced in bounded controls. Close errors can be ignored; lock release can reach task-resume work. Real callbacks, concurrent effects and the hardware clock core remain unresolved. | [Architecture guide](analysis/architecture-guide.md), [clock audit](analysis/idle-clock-switch-and-callbacks.md) |
 | Temporary USB entry | Loader selection uses a cached flag. A wider search still finds the five known writers; none supplies a qualified live retail sequence. Shared-setting staging has reload/save hazards. | [Latest writer search](analysis/usb-selection-writer-search.md), [refresh reachability](analysis/usb-cache-refresh-reachability.md), [buffer lifetime](analysis/cold-buffer-lifetime.md) |
-| Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. New lead: the earlier stage's SPBoot `2aad:6500` USB descriptor block in SRAM; entry conditions/protocol unqualified. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md), [SPBoot review](analysis/storage-and-spboot-review.md) |
+| Cold recovery | No verified X-half SD boot, independent USB recovery or cold-boot fallback procedure. Two firmware slots and updater safeguards do not prove recovery. New leads: the earlier stage's SPBoot `2aad:6500` USB descriptor block in SRAM, and the SD card's `eSD RSV` reserved-header/boot path (`sdhdr`/`sdboot`); the inserted card's CID matches `SD_CID.DAT`, but the header is not loaded in the debug shell. Entry conditions/protocol unqualified. | [Risk assessment](analysis/brick-risk-and-recovery.md), [entry review](analysis/recovery-entry-review.md), [SPBoot review](analysis/storage-and-spboot-review.md), [A/B and SD CID](analysis/rsv-a-b-content-and-sd-cid.md) |
 | Observed ordinary USB startup | One normal `04cb:030a` arrival during user-performed power-on; no intermediate identity/removal observed. Registry events cannot expose internal startup or failed enumeration. | [Live startup observation](analysis/usb-normal-startup-observation.md) |
 | Emulated factory-read route | Original marker/registration code now connects to normal dispatch and response construction in one model. Eight checks pass, including full synthetic record reconstruction and failed-open stale-data behavior. | [Integrated emulation](analysis/ptpap-integrated-read-emulation.md) |
 | UVC entry follow-up | Preliminary: an application debug event also reaches UVC callback setup. Its normal retail producer and any loader transition remain unqualified. | [Current trace](analysis/uvc-debug-event-followup.md) |

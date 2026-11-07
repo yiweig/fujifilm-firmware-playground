@@ -257,6 +257,42 @@ loads that file from SD to `0x40000000` and boots it.
   logical area. A full A dump (121.75 MB) or a targeted rawC-volume
   read is the next storage step.
 
+## Reserved A/B and SD CID (2026-11-07)
+
+- **Full Reserved A dump: `A:\RO_RES`, not rawC.** 127,664,128
+  bytes, SHA-256 `90ebcff3…`. Block 2 `PHYTABLE`; blocks 3–175
+  calibration/resource tables; blocks 177–320 resource data (fonts,
+  JPEG/PNG, RIFF audio, `FUJIFILM` metadata); blocks 361–467 a
+  27.4 MB high-entropy blob. No `RawCBoot`, updater, main-image copy,
+  `SPBoot>`, firstburn or DRAM parameters. The main firmware's paths
+  (`A:\RO_RES\...`) identify this as the read-only resource volume.
+  ([rsv-a-b-content-and-sd-cid.md](rsv-a-b-content-and-sd-cid.md))
+- **Full Reserved B dump: `B:\USER_RES` FAT16 volume.** 11,796,480
+  bytes, SHA-256 `0dbc49bf…`. 44/45 blocks erased; block 522 is a
+  FAT16 volume with root `USER_RES` + `SD_CID.DAT` and files
+  `LOG_DSC0.BIN`, `LOG_FMT0.BIN`, `UIDATA.BIN`, `UIBTGPS.BIN`,
+  `UIBTRES.BIN`, `UIWPASS.BIN`, empty `RES_JPG`. No boot policy.
+- **SD CID binding is satisfied.** `SD_CID.DAT` is a SanDisk
+  `SDSK32G` CID (`03 53 44 53 4b 33 32 47 85 74 05 5f a2 01 93 3f`).
+  A live shell `sddetect` read the inserted card as the **same CID**,
+  CSD `40 0e 00 32 db 79 00 00 ed c8 7f 80 0a 40 40 e5`, SDHC
+  30,436 MB, SDR104, 198 MHz, `SD detect ---Pass`. The updater's
+  SD-mount failure is therefore not a CID mismatch; it is an
+  init/state difference in the updater's SD path.
+- **SD reserved header is a live concept but not loaded in the
+  debug shell.** `sdhdr` prints an `eSD RSV` header with
+  FW1/FW2/RSV counts; in this session its global pointer was null
+  and the command crashed the shell (data abort at `0x40008bc4`,
+  LR `0x40345b1c`). Debug-shell fault, no write; power cycle
+  recovers.
+- **RawCBoot is not in A, B or C.** The updater's boot command table
+  is decoded (`:RAWCBOOT0..5`, `:DEF_FW1/2/RAWC`, `:MB_FW1/2/RAWC`,
+  `:NO_BOOT`); `FUN_4001c78c` reads a 4 KiB block from a raw
+  device 1 at offset 0 or one block size. The device table is
+  runtime-initialized; the volume remains unresolved. Remaining
+  candidates: a hidden logical volume, the C: DCIM volume, or the
+  SD card's raw/reserved area.
+
 ## What remains open
 
 | Item | State |
