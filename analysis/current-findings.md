@@ -279,12 +279,18 @@ loads that file from SD to `0x40000000` and boots it.
   30,436 MB, SDR104, 198 MHz, `SD detect ---Pass`. The updater's
   SD-mount failure is therefore not a CID mismatch; it is an
   init/state difference in the updater's SD path.
-- **SD reserved header is a live concept but not loaded in the
+- **SD reserved header is a live concept but not readable in the
   debug shell.** `sdhdr` prints an `eSD RSV` header with
   FW1/FW2/RSV counts; in this session its global pointer was null
   and the command crashed the shell (data abort at `0x40008bc4`,
-  LR `0x40345b1c`). Debug-shell fault, no write; power cycle
-  recovers.
+  LR `0x40345b1c`). `rsvsdrd` (read SD device-1 reserved blocks)
+  crashed the same way (`r4=0`, fault `0x400cc014`, LR `0x400ce3d0`);
+  `sdr` (device 2) works but frees its heap buffer before the
+  readback, yielding zeros. The device-1 context is created by
+  `0x4004e9dc(1)`, reached only via the write commands
+  `sdfww`/`sdset` or the normal boot/updater path. Debug-shell
+  faults, no writes; power cycle recovers. The lowest-risk next
+  evidence is a card-reader dump of the card's first/last regions.
 - **RawCBoot is not in A, B or C.** The updater's boot command table
   is decoded (`:RAWCBOOT0..5`, `:DEF_FW1/2/RAWC`, `:MB_FW1/2/RAWC`,
   `:NO_BOOT`); `FUN_4001c78c` reads a 4 KiB block from a raw

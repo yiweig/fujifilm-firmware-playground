@@ -126,6 +126,36 @@ debug-shell crash, not a storage write. A power cycle recovers it.
 It also means the SD reserved header is not loaded by `sddetect`
 alone; another init/mount step must populate it.
 
+### The debug shell cannot read the SD reserved header
+
+Two further read-only attempts confirm the device-1 context problem:
+
+- **`sdr <start> <count> <flags>`** (SD device 2) works and reads at
+  54 MB/s, but it allocates a heap buffer and frees it before the
+  shell prompt returns. Pulling that address back through the loader
+  yielded 64 KiB of zeros; the data does not survive.
+- **`rsvsdrd <start> <count> 0x41130000`** (SD device 1 reserved
+  blocks) crashed the shell with the same null-pointer data abort
+  (`r4=0`, fault at `0x400cc014`, LR `0x400ce3d0`).
+
+The device-1 context (`0x40e4e564`) is only initialized by
+`0x4004e9dc(1)`, which the shell reaches only through the **write**
+commands `sdfww` (write F/W to SD reserved blocks) and `sdset`
+(write SD settings), or through the normal boot/updater path. The
+read commands (`sdhdr`, `rsvsdrd`, `sdboot`, `sdfwr`) assume it is
+already populated. In the debug loader mode it is null, so those
+commands fault before reading anything.
+
+Consequences:
+
+- The `eSD RSV` header is still unread.
+- The SD-boot lead cannot be closed from this shell without either
+  initializing device 1 (a RAM-only call to `0x4004e9dc(1)` or an
+  updater session) or reading the card directly with a card reader.
+- The card-reader route is read-only and avoids further shell
+  crashes: dump the first/last regions of the 32 GB card and search
+  for `eSD RSV` / `NAND RSV` / `0xBEEF`.
+
 ## The updater's boot command table
 
 The updater's `FUN_4000f270` parses a boot command string and maps it
@@ -167,20 +197,26 @@ reserved area: the magic is absent from all three full dumps.
 
 ## Open questions / next evidence
 
-1. **What populates the SD reserved header?** `sddetect` gets the
-   card to SDR104 but `sdhdr` still sees a null header pointer.
-   Is there a mount/scan command (`mntsd`, `sdscan`, `sdautoscan`,
-   `sdhealth`) that loads the `eSD RSV` header? A read-only attempt
-   after a power cycle could answer this.
-2. **Where is the RawCBoot block?** Resolve the updater's device
+1. **What populates the SD reserved header?** Answer: the device-1
+   context is created by `0x4004e9dc(1)`. The shell reaches that only
+   through the write commands `sdfww`/`sdset` or the normal
+   boot/updater path. The read commands assume it is already
+   populated; in the debug shell it is null. A RAM-only call to
+   `0x4004e9dc(1)` or an updater session could populate it safely.
+2. **Read the card directly.** The lowest-risk next evidence is a
+   card-reader dump of the first/last regions of the 32 GB card,
+   searching for `eSD RSV` / `NAND RSV` / `0xBEEF`. This is read-only
+   and avoids the null-context crashes. It reveals whether the card
+   carries a firmware-slot header at all.
+3. **Where is the RawCBoot block?** Resolve the updater's device
    table entry 1 at runtime (read `*(0x4009de2c)` and the
    `0x400a39d0` table in a live updater session), or test candidate
    volumes with a read-only 4 KiB read.
-3. **What does the SD `eSD RSV` header contain?** If the SD card has
+4. **What does the SD `eSD RSV` header contain?** If the SD card has
    FW1/FW2/RSV areas, `sdhdr`/`sdboot` may be the SD-boot path the
    updater was trying to use. The SD card's reserved area is a new,
    concrete SD-boot lead.
-4. **Does `sdboot` boot from SD?** Its handler checks a callback at
+5. **Does `sdboot` boot from SD?** Its handler checks a callback at
    `*(SD_device+0x38)` and calls a supplied address; it is not yet
    clear whether it is a production SD boot or a factory test hook.
    Inspect the SD device structure after a successful header load.
@@ -190,5 +226,5 @@ reserved area: the magic is absent from all three full dumps.
 The A/B maps, FAT16 listing, hashes and live CID/CSD are observed.
 The interpretation of A as `RO_RES` is supported by the main
 firmware's path strings. The SD reserved-header contents and the
-RawCBoot volume are not observed. The `sdhdr` crash is a debug-shell
-null-pointer fault; no storage write occurred.
+RawCBoot volume are not observed. The `sdhdr` and `rsvsdrd` crashes
+are debug-shell null-pointer faults; no storage write occurred.
