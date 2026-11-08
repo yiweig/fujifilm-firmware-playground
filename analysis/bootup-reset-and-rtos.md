@@ -127,6 +127,30 @@ if (b & a)  *(u8*)0x10000060 = b & a;
 
 So the dispatch ends with **boot status 4** at `0x10000040`.
 
+### Boot-mode clock/power table
+
+`FUN_40080ac8` indexes the descriptor table at `0x40aeaf98`
+(pointer at `0x40080ca4`) by `(module*2 + sub)`. The three boot-mode
+configurations used by `FUN_401c015c` are:
+
+| Boot mode | Table index | Descriptor | Gate/power values |
+| --- | --- | --- | --- |
+| 0 | 0 | `0x40d65a18` | `0x80001100`, `2`, `2`, `0x80000` |
+| 1 | 2 | `0x40d659d0` | `0x100`, `0x40`, `4`, `0x60` |
+| 2–5 | 4 | `0x40d65988` | `0x100`, `0x80`, `2`, `0x1800000` |
+
+The other descriptors (`0x40d659f4`, `0x40d659ac`, `0x40d65a3c`,
+`0x40d65a48`) are the other module/sub-mode entries. Each entry is
+a `(type, mask, value)` clock-gate triple; `FUN_40080ac8` writes
+them via `FUN_4002a760` and the refcounted clock-gate functions
+`FUN_4000b608`/`b61c`/`b630`. The base pointer `DAT_40080cb0` is
+`0x40d65968`; the exact register offsets are not yet decoded.
+
+The boot-stage table at `0x40000b00` (`DAT_4000f4fc`) is a compact
+record table with a 6-word header and 16/24-bit offset records; the
+`FUN_4000f458` walker uses it to mark/notify stages. Its exact
+record encoding is open.
+
 ## 4. First task / main task
 
 At `0x40003b40` there is a small trampoline:
