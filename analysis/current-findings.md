@@ -451,6 +451,11 @@ loads that file from SD to `0x40000000` and boots it.
   `0x10000911 & 0xf0 == 0xe0`, and jumps to the loaded entry.
   Failure paths call the fallback (`_UNK_400007f0`); one branch sets
   `0x1000003c = 1` (reboot).
+- **Loader-facing `+0x200` stub (`0x40000200`):** writes
+  `0x10005104=0x30`, `0x10000020/0x21=0x1f`, the gate
+  `0x10001300=0x12345678`, then `b 0x40000338` (staged loader).
+  The updater's equivalent stamps `0x88888888`; the earlier stage
+  reads the gate to decide whether to skip automatic file handling.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open

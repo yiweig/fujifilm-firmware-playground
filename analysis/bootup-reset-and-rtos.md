@@ -367,6 +367,32 @@ This is the **loader handoff** from the earlier stage: the earlier
 stage loads the main image (or updater), and this entry validates the
 sections against the header copy before transferring control.
 
+## 11. Loader-facing `+0x200` stub and gate stamp
+
+The `+0x200` entry is a small stub at `0x40000200`:
+
+```text
+40000200: mov  r0,#0x10000000
+40000204: orr  r2,r0,#0x1000       ; r2 = 0x10001000
+40000208: orr  r3,r0,#0x5100       ; r3 = 0x10005100
+4000020c: mov  r1,#0x30
+40000210: strb r1,[r3,#0x4]        ; 0x10005104 = 0x30
+40000214: mov  r1,#0x1f
+40000218: strb r1,[r0,#0x20]       ; 0x10000020 = 0x1f
+4000021c: strb r1,[r0,#0x21]       ; 0x10000021 = 0x1f
+40000220: movw r1,#0x5678
+40000224: movt r1,#0x1234
+40000228: str  r1,[r2,#0x300]      ; 0x10001300 = 0x12345678
+4000022c: b    0x40000338          ; staged loader
+```
+
+So the main image's loader-facing entry stamps its identity
+(`0x12345678`) into the gate word at `0x10001300`, sets
+`0x10005104 = 0x30` and `0x10000020/0x21 = 0x1f`, then jumps to the
+staged loader `0x40000338`. The updater's equivalent stamps
+`0x88888888`; the earlier stage reads the gate to decide whether to
+skip automatic file handling.
+
 ## Open questions
 
 1. The exact boot-mode table: which modes 0–5 correspond to which
