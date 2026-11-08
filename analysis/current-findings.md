@@ -428,9 +428,13 @@ loads that file from SD to `0x40000000` and boots it.
   `devInit2`, `devInit2 OK`, `modeswInit`, `sysgRes`,
   `cdspBootInit`, `resDone`, `appInit`, `appInit OK`,
   `appInit 2 OK`. `devInit1` covers ME/MOE/IME/HVC/primary
-  display; `devInit2` is the `FUN_400d*` late block; `appInit` is
-  `FUN_40080d6c` + `FUN_400f86f4`/`FUN_400f8914`. The non-zero
-  `*DAT_4000374c` branch runs `FUN_401efc90` (debug/loader path).
+  display; `devInit2` is `devInitSecondary` (`FUN_4001caf0`);
+  `modeswInit` is the audio state (`FUN_400d3a5c`), `sysgRes` the
+  audio memory pool (`FUN_400d3c58`), `cdspBootInit` the
+  CDSP/audio DSP boot (`FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4`,
+  `0x1000d000`, 4 channels); `appInit` is `FUN_40080d6c` +
+  `FUN_400f86f4`/`FUN_400f8914`. The non-zero `*DAT_4000374c`
+  branch runs `FUN_401efc90` (debug/loader path).
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open

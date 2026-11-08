@@ -280,11 +280,11 @@ read of the live SRAM/DRAM alias.
 | `devInit` | clocks/power, event group, storage/NAND (`FUN_4000fb9c`), VFS/FAT (`FUN_4000fd40`) |
 | `devInit1` | ME tokens (`tokME`/`semMeDone`/`tokExclME`), MOE HAL (`HAL_MOE1_Eventflag`, `halMoe1ATrig`/`BTrig`), IME HAL (`HAL_IME_Eventflag`, `HAL_IME_A/B_DONE`), HVC encoder (`tokenHVC`/`evtHvcCh`/`mutHvc`, base `0x1000c000`), primary display/OSD (`devInitPrimary`, `_trd_stg`, low-power/charge paths) |
 | `devInit1 OK` | after `FUN_4001cd00` (primary device/display/OSD init) |
-| `devInit2` | `FUN_4001caf0` and the `FUN_400d3a5c`/`FUN_400d3c58`/`FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4` block |
-| `devInit2 OK` | after the `FUN_400d*` block |
-| `modeswInit` | mode-switch init (`FUN_400d3a5c` region) |
-| `sysgRes` | resource init (`FUN_400d3c58` region) |
-| `cdspBootInit` | CDSP boot init (`FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4`) |
+| `devInit2` | `FUN_4001caf0` = `devInitSecondary`, boot stages 0xd/0xe/0xf/0x10 |
+| `devInit2 OK` | after `FUN_4001caf0` |
+| `modeswInit` | `FUN_400d3a5c` — audio state init (0x54-byte state) |
+| `sysgRes` | `FUN_400d3c58` — audio memory pool (<0x400-byte entries, 0xc-byte records) |
+| `cdspBootInit` | `FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4` — CDSP/audio DSP boot: `0x1000d000`, 4 channels, per-channel DMA handles, sample table |
 | `resDone` | after `FUN_4000f51c(0x17)` |
 | `appInit` | `FUN_40080d6c` and `FUN_400f86f4` |
 | `appInit OK` | after `FUN_400f86f4` |
@@ -294,11 +294,14 @@ The boot-stage event bits used through this sequence are
 `1 << (stage-1)` for stages 5, 6, 9, 10, 0xb, 0xc, 0xd, 0x15, 0x16,
 0x17, 0x18, 0x1d, 0x20.
 
-The `FUN_400d*` block is the late device init (audio/USB/WiFi/BT
-candidates); `FUN_40080d6c` and `FUN_400f86f4`/`FUN_400f8914` are the
-application init block. The non-zero branch (`*DAT_4000374c != 0`)
-runs `FUN_401efc90` (debug/loader path) instead of the full
-`devInit2`/app-init sequence.
+The `FUN_400d*` block is the **CDSP/audio** init: `FUN_400d3a5c`
+allocates the 0x54-byte audio state; `FUN_400d3c58` builds the audio
+memory pool; `FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4` bring up
+the `0x1000d000` DSP block, four channels, per-channel DMA handles
+and the sample table. `FUN_40080d6c` and
+`FUN_400f86f4`/`FUN_400f8914` are the application init block. The
+non-zero branch (`*DAT_4000374c != 0`) runs `FUN_401efc90`
+(debug/loader path) instead of the full `devInit2`/app-init sequence.
 
 ## Open questions
 
