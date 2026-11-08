@@ -139,12 +139,25 @@ configurations used by `FUN_401c015c` are:
 | 1 | 2 | `0x40d659d0` | `0x100`, `0x40`, `4`, `0x60` |
 | 2–5 | 4 | `0x40d65988` | `0x100`, `0x80`, `2`, `0x1800000` |
 
-The other descriptors (`0x40d659f4`, `0x40d659ac`, `0x40d65a3c`,
-`0x40d65a48`) are the other module/sub-mode entries. Each entry is
-a `(type, mask, value)` clock-gate triple; `FUN_40080ac8` writes
-them via `FUN_4002a760` and the refcounted clock-gate functions
-`FUN_4000b608`/`b61c`/`b630`. The base pointer `DAT_40080cb0` is
-`0x40d65968`; the exact register offsets are not yet decoded.
+The descriptors are lists of `(type, mask, value)` clock-gate triples,
+terminated by a zero type:
+
+| Boot mode | Descriptor | Triples |
+| --- | --- | --- |
+| 0 | `0x40d65a18` | `(1, 0x80001100, 2)`, `(2, 0x80000, 0)` |
+| 1 | `0x40d659d0` | `(1, 0x100, 0x40)`, `(4, 0x60, 0)` |
+| 2–5 | `0x40d65988` | `(1, 0x100, 0x80)`, `(2, 0x1800000, 0)` |
+
+`type` selects the clock-gate class (1/2/4); `mask` is the gate
+bit(s); `value` is the register state. `FUN_40080ac8` writes them
+through `FUN_40058890` (reference-counted gate enable/disable) and
+`FUN_4002a760` (pending gate request with timeout, command `0xe3`).
+The clock-device pointer at `0x40d65968` and the per-module mode
+array at `0x40e66c94` are runtime-initialized (the static image
+holds a sentinel), so the exact controller base is not in the file.
+The gate manager keeps a linked list of pending requests and
+reference counts, and calls `FUN_4004a180`/`FUN_40049e20`/
+`FUN_40049fc8` for the hardware update.
 
 The boot-stage table at `0x40000b00` (`DAT_4000f4fc`) is a compact
 record table with a 6-word header and 16/24-bit offset records; the

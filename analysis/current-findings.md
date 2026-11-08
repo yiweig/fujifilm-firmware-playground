@@ -462,6 +462,13 @@ loads that file from SD to `0x40000000` and boots it.
   button/DRAM `0x100040b4..b8`, mailbox `0x100040b9..c3`, backend
   `0x10000058 & 0xe0`. The updater's `FUN_400009c4` decodes these
   and either card-updates a `.brn` or load-and-boots the file.
+- **Clock/power table:** `FUN_40080ac8` uses `(type, mask, value)`
+  triples: mode 0 `(1,0x80001100,2),(2,0x80000,0)`; mode 1
+  `(1,0x100,0x40),(4,0x60,0)`; modes 2–5
+  `(1,0x100,0x80),(2,0x1800000,0)`. `FUN_40058890`/`FUN_4002a760`
+  are reference-counted gate managers with pending requests and
+  timeouts; the controller pointer at `0x40d65968` and mode array at
+  `0x40e66c94` are runtime-initialized.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open
