@@ -432,9 +432,11 @@ loads that file from SD to `0x40000000` and boots it.
   `modeswInit` is the audio state (`FUN_400d3a5c`), `sysgRes` the
   audio memory pool (`FUN_400d3c58`), `cdspBootInit` the
   CDSP/audio DSP boot (`FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4`,
-  `0x1000d000`, 4 channels); `appInit` is `FUN_40080d6c` +
-  `FUN_400f86f4`/`FUN_400f8914`. The non-zero `*DAT_4000374c`
-  branch runs `FUN_401efc90` (debug/loader path).
+  `0x1000d000`, 4 channels); `appInit` is `FUN_40080d6c` (audio
+  hardware, `hal_aud`) + `FUN_400f86f4` (`appInit`, application/UI);
+  `appInitDelay` is `FUN_400f8914` (deferred network/WiFi/BT). The
+  non-zero `*DAT_4000374c` branch runs `FUN_401efc90` (debug/loader
+  path).
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open

@@ -286,9 +286,9 @@ read of the live SRAM/DRAM alias.
 | `sysgRes` | `FUN_400d3c58` — audio memory pool (<0x400-byte entries, 0xc-byte records) |
 | `cdspBootInit` | `FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4` — CDSP/audio DSP boot: `0x1000d000`, 4 channels, per-channel DMA handles, sample table |
 | `resDone` | after `FUN_4000f51c(0x17)` |
-| `appInit` | `FUN_40080d6c` and `FUN_400f86f4` |
+| `appInit` | `FUN_40080d6c` (audio hardware init, `hal_aud`/`audHwInUsed`, base `0x10006000`) + `FUN_400f86f4` (`appInit`, application/UI init, `MULTI_BOOT_STAGE_CMD`) |
 | `appInit OK` | after `FUN_400f86f4` |
-| `appInit 2 OK` | after `FUN_400f8914` |
+| `appInit 2 OK` | after `FUN_400f8914` (`appInitDelay`, deferred network/WiFi/BT init) |
 
 The boot-stage event bits used through this sequence are
 `1 << (stage-1)` for stages 5, 6, 9, 10, 0xb, 0xc, 0xd, 0x15, 0x16,
@@ -298,10 +298,13 @@ The `FUN_400d*` block is the **CDSP/audio** init: `FUN_400d3a5c`
 allocates the 0x54-byte audio state; `FUN_400d3c58` builds the audio
 memory pool; `FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4` bring up
 the `0x1000d000` DSP block, four channels, per-channel DMA handles
-and the sample table. `FUN_40080d6c` and
-`FUN_400f86f4`/`FUN_400f8914` are the application init block. The
-non-zero branch (`*DAT_4000374c != 0`) runs `FUN_401efc90`
-(debug/loader path) instead of the full `devInit2`/app-init sequence.
+and the sample table. `FUN_40080d6c` is the **audio hardware init**
+(`hal_aud`/`audHwInUsed`, base `0x10006000`); `FUN_400f86f4` is
+**`appInit`** (application/UI init, `MULTI_BOOT_STAGE_CMD`); and
+`FUN_400f8914` is **`appInitDelay`** (deferred network/WiFi/BT
+init). The non-zero branch (`*DAT_4000374c != 0`) runs
+`FUN_401efc90` (debug/loader path) instead of the full
+`devInit2`/app-init sequence.
 
 ## Open questions
 
