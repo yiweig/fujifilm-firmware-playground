@@ -347,6 +347,33 @@ loads that file from SD to `0x40000000` and boots it.
   (or a normal capture). Details:
   [saveraw-awb-raw-path.md](saveraw-awb-raw-path.md).
 
+## Runtime task inventory (2026-11-08)
+
+- **RTOS: ThreadX Cortex-A7/GNU G5.7.5.2.** The image contains the
+  Express Logic banner and `ros_thread.c`; the shell exposes
+  `os task`, `os stack`, and `os nice`.
+- **Task creation:** `FUN_4000c378` (low-level), `FUN_4004118c`
+  (named wrapper, 0x1000 minimum stack), `FUN_405f1f04` (named
+  wrapper with logging). The first argument is the task name, the
+  second the entry function.
+- **Direct tasks:** `AutoFocus Process`, `FastPBEnterViewGroupThread`,
+  `PB Effect Thread`, `SlideWindowThread`, `pLoadMainImageThread`,
+  `PB_NxNLoadThread`, `PB_ListDateLoadThread`, `PB_NxNDrawThread`,
+  `PB_NxNMoveThread`, `PB_FadeEffectThread`, `uvctestcmd`, plus
+  dynamic IPC tasks.
+- **Named-wrapper tasks:** `Ability WiFi Message Queue Thread`,
+  `Ability WiFi EMI Test`, `create_rtos_ipc`/`WiFiMonitor_IPC`.
+- **Task families from ~700 strings:** boot/power, sensor/3A,
+  preview/capture (`ISR`/`Cap`/`Cdsp`/`IQ`/`Capture`/`JPG`/`Store`),
+  RAW/YUV save (`saveRaw_*`, `saveYuv_*`, `savePrv*`), USB
+  (`usbControlTask`, `usbTargetTask`, `usbDPCTask`, UVC send tasks),
+  storage/mount (`diskMountTask`, `MountThread`), UI/display,
+  playback, WiFi/BT/dual-OS.
+- The stock RAW/YUV save task family is much broader than the single
+  `SaveRaw` path; `saveRaw_SaveFile_Task_Sensor0..3` is a strong
+  candidate for the runtime owner of the AWB RAW writer.
+  ([runtime-task-inventory.md](runtime-task-inventory.md))
+
 ## What remains open
 
 | Item | State |

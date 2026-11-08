@@ -64,15 +64,18 @@ Read these first:
    `USER_RES` volume holding `SD_CID.DAT`; the inserted card's CID matches, and
    the SD reserved-header (`eSD RSV`) path is a new SD-boot lead.
 5. [Built-in AWB RAW dump](analysis/saveraw-awb-raw-path.md) — the stock
-   `D:\SaveRaw.txt` gate and `flash 0x3b` shell trigger that write
+   `D:\SaveRaw.txt` gate and `v3a 0x3b` shell trigger that write
    `D:\DCIM\RAW<w>x<h>_<stride>.RAW` in the AWB capture path.
-6. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
+6. [Runtime task inventory](analysis/runtime-task-inventory.md) — the ThreadX
+   RTOS, task-creation APIs, direct task table, and the boot/sensor/capture/
+   RAW-save/USB/storage/UI/playback/WiFi task families.
+7. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
    beginner-oriented account of the package, startup, tasks, imaging, USB and storage.
-7. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
+8. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
    the proposed launch path with evidence levels, ranked blockers, and which leads
    have already been examined. Temporary execution and independent recovery are
    separate outcomes; neither has been established end to end.
-8. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
+9. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
    [memory map](analysis/memory-and-hardware-map.md) — physical/address-space
    orientation, with unresolved regions explicitly marked.
 
