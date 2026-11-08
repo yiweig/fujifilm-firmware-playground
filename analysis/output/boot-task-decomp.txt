@@ -1,0 +1,129 @@
+PROGRAM firmware-main.elf
+SKIP 4001f8c4 inside 4001f8bc
+
+FUNCTION 4001f8cc
+
+/* WARNING: Control flow encountered bad instruction data */
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_4001f8cc(undefined4 param_1)
+
+{
+  int iVar1;
+  uint uVar2;
+  int iVar3;
+  bool bVar4;
+  undefined4 in_fpscr;
+  undefined4 uVar5;
+  undefined4 extraout_s1;
+  undefined4 extraout_s2;
+  undefined4 extraout_s3;
+  undefined4 extraout_s4;
+  undefined4 extraout_s5;
+  undefined4 extraout_s6;
+  undefined4 extraout_s7;
+  undefined8 extraout_d4;
+  undefined8 extraout_d5;
+  undefined8 extraout_d6;
+  undefined8 extraout_d7;
+  undefined8 unaff_d8;
+  undefined8 unaff_d9;
+  undefined8 unaff_d10;
+  undefined8 unaff_d11;
+  undefined8 unaff_d12;
+  undefined8 unaff_d13;
+  undefined8 unaff_d14;
+  undefined8 unaff_d15;
+  undefined8 in_d16;
+  undefined8 in_d17;
+  undefined8 in_d18;
+  undefined8 in_d19;
+  undefined8 in_d20;
+  undefined8 in_d21;
+  undefined8 in_d22;
+  undefined8 in_d23;
+  undefined8 in_d24;
+  undefined8 in_d25;
+  undefined8 in_d26;
+  undefined8 in_d27;
+  undefined8 in_d28;
+  undefined8 in_d29;
+  undefined8 in_d30;
+  undefined8 in_d31;
+  
+  *_UNK_4001f8d8 = param_1;
+  DataMemoryBarrier(0xf);
+  bVar4 = *DAT_40049dd8 != DAT_40049ddc;
+  *DAT_40049dd8 = DAT_40049ddc + -1;
+  if (bVar4) {
+    FUN_40071df0();
+    FUN_40021784();
+  }
+  uVar5 = FUN_4001f8dc(*DAT_40049de0);
+  *DAT_40049dd8 = 0;
+  iVar1 = iRam40e38080;
+  DataMemoryBarrier(0xf);
+  enableIRQinterrupts();
+  while( true ) {
+    disableIRQinterrupts();
+    if (iRam40e38080 != 0) break;
+    WaitForInterrupt();
+  }
+  ClearExclusiveLocal();
+  iRam40e3807c = iRam40e38080;
+  DAT_40e3812c = *(undefined4 *)(iRam40e38080 + 0x18);
+  *(int *)(iRam40e38080 + 4) = *(int *)(iRam40e38080 + 4) + 1;
+  iVar3 = **(int **)(iVar1 + 8);
+  if ((*(int *)(iVar1 + 0x90) != 0) && (iVar1 != _DAT_40e38af4)) {
+    if (_DAT_40e38af4 == 0) {
+      uVar2 = coproc_movefrom_Coprocessor_Access_Control();
+      coproc_moveto_Coprocessor_Access_Control(uVar2 | 0xf00000);
+      InstructionSynchronizationBarrier(0xf);
+    }
+    else {
+      *(ulonglong *)(_DAT_40e38af4 + 0x98) = CONCAT44(extraout_s1,uVar5);
+      *(ulonglong *)(_DAT_40e38af4 + 0xa0) = CONCAT44(extraout_s3,extraout_s2);
+      *(ulonglong *)(_DAT_40e38af4 + 0xa8) = CONCAT44(extraout_s5,extraout_s4);
+      *(ulonglong *)(_DAT_40e38af4 + 0xb0) = CONCAT44(extraout_s7,extraout_s6);
+      *(undefined8 *)(_DAT_40e38af4 + 0xb8) = extraout_d4;
+      *(undefined8 *)(_DAT_40e38af4 + 0xc0) = extraout_d5;
+      *(undefined8 *)(_DAT_40e38af4 + 200) = extraout_d6;
+      *(undefined8 *)(_DAT_40e38af4 + 0xd0) = extraout_d7;
+      *(undefined8 *)(_DAT_40e38af4 + 0xd8) = unaff_d8;
+      *(undefined8 *)(_DAT_40e38af4 + 0xe0) = unaff_d9;
+      *(undefined8 *)(_DAT_40e38af4 + 0xe8) = unaff_d10;
+      *(undefined8 *)(_DAT_40e38af4 + 0xf0) = unaff_d11;
+      *(undefined8 *)(_DAT_40e38af4 + 0xf8) = unaff_d12;
+      *(undefined8 *)(_DAT_40e38af4 + 0x100) = unaff_d13;
+      *(undefined8 *)(_DAT_40e38af4 + 0x108) = unaff_d14;
+      *(undefined8 *)(_DAT_40e38af4 + 0x110) = unaff_d15;
+      *(undefined8 *)(_DAT_40e38af4 + 0x118) = in_d16;
+      *(undefined8 *)(_DAT_40e38af4 + 0x120) = in_d17;
+      *(undefined8 *)(_DAT_40e38af4 + 0x128) = in_d18;
+      *(undefined8 *)(_DAT_40e38af4 + 0x130) = in_d19;
+      *(undefined8 *)(_DAT_40e38af4 + 0x138) = in_d20;
+      *(undefined8 *)(_DAT_40e38af4 + 0x140) = in_d21;
+      *(undefined8 *)(_DAT_40e38af4 + 0x148) = in_d22;
+      *(undefined8 *)(_DAT_40e38af4 + 0x150) = in_d23;
+      *(undefined8 *)(_DAT_40e38af4 + 0x158) = in_d24;
+      *(undefined8 *)(_DAT_40e38af4 + 0x160) = in_d25;
+      *(undefined8 *)(_DAT_40e38af4 + 0x168) = in_d26;
+      *(undefined8 *)(_DAT_40e38af4 + 0x170) = in_d27;
+      *(undefined8 *)(_DAT_40e38af4 + 0x178) = in_d28;
+      *(undefined8 *)(_DAT_40e38af4 + 0x180) = in_d29;
+      *(undefined8 *)(_DAT_40e38af4 + 0x188) = in_d30;
+      *(undefined8 *)(_DAT_40e38af4 + 400) = in_d31;
+      *(undefined4 *)(_DAT_40e38af4 + 0x94) = in_fpscr;
+    }
+    _DAT_40e38af4 = iVar1;
+  }
+  if (iVar3 != 0) {
+                    /* WARNING: Bad instruction - Truncating control flow here */
+    halt_baddata();
+  }
+                    /* WARNING: Bad instruction - Truncating control flow here */
+  halt_baddata();
+}
+
+
+SKIP 4001f8d0 inside 4001f8cc

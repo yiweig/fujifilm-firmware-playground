@@ -1,0 +1,94 @@
+PROGRAM firmware-main.elf
+
+FUNCTION 4000f004
+
+undefined8 FUN_4000f004(int param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  undefined4 uStack_c;
+  
+  uVar2 = param_2;
+  uStack_c = param_4;
+  iVar1 = FUN_4002a760(*DAT_4000f058,1 << (param_1 - 1U & 0xff),0,&uStack_c,param_2,param_2,param_3)
+  ;
+  if (iVar1 != 0) {
+    FUN_400070d8(DAT_4000f05c,0xc2,DAT_4000f060,param_1);
+    FUN_40007148(0);
+  }
+  return CONCAT44(uVar2,param_2);
+}
+
+
+
+FUNCTION 4000ef40
+
+void FUN_4000ef40(void)
+
+{
+  undefined4 *puVar1;
+  undefined4 uVar2;
+  
+  uVar2 = FUN_4002a71c(DAT_4000ef94);
+  puVar1 = DAT_4000ef98;
+  DAT_4000ef98[0x19] = uVar2;
+  uVar2 = FUN_4002a71c(DAT_4000ef9c);
+  *puVar1 = uVar2;
+  thunk_FUN_40058890(uVar2,0xff07,0);
+  FUN_4000b644(6);
+  FUN_4000edc8(0xffffffff);
+  FUN_40003d7c(0x82,DAT_4000efa0);
+  FUN_4000b6d4(6);
+  return;
+}
+
+
+
+FUNCTION 4000f39c
+
+void FUN_4000f39c(undefined4 param_1,undefined4 param_2)
+
+{
+  int *piVar1;
+  int iVar2;
+  
+  if ((*DAT_4000f440 != 0) && (DAT_4000f440[1] != 0)) {
+    iVar2 = FUN_4002a71c(DAT_4000f444);
+    piVar1 = DAT_4000f448;
+    *DAT_4000f448 = iVar2;
+    if (iVar2 == 0) {
+      FUN_400070d8(DAT_4000f44c,0xa0,0);
+      FUN_40007148(*piVar1);
+    }
+    iVar2 = FUN_4000c420(DAT_4000f454,0x1e,DAT_4000f450,0,0x700,param_2);
+    piVar1 = DAT_4000f448;
+    DAT_4000f448[1] = iVar2;
+    if (iVar2 == 0) {
+      FUN_400070d8(DAT_4000f44c,0xa5,0);
+      FUN_40007148(piVar1[1]);
+      return;
+    }
+  }
+  return;
+}
+
+
+
+FUNCTION 4000f5b8
+
+void FUN_4000f5b8(void)
+
+{
+  undefined4 *puVar1;
+  undefined4 uVar2;
+  
+  uVar2 = FUN_4002a71c(DAT_4000f5dc);
+  puVar1 = DAT_4000f5e0;
+  *DAT_4000f5e0 = uVar2;
+  uVar2 = FUN_40020d28(0x60);
+  puVar1[1] = uVar2;
+  return;
+}
+
+

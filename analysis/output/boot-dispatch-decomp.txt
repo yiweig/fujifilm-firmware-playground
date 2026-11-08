@@ -1,0 +1,198 @@
+PROGRAM firmware-main.elf
+
+FUNCTION 401c015c
+
+void FUN_401c015c(void)
+
+{
+  undefined4 uVar1;
+  int iVar2;
+  undefined4 uVar3;
+  
+  uVar1 = FUN_40155e78();
+  iVar2 = FUN_40155e8c();
+  if (iVar2 != 3) {
+    FUN_401564b4();
+    switch(uVar1) {
+    case 0:
+      uVar3 = 0;
+      *(uint *)(DAT_401c0220 + 0x68) = *(uint *)(DAT_401c0220 + 0x68) & 0xfffffffe;
+      break;
+    case 1:
+      uVar3 = 1;
+      *(byte *)(DAT_401c0220 + 0xcc) = *(byte *)(DAT_401c0220 + 0xcc) & 0xfe;
+      break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      uVar3 = 2;
+      *(byte *)(DAT_401c0220 + 0xbc) = *(byte *)(DAT_401c0220 + 0xbc) & 0xfe;
+      break;
+    default:
+      goto LAB_401c01f4;
+    }
+    FUN_40080ac8(uVar3,0,0);
+  }
+LAB_401c01f4:
+  FUN_40155e58(uVar1,0);
+  *(byte *)(DAT_401c0224 + 0x305) = *(byte *)(DAT_401c0224 + 0x305) & 0xfd;
+  switchD_401c017c::default(4,0);
+  return;
+}
+
+
+
+FUNCTION 40001180
+
+void FUN_40001180(void)
+
+{
+  undefined4 extraout_r1;
+  undefined4 extraout_r2;
+  
+  if (DAT_10000100 != '\0') {
+    return;
+  }
+  DataMemoryBarrier(0xf);
+  FUN_400010a0();
+  DataSynchronizationBarrier(0xf);
+  coproc_moveto_Invalidate_unified_TLB_by_MVA(0);
+  coproc_moveto_Invalidate_unified_TLB_by_MVA(0x3f000000);
+  coproc_moveto_Instruction_cache(0,6);
+  DataSynchronizationBarrier(0xf);
+  InstructionSynchronizationBarrier(0xf);
+  FUN_4000114c(0,extraout_r1,extraout_r2,0);
+  return;
+}
+
+
+
+FUNCTION 4000147c
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+undefined4 FUN_4000147c(void)
+
+{
+  coproc_moveto_Auxiliary_Control(0x6040);
+  InstructionSynchronizationBarrier(0xf);
+  coproc_moveto_Translation_table_base_0(_UNK_40001474);
+  coproc_moveto_Translation_table_control(0x21);
+  coproc_moveto_Domain_Access_Control(1);
+  InstructionSynchronizationBarrier(0xf);
+  coproc_moveto_Control(_UNK_40001478);
+  InstructionSynchronizationBarrier(0xf);
+  return 0x21;
+}
+
+
+
+FUNCTION 400017c0
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_400017c0(void)
+
+{
+  uint *puVar1;
+  uint uVar2;
+  uint uVar3;
+  
+  puVar1 = _UNK_40001804;
+  if ((*_UNK_40001804 & 1) != 0) {
+    return;
+  }
+  *_UNK_40001804 = 1;
+  puVar1[1] = 0xff;
+  uVar3 = _UNK_4000180c;
+  uVar2 = _UNK_40001808;
+  puVar1[-0x300] = _UNK_4000180c;
+  puVar1[-0x2ff] = uVar3;
+  puVar1[-0x2fe] = uVar3;
+  puVar1[-0x2fd] = uVar3;
+  puVar1[-0x2fa] = uVar2;
+  puVar1[-0x2f9] = uVar3;
+  return;
+}
+
+
+
+FUNCTION 4000103c
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_4000103c(void)
+
+{
+  byte bVar1;
+  int iVar2;
+  
+  bVar1 = *(byte *)(_UNK_40001090 + 0x872);
+  func_0x40002b24(0x7c);
+  func_0x40002b54(0x380);
+  func_0x40002b84(4);
+  if (*_UNK_40001094 == 0) {
+    iVar2 = (bVar1 & 0x1f) << 0x1a;
+  }
+  else {
+    iVar2 = 0x38000000;
+  }
+  func_0x400017a0(_UNK_40001098);
+  *_UNK_400017bc = iVar2 + _UNK_4000109c;
+  return;
+}
+
+
+
+FUNCTION 40002b24
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+undefined4 FUN_40002b24(undefined4 param_1)
+
+{
+  *_UNK_40002b34 = param_1;
+  return 0;
+}
+
+
+
+FUNCTION 40002b54
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+undefined4 FUN_40002b54(undefined4 param_1)
+
+{
+  *(undefined4 *)(_UNK_40002b64 + 4) = param_1;
+  return 0;
+}
+
+
+
+FUNCTION 40002b84
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+undefined4 FUN_40002b84(undefined4 param_1)
+
+{
+  *(undefined4 *)(_UNK_40002b94 + 8) = param_1;
+  return 0;
+}
+
+
+
+FUNCTION 400017a0
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_400017a0(undefined4 param_1)
+
+{
+  *_UNK_400017ac = param_1;
+  return;
+}
+
+

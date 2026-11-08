@@ -69,15 +69,18 @@ Read these first:
 6. [Runtime task inventory](analysis/runtime-task-inventory.md) — the ThreadX
    RTOS, task-creation APIs, direct task table, and the boot/sensor/capture/
    RAW-save/USB/storage/UI/playback/WiFi task families.
-7. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
+7. [Bootup: reset, RTOS entry, boot-mode dispatch, and the main task](analysis/bootup-reset-and-rtos.md) —
+   the reset vector, MMU/clock setup, boot-mode field, scheduler start, and the
+   main-task/app-init sequence.
+8. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
    beginner-oriented account of the package, startup, tasks, imaging, USB and storage.
-8. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
+9. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
    the proposed launch path with evidence levels, ranked blockers, and which leads
    have already been examined. Temporary execution and independent recovery are
    separate outcomes; neither has been established end to end.
-9. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
-   [memory map](analysis/memory-and-hardware-map.md) — physical/address-space
-   orientation, with unresolved regions explicitly marked.
+10. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
+    [memory map](analysis/memory-and-hardware-map.md) — physical/address-space
+    orientation, with unresolved regions explicitly marked.
 
 Recent task/clock traces narrow handoff preparation, but do not close the missing
 retail loader entry or independent recovery. Next research should target evidence

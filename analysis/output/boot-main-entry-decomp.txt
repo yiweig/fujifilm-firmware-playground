@@ -1,0 +1,321 @@
+PROGRAM firmware-main.elf
+SKIP 401c017c inside 401c015c
+
+FUNCTION 40001840
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_40001840(void)
+
+{
+  DataMemoryBarrier(0xf);
+  *_UNK_40001868 = 0;
+  DataSynchronizationBarrier(0xf);
+  coproc_moveto_Invalidate_unified_TLB_by_MVA(0);
+  coproc_moveto_Instruction_cache(0,6);
+  DataSynchronizationBarrier(0xf);
+  InstructionSynchronizationBarrier(0xf);
+  return;
+}
+
+
+
+FUNCTION 4000219c
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_4000219c(void)
+
+{
+  undefined4 *puVar1;
+  int iVar2;
+  undefined4 uVar3;
+  undefined4 uVar4;
+  
+  iVar2 = _UNK_40002360;
+  puVar1 = _UNK_4000235c;
+  _UNK_4000235c[0x108] = _UNK_40002360;
+  puVar1[0x109] = iVar2;
+  puVar1[0x10a] = iVar2;
+  puVar1[0x10b] = iVar2;
+  puVar1[0x10c] = iVar2;
+  puVar1[0x10d] = iVar2;
+  puVar1[0x10e] = iVar2;
+  puVar1[0x10f] = iVar2;
+  puVar1[0x110] = iVar2;
+  puVar1[0x111] = iVar2;
+  puVar1[0x112] = iVar2;
+  puVar1[0x113] = iVar2;
+  puVar1[0x114] = iVar2;
+  puVar1[0x115] = iVar2;
+  puVar1[0x116] = 0xe0e0;
+  puVar1[0x118] = iVar2;
+  puVar1[0x119] = iVar2;
+  puVar1[0x11a] = iVar2;
+  puVar1[0x11b] = iVar2;
+  puVar1[0x11c] = iVar2;
+  puVar1[0x11d] = iVar2;
+  puVar1[0x11e] = 0xe0e0;
+  puVar1[0x11f] = 0xe0;
+  puVar1[0x120] = iVar2;
+  puVar1[0x121] = iVar2;
+  puVar1[0x122] = iVar2;
+  puVar1[0x123] = iVar2;
+  puVar1[0x124] = iVar2;
+  puVar1[0x125] = iVar2;
+  puVar1[0x126] = iVar2;
+  puVar1[0x127] = iVar2;
+  puVar1[0x128] = iVar2;
+  puVar1[0x129] = iVar2;
+  puVar1[0x12a] = iVar2;
+  puVar1[299] = iVar2;
+  puVar1[300] = iVar2;
+  puVar1[0x12d] = iVar2;
+  puVar1[0x12e] = iVar2;
+  puVar1[0x12f] = iVar2;
+  puVar1[0x130] = iVar2 + -0xe000;
+  puVar1[0x131] = _UNK_40002364;
+  uVar3 = _UNK_40002368;
+  puVar1[0x134] = 0xe0e0;
+  puVar1[0x135] = 0xe0e0;
+  puVar1[0x208] = uVar3;
+  uVar4 = _UNK_4000236c;
+  puVar1[0x209] = uVar3;
+  puVar1[0x20a] = uVar3;
+  puVar1[0x20b] = uVar3;
+  puVar1[0x20c] = uVar3;
+  puVar1[0x20d] = uVar3;
+  puVar1[0x20e] = uVar3;
+  puVar1[0x20f] = uVar3;
+  puVar1[0x210] = uVar3;
+  puVar1[0x211] = uVar3;
+  puVar1[0x212] = uVar3;
+  puVar1[0x213] = uVar3;
+  puVar1[0x214] = uVar3;
+  puVar1[0x215] = uVar3;
+  puVar1[0x216] = 0x101;
+  puVar1[0x218] = uVar3;
+  puVar1[0x219] = uVar3;
+  puVar1[0x21a] = uVar3;
+  puVar1[0x21b] = uVar3;
+  puVar1[0x21c] = uVar3;
+  puVar1[0x21d] = uVar3;
+  puVar1[0x21e] = 0x101;
+  puVar1[0x21f] = 1;
+  puVar1[0x220] = uVar3;
+  puVar1[0x221] = uVar3;
+  puVar1[0x222] = uVar3;
+  puVar1[0x223] = uVar3;
+  puVar1[0x224] = uVar3;
+  puVar1[0x225] = uVar3;
+  puVar1[0x226] = uVar3;
+  puVar1[0x227] = uVar3;
+  puVar1[0x228] = uVar3;
+  puVar1[0x229] = uVar3;
+  puVar1[0x22a] = uVar3;
+  puVar1[0x22b] = uVar3;
+  puVar1[0x22c] = uVar3;
+  puVar1[0x22d] = uVar3;
+  puVar1[0x22e] = uVar3;
+  puVar1[0x22f] = uVar3;
+  puVar1[0x230] = uVar3;
+  puVar1[0x231] = uVar3;
+  uVar3 = _UNK_40002370;
+  puVar1[0x234] = 0x101;
+  puVar1[0x235] = 0x101;
+  puVar1[0x236] = 1;
+  *puVar1 = 1;
+  puVar1[-0xfbfec] = uVar3;
+  FUN_40006ef8(0x29,uVar4);
+  FUN_40003d7c(199,uVar4);
+  FUN_4000c30c(0);
+  *(undefined4 *)(DAT_40003dcc + 0x360) = uVar4;
+  *(undefined4 *)(DAT_40003dd0 + 0x118) = 0x1000000;
+  FUN_4000c30c();
+  return;
+}
+
+
+
+FUNCTION 4001f898
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_4001f898(void)
+
+{
+  func_0x40020c50(0x200000);
+  func_0x40020c30(_UNK_4001f8b8);
+  *(undefined4 *)(_UNK_40020c4c + 4) = 0x200000;
+  return;
+}
+
+
+
+FUNCTION 4000b608
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_4000b608(uint param_1,uint param_2)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  uint uVar3;
+  uint uVar4;
+  int iVar5;
+  uint uVar6;
+  uint uVar7;
+  
+  iVar1 = _UNK_4000b598;
+  uVar2 = FUN_4000c30c(0);
+  uVar3 = 0;
+  uVar7 = 0;
+  for (; param_1 != 0; param_1 = param_1 & ~uVar4) {
+    uVar4 = -param_1 & param_1;
+    iVar5 = 0x1f - LZCOUNT(uVar4);
+    uVar6 = (uint)*(byte *)(iVar1 + iVar5);
+    if ((uVar4 & param_2) == 0) {
+      if (uVar6 == 0) {
+        FUN_400070d8(_UNK_4000b59c,0xe5,_UNK_4000b5a4,0,iVar5);
+        FUN_40007148(0);
+      }
+      *(char *)(iVar1 + iVar5) = (char)(uVar6 - 1);
+      if (uVar6 - 1 == 0) {
+        uVar3 = uVar3 | uVar4;
+      }
+    }
+    else {
+      if (uVar6 == 0) {
+        uVar7 = uVar7 | uVar4;
+      }
+      *(char *)(iVar1 + iVar5) = (char)(uVar6 + 1);
+      if ((uVar6 + 1 & 0xff) == 0) {
+        FUN_400070d8(_UNK_4000b59c,0xcc,_UNK_4000b5a0,0,iVar5);
+        FUN_40007148(0);
+      }
+    }
+  }
+  if (uVar3 != 0) {
+    _DAT_10000044 = uVar3;
+  }
+  if (uVar7 != 0) {
+    _DAT_10000064 = uVar7;
+  }
+  FUN_4000c30c(uVar2);
+  return;
+}
+
+
+
+FUNCTION 4000b61c
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_4000b61c(uint param_1,uint param_2)
+
+{
+  undefined4 uVar1;
+  uint uVar2;
+  uint uVar3;
+  int iVar4;
+  int iVar5;
+  uint uVar6;
+  uint uVar7;
+  
+  iVar5 = _UNK_4000b598 + 0x20;
+  uVar1 = FUN_4000c30c(0);
+  uVar2 = 0;
+  uVar7 = 0;
+  for (; param_1 != 0; param_1 = param_1 & ~uVar3) {
+    uVar3 = -param_1 & param_1;
+    iVar4 = 0x1f - LZCOUNT(uVar3);
+    uVar6 = (uint)*(byte *)(iVar5 + iVar4);
+    if ((uVar3 & param_2) == 0) {
+      if (uVar6 == 0) {
+        FUN_400070d8(_UNK_4000b59c,0xe5,_UNK_4000b5a4,1,iVar4);
+        FUN_40007148(0);
+      }
+      *(char *)(iVar5 + iVar4) = (char)(uVar6 - 1);
+      if (uVar6 - 1 == 0) {
+        uVar2 = uVar2 | uVar3;
+      }
+    }
+    else {
+      if (uVar6 == 0) {
+        uVar7 = uVar7 | uVar3;
+      }
+      *(char *)(iVar5 + iVar4) = (char)(uVar6 + 1);
+      if ((uVar6 + 1 & 0xff) == 0) {
+        FUN_400070d8(_UNK_4000b59c,0xcc,_UNK_4000b5a0,1,iVar4);
+        FUN_40007148(0);
+      }
+    }
+  }
+  if (uVar2 != 0) {
+    _DAT_10000048 = uVar2;
+  }
+  if (uVar7 != 0) {
+    _DAT_10000068 = uVar7;
+  }
+  FUN_4000c30c(uVar1);
+  return;
+}
+
+
+
+FUNCTION 4000b630
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_4000b630(uint param_1,uint param_2)
+
+{
+  undefined4 uVar1;
+  uint uVar2;
+  uint uVar3;
+  int iVar4;
+  int iVar5;
+  uint uVar6;
+  uint uVar7;
+  
+  iVar5 = _UNK_4000b598 + 0x40;
+  uVar1 = FUN_4000c30c(0);
+  uVar2 = 0;
+  uVar7 = 0;
+  for (; param_1 != 0; param_1 = param_1 & ~uVar3) {
+    uVar3 = -param_1 & param_1;
+    iVar4 = 0x1f - LZCOUNT(uVar3);
+    uVar6 = (uint)*(byte *)(iVar5 + iVar4);
+    if ((uVar3 & param_2) == 0) {
+      if (uVar6 == 0) {
+        FUN_400070d8(_UNK_4000b59c,0xe5,_UNK_4000b5a4,2,iVar4);
+        FUN_40007148(0);
+      }
+      *(char *)(iVar5 + iVar4) = (char)(uVar6 - 1);
+      if (uVar6 - 1 == 0) {
+        uVar2 = uVar2 | uVar3;
+      }
+    }
+    else {
+      if (uVar6 == 0) {
+        uVar7 = uVar7 | uVar3;
+      }
+      *(char *)(iVar5 + iVar4) = (char)(uVar6 + 1);
+      if ((uVar6 + 1 & 0xff) == 0) {
+        FUN_400070d8(_UNK_4000b59c,0xcc,_UNK_4000b5a0,2,iVar4);
+        FUN_40007148(0);
+      }
+    }
+  }
+  if (uVar2 != 0) {
+    _DAT_1000004c = uVar2;
+  }
+  if (uVar7 != 0) {
+    _DAT_1000006c = uVar7;
+  }
+  FUN_4000c30c(uVar1);
+  return;
+}
+
+

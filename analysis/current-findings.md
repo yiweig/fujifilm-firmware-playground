@@ -387,6 +387,38 @@ loads that file from SD to `0x40000000` and boots it.
   and raw/YUV choice come from a config block.
   ([runtime-task-inventory.md](runtime-task-inventory.md))
 
+## Bootup reset-to-main (2026-11-08)
+
+- **Reset `0x40000ec0`**: MPIDR, per-core stacks at
+  `0x3f010000 - (core<<11)`, early cache/TLB (`FUN_40001180`), MMU
+  (`FUN_4000147c`), BSS zero, page table (`FUN_400017c0`),
+  **VBAR = `0x40000000`**, core-0 boot path, boot parameter block at
+  `0x10000110`, clock/PLL `FUN_4000103c`, jump to `0x400037e8`.
+- **RTOS/main entry `0x400037e8`**: reads `0x10000058 & 3`, enables
+  clock gates (`FUN_4000b608/b61c/b630`), boot-mode dispatch
+  `FUN_401c015c`, GIC/timer (`FUN_4000219c`), TLB/cache
+  (`FUN_40001840`), 2 MB heap (`FUN_4001f898`), then the ThreadX
+  scheduler (`0x4001f8cc`).
+- **Boot mode** is a 3-bit field at `0x1000606c` bits 4–6 plus a
+  2-bit sub-mode (bits 0–1). Modes 0/1/2–5 configure clock/power
+  domains via `FUN_40080ac8`; sub-mode 3 skips reconfiguration. The
+  dispatch writes the mode back, clears `0x10005000+0x305` bit 1,
+  and sets boot status `0x10000040 = 4`.
+- **Main task**: trampoline `0x40003b40` loads `0x40003b80`
+  (app-init vector `0x40003498`) and jumps to the scheduler start
+  `0x4001f8cc`. The data at `0x40003b78` is
+  `777c0ea8 fe72bddf 40003498`.
+- **App init `FUN_40003498`**: clocks/power, HW ID check
+  (`0x10000324 == 0xd8`), event group/semaphores
+  (`FUN_4000ef40`/`FUN_4000f39c`/`FUN_4000f5b8`), storage/NAND
+  (`FUN_4000fb9c`), VFS/FAT (`FUN_4000fd40`), then the
+  driver/task/UI/imaging init sequence with boot-stage event bits
+  (`FUN_4000f458`/`FUN_4000f51c`, bits `1 << (stage-1)`).
+- **Boot-stage event group**: `FUN_4000f004` sets stage bits via
+  `FUN_4002a760`; `FUN_4000f458` marks, `FUN_4000f51c` checks/logs,
+  `FUN_4000f550` runs the stage callback.
+- Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
+
 ## What remains open
 
 | Item | State |
