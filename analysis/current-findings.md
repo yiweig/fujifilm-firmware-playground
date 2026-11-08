@@ -356,6 +356,15 @@ loads that file from SD to `0x40000000` and boots it.
   (named wrapper, 0x1000 minimum stack), `FUN_405f1f04` (named
   wrapper with logging). The first argument is the task name, the
   second the entry function.
+- **`os` introspection shell:** `os task`, `os mem`, `os que`,
+  `os sem`, `os evt`, `os mut`, `os tmr`, `os stack`, `os all`,
+  `os nice <name> <lvl>`, `os prof`, `os proc`, `os dir`. `os task`
+  walks the ThreadX list at `DAT_4000628c`; next `+0x88`, name
+  `+0x28`, priority `+0x2c`, state `+0x30`, timeout `+0x4c`; print
+  `[%p](pri%2u) %-16s[%5s]timeout%ld`; states `Ready`, `Comp`,
+  `Term`, `Susp`, `Slee`, `WQu`, `WSem`, `WEvt`, `WBlk`, `WByte`,
+  `IO`, `File`, `TCP`, `WMut`, `???`. `os stack` walks the same
+  list; `os nice` changes priority by name.
 - **Direct tasks:** `AutoFocus Process`, `FastPBEnterViewGroupThread`,
   `PB Effect Thread`, `SlideWindowThread`, `pLoadMainImageThread`,
   `PB_NxNLoadThread`, `PB_ListDateLoadThread`, `PB_NxNDrawThread`,

@@ -147,6 +147,75 @@ path we decompiled (`FUN_402cdad8`) is one consumer of this family.
 - `os task`, `os stack`, `os nice thread-name lvl`
 - `ros_thread.c`, `ThreadX Cortex-A7/GNU G5.7.5.2`
 
+## The `os` introspection shell
+
+The shell has a full RTOS introspection command group at table
+`0x40df8b4c`:
+
+| Command | Handler | Help |
+| --- | --- | --- |
+| `os task` | `0x402fa248` | task info |
+| `os mem` | `0x402fa294` | memory info |
+| `os que` | `0x402fa240` | queue info |
+| `os sem` | `0x402fa238` | semaphore info |
+| `os evt` | `0x402fa230` | event-flag info |
+| `os mut` | `0x402fa228` | mutex info |
+| `os tmr` | `0x402fa220` | timer info |
+| `os stack` | `0x402fa1e8` | thread/system stack info |
+| `os all` | `0x402fa1d4` | all info |
+| `os nice <thread-name> <lvl>` | `0x402fa25c` | change thread priority |
+| `os` | `0x402fa188` | OS information / help |
+| `os prof` | `0x402f9fd0` | profiling |
+| `os proc` | `0x402f9e54` | `proc en ms` |
+| `os dir` | `0x402fab1c` | object directory |
+
+`os task` (`FUN_402fa248`) walks the ThreadX task list:
+
+- list head at `DAT_4000628c` (`*DAT_4000628c` is the first task)
+- next task at `task + 0x88`
+- task name at `task + 0x28`
+- priority at `task + 0x2c`
+- state index at `task + 0x30`
+- timeout at `task + 0x4c`
+- the state-name table is the packed string table at `0x40adae5e`
+
+The task print format is:
+
+```text
+[%p](pri%2u) %-16s[%5s]timeout%ld
+```
+
+State names, in index order:
+
+| Index | State |
+| --- | --- |
+| 0 | `Ready` |
+| 1 | `Comp` |
+| 2 | `Term` |
+| 3 | `Susp` |
+| 4 | `Slee` |
+| 5 | `WQu` |
+| 6 | `WSem` |
+| 7 | `WEvt` |
+| 8 | `WBlk` |
+| 9 | `WByte` |
+| 10 | `IO` |
+| 11 | `File` |
+| 12 | `TCP` |
+| 13 | `WMut` |
+| 14 | `???` |
+
+`os stack` (`FUN_40006a58`) walks the same task list and prints
+stack usage via `FUN_4000582c(task, filter, 1)`. `os nice` resolves
+the thread name with `FUN_40021768(task+0x28, name)` and changes the
+priority with `FUN_40026f00(task, level, ...)`.
+
+This is a complete **live task introspection path**: in the debug
+shell, `os task`, `os stack`, `os all`, and `os nice` operate on the
+real ThreadX lists. The next live session can dump the actual task
+table (names, priorities, states, stack usage) without any storage
+writes.
+
 ## What this gives us
 
 - A concrete **runtime ownership map**: which task family owns
