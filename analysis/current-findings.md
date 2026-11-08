@@ -417,6 +417,13 @@ loads that file from SD to `0x40000000` and boots it.
 - **Boot-stage event group**: `FUN_4000f004` sets stage bits via
   `FUN_4002a760`; `FUN_4000f458` marks, `FUN_4000f51c` checks/logs,
   `FUN_4000f550` runs the stage callback.
+- **Boot-status/layout selection:** `FUN_400007f4` reads the
+  halfword at `0x10004054`; `FUN_4000081c` uses bit 1 to select the
+  FW1 (`0x3f000014/0x1c`) or FW2 (`0x3f000018/0x20`) DRAM
+  parameters and fills the layout struct at `0x40000ad0` with total
+  size, base, block size (in 512-byte sectors). Live status
+  `0x0100` → FW1 selected, bit 8 set. The SRAM dump at
+  `0x3f000000` contains boot-stub code, not the parameter block.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open

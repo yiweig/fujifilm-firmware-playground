@@ -233,6 +233,42 @@ sequence; other tasks can wait on the same event group.
 - The app init order: clocks → event group → storage/NAND →
   VFS/FAT → drivers/tasks/UI/imaging, with event-bit stage markers.
 
+## 7. Boot-status and DRAM layout selection
+
+`FUN_400007f4` reads the boot-status halfword at **`0x10004054`**
+(base `0x10004000`, offset `0x54`). `FUN_4000081c` consumes it:
+
+```c
+status = FUN_400007f4();          // 0x10004054
+if ((status & 2) == 0) {          // FW1 selected
+    base = *(u32*)0x3f00001c;
+    size = *(u32*)0x3f000014;
+} else {                          // FW2 selected
+    base = *(u32*)0x3f000020;
+    size = *(u32*)0x3f000018;
+}
+blocksz = *(u32*)0x3f00000c;
+layout[0] = (blocksz * size) >> 9; // total in 512-byte sectors
+layout[1] = (base + 0x1ff) >> 9;   // base in sectors
+layout[2] = blocksz >> 9;          // block size in sectors
+layout[3] = 0;
+```
+
+The layout struct is at **`0x40000ad0`** (four words, zero in the
+image, filled at boot). The live boot-status read was `0x0100`:
+bit 1 clear → **Firmware1 selected**, bit 7 clear, bit 8 set.
+
+`FUN_400008e8` is a related trampoline: it adds `*0x40000ad0` to
+`param_1`, sets `r3 = 0x3f000000`, and calls a relocated function
+pointer (the literal is `0x00004e34`, relocated by the loader).
+
+The existing SRAM dump at `0x3f000000` contains **boot-stub ARM
+code**, not the DRAM parameter block, so the live parameter values
+at `0x3f00000c/0x14/0x18/0x1c/0x20` are not in that dump. The
+boot-info page dump at `0x10004000` remains the best source for the
+status halfword; the DRAM parameter values would need a targeted
+read of the live SRAM/DRAM alias.
+
 ## Open questions
 
 1. The exact boot-mode table: which modes 0–5 correspond to which
