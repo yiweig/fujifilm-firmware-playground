@@ -309,6 +309,28 @@ loads that file from SD to `0x40000000` and boots it.
   candidates: a hidden logical volume, the C: DCIM volume, or the
   SD card's raw/reserved area.
 
+## Built-in AWB RAW dump (2026-11-08)
+
+- **The stock firmware has a file-gated RAW dump in the AWB capture
+  path.** `D:\SaveRaw.txt` on the SD card makes `AWB_CheckRawFile`
+  (`0x40203014`) set a RAM flag at `0x41311cd2`. The AWB capture
+  paths (`FUN_4049f0c8`/`FUN_4049faa8`) call `FUN_402ce16c`, which
+  then calls `FUN_402cdad8` to write
+  `D:\DCIM\RAW<width>x<height>_<stride>.RAW` alongside the normal
+  capture.
+- **Trigger:** the debug shell's `flash` command (handler
+  `0x4060fedc`, table entry `0x40e17e50`) case `0x3B` calls
+  `AWB_CheckRawFile`. The same shell table exposes `cap`
+  (`Deb_CaptureStill`), `pvrawsave`, `pvyuvsave`, `pvrawsize`,
+  `sensor`, and other factory debug hooks.
+- **Format:** stride = width for `param_3==0`, width*2 for `param_3==4`
+  (16-bit), width*3/2 otherwise (12-bit packed); the filename records
+  width, height and stride.
+- This is a stock feature, not a patch. It is the most direct RAW
+  lead so far; the next test is `SaveRaw.txt` + `flash 0x3b` + `cap`
+  (or a normal capture). Details:
+  [saveraw-awb-raw-path.md](saveraw-awb-raw-path.md).
+
 ## What remains open
 
 | Item | State |
