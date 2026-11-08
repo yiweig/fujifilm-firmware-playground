@@ -344,6 +344,29 @@ a secondary Linux image on CPU1 with ATAGs and a serial console. The
 mailbox commands `0x200`/`0x201`/`0x208`/`0x20b` are the inter-core
 boot protocol.
 
+## 10. Staged loader entry (`+0x200`)
+
+`FUN_40000338` is the main image's loader-facing `+0x200` entry
+(`0x40000338`). It:
+
+1. Calls `FUN_4000081c()` — the boot-status/layout selector.
+2. Reads the section table from the SRAM-copied header
+   (`_UNK_40000798`) and the loader state at `_UNK_40000790`.
+3. Validates each section (checksum), copies it to its destination,
+   zeroes the BSS, and waits for the hardware handshake
+   `0x10000911 & 0xf0 == 0xe0`.
+4. Jumps to the loaded entry (`pcVar12 = entry`).
+
+Failure paths log and call the fallback (`_UNK_400007f0`); one
+branch sets `0x1000003c = 1` (reboot). The section table uses the
+same NAND header layout documented in
+[boot-info-block-and-updater-sdboot.md](boot-info-block-and-updater-sdboot.md):
+signature/type, block size, FW1/FW2 starts and lengths, checksums.
+
+This is the **loader handoff** from the earlier stage: the earlier
+stage loads the main image (or updater), and this entry validates the
+sections against the header copy before transferring control.
+
 ## Open questions
 
 1. The exact boot-mode table: which modes 0–5 correspond to which

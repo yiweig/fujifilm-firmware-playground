@@ -445,6 +445,12 @@ loads that file from SD to `0x40000000` and boots it.
   sharemem=...`, disables the MMU/caches, and jumps to the
   secondary Linux image. The image base at `0x40e37c5c` is a
   loader-patched placeholder.
+- **Staged loader entry `0x40000338` (`+0x200`):** calls
+  `FUN_4000081c`, validates the section table from the SRAM-copied
+  header (`_UNK_40000798`), copies sections, zeroes BSS, waits for
+  `0x10000911 & 0xf0 == 0xe0`, and jumps to the loaded entry.
+  Failure paths call the fallback (`_UNK_400007f0`); one branch sets
+  `0x1000003c = 1` (reboot).
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open
