@@ -156,6 +156,40 @@ Consequences:
   crashes: dump the first/last regions of the 32 GB card and search
   for `eSD RSV` / `NAND RSV` / `0xBEEF`.
 
+## SD card contents (card-reader dump, 2026-11-07)
+
+The card was removed and read directly with the Mac's SD reader:
+first 64 MiB SHA-256 `76f4b8b5…`, last 64 MiB SHA-256
+`3b6a07d0…`. The last 64 MiB is entirely zero. The card has an
+MBR at sector 0 and one FAT16 partition:
+
+- Partition: type `0x06`, start LBA 2048, 2,929,688 sectors
+  (1,500,000,256 bytes), volume label `XHALF`.
+- Root directory: `DCIM` (two JPEGs in `101_FUJI`), `ACTIVITY`
+  (empty), `.fseventsd` (macOS metadata), `EnableTest.txt`
+  (1 byte, `x`), and **`MAIN.BIN`** (14,910,464 bytes).
+- `MAIN.BIN` SHA-256 =
+  `80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923`
+  — **byte-identical to the official 2.00 main firmware**.
+- `EnableTest.txt` is the file the main firmware opens as
+  `D:\EnableTest.txt` (the image also has `D:\EnablePTPAP.txt`,
+  `D:\EnableIrisTest.txt`, `D:\EnableTest_PSAM.txt`). It is a
+  factory/test enable flag.
+
+The `eSD RSV` / `NAND RSV` / `PHYTABLE` / `firstburn` strings found
+in the first 64 MiB are **inside `MAIN.BIN`** (firmware format
+strings and rodata), not a separate raw header. The card does not
+carry a standalone `eSD RSV` header in the first or last 64 MiB.
+
+Implication: this is a **prepared SD file-boot card**. The updater's
+boot consumer loads `D:\MAIN.BIN` (the emulator's
+`loaderPath=D:\MAIN.BIN`); the card is the authorized one (CID
+matches `SD_CID.DAT`) and the payload is present. The blocker is
+the updater's SD mount (card state 0), not the card contents or the
+CID. The main firmware's `sddetect` shows the card can initialize,
+but it needs a power-recycle/re-detect; the updater's
+`sdReMount(2,0)` may not perform that sequence.
+
 ## The updater's boot command table
 
 The updater's `FUN_4000f270` parses a boot command string and maps it
@@ -185,8 +219,11 @@ reserved area: the magic is absent from all three full dumps.
   CID, not boot policy.
 - **C is not the rawC home.** The full C dump is `PHYTABLE` +
   firstburn Linux only.
-- **The SD card is the expected one.** The live CID matches
-  `SD_CID.DAT` exactly; `sddetect` passes at SDR104.
+- **The SD card is the expected one and carries the stock
+  firmware.** The live CID matches `SD_CID.DAT` exactly; `sddetect`
+  passes at SDR104. The card-reader dump shows `MAIN.BIN` =
+  official 2.00 firmware and `EnableTest.txt` = `x`. This is a
+  prepared SD file-boot card, not a raw `eSD RSV` header.
 - **The SD reserved header exists as a concept** (`sdhdr` prints
   `eSD RSV` with FW1/FW2/RSV counts) but is not loaded in the
   debug shell; `sdhdr` crashes on the null header pointer.
@@ -225,6 +262,9 @@ reserved area: the magic is absent from all three full dumps.
 
 The A/B maps, FAT16 listing, hashes and live CID/CSD are observed.
 The interpretation of A as `RO_RES` is supported by the main
-firmware's path strings. The SD reserved-header contents and the
-RawCBoot volume are not observed. The `sdhdr` and `rsvsdrd` crashes
-are debug-shell null-pointer faults; no storage write occurred.
+firmware's path strings. The SD card's FAT16 contents are observed:
+`MAIN.BIN` is the official firmware and `EnableTest.txt` is the
+test flag. No standalone `eSD RSV` header was found in the first or
+last 64 MiB; the partition-end window is not yet read. The
+`sdhdr` and `rsvsdrd` crashes are debug-shell null-pointer faults;
+no storage write occurred.

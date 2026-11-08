@@ -279,6 +279,16 @@ loads that file from SD to `0x40000000` and boots it.
   30,436 MB, SDR104, 198 MHz, `SD detect ---Pass`. The updater's
   SD-mount failure is therefore not a CID mismatch; it is an
   init/state difference in the updater's SD path.
+- **The SD card is a prepared SD file-boot card.** Card-reader
+  dump: MBR + one FAT16 `XHALF` partition (1.5 GB), containing
+  `MAIN.BIN` (14,910,464 bytes, SHA-256 `80350bd2…` — **the official
+  2.00 main firmware**), `EnableTest.txt` (1 byte, `x`), two JPEGs,
+  and macOS `.fseventsd` metadata. The last 64 MiB of the card is
+  zero. The `eSD RSV`/`NAND RSV` strings in the first 64 MiB are
+  inside `MAIN.BIN`, not a standalone header. The updater's
+  `D:\MAIN.BIN` payload is present and stock; the blocker is the
+  updater's SD mount (card state 0), not the card contents or CID.
+  ([rsv-a-b-content-and-sd-cid.md](rsv-a-b-content-and-sd-cid.md))
 - **SD reserved header is a live concept but not readable in the
   debug shell.** `sdhdr` prints an `eSD RSV` header with
   FW1/FW2/RSV counts; in this session its global pointer was null
