@@ -190,6 +190,14 @@ CID. The main firmware's `sddetect` shows the card can initialize,
 but it needs a power-recycle/re-detect; the updater's
 `sdReMount(2,0)` may not perform that sequence.
 
+**Origin caveat.** The dump does not establish who placed
+`MAIN.BIN` or `EnableTest.txt` on the card. The card contains
+macOS `.fseventsd` metadata, so it was mounted on a Mac; the most
+likely explanation is the user or an earlier experiment. The
+observed facts are the stock `MAIN.BIN` hash, the CID match, and
+the `D:\EnableTest.txt` name in the main firmware — not a
+factory-placed payload.
+
 ## The updater's boot command table
 
 The updater's `FUN_4000f270` parses a boot command string and maps it
