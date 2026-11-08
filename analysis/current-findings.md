@@ -378,9 +378,13 @@ loads that file from SD to `0x40000000` and boots it.
   (`usbControlTask`, `usbTargetTask`, `usbDPCTask`, UVC send tasks),
   storage/mount (`diskMountTask`, `MountThread`), UI/display,
   playback, WiFi/BT/dual-OS.
-- The stock RAW/YUV save task family is much broader than the single
-  `SaveRaw` path; `saveRaw_SaveFile_Task_Sensor0..3` is a strong
-  candidate for the runtime owner of the AWB RAW writer.
+- **RAW/YUV save task family:** `saveRaw_SaveFrm_Task_Sensor0..3`
+  copy frames into a 32 MB (`0x2000000`) staging buffer;
+  `saveRaw_SaveFile_Task_Sensor0..3` write
+  `%c:\DISP_S0..3_%03d.raw` / `.yuv` in 32 MB chunks, 15 chunks per
+  file, then roll the file number. These are display/ISP frame
+  dumps, separate from the AWB `RAW...RAW` path. The `%c:` drive
+  and raw/YUV choice come from a config block.
   ([runtime-task-inventory.md](runtime-task-inventory.md))
 
 ## What remains open

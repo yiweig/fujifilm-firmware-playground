@@ -93,18 +93,30 @@ families:
 
 ### RAW / YUV save (directly relevant to RAW work)
 
-- `saveRaw_SaveFrm_Task_Sensor0..3`
-- `saveRaw_SaveFile_Task_Sensor0..3`
-- `saveYuv_SaveFrm_Task_Sensor0..3`
-- `saveYuv_SaveFile_Task_Sensor0..3`
-- `savePrvFrm_SaveFrmTask`, `savePrvFrm_SaveFileTask`
-- `savePrvYuvSaveFrmTask_Sen0..3`,
-  `savePrvYuvSaveFileTask_Sen0..3`
-- `savePrvFrmSaveFrmTask_Sen0..3`,
-  `savePrvFrmSaveFileTask_Sen0..3`
+- `saveRaw_SaveFrm_Task_Sensor0..3` — frame-capture tasks; entry
+  `0x401c3a18` (S0), `0x401c4310` (S1), `0x401c4020` (S2),
+  `0x401c3d1c` (S3). They copy frames into a 32 MB
+  (`0x2000000`) staging buffer; the image has a
+  `FIXME : No Implement YUV case` string in this family.
+- `saveRaw_SaveFile_Task_Sensor0..3` — file-writer tasks; entry
+  `0x401c5f0c` (S0), `0x401c6248` (S1), `0x401c6578` (S2),
+  `0x401c68a8` (S3). They write:
+  - `%c:\DISP_S0_%03d.yuv` / `%c:\DISP_S0_%03d.raw`
+  - `%c:\DISP_S1_%03d.yuv` / `%c:\DISP_S1_%03d.raw`
+  - `%c:\DISP_S2_%03d.yuv` / `%c:\DISP_S2_%03d.raw`
+  - `%c:\DISP_S3_%03d.yuv` / `%c:\DISP_S3_%03d.raw`
 
-These are the stock **frame/file save task family**; the `SaveRaw`
-path we decompiled (`FUN_402cdad8`) is one consumer of this family.
+  Each file is written in 32 MB chunks, up to 15 chunks per file
+  (`0xe < chunk_count`), then the file number increments and the
+  chunk counters reset. The `%c:` drive letter and the raw/YUV
+  choice come from a config block (`DAT_401c620c`/`DAT_401c6540`/
+  etc.).
+- `saveYuv_*`, `savePrvFrm_*`, `savePrvYuv*`, `savePrvFrmSave*` —
+  the YUV and preview variants of the same frame/file task family.
+
+These are the stock **display/ISP frame dump tasks**, separate from
+the AWB `SaveRaw` path (`FUN_402cdad8`). They write per-sensor
+`DISP_S*` files rather than the AWB `RAW...RAW` file.
 
 ### USB
 
