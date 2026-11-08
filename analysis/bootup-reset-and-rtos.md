@@ -269,6 +269,37 @@ boot-info page dump at `0x10004000` remains the best source for the
 status halfword; the DRAM parameter values would need a targeted
 read of the live SRAM/DRAM alias.
 
+## 8. `sysAppInit` stage names
+
+`FUN_40003498` is the `sysAppInit` function (`main.c`). It logs
+`sysAppInit: %x` and marks each stage with
+`FUN_4000459c(0, name, len)` / `FUN_4000e164`:
+
+| Log marker | What runs around it |
+| --- | --- |
+| `devInit` | clocks/power, event group, storage/NAND (`FUN_4000fb9c`), VFS/FAT (`FUN_4000fd40`) |
+| `devInit1` | ME tokens (`tokME`/`semMeDone`/`tokExclME`), MOE HAL (`HAL_MOE1_Eventflag`, `halMoe1ATrig`/`BTrig`), IME HAL (`HAL_IME_Eventflag`, `HAL_IME_A/B_DONE`), HVC encoder (`tokenHVC`/`evtHvcCh`/`mutHvc`, base `0x1000c000`), primary display/OSD (`devInitPrimary`, `_trd_stg`, low-power/charge paths) |
+| `devInit1 OK` | after `FUN_4001cd00` (primary device/display/OSD init) |
+| `devInit2` | `FUN_4001caf0` and the `FUN_400d3a5c`/`FUN_400d3c58`/`FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4` block |
+| `devInit2 OK` | after the `FUN_400d*` block |
+| `modeswInit` | mode-switch init (`FUN_400d3a5c` region) |
+| `sysgRes` | resource init (`FUN_400d3c58` region) |
+| `cdspBootInit` | CDSP boot init (`FUN_400d3ecc`/`FUN_400d4074`/`FUN_400d4ae4`) |
+| `resDone` | after `FUN_4000f51c(0x17)` |
+| `appInit` | `FUN_40080d6c` and `FUN_400f86f4` |
+| `appInit OK` | after `FUN_400f86f4` |
+| `appInit 2 OK` | after `FUN_400f8914` |
+
+The boot-stage event bits used through this sequence are
+`1 << (stage-1)` for stages 5, 6, 9, 10, 0xb, 0xc, 0xd, 0x15, 0x16,
+0x17, 0x18, 0x1d, 0x20.
+
+The `FUN_400d*` block is the late device init (audio/USB/WiFi/BT
+candidates); `FUN_40080d6c` and `FUN_400f86f4`/`FUN_400f8914` are the
+application init block. The non-zero branch (`*DAT_4000374c != 0`)
+runs `FUN_401efc90` (debug/loader path) instead of the full
+`devInit2`/app-init sequence.
+
 ## Open questions
 
 1. The exact boot-mode table: which modes 0–5 correspond to which

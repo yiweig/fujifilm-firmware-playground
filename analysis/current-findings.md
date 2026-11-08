@@ -424,6 +424,13 @@ loads that file from SD to `0x40000000` and boots it.
   size, base, block size (in 512-byte sectors). Live status
   `0x0100` → FW1 selected, bit 8 set. The SRAM dump at
   `0x3f000000` contains boot-stub code, not the parameter block.
+- **`sysAppInit` stages:** `devInit`, `devInit1`, `devInit1 OK`,
+  `devInit2`, `devInit2 OK`, `modeswInit`, `sysgRes`,
+  `cdspBootInit`, `resDone`, `appInit`, `appInit OK`,
+  `appInit 2 OK`. `devInit1` covers ME/MOE/IME/HVC/primary
+  display; `devInit2` is the `FUN_400d*` late block; `appInit` is
+  `FUN_40080d6c` + `FUN_400f86f4`/`FUN_400f8914`. The non-zero
+  `*DAT_4000374c` branch runs `FUN_401efc90` (debug/loader path).
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open
