@@ -456,6 +456,12 @@ loads that file from SD to `0x40000000` and boots it.
   `0x10001300=0x12345678`, then `b 0x40000338` (staged loader).
   The updater's equivalent stamps `0x88888888`; the earlier stage
   reads the gate to decide whether to skip automatic file handling.
+- **Boot-info handoff contract:** gate `0x10001300`
+  (`0x12345678` main / `0x88888888` updater / `0` skip), status
+  `0x10004054` (bit 1 FW2, bits 4–6 image class, bit 7 valid),
+  button/DRAM `0x100040b4..b8`, mailbox `0x100040b9..c3`, backend
+  `0x10000058 & 0xe0`. The updater's `FUN_400009c4` decodes these
+  and either card-updates a `.brn` or load-and-boots the file.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open

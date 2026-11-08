@@ -393,6 +393,40 @@ staged loader `0x40000338`. The updater's equivalent stamps
 `0x88888888`; the earlier stage reads the gate to decide whether to
 skip automatic file handling.
 
+## 12. Boot-info handoff contract (earlier stage → updater/main)
+
+The earlier stage (mask ROM/SPBoot) writes a small block at
+`0x10004000`/`0x10001000`; the updater's `FUN_400009c4` consumes it:
+
+| Field | Address | Meaning |
+| --- | --- | --- |
+| Gate | `0x10001300` | `0x12345678` = main image stamp; `0x88888888` = updater stamp; `0` = skip automatic file handling |
+| Status | `0x10004054` | bit 1 = FW2 selected; bits 4–6 = image class; bit 7 = selection valid |
+| Button timing | `0x100040b4..b8` | hold-time / DRAM parameter bytes; decoded and applied via `func_0x400165d0`/`0x400165e0`/`0x400166b8` |
+| Mailbox | `0x100040b9..c0` | 8-char basename |
+| Mailbox ext | `0x100040c1..c3` | 3-char extension |
+| Backend | `0x10000058 & 0xe0` | `0x00/0x20/0x40` → NAND registration paths; `0x80/0xa0/0xc0` → other media |
+
+Updater flow (`FUN_400009c4`):
+
+- Reads the gate/status; if the gate is nonzero, decodes the button
+  timing and DRAM parameters.
+- Backend select: `0x00` → `func_0x4002bde8(1)`, `0x40` → `(2)`,
+  `0x20` → `func_0x4001be6c`, `0x80` → `func_0x4001baa8`,
+  `0xa0` → `func_0x4001d7f0`, `0xc0` → `func_0x4001dbe8`.
+- Builds a pathname: drive 5 (`G:`) or 2 (`D:`), mailbox
+  basename/extension, default `firmware.brn`.
+- If the file exists: `.brn` → `func_0x4000fc70` (card update) and
+  reboot (`0x1000003c = 1`); otherwise `FUN_4000f270(path,0)`
+  load-and-boot.
+- If no file: `func_0x40075ea4` (shutdown/continue).
+
+The producer of the button/mailbox/DRAM fields is the earlier
+stage/ROM; the main image does not reference
+`0x100040b4`/`0x100040b9`/`0x10000058` directly. The main image
+consumes only the boot-status halfword (`0x10004054`) and the gate
+stamp (`0x10001300`).
+
 ## Open questions
 
 1. The exact boot-mode table: which modes 0–5 correspond to which
