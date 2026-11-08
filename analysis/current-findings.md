@@ -437,6 +437,14 @@ loads that file from SD to `0x40000000` and boots it.
   `appInitDelay` is `FUN_400f8914` (deferred network/WiFi/BT). The
   non-zero `*DAT_4000374c` branch runs `FUN_401efc90` (debug/loader
   path).
+- **Secondary-core AMP boot:** `FUN_4000148c` is CPU1's
+  `amp_boot_main`. It waits on the mailbox at `0x40004000` for
+  `0x200`/`0x201`/`0x208`/`0x20b`, builds ATAGs
+  (`ATAG_CORE` `0x54410001`, `ATAG_CMDLINE` `0x54410009`) with
+  `console=ttyS0,115200 no_console_suspend=1 mem=... icatmem=...
+  sharemem=...`, disables the MMU/caches, and jumps to the
+  secondary Linux image. The image base at `0x40e37c5c` is a
+  loader-patched placeholder.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open

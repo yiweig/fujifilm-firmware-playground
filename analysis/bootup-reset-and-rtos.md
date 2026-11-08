@@ -306,6 +306,44 @@ init). The non-zero branch (`*DAT_4000374c != 0`) runs
 `FUN_401efc90` (debug/loader path) instead of the full
 `devInit2`/app-init sequence.
 
+## 9. Secondary-core AMP boot (CPU1)
+
+`FUN_4000148c` is the CPU1 `amp_boot_main`:
+
+- Reads MPIDR; core 0 logs `Enter error func` and returns.
+- Logs `[CPU1]amp_boot_main`.
+- Waits on the mailbox at **`0x40004000`** (core-specific base) and
+  loops on the command word:
+  - `0x20b` → `FUN_40007e58()`, log `Fail`, halt.
+  - `0x208` → `FUN_4000826c()`, continue.
+  - `0x200` → log `[CPU1]AMP BOOT ...`, proceed to boot.
+  - `0x201` → log `[CPU1]wait cpu0 wakeup cpu1 to power on ...`,
+    `WFE`/`DSB`, wait for `0x201`, then boot.
+- Boot setup:
+  - image base = `*(u32*)0x40e37c5c + 0x1000000` (the static word
+    is a loader-patched placeholder, not the runtime base)
+  - writes `*(u32*)base = base + 0x1006e40` (entry)
+  - parameter block at `base+0x44` = entry + `0x1900`
+  - magic at `base+0x40` = `0xd0b`
+  - core config at `base+0x30`
+  - builds **ATAGs** at the parameter block:
+    - `ATAG_CORE` `0x54410001`
+    - `ATAG_CMDLINE` `0x54410009`
+  - command line:
+    `console=ttyS0,115200 no_console_suspend=1 mem=%dM icatmem=%dM sharemem=%dM`
+  - cache clean/invalidate via `FUN_40002bc4` for the image, ATAG
+    block, entry+`0x8000`, and config
+  - disables IRQ/FIQ, calls `FUN_400026f0`, writes `0x300` to the
+    mailbox, disables the MMU/caches (CP15 control `& ~5`), sets the
+    secondary stacks, then `blx entry` with `r0=0`, `r1=0xd0b`,
+    `r2=ATAG`.
+  - if the entry returns: log `Fail`, halt.
+
+This is a classic **AMP Linux boot**: the ThreadX primary core starts
+a secondary Linux image on CPU1 with ATAGs and a serial console. The
+mailbox commands `0x200`/`0x201`/`0x208`/`0x20b` are the inter-core
+boot protocol.
+
 ## Open questions
 
 1. The exact boot-mode table: which modes 0–5 correspond to which
