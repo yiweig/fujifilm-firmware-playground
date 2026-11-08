@@ -202,6 +202,49 @@ debug cluster:
 - `0x35`: `AE_WriteMEVCheckFile`, writes a 12-byte Tv/Av/Sv record to `D:\MEV.bin`.
 - `0x3B`: `AWB_CheckRawFile` (the SaveRaw gate).
 
+### 7. Direct debug controls for the RAW path
+
+The earlier view/capture command table at `0x40e17c80` adds direct
+controls:
+
+| Command | Handler | Behavior |
+| --- | --- | --- |
+| `raw` | `0x406769a0` | `thunk_FUN_401ad458(0, 0xe, arg != 0)`; prints `Enable/Disable raw capture` |
+| `yuv` | `0x40676950` | `thunk_FUN_401ad458(0, 0x2c, arg != 0)`; prints `Enable/Disable yuv capture` |
+| `capcfg` | `0x40676928` | `thunk_FUN_401ad458(0, arg0, arg1)` |
+| `vqawb` | `0x402cca48` | AWB debug dispatcher; **case `0x28` calls `FUN_402ce1ec(arg1 & 0xff)`**, directly setting the SaveRaw flag |
+| `vqae` | `0x402465d4` | AE debug dispatcher (exposure/ISO/AF debug) |
+| `vqlsc` | `0x405df19c` | lens-shading calibration debug |
+| `vqiq` | `0x401f6e64` | IQ debug |
+
+The event dispatcher `FUN_401ad458(0, event, value)` maps:
+
+- event `0xe` → `FUN_40195418` → `*(capture_ctx + 0xec) = value`
+  (RAW capture enable)
+- event `0x2c` → `FUN_4019544c` → `*(capture_ctx + 0xf0) = value`
+  (YUV capture enable)
+- `capture_ctx` comes from `FUN_4012c7c8()`.
+
+So there are **two independent gates**:
+
+1. `SaveRaw.txt` + `v3a 0x3b`, or `vqawb 0x28 1` → the AWB SaveRaw
+   flag at `0x41311cd2`, checked by `FUN_402ce16c`.
+2. `raw 1` → the capture-context RAW enable at `ctx+0xec`.
+
+A direct test sequence would be:
+
+```text
+vqawb 0x28 1     # set AWB SaveRaw flag directly
+raw 1            # enable RAW capture in the capture context
+cap              # trigger a still capture
+```
+
+or, without `vqawb`:
+
+```text
+SaveRaw.txt on D:\  ->  v3a 0x3b  ->  raw 1  ->  cap
+```
+
 ## Decompilation artifacts
 
 - [v3a-dispatcher-decomp.txt](output/v3a-dispatcher-decomp.txt) — the 53-case `v3a` dispatcher.
@@ -211,6 +254,9 @@ debug cluster:
 - [v3a-3a-cluster-decomp.txt](output/v3a-3a-cluster-decomp.txt) — the 3A debug cluster.
 - [awb-raw-callers-decomp.txt](output/awb-raw-callers-decomp.txt) — the AWB capture callers.
 - [capture-callback-decomp.txt](output/capture-callback-decomp.txt) — the capture dispatcher and callback registration.
+- [view-raw-hooks-decomp.txt](output/view-raw-hooks-decomp.txt) — `raw`/`yuv`/`capcfg`/`vqawb`/`vqae` handlers.
+- [event-dispatch-decomp.txt](output/event-dispatch-decomp.txt) — the `FUN_401ad458` event dispatcher.
+- [event-raw-yuv-handlers-decomp.txt](output/event-raw-yuv-handlers-decomp.txt) — the `0xe`/`0x2c` event handlers.
 
 ## What this means
 

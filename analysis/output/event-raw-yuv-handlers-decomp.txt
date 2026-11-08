@@ -1,0 +1,57 @@
+PROGRAM firmware-main.elf
+
+FUNCTION 40195418
+
+void FUN_40195418(undefined4 param_1,undefined4 param_2)
+
+{
+  int iVar1;
+  
+  iVar1 = FUN_4012c7c8();
+  *(undefined4 *)(iVar1 + 0xec) = param_2;
+  return;
+}
+
+
+
+FUNCTION 4019544c
+
+void FUN_4019544c(undefined4 param_1,undefined4 param_2)
+
+{
+  int iVar1;
+  
+  iVar1 = FUN_4012c7c8();
+  *(undefined4 *)(iVar1 + 0xf0) = param_2;
+  return;
+}
+
+
+
+FUNCTION 40195488
+
+void FUN_40195488(undefined4 param_1,int param_2,int param_3,undefined4 param_4,undefined4 param_5)
+
+{
+  int iVar1;
+  bool bVar2;
+  
+  iVar1 = FUN_4012c7c8();
+  if (*(int *)(iVar1 + 0x28) == param_2) {
+    bVar2 = *(int *)(iVar1 + 0x2c) != param_3;
+  }
+  else {
+    bVar2 = true;
+  }
+  *(int *)(iVar1 + 0x28) = param_2;
+  *(int *)(iVar1 + 0x2c) = param_3;
+  *(undefined4 *)(iVar1 + 0x50) = param_4;
+  *(undefined4 *)(iVar1 + 0x54) = param_5;
+  if (!bVar2) {
+    return;
+  }
+  FUN_401645c8();
+  return;
+}
+
+

@@ -333,6 +333,12 @@ loads that file from SD to `0x40000000` and boots it.
   capture task `FUN_404a0124` → `FUN_4049ff5c` registers
   `FUN_4049fcb8`/`FUN_4049fe1c` for events `0xe`/`0xf`, which call
   `FUN_4049faa8` → `FUN_402ce16c` → `FUN_402cdad8`.
+- **Direct debug controls:** the view/capture table at `0x40e17c80`
+  has `raw` (`0x406769a0`, toggles event `0xe` → `ctx+0xec`),
+  `yuv` (`0x40676950`, event `0x2c` → `ctx+0xf0`), and `vqawb`
+  (`0x402cca48`, whose case `0x28` calls `FUN_402ce1ec(arg1)` and
+  sets the SaveRaw flag **without** needing `SaveRaw.txt`). A direct
+  sequence is `vqawb 0x28 1` + `raw 1` + `cap`.
 - **Format:** stride = width for `param_3==0`, width*2 for `param_3==4`
   (16-bit), width*3/2 otherwise (12-bit packed); the filename records
   width, height and stride.
