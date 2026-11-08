@@ -318,16 +318,26 @@ loads that file from SD to `0x40000000` and boots it.
   then calls `FUN_402cdad8` to write
   `D:\DCIM\RAW<width>x<height>_<stride>.RAW` alongside the normal
   capture.
-- **Trigger:** the debug shell's `flash` command (handler
-  `0x4060fedc`, table entry `0x40e17e50`) case `0x3B` calls
-  `AWB_CheckRawFile`. The same shell table exposes `cap`
+- **Trigger:** the debug shell's `v3a` command (View 3A; table entry
+  `0x40e17e48`, handler `0x4060fedc`) case `0x3B` calls
+  `AWB_CheckRawFile`. The same 71-entry debug table exposes `cap`
   (`Deb_CaptureStill`), `pvrawsave`, `pvyuvsave`, `pvrawsize`,
-  `sensor`, and other factory debug hooks.
+  `sensor`, `flash`, and other factory debug hooks.
+- **Other RAW hooks are debug dumps:** `pvrawsave` writes
+  `D:\INVALID_%04dX%04d_%04d_%04d.RAW` (the `0xff` fallback);
+  `FUN_406421f8` also has `SEARCH`/`SHARPNESS`/`BLUR` formats.
+  `pvyuvsave` writes `D:\%04d.YUV`. The `v3a` 3A cluster (cases
+  `0x28`–`0x35`) is AE/AWB debug, including `D:\MEV.bin`; case
+  `0x3B` is the SaveRaw gate.
+- **Capture path:** `cap` → `FUN_4043f7d8` → `FUN_4043f618`; the
+  capture task `FUN_404a0124` → `FUN_4049ff5c` registers
+  `FUN_4049fcb8`/`FUN_4049fe1c` for events `0xe`/`0xf`, which call
+  `FUN_4049faa8` → `FUN_402ce16c` → `FUN_402cdad8`.
 - **Format:** stride = width for `param_3==0`, width*2 for `param_3==4`
   (16-bit), width*3/2 otherwise (12-bit packed); the filename records
   width, height and stride.
 - This is a stock feature, not a patch. It is the most direct RAW
-  lead so far; the next test is `SaveRaw.txt` + `flash 0x3b` + `cap`
+  lead so far; the next test is `SaveRaw.txt` + `v3a 0x3b` + `cap`
   (or a normal capture). Details:
   [saveraw-awb-raw-path.md](saveraw-awb-raw-path.md).
 

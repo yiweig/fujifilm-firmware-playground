@@ -1,0 +1,283 @@
+PROGRAM firmware-main.elf
+
+FUNCTION 4060fedc
+
+void FUN_4060fedc(undefined4 param_1,undefined4 param_2,int param_3)
+
+{
+  int iVar1;
+  uint uVar2;
+  uint uVar3;
+  uint uVar4;
+  uint uVar5;
+  uint uVar6;
+  uint uVar7;
+  uint uVar8;
+  uint uVar9;
+  undefined4 uVar10;
+  ushort local_62;
+  uint local_60;
+  undefined4 local_5c;
+  undefined2 local_58;
+  uint local_54;
+  undefined4 local_50 [2];
+  uint local_48;
+  uint local_44 [2];
+  undefined2 auStack_3c [16];
+  
+  uVar10 = *(undefined4 *)(param_3 + 4);
+  uVar6 = *(uint *)(param_3 + 8);
+  uVar7 = *(uint *)(param_3 + 0xc);
+  uVar8 = *(uint *)(param_3 + 0x10);
+  uVar9 = *(uint *)(param_3 + 0x14);
+  local_5c = 0;
+  local_58 = 0;
+  FUN_4000cdf0(&local_54,0,0xc);
+  FUN_4000cdf0(&local_48,0,0xc);
+  FUN_40004064(DAT_406104d4,uVar10,uVar6,uVar7);
+  iVar1 = DAT_40610504;
+  switch(uVar10) {
+  case 0:
+    FUN_4060fbec();
+    break;
+  case 1:
+    FUN_4060e450(uVar6 & 0xffff,uVar7 & 0xffff);
+    break;
+  case 2:
+    FUN_4060e4bc(uVar6 & 0xff);
+    break;
+  case 6:
+    FUN_4060e53c(uVar6 & 0xff,uVar7,uVar8);
+    break;
+  case 8:
+    FUN_4060e828(uVar6 & 0xff);
+    break;
+  case 9:
+    FUN_4029731c();
+    break;
+  case 10:
+    FUN_4029736c(uVar6 & 0xff);
+    break;
+  case 0xc:
+    FUN_4060f704();
+    break;
+  case 0xd:
+    FUN_405d5020();
+    break;
+  case 0xe:
+    FUN_405d538c(&local_62);
+    break;
+  case 0xf:
+    uVar10 = 0;
+    goto LAB_406100e4;
+  case 0x10:
+    FUN_405d5bf0(0);
+    break;
+  case 0x11:
+    FUN_405d5c6c(0);
+    break;
+  case 0x12:
+    uVar10 = 1;
+LAB_406100e4:
+    FUN_405d83d0(uVar10,&local_5c);
+    break;
+  case 0x13:
+    FUN_405d7708();
+    break;
+  case 0x14:
+    FUN_4060eda8(uVar6 & 0xffff,uVar7 & 0xff);
+    break;
+  case 0x15:
+    FUN_4060eeb4(uVar6 & 0xffff);
+    break;
+  case 0x16:
+    FUN_405d76c0(uVar6 & 0xff);
+    break;
+  case 0x17:
+    FUN_4060eaa8(uVar6 & 0xff);
+    break;
+  case 0x18:
+    FUN_4060efbc(uVar6 & 0xff);
+    break;
+  case 0x19:
+    FUN_4060f0d0(uVar6 & 0xffff,uVar7 & 0xffff,uVar8 & 0xffff,uVar9 & 0xffff);
+    break;
+  case 0x1a:
+    FUN_4060f30c(uVar6 & 0xffff,uVar7 & 0xffff,uVar8 & 0xffff,uVar9 & 0xffff);
+    break;
+  case 0x1b:
+    FUN_4060f4a0(uVar6 & 0xffff,uVar7 & 0xffff,uVar8 & 0xffff,uVar9 & 0xffff);
+    break;
+  case 0x1c:
+    FUN_405d368c();
+    break;
+  case 0x1d:
+    FUN_40642ab8();
+    break;
+  case 0x1e:
+    FUN_4060f61c();
+    break;
+  case 0x1f:
+    FUN_4060f644();
+    break;
+  case 0x20:
+    FUN_4060f888(uVar6 & 0xffff,uVar7 & 0xffff,uVar8 & 0xffff);
+    break;
+  case 0x21:
+    FUN_4060fa40();
+    break;
+  case 0x22:
+    FUN_40442f84(uVar6 & 0xff,&local_5c,(int)&local_5c + 2);
+    local_44[0] = local_5c & 0xffff;
+    uVar10 = DAT_406104d8;
+    goto LAB_40610440;
+  case 0x23:
+    FUN_4029b814(uVar6 & 0xff);
+    break;
+  case 0x24:
+    FUN_4029d5b4();
+    break;
+  case 0x28:
+    FUN_40202814(uVar6 & 0xff);
+    break;
+  case 0x29:
+    FUN_4020289c(uVar6);
+    break;
+  case 0x2a:
+    FUN_40202904(uVar6);
+    break;
+  case 0x2b:
+    FUN_402029a8();
+    break;
+  case 0x2c:
+    FUN_40202ab4(&local_60);
+    local_54 = local_60 & 0xff;
+    uVar10 = DAT_406104dc;
+    goto LAB_406104c8;
+  case 0x2d:
+    FUN_40202ac8(&local_60);
+    uVar10 = DAT_406104e0;
+    local_54 = local_60;
+    goto LAB_406104c8;
+  case 0x2e:
+    FUN_40202ae0(&local_60);
+    uVar10 = DAT_406104e4;
+    local_54 = local_60;
+    goto LAB_406104c8;
+  case 0x2f:
+    FUN_40202af8(&local_60);
+    uVar10 = DAT_406104e8;
+    local_54 = local_60;
+    goto LAB_406104c8;
+  case 0x30:
+    FUN_40202b10(uVar6 & 0xff);
+    break;
+  case 0x31:
+    FUN_40202b94((int)(short)uVar6);
+    break;
+  case 0x32:
+    uVar10 = FUN_405d595c(auStack_3c);
+    FUN_40004064(DAT_406104ec,uVar10);
+    for (local_62 = 0; local_62 < 0xd; local_62 = local_62 + 1) {
+      FUN_40004064(DAT_406104f0,auStack_3c[local_62]);
+    }
+    FUN_40004064(DAT_406104f4);
+    FUN_40518c38(0x16,auStack_3c);
+    FUN_40004064(DAT_406104f8);
+    for (local_62 = 0; local_62 < 0xd; local_62 = local_62 + 1) {
+      FUN_40004064(DAT_406104f0,auStack_3c[local_62]);
+    }
+    FUN_40004064(DAT_406104f4);
+    break;
+  case 0x33:
+    local_54 = FUN_4023d9cc();
+    uVar10 = DAT_406104fc;
+    goto LAB_406104c8;
+  case 0x34:
+    FUN_40202c20(&local_62);
+    local_54 = (uint)local_62;
+    uVar10 = DAT_40610500;
+    goto LAB_406104c8;
+  case 0x35:
+    FUN_40202f74(uVar6,uVar7,uVar8);
+  case 0x36:
+    FUN_405d6830();
+    break;
+  case 0x37:
+    uVar3 = uVar7 & 0xffff;
+    uVar4 = uVar8 & 0xffff;
+    *(short *)(DAT_40610504 + 10) = (short)uVar6;
+    *(short *)(iVar1 + 0xc) = (short)uVar7;
+    *(short *)(iVar1 + 0xe) = (short)uVar8;
+    uVar5 = 0;
+    uVar7 = 0;
+    uVar2 = uVar6 & 0xff;
+    uVar6 = uVar3;
+    uVar8 = uVar4;
+    goto LAB_406103b4;
+  case 0x38:
+    uVar7 = uVar7 & 0xffff;
+    uVar2 = (uint)*(byte *)(DAT_40610504 + 10);
+    uVar3 = (uint)*(ushort *)(DAT_40610504 + 0xc);
+    uVar4 = (uint)*(ushort *)(DAT_40610504 + 0xe);
+    uVar5 = uVar6 & 0xffff;
+    uVar6 = uVar8 & 0xffff;
+    uVar8 = uVar9 & 0xffff;
+LAB_406103b4:
+    FUN_40202bb4(uVar2,uVar3,uVar4,uVar5,uVar7,uVar6,uVar8);
+    break;
+  case 0x39:
+    local_54 = FUN_40247900();
+    uVar10 = DAT_40610508;
+    goto LAB_406104c8;
+  case 0x3a:
+    FUN_4029c01c(&local_54,local_50);
+    FUN_40004064(DAT_4061050c,local_54,local_50[0]);
+    FUN_4029c460(&local_54);
+    uVar10 = DAT_40610510;
+    goto LAB_406104c8;
+  case 0x3b:
+    FUN_40203014();
+    break;
+  case 0x3c:
+    FUN_4023c664(&local_48,local_44);
+    FUN_40004064(DAT_40610514,local_48,local_44[0]);
+    FUN_4023c694(&local_48,local_44);
+    uVar10 = DAT_40610518;
+    uVar6 = local_48;
+LAB_40610440:
+    FUN_40004064(uVar10,uVar6,local_44[0]);
+    break;
+  case 0x3d:
+    FUN_40157e70(uVar6 & 0xff);
+    break;
+  case 0x3e:
+    FUN_4060fba8();
+    break;
+  case 0x3f:
+    FUN_4029c3d0();
+    local_54 = FUN_4029c030();
+    uVar10 = DAT_4061051c;
+    goto LAB_406104c8;
+  case 0x40:
+    FUN_40118a70(0,0xf0,uVar6);
+    FUN_4006a074(3,uVar7);
+    FUN_40118a70(0,0xf0,uVar6);
+    break;
+  case 0x41:
+    thunk_FUN_40157e70(uVar6 & 0xff);
+    break;
+  case 0x42:
+    local_54 = (uint)*DAT_40610520;
+    uVar10 = DAT_40610524;
+    goto LAB_406104c8;
+  case 0x43:
+    local_54 = FUN_40248f88();
+    uVar10 = DAT_40610528;
+LAB_406104c8:
+    FUN_40004064(uVar10,local_54);
+  }
+  return;
+}
+
+

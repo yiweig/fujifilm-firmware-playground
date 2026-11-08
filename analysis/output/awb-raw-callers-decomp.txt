@@ -1,0 +1,127 @@
+PROGRAM firmware-main.elf
+
+FUNCTION 4049fcb8
+
+undefined4 FUN_4049fcb8(undefined4 param_1,uint param_2,undefined4 param_3,undefined4 *param_4)
+
+{
+  int iVar1;
+  int *piVar2;
+  
+  FUN_40004064(DAT_4049fe04,DAT_4049fe00,param_1,param_3,*param_4,param_4[1]);
+  iVar1 = DAT_4049fe08;
+  FUN_400410cc(0,DAT_4049fe0c,DAT_4049fe00,param_1,param_3,*param_4,param_4[1]);
+  piVar2 = DAT_4049fe14;
+  if ((1 < *(byte *)(iVar1 + 2) - 6) && (*DAT_4049fe10 != 0)) {
+    FUN_4042c99c(0,*(char *)(*DAT_4049fe14 + 0x51) != '\0');
+    if (*(char *)(*piVar2 + 0x53) != '\0') {
+      FUN_40431b08(1);
+      FUN_40533b90(1);
+      if ((1 < *(byte *)(iVar1 + 2) - 6) && (*(char *)(*DAT_4049fe18 + 0xe8) != '\x03')) {
+        FUN_4006a074(3,300);
+      }
+    }
+    *(undefined1 *)(*DAT_4049fe14 + 0x52) = 0;
+  }
+  FUN_4049faa8(param_1,param_2 | 0x40000000,param_3,param_4,1);
+  FUN_402cd940(param_2 | 0x40000000,param_3,param_4);
+  FUN_402cdf4c(0);
+  return 0;
+}
+
+
+
+FUNCTION 4049fe1c
+
+undefined4 FUN_4049fe1c(undefined4 param_1,uint param_2,undefined4 param_3,undefined4 *param_4)
+
+{
+  short *psVar1;
+  int *piVar2;
+  
+  FUN_40004064(DAT_4049ff48,DAT_4049ff44,param_1,param_3,*param_4,param_4[1]);
+  FUN_400410cc(0,DAT_4049ff4c,DAT_4049ff44,param_1,param_3,*param_4,param_4[1]);
+  piVar2 = DAT_4049ff58;
+  psVar1 = DAT_4049ff54;
+  if ((1 < *(byte *)(DAT_4049ff50 + 2) - 6) && (*DAT_4049ff54 != 0)) {
+    FUN_4042c8d4(0,*(char *)(*DAT_4049ff58 + 0x51) != '\0');
+    if (*(char *)(*piVar2 + 0x51) == '\0') {
+      FUN_4042c99c(1,*psVar1);
+    }
+    else {
+      *(undefined1 *)(*piVar2 + 0x52) = 0;
+    }
+  }
+  if (*(char *)(*DAT_4049ff58 + 0x51) != '\0') {
+    FUN_402438a8();
+  }
+  FUN_402cdf4c(1);
+  FUN_4049faa8(param_1,param_2 | 0x40000000,param_3,param_4,0);
+  FUN_402cd8c4(param_2 | 0x40000000,param_3,param_4);
+  return 0;
+}
+
+
+
+FUNCTION 404a5d74
+
+void FUN_404a5d74(int param_1)
+
+{
+  undefined4 uVar1;
+  
+  uVar1 = DAT_404a5d8c;
+  if (param_1 == 0) {
+    uVar1 = 0;
+  }
+  thunk_FUN_401ad970(0,1,uVar1);
+  return;
+}
+
+
+
+FUNCTION 404a5eac
+
+void FUN_404a5eac(int param_1)
+
+{
+  undefined4 uVar1;
+  
+  if ((((*(byte *)(DAT_404a5fd4 + 2) - 6 < 2) || (*(char *)(*DAT_404a5fd8 + 0x68) == '\0')) ||
+      (*DAT_404a5fdc == 0)) || ((*(ushort *)(&DAT_00001008 + DAT_404a5fe0) & 0xf000) == 0xe000)) {
+    thunk_FUN_401ad970(0,1,DAT_404a5fe4);
+  }
+  else {
+    FUN_404a5d74(0);
+  }
+  thunk_FUN_401ad970(0,7,DAT_404a5fe8);
+  thunk_FUN_401ad970(0,0x11,0);
+  uVar1 = DAT_404a5fec;
+  if (param_1 == 0) {
+    uVar1 = 0;
+  }
+  thunk_FUN_401ad970(0,2,uVar1);
+  thunk_FUN_401ad970(0,3,DAT_404a5ff0);
+  thunk_FUN_401ad970(0,0x13,0);
+  thunk_FUN_401ad970(0,9,0);
+  thunk_FUN_401ad970(0,6,DAT_404a5ff4);
+  thunk_FUN_401ad970(0,4,DAT_404a5ff8);
+  thunk_FUN_401ad970(0,5,DAT_404a5ffc);
+  thunk_FUN_401ad970(0,0xc,DAT_404a6000);
+  return;
+}
+
+
+
+FUNCTION 4060f61c
+
+void FUN_4060f61c(void)
+
+{
+  thunk_FUN_401ad970(0,1,DAT_4060f640);
+  FUN_4029b80c();
+  FUN_4018381c(0x13);
+  return;
+}
+
+
