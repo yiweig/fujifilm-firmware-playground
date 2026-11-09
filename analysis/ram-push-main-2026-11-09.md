@@ -45,6 +45,15 @@ User observation: the screen showed the **debug view**; the power
 switch did not respond, but flipping OFF and unplugging powered
 the camera off (no battery pull). Normal operation afterwards.
 
+**Confirmation (second run, same payload):** the debug view is
+**live**. Pressing PLAY opens the debug menu and the
+film/playback lever navigates it; menu entries include
+**`BOOT TYPE`** and **`USB MODE`**. A `Disable` item opens a
+dialog with a green/gray bar and a 5-bit value (`00001`/`00000`)
+that the lever toggles. This is the main image's own UI and input
+task running from RAM, not a stale framebuffer and not the old
+loader. The main image boot reaches calibration/debug mode.
+
 ## Interpretation
 
 - **This was not a state-6 prep hang.** The loader left USB at the
@@ -60,35 +69,38 @@ the camera off (no battery pull). Normal operation afterwards.
 - The bootquery timeout is expected in that mode: the loader API
   is selected by the button combination, which is not held after
   the handoff. The timeout is not proof that the loader is dead.
-- Caveat: the debug view could be the old framebuffer. The
-  re-enumeration plus the overwritten loader is strong evidence
-  that new code ran, but this run did not positively distinguish
-  a live calibration UI from a stale screen.
+- **The live debug UI settles it.** The UI responds to PLAY and
+  the film/playback lever, so the main image's display, input and
+  menu tasks are executing from RAM. The old loader cannot be
+  producing that UI: its code at `0x40000000` was overwritten.
+- This reclassifies the previous `0/4` from "did not come up" to
+  "the stock main image boots from RAM into calibration/debug
+  mode; the normal app and a modified image are not yet
+  demonstrated."
 
-This is the strongest main-image execution evidence so far; it
-reclassifies the previous `0/4` from "did not come up" to
-"handoff executes; the post-handoff personality is not the loader
-API".
+## Next
 
-## Next confirmation
+The live debug menu exposes two useful controls:
 
-Repeat the stock-main-image push while watching the screen and
-using only read-first probes:
+- **`USB MODE`** — likely the runtime USB personality selector.
+  Switching it away from the loader/calibration personality may
+  make the main image enumerate as the normal PTP device
+  (`0x04CB:0x030A`) without a reboot.
+- **`BOOT TYPE`** — likely the boot-mode selector. Treat this as
+  potentially persistent; read the current value before changing
+  anything.
 
-1. Watch for a display re-init (blank/flicker/redraw) at the
-   handoff.
-2. After re-enumeration, try `--read 0x40000000 16` and
-   `--read 0x10001300 16` **before** `--bootquery`; a successful
-   `0x04f2` read proves the receiver is up, and the gate value
-   distinguishes the main-image stamp (`0x12345678`) from the
-   updater (`0x88888888`).
-3. Press MENU/arrow on the debug view; a live UI confirms the
-   main image's tasks are running.
+The `Disable` dialog with the 5-bit value is a service toggle; do
+not change more bits until its target is identified. The main
+image is running from RAM; a power-cycle still returns the
+camera to the stock NAND firmware, so the normal app can be
+retried safely.
 
-If confirmed, the next goal is the **normal app** rather than
-calibration mode: the post-handoff boot sees `EnableTest.txt`, so
-removing that marker after loader entry (or using a card without
-it for the new image's boot) is the obvious lever.
+The obvious lever for the normal app remains the `EnableTest.txt`
+override: the post-handoff boot sees it and enters
+calibration/debug mode. Removing it after loader entry (or
+booting the new image with a card that lacks it) should let the
+main image reach the normal application.
 
 ## Evidence
 
@@ -99,8 +111,11 @@ it for the new image's boot) is the obvious lever.
 
 ## Boundary
 
-The handoff execution and the re-enumeration are observed. The
-claim that the main image (rather than a reboot or a stale loader)
-produced the new personality is an inference from the overwritten
-loader region and the observed timing; it is not yet confirmed by
-a live marker. No persistent change was observed.
+The handoff execution, the re-enumeration and the **live debug UI**
+are observed. The main image's own display/input/menu tasks are
+therefore executing from RAM. The normal application and a
+modified image are not demonstrated. The `Disable` toggle was
+changed on screen; whether it writes a persistent calibration
+field is not yet established, and the camera still boots the
+stock NAND firmware normally. No other persistent change was
+observed.
