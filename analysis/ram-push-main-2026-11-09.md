@@ -107,9 +107,25 @@ not the staged loader or the reset path.
 The updater push works at 666 KB; the main image is 14.9 MB. The
 next test truncates the main image to 666,112 bytes and keeps the
 self-loop at the entry (`firmware-main-hang-666k.bin`, SHA-256
-`f701b30f…`). If that hangs, the 14.9 MB size/limit is the blocker.
-If it does not, the handoff is rejecting the main-image payload or
-its type independently of size.
+`f701b30f…`).
+
+**Result: no hang.** The camera re-enumerated with the stock UI
+again. Size is therefore not the sole blocker; the handoff does not
+execute the main-image payload even at the updater's size.
+
+## Critical control: does the handoff execute *any* payload?
+
+The stock updater's successful service personality could, in
+principle, be the stock updater booted from NAND after a failed
+handoff rather than the pushed copy. A control is required:
+`card-updater-hang.bin` (SHA-256 `e8f6596d…`) is the 666,112-byte
+updater with the same self-loop at `0x0/0x200/0x338/0xec0`.
+
+- **Hang** → the `0x04f7` path copies and calls the pushed updater
+  entry; the main-image payload is rejected by content/type.
+- **Updater service personality appears** → the handoff does not
+  execute the pushed payload at all, and the earlier "updater boots
+  from RAM" result is a NAND fallback and must be re-examined.
 
 ## Interpretation
 
@@ -123,24 +139,26 @@ its type independently of size.
   results agree: the pushed main-image bytes never run.
 - The live `2aad:6500` calibration UI is therefore the stock
   firmware, not the pushed payload. The stock updater push works at
-  666 KB; the 14.9 MB main image does not. The blocker is the
-  `0x04f7` copy/handoff for the main-image payload — size,
-  payload type, or a handoff validation — not the staged loader or
-  the reset path.
+  666 KB; the main image does not execute even when truncated to
+  666 KB. Size is not the sole blocker; the handoff rejects or does
+  not execute the main-image payload.
 - The earlier staged-loader-reload explanation is not confirmed for
   this path. It would only matter once the pushed entry actually
   executes.
 - The previous `0/4` reclassifies to: **the handoff teardown runs,
-  but the main-image payload is not executed.** The next test
-  isolates size from payload type.
+  but the main-image payload is not executed.** The critical control
+  is whether the handoff executes *any* payload, using the
+  hang-patched updater.
 
 ## Next
 
-The immediate discriminator is the 666,112-byte truncated
-main-image payload with the self-loop at the entry
-(`firmware-main-hang-666k.bin`, SHA-256 `f701b30f…`). If it hangs,
-the 14.9 MB size is the blocker; if it does not, the handoff is
-rejecting the main-image payload/type independently of size.
+The critical control is the 666,112-byte hang-patched updater
+(`card-updater-hang.bin`, SHA-256 `e8f6596d…`). A hang means the
+`0x04f7` path copies and calls the pushed updater entry; the main
+image is rejected by content/type. The updater service personality
+appearing instead means the handoff does not execute the pushed
+payload at all, and the earlier updater RAM-push result is a NAND
+fallback that must be re-examined.
 
 The live debug menu's `USB MODE`/`BOOT TYPE` controls remain
 available for the later normal-app work, but they are downstream of
