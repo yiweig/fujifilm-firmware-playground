@@ -469,6 +469,12 @@ loads that file from SD to `0x40000000` and boots it.
   are reference-counted gate managers with pending requests and
   timeouts; the controller pointer at `0x40d65968` and mode array at
   `0x40e66c94` are runtime-initialized.
+- **Other clock descriptors:** index 1
+  `(1,0xb100,1),(2,0x40000,0)`; index 3
+  `(1,0x100,0x20),(4,0x90,0)`; index 5 null; indices 6/7 point
+  into an overlapping data blob at `0x40d65a3c`/`0x40d65a48`
+  (`0x0f0f0f0f` patterns, byte tables), not a clock-gate list;
+  their consumer is unknown.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open
