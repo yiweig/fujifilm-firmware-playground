@@ -624,6 +624,37 @@ loads that file from SD to `0x40000000` and boots it.
   identifying their target.
 - Details: [calibration-menu-2026-11-09.md](calibration-menu-2026-11-09.md).
 
+## Remaining recovery/SD leads (2026-11-09)
+
+The `0x04f7` payload-execution path is closed for now: the stub calls the
+unrecovered `0x00000b34` and the mapping/cache path returns to the stock
+firmware. The calibration menu is a factory test UI, not a boot selector.
+Low-memory/SRAM data reads wedge. But these are **not** all the paths:
+
+- **A. Hijack-driven SD boot via the main firmware.** The handler-slot
+  trampoline is a **proven live execution primitive** (counter 13, slots
+  restored) and does not use `0xb34`. The prior SD failures were in the
+  **RAM-pushed updater**; the main firmware's own `sdDetect`/
+  `esdVfsMount`/`sdReMount` path and the shell `read` architecture are
+  untested. Calling the main firmware's SD detect/mount and then its
+  file-boot path (card already prepared with `MAIN.BIN`) is the best
+  remaining safe-SD-boot lead. It is card-level, not a NAND write.
+- **B. SPBoot USB entry.** The earlier stage's `2aad:6500`/`iCatch
+  CA6500A` USB descriptor block is in the SRAM dump. Finding the
+  boot-info/button condition that enumerates that earlier-stage ISP
+  personality is the best independent-recovery lead. The trampoline can
+  write the boot-info/status fields; a reset then tests the entry.
+- **C. Public/sibling SPCA6500 boot artifacts.** A public V50/Akaso/
+  iCatch bootloader or ISP dump could supply the `0xb34`/SPBoot code.
+  Research-only; no hardware.
+- **D. Static boot-selection analysis.** The main firmware's
+  boot-info/button/gate handoff may reveal the earlier-stage SD/SPBoot
+  entry condition; supports A and B.
+
+Closed: `0x04f7` payload execution, calibration menu as a boot selector,
+low-memory/SRAM data reads, NAND/flash writes without recovery, and the
+RAM-pushed updater path.
+
 ## What remains open
 
 | Item | State |
