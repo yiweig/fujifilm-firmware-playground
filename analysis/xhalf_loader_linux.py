@@ -584,10 +584,13 @@ class Loader:
 
     def ram_push(self, payload_path: str, skip_prep: bool = False, settle_s: int = 0,
                  drain_log: bool = False, sd_remount_first: bool = False,
-                 sd_init_first: bool = False, sd_ready_gate: bool = False):
+                 sd_init_first: bool = False, sd_ready_gate: bool = False,
+                 dest: int = 0):
         """P2 of analysis/ram-push-sd-boot-plan.md: download a payload
         into the bootquery buffer, verify it by read-back, then issue
-        the 0x04f7 upload/run handoff (dest 0x40000000). The handoff
+        the 0x04f7 upload/run handoff. `dest` defaults to 0, which the
+        device turns into 0x40000000; an explicit interior destination
+        is used by the scratch-destination diagnostics. The handoff
         replaces the running environment; no reply is expected.
         With drain_log=True, EP 0x84 is drained during the whole run so
         the firmware's assert/log output is captured if a preparation
@@ -654,10 +657,10 @@ class Loader:
                 time.sleep(settle_s)
                 print(f'pre-run bootquery: {self.bootquery().hex()}')
             print('Sending 0x04f7 upload/run NOW '
-                  '(device will leave USB as the environment is replaced)...')
+                  f'(dest 0x{dest:08x}; device will leave USB as the environment is replaced)...')
             try:
                 sent = self.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F7,
-                                              struct.pack('<III', base, size, 0),
+                                              struct.pack('<III', base, size, dest),
                                               timeout=TIMEOUT_MS)
                 print(f'0x04f7 setup sent ({sent} bytes); waiting for the device to drop off USB...')
             except Exception as exc:
