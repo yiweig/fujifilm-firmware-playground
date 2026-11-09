@@ -88,9 +88,8 @@ image (`firmware-main-direct.bin`, SHA-256 `2c64a814…`) changes:
 - the two menu labels to `RAM-BOOT!` / `RAM-USB!`.
 
 The stub's gate writes are kept. **Result: the live menu still showed
-the stock labels.** So either the pushed entry stub never executed
-(handoff/copy failure), or it executed but the reset path still ends
-up with stock rodata.
+the stock labels.** Combined with the entry-hang result, the pushed
+entry never executed; the direct-bypass branch was never reached.
 
 ## Entry-hang discriminator
 
@@ -98,57 +97,54 @@ A third payload (`firmware-main-hang.bin`, SHA-256 `e23f1bb8…`)
 replaces the first instruction at `0x40000000`, `0x40000200`,
 `0x40000338` and `0x40000ec0` with `b .` (self-loop). If the handoff
 copies the payload and calls any of those entries, the camera hangs
-with no USB re-enumeration. If the stock calibration UI appears
-instead, the pushed entry did not execute and the handoff/copy path
-is the blocker — not the staged loader.
+with no USB re-enumeration.
+
+**Result: no hang.** The live debug UI stayed on screen the whole
+time and the camera re-enumerated. The pushed entry did not execute.
+The blocker is the `0x04f7` copy/handoff for the main-image payload,
+not the staged loader or the reset path.
+
+The updater push works at 666 KB; the main image is 14.9 MB. The
+next test truncates the main image to 666,112 bytes and keeps the
+self-loop at the entry (`firmware-main-hang-666k.bin`, SHA-256
+`f701b30f…`). If that hangs, the 14.9 MB size/limit is the blocker.
+If it does not, the handoff is rejecting the main-image payload or
+its type independently of size.
 
 ## Interpretation
 
-- **This was not a state-6 prep hang.** The loader left USB at the
-  `0x04f7` trigger, so the handoff executed.
-- The handoff calls the pushed image's `+0x200` stub. That stub
-  stamps the gate and jumps to the staged loader at `0x40000338`,
-  which re-reads the selected firmware region **from NAND** into
-  RAM. The pushed entry stub executes, but the application
-  sections are the stock NAND copy.
-- **The marker test proves this.** The pushed copy's
-  `RAM-BOOT!`/`RAM-USB!` labels did not appear; the live menu
-  showed the stock labels. The strings exist only in the main
-  image, not in the resource images, so this is not a
-  resource-copy artifact. The running rodata is stock.
-- The re-enumerated `2aad:6500` personality and the live debug UI
-  are the stock main image running from RAM after the staged
-  loader's NAND reload — not our patched payload's sections.
-- The bootquery timeout is expected in calibration/debug mode: the
-  loader API is selected by the button combination, which is not
-  held after the handoff. The timeout is not proof that the loader
-  is dead.
-- The previous `0/4` reclassifies to: **the handoff executes; the
-  pushed entry stub runs; the staged loader then replaces the
-  application sections with the stock NAND copy.** Pushing a
-  modified main image requires bypassing or redirecting that
-  staged-loader copy.
+- **This is not a state-6 prep hang.** The loader left USB at the
+  `0x04f7` trigger, so the handoff teardown ran.
+- **The pushed entry does not execute.** A self-loop at
+  `0x40000000`, `0x40000200`, `0x40000338` and `0x40000ec0`
+  (`firmware-main-hang.bin`) produced no hang: the live debug UI
+  stayed on screen and the camera re-enumerated. The marker labels
+  and the direct-boot bypass also showed stock labels. All three
+  results agree: the pushed main-image bytes never run.
+- The live `2aad:6500` calibration UI is therefore the stock
+  firmware, not the pushed payload. The stock updater push works at
+  666 KB; the 14.9 MB main image does not. The blocker is the
+  `0x04f7` copy/handoff for the main-image payload — size,
+  payload type, or a handoff validation — not the staged loader or
+  the reset path.
+- The earlier staged-loader-reload explanation is not confirmed for
+  this path. It would only matter once the pushed entry actually
+  executes.
+- The previous `0/4` reclassifies to: **the handoff teardown runs,
+  but the main-image payload is not executed.** The next test
+  isolates size from payload type.
 
 ## Next
 
-The live debug menu exposes two useful controls:
+The immediate discriminator is the 666,112-byte truncated
+main-image payload with the self-loop at the entry
+(`firmware-main-hang-666k.bin`, SHA-256 `f701b30f…`). If it hangs,
+the 14.9 MB size is the blocker; if it does not, the handoff is
+rejecting the main-image payload/type independently of size.
 
-- **`USB MODE`** — likely the runtime USB personality selector.
-  Switching it away from the loader/calibration personality may
-  make the main image enumerate as the normal PTP device
-  (`0x04CB:0x030A`) without a reboot.
-- **`BOOT TYPE`** — likely the boot-mode selector. Treat this as
-  potentially persistent; read the current value before changing
-  anything.
-
-The `Disable` dialog with the 5-bit value is a service toggle; do
-not change more bits until its target is identified. A power-cycle
-still returns the camera to the stock NAND firmware.
-
-The entry-hang payload is the current discriminator: a hang means
-the pushed entry executed; stock UI means the handoff/copy did not
-execute it. The live menu's `USB MODE`/`BOOT TYPE` controls remain
-available for the later normal-app work.
+The live debug menu's `USB MODE`/`BOOT TYPE` controls remain
+available for the later normal-app work, but they are downstream of
+getting the pushed entry to execute.
 
 ## Evidence
 
