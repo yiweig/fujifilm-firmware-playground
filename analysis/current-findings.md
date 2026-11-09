@@ -592,6 +592,12 @@ loads that file from SD to `0x40000000` and boots it.
 - **Correction:** the loader and the updater expose the **same**
   interface template (0/2/5). Interface count is not a
   discriminator; the bootquery response is.
+- **Bootup code review:** the `0x04f7` prep/copy/stub sequence is
+  confirmed in code, but the stub calls the unrecovered low helper
+  `0x00000b34` before the payload entry. The old loader's `+0x200`
+  → staged loader → NAND section copy is the stock fallback. The
+  failure boundary is `0xb34`/mapping/cache, not the staged loader.
+  [bootup-code-review-2026-11-09.md](bootup-code-review-2026-11-09.md)
 - Details: [ram-push-main-2026-11-09.md](ram-push-main-2026-11-09.md).
 
 ## What remains open
