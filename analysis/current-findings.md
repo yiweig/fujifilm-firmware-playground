@@ -606,6 +606,24 @@ loads that file from SD to `0x40000000` and boots it.
   it — copy, `0xb34`, or mapping.
 - Details: [ram-push-main-2026-11-09.md](ram-push-main-2026-11-09.md).
 
+## Calibration/test menu (2026-11-09)
+
+- **The live debug UI is the factory calibration/self-test menu**, not a
+  boot selector. The on-screen pages map to the main-image string table
+  at `0x40e13df0..0x40e15254` (`CLBT INFO`, `BOOT TYPE`, `USB MODE`,
+  `AUTO CLBT`, `FLASH TEST`, `CAP RAW`, `Tup Clbt`, …).
+- **`BootType: OK` / `UsbMode: OK` are test results.** The
+  `BOOT TYPE` / `USB MODE` entries each open a `Disable` dialog with a
+  green/gray bar and a 5-bit value; that is a test disable/result
+  bitfield, not a boot-image or USB-personality selector. The menu does
+  not provide a way to switch the stock boot path.
+- **`CAP RAW` / `AF/DEBUG/RAW` are raw-capture tests** and the most
+  useful items if the RAW goal is revisited.
+- The user toggled one `Disable` bit (test bit), not a boot mode; the
+  camera still boots normally. Do not change more bits without
+  identifying their target.
+- Details: [calibration-menu-2026-11-09.md](calibration-menu-2026-11-09.md).
+
 ## What remains open
 
 | Item | State |
