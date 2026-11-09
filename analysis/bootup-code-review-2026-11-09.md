@@ -126,24 +126,44 @@ The stock fallback is the observable for all three.
 | The staged loader re-reads stock sections from NAND | **Confirmed**; it is the fallback path |
 | The reset/RTOS/staged-loader bootup model | **Static model confirmed**; earlier-stage/mask ROM unknown |
 
+## Live scratch-destination test (2026-11-09)
+
+Two attempts to patch the running stub's code call sites failed at the
+transport level:
+
+- a direct `0x04f5` write to the stub block wedged the receiver;
+- the handler-slot trampoline v3 CPU-store to the same block also
+  wedged the receiver (`DONE` never reached 2).
+
+Both required a power cycle. The stub's code page is not safely
+writable from the loader's bulk path or the handler context.
+
+A code-free test was then run: `0x04f7` with destination
+**`0x41130000`** (scratch) and a 666,112-byte updater payload whose
+first instruction is `b .`. The stub should copy the payload to
+scratch, call `0xb34`, skip the `+0x200` call (dest ≠ 0x40000000), and
+`blx 0x41130000`; the self-loop would hang the camera.
+
+**Result: no hang.** The camera re-enumerated with the stock UI. The
+stub did not reach the final `blx dest` (or the destination was
+overridden to 0x40000000). The failure is **before** the last call:
+the copy, `0xb34`, or the mapping/cache path.
+
 ## Next tests
 
-1. **Localize the stub.** Patch the running loader's stub at
-   `0x401ed070` (copied to workspace B by `FUN_401eb1ec`) one call site
-   at a time with `b .`:
-   - `0x401ed134` (low-helper call): a hang means the stub reached the
-     helper call; the copy/guards succeeded.
-   - `0x401ed150` (`+0x200` call): a hang means the helper returned and
-     the payload entry call is reached.
-   - `0x401ed154` (reset call): a hang means the `+0x200` call returned.
-   No hang at any site means the stub failed before that call.
+1. **The code-page patch route is closed.** Both the `0x04f5` write
+   and the handler-slot trampoline CPU store to the stub's code wedge
+   the receiver. The stub call sites cannot be localized that way.
 2. **Read `0x10015872` live** through a CPU-copy/MMIO staging path (not
    the DMA `0x04f2` path) to confirm the capacity and guard.
-3. **If the helper call is reached but the payload entry is not**, the
-   failure is the helper/mapping/cache. The missing artifact is an
-   authenticated earlier-stage low-address image covering
-   `0x00000b34`; no supplied-state test can reveal its bytes.
-4. **Any future execution claim must use a UI marker** (menu label,
+3. **To separate copy from `0xb34`**, a way is needed to redirect or
+   replace the stub's `0xb34` call without writing its code page. The
+   helper's stub source and low-helper target are fixed in the main
+   image; the low helper's backing is the missing artifact.
+4. **The blocking artifact is an authenticated earlier-stage
+   low-address image covering `0x00000b34`**, with its mapping and
+   cache effects. No supplied-state test can reveal its bytes.
+5. **Any future execution claim must use a UI marker** (menu label,
    version string) — not a USB drop, descriptor shape, or timing.
 
 ## Boundary
@@ -153,4 +173,6 @@ main image and the existing live evidence. The runtime failure point
 between the copy engine and the payload entry is not isolated. The
 conclusion that the pushed payload does not execute rests on the live
 UI (stock main firmware) and the shared signature, not on a direct
-memory read of `0x40000000` after the handoff.
+memory read of `0x40000000` after the handoff. The live scratch-
+destination test shows the final `blx dest` is not reached; the code
+page cannot be patched safely to localize the preceding calls.

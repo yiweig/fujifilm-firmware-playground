@@ -598,6 +598,12 @@ loads that file from SD to `0x40000000` and boots it.
   → staged loader → NAND section copy is the stock fallback. The
   failure boundary is `0xb34`/mapping/cache, not the staged loader.
   [bootup-code-review-2026-11-09.md](bootup-code-review-2026-11-09.md)
+- **Stub localization is blocked.** Both a direct `0x04f5` write and
+  the handler-slot trampoline CPU store to the stub's code page wedge
+  the receiver. A code-free scratch-destination test (`0x04f7` dest
+  `0x41130000`, payload first instruction `b .`) also did not hang:
+  the stub's final `blx dest` is not reached. The failure is before
+  it — copy, `0xb34`, or mapping.
 - Details: [ram-push-main-2026-11-09.md](ram-push-main-2026-11-09.md).
 
 ## What remains open
