@@ -40,44 +40,50 @@ never created or read.
 
 ## What the write commands do
 
-- **`sdset <A> <B> <C>`** allocates the SD reserved blocks and builds
-  the `eSD RSV` header. The sizes are bytes; the header fields
-  (`asciiName`, `0xbeef`, `blkSize`, slot starts/lengths, `nrFw1`,
-  type `0x32`, integrity fields) are the layout that `sdDetect` and
-  `sdboot` consume. This is the vendor’s SD-card format step.
-- **`sdfww <addr> <size>`** writes the F/W image from **DRAM** at
-  `<addr>`, length `<size>`, into the SD reserved F/W slot. The source
-  can be the loader’s staged payload buffer (the 14.9 MB main image can
-  be placed at the bootquery buffer via `0x04f5`), so the image need not
-  live in a FAT file.
-- **`sdhdr`** displays the resulting reserved header (useful read-only
+- **`sdfww <file>`** is the one-command card creator. The handler
+  opens its **first argument as a VFS file path** (e.g.
+  `D:\MAIN.BIN`), reads the file into RAM, and — if the reserved
+  header is not already allocated — calls the header builder
+  `0x40077450(0x200000,0x200000,0x100000,0)`, i.e. **A = 2 MB,
+  B = 2 MB, C = 1 MB**, then `FUN_4004e9dc(1)` to initialize the
+  SD device-1 context. It parses the file's header bytes at
+  `+0xa0`/`+0xb6`, sets the slot length/checksum fields, and writes
+  the F/W to the SD reserved slot via `0x40077980`. The help text's
+  `<addr> <size>` is stale; the second argument is only checked and
+  logged, not used.
+- **`sdset <A> <B> <C>`** is the manual allocation variant: the
+  handler parses three sizes and calls the same header builder
+  `0x40077450(A, B, C, ...)`; an optional file argument is read for a
+  512-byte configuration. Use it only if the fixed 2/2/1 MB layout is
+  not wanted.
+- **`sdhdr`** displays the resulting reserved header (read-only
   verification).
 - **`sdboot <addr>`** reads the F/W slot to `<addr>` and jumps there.
-  The worker (`0x40345c80`) sets `r1 = state+0x1c` (slot-1 length),
-  calls the slot reader `0x400778fc`, then `blx` the destination. The
-  advertised “embedded/external” selector is stale; the second argument
-  is discarded, and the worker branches even if the read fails.
+  The worker (`0x40345c80`) uses the slot-1 start at header `+0x14`,
+  the length at `+0x1c`, and `blkSize` at `+0xc`; the slot reader
+  `0x400778fc` converts them to SD sectors. The advertised
+  embedded/external selector is stale; the second argument is
+  discarded, and the worker branches even if the read fails.
 
 ## The SD-boot sequence this enables
 
-1. Back up the test card (the `sdset` reserved-block allocation may
-   reformat/overwrite the FAT/reserved areas).
-2. In loader mode, use `sdset <A> <B> <C>` to create the eSD header and
-   reserve the blocks. The NAND-header counts (487/45/261 blocks) are
-   the reference sizes; the command takes bytes.
-3. Stage the stock main image (or a test image) into DRAM via the
-   loader’s `0x04f5` path (the bootquery buffer is 14.9 MB-capable).
-4. Run `sdfww <addr> 0xe38400` to write the image into the SD F/W slot.
-5. Run `sdhdr` to verify the header/slot fields.
-6. Run `sdboot 0x40000000`; the worker reads the slot and jumps to the
-   reset vector. This bypasses the `+0x200` staged-loader/NAND reload
-   that blocked the `0x04f7` path.
-7. Observe the stock main image’s reset startup from the card. A
-   failure is a power cycle; the camera’s NAND is untouched.
+1. Back up the test card. `sdfww` builds the eSD reserved layout at
+   the start of the card; the FAT volume/`MAIN.BIN` will be
+   overwritten. The camera’s NAND is untouched.
+2. Enter loader mode and reach the shell (`cmd>`).
+3. Run **`sdfww D:\MAIN.BIN`**. The shell reads the FAT file, builds
+   the 2/2/1 MB reserved header, initializes SD device 1, and writes
+   the image to the SD F/W slot.
+4. Run **`sdhdr`** to verify the header/slot.
+5. Run **`sdboot 0x40000000`**. The worker reads slot 1 to
+   `0x40000000` and jumps to the reset vector, bypassing the `+0x200`
+   staged-loader/NAND reload that blocked `0x04f7`.
+6. Observe the stock main image’s reset startup from the card. A
+   failure is a power cycle; the NAND is untouched.
 
-The **cold-recovery** variant is the same card, read by the earlier
-stage’s eSD path. That still needs the earlier-stage eSD backend/selector
-(`0x10000058 & 0xe0` / boot strap); the `usbt` shell command
+The **cold-recovery** variant is the same card read by the earlier
+stage’s eSD path. That still needs the earlier-stage eSD backend/
+selector (`0x10000058 & 0xe0` / boot strap); the `usbt` shell command
 (`0x4031d498`, “Ready for Usb Boot ..”) remains the other recovery lead.
 
 ## Access and risk
@@ -85,8 +91,8 @@ stage’s eSD path. That still needs the earlier-stage eSD backend/selector
 - The commands are **shell commands**, so the APITEST character bridge
   (`0x401c1550`, `cmd>` prompt) or the handler-slot trampoline must
   reach the shell/task context. The handler context is riskier for the
-  blocking SD read/write calls.
-- `sdset`/`sdfww` write the **SD card**, not the camera’s NAND. The card
+  blocking VFS/SD calls.
+- `sdfww`/`sdset` write the **SD card**, not the camera’s NAND. The card
   is a test card; back it up. A shell crash/wedge is recovered by power
   cycle.
 - `sdboot`’s read-failure branch jumps to the destination regardless;

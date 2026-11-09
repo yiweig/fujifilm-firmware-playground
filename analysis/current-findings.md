@@ -636,16 +636,17 @@ Low-memory/SRAM data reads wedge. But these are **not** all the paths:
   restored) and does not use `0xb34`. The prior SD failures were in the
   **RAM-pushed updater**; the main firmware's own shell has the vendor
   SD F/W commands: **`sdset`** (allocate SD reserved blocks),
-  **`sdfww <addr> <size>`** (write F/W from DRAM to the SD reserved
-  slot), **`sdhdr`** (display header), **`sdboot <addr>`** (read the
-  slot and jump). The device-1 SD context is null in the debug shell
-  until `sdset`/`sdfww` initialize it (`0x4004e9dc(1)`); the prior card
-  test only put `MAIN.BIN` in the FAT root, so the eSD reserved layout
-  was never created. The card-level sequence is: back up the card →
-  `sdset` → stage the image in DRAM → `sdfww` → `sdhdr` →
-  `sdboot 0x40000000`. This bypasses the `+0x200` staged-loader reload.
-  Card-level only; the camera's NAND is untouched. It is the best
-  remaining safe-SD-boot lead.
+  **`sdfww <file>`** (one-command card creator: reads the VFS file,
+  builds a fixed 2 MB/2 MB/1 MB reserved header, initializes SD device
+  1, writes the F/W to the SD reserved slot), **`sdhdr`** (display
+  header), **`sdboot <addr>`** (read the slot and jump). The device-1
+  SD context is null in the debug shell until `sdset`/`sdfww`
+  initialize it (`0x4004e9dc(1)`); the prior card test only put
+  `MAIN.BIN` in the FAT root, so the eSD reserved layout was never
+  created. The card-level sequence is: back up the card →
+  `sdfww D:\MAIN.BIN` → `sdhdr` → `sdboot 0x40000000`. This bypasses
+  the `+0x200` staged-loader reload. Card-level only; the camera's
+  NAND is untouched. It is the best remaining safe-SD-boot lead.
 - **B. SPBoot USB entry.** The earlier stage's `2aad:6500`/`iCatch
   CA6500A` USB descriptor block is in the SRAM dump. The shell `usbt`
   command (`0x4031d498`, “Ready for Usb Boot ..”) is a running-firmware
