@@ -72,13 +72,16 @@ Read these first:
 7. [Bootup: reset, RTOS entry, boot-mode dispatch, and the main task](analysis/bootup-reset-and-rtos.md) —
    the reset vector, MMU/clock setup, boot-mode field, scheduler start, and the
    main-task/app-init sequence.
-8. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
+8. [PAR3DRAM: earlier-stage DRAM-init code recovered from SRAM](analysis/par3dram-sram-recovery.md) —
+   the SRAM-resident `PAR3DRAM` parser/wrapper, its record types, and what is still
+   missing (script data, mask ROM, SPBoot entry).
+9. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
    beginner-oriented account of the package, startup, tasks, imaging, USB and storage.
-9. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
-   the proposed launch path with evidence levels, ranked blockers, and which leads
-   have already been examined. Temporary execution and independent recovery are
-   separate outcomes; neither has been established end to end.
-10. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
+10. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
+    the proposed launch path with evidence levels, ranked blockers, and which leads
+    have already been examined. Temporary execution and independent recovery are
+    separate outcomes; neither has been established end to end.
+11. [Hardware/boot diagrams](analysis/hardware-and-boot-diagrams.md) and
     [memory map](analysis/memory-and-hardware-map.md) — physical/address-space
     orientation, with unresolved regions explicitly marked.
 

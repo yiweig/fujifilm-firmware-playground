@@ -502,6 +502,27 @@ loads that file from SD to `0x40000000` and boots it.
   `FUN_4006ee94` writes `DAT_4006eea4 + id*4 + 0x128`.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
+## PAR3DRAM recovery (2026-11-09)
+
+- **The SRAM dump at `0x3f000000` contains earlier-stage code, not
+  just data.** It has a CP15/MMU setup plus a record-script
+  interpreter whose literal pool at `0x3f000484` holds the magic
+  **`PAR3DRAM`**. The parser is `0x3f0000a4..0x3f000480`; the
+  wrapper is `0x3f00048c..0x3f0005fc`.
+- **The main image contains the same wrapper** at `0x40e38084`,
+  prefixed `PAR3DRAMd1`; the wrapper calls the parser with script
+  pointers from a context at `0x3f00e2c0`.
+- **Parser record types:** set base (`0x10000000 | ...`), write
+  byte/halfword/word, array write, poll byte/halfword/word (50
+  retries), copy, CP15 timer delay, add byte. This is a DRAM/PLL
+  register-init engine.
+- **Still missing:** the script data (the magic appears only in the
+  parser literal pool; the context is zero in this dump), the mask
+  ROM, and the SPBoot entry/protocol. Routes to the rest: loader
+  ROM read (`0x04f2`), SPBoot USB/ISP entry, sibling-device boot
+  ROM; hardware routes are excluded.
+- Details: [par3dram-sram-recovery.md](par3dram-sram-recovery.md).
+
 ## What remains open
 
 | Item | State |
