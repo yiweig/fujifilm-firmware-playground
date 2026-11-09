@@ -502,26 +502,44 @@ loads that file from SD to `0x40000000` and boots it.
   `FUN_4006ee94` writes `DAT_4006eea4 + id*4 + 0x128`.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
-## PAR3DRAM recovery (2026-11-09)
+## DRAMPAR3 recovery (2026-11-09)
 
-- **The SRAM dump at `0x3f000000` contains earlier-stage code, not
-  just data.** It has a CP15/MMU setup plus a record-script
-  interpreter whose literal pool at `0x3f000484` holds the magic
-  **`PAR3DRAM`**. The parser is `0x3f0000a4..0x3f000480`; the
-  wrapper is `0x3f00048c..0x3f0005fc`.
-- **The main image contains the same wrapper** at `0x40e38084`,
-  prefixed `PAR3DRAMd1`; the wrapper calls the parser with script
-  pointers from a context at `0x3f00e2c0`.
-- **Parser record types:** set base (`0x10000000 | ...`), write
-  byte/halfword/word, array write, poll byte/halfword/word (50
-  retries), copy, CP15 timer delay, add byte. This is a DRAM/PLL
-  register-init engine.
-- **Still missing:** the script data (the magic appears only in the
-  parser literal pool; the context is zero in this dump), the mask
-  ROM, and the SPBoot entry/protocol. Routes to the rest: loader
-  ROM read (`0x04f2`), SPBoot USB/ISP entry, sibling-device boot
-  ROM; hardware routes are excluded.
-- Details: [par3dram-sram-recovery.md](par3dram-sram-recovery.md).
+- **The SRAM dump at `0x3f000000` is a copy of the main image's
+  tail block `0x40e37c00..0x40e38275`** (relocation delta
+  `0x1e37c00`; the entry word is zeroed in SRAM, the rest matches
+  from `+4`): CP15/MMU enter/exit helpers, the `DRAMPAR3` record
+  parser (`0x40e37ca4`), the wrapper (`0x40e3808c`), and the call
+  entry (`0x40e381fc`). The wrapper runs a script with MMU/caches
+  off.
+- **The script magic is `DRAMPAR3`, not `PAR3DRAM`.** The parser
+  compares word 0 to `DRAM` and word 1 to `PAR3`; the
+  `PAR3DRAM` bytes at `0x40e38084` are its literal pool, not a
+  versioned header. The earlier pass searched the wrong magic.
+- **The scripts are in hand.** NAND header blocks 0/1 carry a
+  1,786-byte payload at `+0x200` with three checksum-valid
+  scripts (cold `0x356`, tail `0x18`, warm `0x35c`). The update
+  package has the same 1,786 bytes at `0x09e1ca70` (SHA-256
+  `97cc52ee…`), byte-identical across 1.01–2.00. The main image
+  has two more valid scripts at `0x40df85f4`/`0x40df8662`.
+- **Scripts are LPDDR3 4 Gbit (512 MiB) at 400 MHz.** The main
+  image names the parameter file
+  `D:\EVB_LPDDR3_4G_MDP_400MHz.prm` next to the "put dramparam
+  into sd card" diagnostic, matching the controller/PHY writes.
+- **Record semantics decoded:** set base, write u8/u16/u32,
+  array write, poll u8/u16/u32, copy, timer delay, add byte.
+  Checksums cover the payload minus the final 2-byte terminator;
+  all five scripts verify. [`par3dram.py`](par3dram.py) decodes
+  them.
+- **Context at `0x3f00e2c0`:** `+0x8` callback, `+0xc`/`+0x10`
+  script pointers. The entry runs script B, callback, script A.
+  The main pair is adjacent at `0x402f7748`; nearby strings name
+  `halCpuSramEngage`/`SRE`/`SRX`, matching the SRAM-engage copy.
+- **What remains:** the earlier-stage code that reads/selects the
+  NAND header scripts, the mask ROM/SPBoot entry, and the exact
+  register-field meanings. The script data itself is recovered.
+- Details: [par3dram-script-recovery.md](par3dram-script-recovery.md);
+  the SRAM-code note is
+  [par3dram-sram-recovery.md](par3dram-sram-recovery.md).
 
 ## What remains open
 

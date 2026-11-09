@@ -5,6 +5,13 @@ Date: 2026-11-02. Offline only, official 2.00 images:
 - Main image SHA-256: `80350bd2bc37b4ce985742ff85a747f7c7ad1ed9be401534ba57ac3262f1d923`.
 - Complete updater SHA-256: `4bdcdb060c89dcaa18b77d9d7b5f1a4e337627137f0b7c8d9a79a9dcf4048976`.
 
+Follow-up (2026-11-09): the `DRAMPAR3` buffer is not opaque
+calibration data. It is the earlier-stage DRAM-init script chain,
+byte-identical to the NAND header payload at `+0x200` and to the
+update-package block at `0x09e1ca70`. The record format and the
+SRAM-engage consumer are decoded in
+[par3dram-script-recovery.md](par3dram-script-recovery.md).
+
 Both images use base `0x40000000`; identical numerical addresses must be
 qualified by image. No camera commands, card preparation or firmware changes.
 

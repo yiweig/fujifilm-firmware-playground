@@ -44,6 +44,11 @@ start, omitting a `0x340`-byte prefix. The inventory now records the full image.
 | `0x08fe3d20..0x09e1c11f` | `14,910,464` | SPCA6500 `DRAM CODE` | header pointer and embedded image header |
 | `0x09e1c120..0x09e1ca6f` | `2,384` | `SUNP BURN HDR 3` resource-name table | exact header pointer/string |
 | `0x09e1ca70..0x09e1d169` | `1,786` | `DRAMPAR3` and declared tail | exact header pointer/string |
+
+Follow-up (2026-11-09): the `DRAMPAR3` region is decoded. It is a
+chain of three checksum-valid DRAM-init scripts, byte-identical to
+the NAND header-block payload at `+0x200`. See
+[par3dram-script-recovery.md](par3dram-script-recovery.md).
 | `0x09e1d16a..0x09e1d669` | `1,280` | outer trailer | actual size minus declared end |
 
 HDR2 uses the same 0x120-byte control-header plus A/B resource-disk construction

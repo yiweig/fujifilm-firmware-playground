@@ -68,6 +68,12 @@ A; B: 45 blk ≈ kernel+rootfs ≈ 11 MiB; C: 261 blk, contents unknown,
 plausibly including the updater/DRAM-parameter/rawC areas) — a
 hypothesis to test with a storage dump, not a mapping.
 
+Follow-up (2026-11-09): the 512-byte header is followed, at block
+offset `+0x200`, by a 1,786-byte `DRAMPAR3` payload. It is a chain
+of three checksum-valid DRAM-init scripts, identical to the update
+package block at `0x09e1ca70`. See
+[par3dram-script-recovery.md](par3dram-script-recovery.md).
+
 ## Updated boot-chain model
 
 ```text

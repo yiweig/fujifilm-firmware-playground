@@ -72,9 +72,10 @@ Read these first:
 7. [Bootup: reset, RTOS entry, boot-mode dispatch, and the main task](analysis/bootup-reset-and-rtos.md) —
    the reset vector, MMU/clock setup, boot-mode field, scheduler start, and the
    main-task/app-init sequence.
-8. [PAR3DRAM: earlier-stage DRAM-init code recovered from SRAM](analysis/par3dram-sram-recovery.md) —
-   the SRAM-resident `PAR3DRAM` parser/wrapper, its record types, and what is still
-   missing (script data, mask ROM, SPBoot entry).
+8. [DRAMPAR3: earlier-stage DRAM-init scripts recovered and decoded](analysis/par3dram-script-recovery.md) —
+   the checksum-valid scripts in NAND header blocks 0/1 and the update package, the
+   record format, the SRAM-engage copy, and the two main-image scripts. The companion
+   [SRAM-code note](analysis/par3dram-sram-recovery.md) covers the parser/wrapper copy.
 9. [How the firmware fits together](analysis/architecture-guide.md) — a connected,
    beginner-oriented account of the package, startup, tasks, imaging, USB and storage.
 10. [RAM-launch and recovery roadmap](analysis/ram-launch-and-recovery-roadmap.md) —
