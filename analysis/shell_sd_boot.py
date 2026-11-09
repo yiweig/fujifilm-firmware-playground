@@ -63,7 +63,7 @@ def main() -> None:
             loader.apitest_ctrl((command + "\n").encode())
 
         send(r"sdfww D:\MAIN.BIN")
-        ok = wait_prompt(1, 120)
+        ok = wait_prompt(1, 600)
         print(f"sdfww prompt: {ok}", flush=True)
         time.sleep(2)
 
