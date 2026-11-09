@@ -440,6 +440,14 @@ match the main firmware's `sddetect` path, so the updater's card
 state-0 failure is in this shared SD core / mount sequence, not in
 the card contents.
 
+The SD pin/power control is `FUN_4006d758`: it uses the GPIO/pin
+controller at `0x400ba140` (register `+4`) with masks `2`/`0x200000`,
+and the SD hardware controller base is `0x10004360` (card state at
+`0x10004365`). `sdDetect` drives the controller through
+`FUN_4006e91c`/`FUN_4006f0e8`/`FUN_4006f008`/`FUN_4006fa10`/
+`FUN_4006ee94`/`FUN_40024a04`/`FUN_4001f720`; the updater's card
+state-0 failure is in this power/clock/pin sequence.
+
 Updater flow (`FUN_400009c4`):
 
 - Reads the gate/status; if the gate is nonzero, decodes the button

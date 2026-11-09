@@ -486,6 +486,12 @@ loads that file from SD to `0x40000000` and boots it.
   the same SD core as the main firmware's `sddetect`; the updater's
   card state-0 failure is in this shared detect/mount path, not the
   card contents.
+- **eSD pin/power:** `FUN_4006d758` uses the GPIO/pin controller
+  at `0x400ba140+4` with masks `2`/`0x200000`; the SD hardware
+  controller base is `0x10004360` (card state `0x10004365`).
+  `sdDetect` drives `FUN_4006e91c`/`FUN_4006f0e8`/`FUN_4006f008`/
+  `FUN_4006fa10`/`FUN_4006ee94`/`FUN_40024a04`/`FUN_4001f720`; the
+  updater's card state-0 failure is in this power/clock/pin sequence.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open
