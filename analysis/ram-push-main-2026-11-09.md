@@ -121,44 +121,51 @@ handoff rather than the pushed copy. A control is required:
 `card-updater-hang.bin` (SHA-256 `e8f6596d…`) is the 666,112-byte
 updater with the same self-loop at `0x0/0x200/0x338/0xec0`.
 
-- **Hang** → the `0x04f7` path copies and calls the pushed updater
-  entry; the main-image payload is rejected by content/type.
-- **Updater service personality appears** → the handoff does not
-  execute the pushed payload at all, and the earlier "updater boots
-  from RAM" result is a NAND fallback and must be re-examined.
+**Result: no hang; the post-handoff bootquery timed out**, i.e. the
+updater service personality came up. But the updater's reset vector
+at `0x40000000` branches to **`0x40000340`**, which the patch missed.
+So this run does not yet prove the handoff failed to execute the
+updater: the pushed updater may have run from `0x340`.
+
+A corrected control is prepared: `card-updater-hang340.bin`
+(SHA-256 `0e6d143f…`) patches `0x0/0x200/0x338/0x340`. A hang means
+the pushed updater executes at `0x340`; the updater service
+appearing again means the payload is a fallback/not executing.
+
+The same caveat applies to the main-image hang tests: they patched
+`0x0/0x200/0x338/0xec0`, but the main image's RTOS entry
+(`0x400037e8`) and app-init vector (`0x40003498`) were not patched.
+Those entries must be included before concluding that the main
+image never executes.
 
 ## Interpretation
 
 - **This is not a state-6 prep hang.** The loader left USB at the
   `0x04f7` trigger, so the handoff teardown ran.
-- **The pushed entry does not execute.** A self-loop at
-  `0x40000000`, `0x40000200`, `0x40000338` and `0x40000ec0`
-  (`firmware-main-hang.bin`) produced no hang: the live debug UI
-  stayed on screen and the camera re-enumerated. The marker labels
-  and the direct-boot bypass also showed stock labels. All three
-  results agree: the pushed main-image bytes never run.
-- The live `2aad:6500` calibration UI is therefore the stock
-  firmware, not the pushed payload. The stock updater push works at
-  666 KB; the main image does not execute even when truncated to
-  666 KB. Size is not the sole blocker; the handoff rejects or does
-  not execute the main-image payload.
-- The earlier staged-loader-reload explanation is not confirmed for
-  this path. It would only matter once the pushed entry actually
-  executes.
-- The previous `0/4` reclassifies to: **the handoff teardown runs,
-  but the main-image payload is not executed.** The critical control
-  is whether the handoff executes *any* payload, using the
-  hang-patched updater.
+- **The earlier "pushed entry does not execute" conclusion is not
+  final.** The hang payloads patched `0x0/0x200/0x338/0xec0`, but
+  the updater's real entry is `0x40000340`, and the main image's
+  RTOS/app entries are `0x400037e8`/`0x40003498`. Those addresses
+  were not covered.
+- The updater service personality came up after the
+  `0x0/0x200/0x338/0xec0` hang patch, but that run missed `0x340`;
+  the pushed updater may have executed from `0x340`.
+- The stock labels in the marker/direct runs show the app rodata is
+  stock, but the direct path also depends on the actual entry. The
+  staged-loader-reload explanation is still open.
+- The next controls are the corrected updater entry (`0x340`) and
+  the main image with `0x37e8`/`0x3498` included.
 
 ## Next
 
-The critical control is the 666,112-byte hang-patched updater
-(`card-updater-hang.bin`, SHA-256 `e8f6596d…`). A hang means the
-`0x04f7` path copies and calls the pushed updater entry; the main
-image is rejected by content/type. The updater service personality
-appearing instead means the handoff does not execute the pushed
-payload at all, and the earlier updater RAM-push result is a NAND
-fallback that must be re-examined.
+1. `card-updater-hang340.bin` (SHA-256 `0e6d143f…`) patches
+   `0x0/0x200/0x338/0x340`. A hang means the pushed updater
+   executes at `0x340`; the updater service appearing again means
+   the payload is a fallback or not executing.
+2. A full main-image hang payload that includes `0x400037e8` and
+   `0x40003498`. A hang means the pushed main image executes at one
+   of those entries; no hang means the payload is rejected before
+   execution.
 
 The live debug menu's `USB MODE`/`BOOT TYPE` controls remain
 available for the later normal-app work, but they are downstream of

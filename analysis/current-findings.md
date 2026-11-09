@@ -563,16 +563,15 @@ loads that file from SD to `0x40000000` and boots it.
   stock labels; a self-loop at `0x0/0x200/0x338/0xec0` produced no
   hang, and the live stock UI stayed on screen. The `0x04f7` copy
   or handoff is failing for the main-image payload.
-- **Size is not the sole blocker.** A 666,112-byte truncated
-  main-image entry with the same self-loop also produced no hang.
-  The handoff rejects or does not execute the main-image payload
-  even at the updater's size.
-- **Critical control:** the hang-patched updater
-  (`card-updater-hang.bin`, SHA-256 `e8f6596d…`). A hang means the
-  `0x04f7` path executes the pushed updater entry and the
-  main-image payload is rejected by content/type. The updater
-  service personality appearing instead means the handoff executes
-  nothing and the earlier updater RAM-push is a NAND fallback.
+- **The hang tests missed the real entries, so the "pushed entry
+  does not execute" conclusion is not final.** The updater's reset
+  vector branches to `0x40000340`; the main image's RTOS/app
+  entries are `0x400037e8`/`0x40003498`. The patches covered
+  `0x0/0x200/0x338/0xec0` only.
+- **Critical controls:** `card-updater-hang340.bin`
+  (`0e6d143f…`) patches the updater's `0x340`; a hang proves the
+  pushed updater executes. A full main-image hang including
+  `0x37e8`/`0x3498` is the corresponding test.
 - **Correction:** the loader and the updater expose the **same**
   interface template (0/2/5). Interface count is not a
   discriminator; the bootquery response is.
@@ -583,7 +582,7 @@ loads that file from SD to `0x40000000` and boots it.
 | Item | State |
 | --- | --- |
 | SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call, the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`), and the `0x400715c8` ready-gate NOP all failed. Live status shows `0x10004365=0x00` (card state 0); the mount path likely uses the driver state field, not the hardware gate. Remaining: the main firmware shell `read` architecture, or Level 2 RAW pivot; SDHC protocol is secondary. Retries blocked by state-6 prep |
-| RAM-pushed main image (stock or modified) | 2026-11-09: loader drops at `0x04f7`, but the **pushed entry does not execute** — a self-loop at `0x0/0x200/0x338/0xec0` produced no hang; the stock UI stayed live. Marker labels, a direct-boot bypass, and a 666 KB truncated copy all showed stock. Size is not the sole blocker. Critical control next: hang-patched **updater** (`e8f6596d…`); hang = handoff executes the pushed updater, stock updater personality = handoff executes nothing and the earlier updater RAM-push was a NAND fallback. [detail](ram-push-main-2026-11-09.md) |
+| RAM-pushed main image (stock or modified) | 2026-11-09: loader drops at `0x04f7`; marker/direct/666 KB payloads showed stock labels. But the hang tests missed the real entries: updater reset `0x40000340`, main-image RTOS/app `0x400037e8`/`0x40003498`. The updater service personality after the updater hang patch is therefore **not** conclusive. Next: hang at updater `0x340` (`card-updater-hang340.bin`, `0e6d143f…`), then main image with `0x37e8`/`0x3498`. [detail](ram-push-main-2026-11-09.md) |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | No proven recovery. New lead: the earlier stage's SPBoot `2aad:6500` USB descriptor block in SRAM suggests a host-assisted cold/ISP entry; entry conditions and protocol are unqualified. Firmware2 empty, slot selector unknown |
 | Mode `0x88` stop list, helper indirects | Partially traced; do not change any conclusion |
@@ -591,15 +590,14 @@ loads that file from SD to `0x40000000` and boots it.
 ## Bottom line
 
 RAM-push works for Fujifilm's updater. For the main image, the
-loader drops at `0x04f7`, but the **pushed entry does not execute**:
-a self-loop at the entry produced no hang, and marker/direct-bypass
-payloads all showed the stock labels. The main image fails even when
-truncated to the updater's 666 KB size, so the handoff rejects or
-does not execute the main-image payload. The critical control is a
-hang-patched updater: if it does not hang, the earlier updater
-RAM-push result is a NAND fallback and must be re-examined. The
-normal app and a modified image are not yet demonstrated. Reserved C
-is fully mapped (`PHYTABLE` head
+loader drops at `0x04f7`, but marker/direct/666 KB payloads all
+showed the stock UI. The hang tests were **incomplete**: the
+updater's real entry is `0x40000340` and the main image's RTOS/app
+entries are `0x400037e8`/`0x40003498`, none of which were patched.
+The corrected updater-entry control is next; until it runs, whether
+the `0x04f7` path executes pushed payloads at all is unresolved.
+The normal app and a modified image are not yet demonstrated.
+Reserved C is fully mapped (`PHYTABLE` head
 plus firstburn Linux only; no resident updater, main-image copy, or
 RawCBoot), and the earlier stage has a `2aad:6500` SPBoot USB
 template — a recovery lead, not a proven entry. The working
