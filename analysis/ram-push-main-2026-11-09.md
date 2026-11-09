@@ -87,11 +87,20 @@ image (`firmware-main-direct.bin`, SHA-256 `2c64a814…`) changes:
   loader and run the pushed image's reset vector directly);
 - the two menu labels to `RAM-BOOT!` / `RAM-USB!`.
 
-The stub's gate writes are kept. If the direct reset path runs, the
-menu labels prove the pushed image is executing. If it hangs or
-shows stock labels, the reset path needs state that the staged
-loader normally provides, and the next step is to identify that
-state rather than the handoff itself.
+The stub's gate writes are kept. **Result: the live menu still showed
+the stock labels.** So either the pushed entry stub never executed
+(handoff/copy failure), or it executed but the reset path still ends
+up with stock rodata.
+
+## Entry-hang discriminator
+
+A third payload (`firmware-main-hang.bin`, SHA-256 `e23f1bb8…`)
+replaces the first instruction at `0x40000000`, `0x40000200`,
+`0x40000338` and `0x40000ec0` with `b .` (self-loop). If the handoff
+copies the payload and calls any of those entries, the camera hangs
+with no USB re-enumeration. If the stock calibration UI appears
+instead, the pushed entry did not execute and the handoff/copy path
+is the blocker — not the staged loader.
 
 ## Interpretation
 
@@ -136,9 +145,10 @@ The `Disable` dialog with the 5-bit value is a service toggle; do
 not change more bits until its target is identified. A power-cycle
 still returns the camera to the stock NAND firmware.
 
-The direct-boot payload bypasses the staged loader and runs the
-pushed reset vector. That is the decisive test of whether the
-pushed sections can execute from RAM.
+The entry-hang payload is the current discriminator: a hang means
+the pushed entry executed; stock UI means the handoff/copy did not
+execute it. The live menu's `USB MODE`/`BOOT TYPE` controls remain
+available for the later normal-app work.
 
 ## Evidence
 

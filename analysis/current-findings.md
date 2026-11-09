@@ -558,20 +558,20 @@ loads that file from SD to `0x40000000` and boots it.
   showed the stock labels. The strings exist only in the main image,
   not in the resource images, so this is not a resource-copy
   artifact.
-- **The mechanism is the loader-facing stub.** The handoff calls
-  `0x40000200`, which stamps the gate and branches to the staged
-  loader `0x40000338`. The staged loader validates the section
-  table and re-reads the selected firmware region **from NAND**
-  into RAM. The pushed entry stub executes; the application
-  sections are the stock NAND copy.
+- **The mechanism is the loader-facing stub or a handoff copy
+  failure.** The handoff calls `0x40000200`, which stamps the gate
+  and branches to the staged loader `0x40000338`. The staged loader
+  validates the section table and re-reads the selected firmware
+  region **from NAND** into RAM. A direct-bypass payload
+  (`0x4000022c`: `b 0x40000338` → `b 0x40000000`) also showed the
+  stock labels, so the pushed entry may not execute at all.
 - **Correction:** the loader and the updater expose the **same**
   interface template (0/2/5). Interface count is not a
   discriminator; the bootquery response is.
-- Next: the direct-boot bypass (`0x4000022c`: `b 0x40000338` →
-  `b 0x40000000`) runs the pushed reset vector without the staged
-  loader. If the marker labels then appear, the pushed image is
-  executing; if not, the reset path needs the staged loader's
-  state.
+- Next: the entry-hang discriminator (`b .` at
+  `0x0/0x200/0x338/0xec0`). A hang means the pushed entry ran and
+  the post-entry path is the blocker; stock UI means the
+  handoff/copy did not execute the payload.
 - Details: [ram-push-main-2026-11-09.md](ram-push-main-2026-11-09.md).
 
 ## What remains open
@@ -579,25 +579,24 @@ loads that file from SD to `0x40000000` and boots it.
 | Item | State |
 | --- | --- |
 | SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call, the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`), and the `0x400715c8` ready-gate NOP all failed. Live status shows `0x10004365=0x00` (card state 0); the mount path likely uses the driver state field, not the hardware gate. Remaining: the main firmware shell `read` architecture, or Level 2 RAW pivot; SDHC protocol is secondary. Retries blocked by state-6 prep |
-| RAM-pushed main image (stock or modified) | 2026-11-09: handoff executes (loader drops at `0x04f7`). The pushed `+0x200` stub runs, but it branches to the staged loader, which **re-reads the stock image from NAND** into RAM. The live calibration UI is the stock image's rodata — a `RAM-BOOT!` label patch did not appear. The pushed app sections do not run. Next: direct-boot bypass (`0x4000022c`: `b 0x40000338` → `b 0x40000000`). [detail](ram-push-main-2026-11-09.md) |
+| RAM-pushed main image (stock or modified) | 2026-11-09: handoff executes (loader drops at `0x04f7`). The pushed `+0x200` stub runs or the handoff fails; the staged loader re-reads the stock image from NAND into RAM. A `RAM-BOOT!` label patch and a direct-boot bypass both still showed the **stock** labels. Entry-hang discriminator (`b .` at `0x0/0x200/0x338/0xec0`) is next: hang = pushed entry ran; stock UI = handoff/copy did not. [detail](ram-push-main-2026-11-09.md) |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | No proven recovery. New lead: the earlier stage's SPBoot `2aad:6500` USB descriptor block in SRAM suggests a host-assisted cold/ISP entry; entry conditions and protocol are unqualified. Firmware2 empty, slot selector unknown |
 | Mode `0x88` stop list, helper indirects | Partially traced; do not change any conclusion |
 
 ## Bottom line
 
-RAM-push works for Fujifilm's updater. **The main-image handoff
-also executes**: the loader leaves USB at `0x04f7`, the pushed
-`+0x200` stub runs, and a live calibration UI appears. But the
-staged loader re-reads the stock image from NAND into RAM, so the
-pushed application sections do not run — a marker in the pushed
-rodata did not appear. The next test bypasses the staged loader.
-The normal app and a modified image are not yet demonstrated. The
-blockers are identified rather than mysterious: redirecting or
-bypassing the staged-loader copy, preparation intermittency
-(state 6), and an SD file-boot path that fails after the updater
-runs (the mailbox is no longer a candidate). Reserved C is fully
-mapped (`PHYTABLE` head
+RAM-push works for Fujifilm's updater. For the main image, the
+loader drops at `0x04f7` and a live calibration UI appears, but a
+marker in the pushed rodata and a direct-boot bypass both still
+showed the **stock** labels. Whether the pushed entry executes at
+all is unresolved; the entry-hang test is next. The staged loader
+re-reads stock sections from NAND when it does run. The normal app
+and a modified image are not yet demonstrated. The blockers are
+identified rather than mysterious: pushed-entry execution, the
+staged-loader copy, preparation intermittency (state 6), and an SD
+file-boot path that fails after the updater runs (the mailbox is
+no longer a candidate). Reserved C is fully mapped (`PHYTABLE` head
 plus firstburn Linux only; no resident updater, main-image copy, or
 RawCBoot), and the earlier stage has a `2aad:6500` SPBoot USB
 template — a recovery lead, not a proven entry. The working
