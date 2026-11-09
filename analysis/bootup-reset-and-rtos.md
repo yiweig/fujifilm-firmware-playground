@@ -429,15 +429,18 @@ The earlier stage (mask ROM/SPBoot) writes a small block at
 | Button timing | `0x100040b4..b8` | hold-time / DRAM parameter bytes; decoded and applied via `func_0x400165d0`/`0x400165e0`/`0x400166b8` |
 | Mailbox | `0x100040b9..c0` | 8-char basename |
 | Mailbox ext | `0x100040c1..c3` | 3-char extension |
-| Backend | `0x10000058 & 0xe0` | `0x00/0x20/0x40` → NAND registration paths; `0x80/0xa0/0xc0` → other media |
+| Backend | `0x10000058 & 0xe0` | `0x00/0x40` → NAND BCH enable (`nandBchEnSet`); `0x20` → NAND (`libnand/nand.c`, RawCBoot); `0x80` → eSD (`esdVfsMount`); `0xa0` → eMMC (`emmcVfsMount`); `0xc0` → SPI (`spiVfsMount`) |
 
 Updater flow (`FUN_400009c4`):
 
 - Reads the gate/status; if the gate is nonzero, decodes the button
   timing and DRAM parameters.
-- Backend select: `0x00` → `func_0x4002bde8(1)`, `0x40` → `(2)`,
-  `0x20` → `func_0x4001be6c`, `0x80` → `func_0x4001baa8`,
-  `0xa0` → `func_0x4001d7f0`, `0xc0` → `func_0x4001dbe8`.
+- Backend select: `0x00` → `func_0x4002bde8(1)` (NAND BCH),
+  `0x40` → `(2)` (NAND BCH), `0x20` → `func_0x4001be6c` (NAND,
+  `libnand/nand.c`), `0x80` → `func_0x4001baa8` (eSD,
+  `esdVfsMount`), `0xa0` → `func_0x4001d7f0` (eMMC,
+  `emmcVfsMount`), `0xc0` → `func_0x4001dbe8` (SPI,
+  `spiVfsMount`).
 - Builds a pathname: drive 5 (`G:`) or 2 (`D:`), mailbox
   basename/extension, default `firmware.brn`.
 - If the file exists: `.brn` → `func_0x4000fc70` (card update) and

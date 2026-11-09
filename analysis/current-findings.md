@@ -475,6 +475,10 @@ loads that file from SD to `0x40000000` and boots it.
   into an overlapping data blob at `0x40d65a3c`/`0x40d65a48`
   (`0x0f0f0f0f` patterns, byte tables), not a clock-gate list;
   consumed by `FUN_400822c4` (I2S audio config, `hal_aud`).
+- **Storage backend mapping:** `0x10000058 & 0xe0`: `0x00/0x40`
+  → NAND BCH enable (`nandBchEnSet`); `0x20` → NAND
+  (`libnand/nand.c`, RawCBoot); `0x80` → eSD (`esdVfsMount`);
+  `0xa0` → eMMC (`emmcVfsMount`); `0xc0` → SPI (`spiVfsMount`).
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open
