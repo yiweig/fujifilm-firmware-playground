@@ -431,6 +431,15 @@ The earlier stage (mask ROM/SPBoot) writes a small block at
 | Mailbox ext | `0x100040c1..c3` | 3-char extension |
 | Backend | `0x10000058 & 0xe0` | `0x00/0x40` → NAND BCH enable (`nandBchEnSet`); `0x20` → NAND (`libnand/nand.c`, RawCBoot); `0x80` → eSD (`esdVfsMount`); `0xa0` → eMMC (`emmcVfsMount`); `0xc0` → SPI (`spiVfsMount`) |
 
+The eSD backend is `libsd/sd_core.c`: `sdDetect` (`FUN_40021d78`)
+handles card power/clock, CID/CSD, SD/MMC identification, capacity,
+SCR, CMD23/20 and speed mode; `FUN_40025fa4` mounts disks A/B and
+`FUN_4001e0e8` is the `esdVfsMount` callback. The failure strings
+(`sdDetect err id`, `SD-Locked`, `ERR Cant Find eSD Disk A/B`)
+match the main firmware's `sddetect` path, so the updater's card
+state-0 failure is in this shared SD core / mount sequence, not in
+the card contents.
+
 Updater flow (`FUN_400009c4`):
 
 - Reads the gate/status; if the gate is nonzero, decodes the button

@@ -479,6 +479,13 @@ loads that file from SD to `0x40000000` and boots it.
   → NAND BCH enable (`nandBchEnSet`); `0x20` → NAND
   (`libnand/nand.c`, RawCBoot); `0x80` → eSD (`esdVfsMount`);
   `0xa0` → eMMC (`emmcVfsMount`); `0xc0` → SPI (`spiVfsMount`).
+- **eSD backend:** `libsd/sd_core.c` `sdDetect` (`FUN_40021d78`)
+  handles card power/clock, CID/CSD, SD/MMC identification,
+  capacity, SCR, CMD23/20 and speed mode; `FUN_40025fa4` mounts
+  disks A/B; `FUN_4001e0e8` is the `esdVfsMount` callback. This is
+  the same SD core as the main firmware's `sddetect`; the updater's
+  card state-0 failure is in this shared detect/mount path, not the
+  card contents.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open
