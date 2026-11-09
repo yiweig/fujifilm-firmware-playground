@@ -448,6 +448,19 @@ and the SD hardware controller base is `0x10004360` (card state at
 `FUN_4006ee94`/`FUN_40024a04`/`FUN_4001f720`; the updater's card
 state-0 failure is in this power/clock/pin sequence.
 
+`FUN_40024a04` is `sdIdentify`: it sends CMD0, CMD8 (check pattern),
+ACMD41 (SD) or CMD1 (MMC), CMD2 (CID), CMD3 (RCA), then CMD9/7/13.
+`sd_pwr_recycle` is called only when `(uVar9 & 0xf) < 2` and the card
+type is 2/5; the first pass starts with `uVar9 = 2`, so the recycle
+is skipped. The retry path (uVar9 0/1) runs it. The log strings
+(`CMD0 fail`, `CMD8 chk pattern`, `SD Err ACMD41`, `MMC Err CMD1`,
+`SDSC v2.0`, `UHS-I SD Card`, `CMD 2 fail`, `CID:`, `Get RCA`)
+confirm the sequence. `FUN_4006fa10` sets the SD pin mux/drive at
+`0x10000180`/`0x10000184` (0x55/0xaa/0xff); `FUN_4006e91c` sets
+7/0x140; `FUN_4006f0e8`/`FUN_4006f008` set card-detect/power flags;
+`FUN_4006ee94` writes the per-channel state at
+`DAT_4006eea4 + id*4 + 0x128`.
+
 Updater flow (`FUN_400009c4`):
 
 - Reads the gate/status; if the gate is nonzero, decodes the button

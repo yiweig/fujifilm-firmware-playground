@@ -492,6 +492,14 @@ loads that file from SD to `0x40000000` and boots it.
   `sdDetect` drives `FUN_4006e91c`/`FUN_4006f0e8`/`FUN_4006f008`/
   `FUN_4006fa10`/`FUN_4006ee94`/`FUN_40024a04`/`FUN_4001f720`; the
   updater's card state-0 failure is in this power/clock/pin sequence.
+- **eSD identify:** `FUN_40024a04` = `sdIdentify`
+  (CMD0/CMD8/ACMD41/CMD1/CMD2/CMD3/CMD9/7/13); `sd_pwr_recycle`
+  runs only on the retry path (`uVar9 & 0xf < 2`), and the first
+  pass starts with `uVar9 = 2`, so the recycle is skipped. Pin mux
+  `FUN_4006fa10` writes `0x10000180`/`0x10000184`
+  (`0x55`/`0xaa`/`0xff`); `FUN_4006e91c` sets `7`/`0x140`;
+  `FUN_4006f0e8`/`FUN_4006f008` set card-detect/power flags;
+  `FUN_4006ee94` writes `DAT_4006eea4 + id*4 + 0x128`.
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open
