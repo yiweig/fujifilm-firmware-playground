@@ -14,6 +14,18 @@ cycle. The updater's own storage initialization is not proven
 write-free, however — see the conditional NAND erase branch in
 [brick-risk-and-recovery.md](brick-risk-and-recovery.md).
 
+> **Correction (2026-11-09, later session).** The "updater is
+> running" identification below is **not unique**. The live loader
+> also exposes 3 interfaces (0, 2, 5), and the stock main firmware's
+> calibration mode has the same template and the same bootquery
+> timeout. In a later run the hang-patched updater did not hang and
+> the debug UI stayed **live** — which the updater, which does not
+> drive the display, cannot produce. The post-handoff personality is
+> therefore the **stock main firmware's calibration fallback**, and
+> the pushed updater did not execute. The RAM-push claim is under
+> re-examination:
+> [ram-push-reassessment-2026-11-09.md](ram-push-reassessment-2026-11-09.md).
+
 ## Attempts
 
 1. **Wedged at bootquery-alloc.** First `--ram-push` run timed out

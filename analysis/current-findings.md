@@ -23,20 +23,28 @@ Lightroom-validated, `analysis/raw2dng.py`).
   gate `0x12345678` stamped, Firmware1 selected (status
   `0x0100`). Firmware1 SHA-256 `80350bd2…` matches the official
   package. ([boot-info-block-and-updater-sdboot.md](boot-info-block-and-updater-sdboot.md))
-- **RAM-pushed firmware works — for Fujifilm's own updater.**
-  The stock card updater (666,112 bytes, SHA-256 `4bdcdb06…`)
-  has booted from RAM twice via the `0x04f7` handoff and
-  reached its USB service personality. Exit is OFF/unplug;
-  normal boot verified afterwards.
-  ([ram-push-live.md](ram-push-live.md))
-- **Arbitrary invocation from the USB context.** Trampolines
-  v4/v5 (emulator-qualified) call a chosen function from the
-  handler hijack; the direct handoff reached the helper
-  `FUN_401eb1ec` live (device dropped off USB at the trigger).
+- **RAM-push execution is under re-examination.** The stock card
+  updater (666,112 bytes, SHA-256 `4bdcdb06…`) was pushed via the
+  `0x04f7` handoff and the device re-enumerated, but the
+  post-handoff 3-interface/bootquery-timeout signature is **not
+  unique** to the updater: the live loader also exposes 3
+  interfaces (0/2/5), and the stock main firmware's calibration
+  mode has the same template and timeout. A later hang-patched
+  updater did **not** hang and the debug UI stayed **live** — the
+  updater does not drive the display, so the stock main firmware,
+  not the pushed payload, was running. The earlier "updater booted
+  from RAM" conclusion is not supported and must be re-tested with
+  a UI marker.
+  ([ram-push-reassessment-2026-11-09.md](ram-push-reassessment-2026-11-09.md))
+- **Arbitrary invocation from the USB context — needs the same
+  re-test.** Trampolines v4/v5 (emulator-qualified) call a chosen
+  function from the handler hijack; the direct handoff reached the
+  helper `FUN_401eb1ec` live (device dropped off USB at the
+  trigger). The USB drop is also consistent with a reset/fallback,
+  so a UI marker is required before relying on it.
 - **Recovery for everything attempted:** power cycle. Internal
   stock firmware is untouched by any RAM/SD path, so a normal
-  boot always returns. This is a confirmed recovery path for
-  the dual-boot architecture *if* a payload ever boots.
+  boot always returns.
 
 ## The central blocker: state-6 preparation is a lottery
 
@@ -69,6 +77,15 @@ descriptor after the event were never captured. Until that is
 done, treat main-image 0/4 as "did not come up", not as "never
 ran". The updater's 7/11 and the main image's 0/4 may not share
 one failure mode.
+
+**Correction 2026-11-09:** the "completion" signature (USB drop,
+3-interface re-enumeration, bootquery timeout) is also the stock
+main firmware's calibration fallback. A hang-patched updater did
+not hang and the debug UI stayed live, which the updater cannot
+produce. The 7/15 tally is therefore **not** a payload-execution
+count; it measured whether the receiver survived long enough to
+drop USB. See
+[ram-push-reassessment-2026-11-09.md](ram-push-reassessment-2026-11-09.md).
 
 One more unproven variable, recorded 2026-11-06: the updater push
 that hung that day ran after the camera was already in debug mode
@@ -582,21 +599,30 @@ loads that file from SD to `0x40000000` and boots it.
 | Item | State |
 | --- | --- |
 | SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call, the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`), and the `0x400715c8` ready-gate NOP all failed. Live status shows `0x10004365=0x00` (card state 0); the mount path likely uses the driver state field, not the hardware gate. Remaining: the main firmware shell `read` architecture, or Level 2 RAW pivot; SDHC protocol is secondary. Retries blocked by state-6 prep |
-| RAM-pushed main image (stock or modified) | 2026-11-09: loader drops at `0x04f7`; marker/direct/666 KB payloads showed stock labels. But the hang tests missed the real entries: updater reset `0x40000340`, main-image RTOS/app `0x400037e8`/`0x40003498`. The updater service personality after the updater hang patch is therefore **not** conclusive. Next: hang at updater `0x340` (`card-updater-hang340.bin`, `0e6d143f…`), then main image with `0x37e8`/`0x3498`. [detail](ram-push-main-2026-11-09.md) |
+| RAM-pushed main image (stock or modified) | 2026-11-09: the corrected updater-entry hang (`0x340`) **did not hang** and the debug UI stayed **live**. The updater does not drive the display, so the **stock main firmware calibration mode** is running, not the pushed payload. The 3-interface/bootquery-timeout signature is not unique. RAM-push execution is not supported; the `0x04f7` copy/jump/reset path must be re-examined. [reassessment](ram-push-reassessment-2026-11-09.md) |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | No proven recovery. New lead: the earlier stage's SPBoot `2aad:6500` USB descriptor block in SRAM suggests a host-assisted cold/ISP entry; entry conditions and protocol are unqualified. Firmware2 empty, slot selector unknown |
 | Mode `0x88` stop list, helper indirects | Partially traced; do not change any conclusion |
 
 ## Bottom line
 
-RAM-push works for Fujifilm's updater. For the main image, the
-loader drops at `0x04f7`, but marker/direct/666 KB payloads all
-showed the stock UI. The hang tests were **incomplete**: the
-updater's real entry is `0x40000340` and the main image's RTOS/app
-entries are `0x400037e8`/`0x40003498`, none of which were patched.
-The corrected updater-entry control is next; until it runs, whether
-the `0x04f7` path executes pushed payloads at all is unresolved.
-The normal app and a modified image are not yet demonstrated.
+**The RAM-push execution claim is not supported.** The corrected
+updater-entry hang (`0x40000340`) did not hang; the debug UI stayed
+live. The updater does not drive the display, so the running
+firmware is the **stock main firmware in calibration mode**, not the
+pushed payload. The 3-interface/bootquery-timeout signature is
+shared by the loader/calibration mode, so it was never a unique
+updater marker. The 7/15 state-6 “completions” are resets into that
+calibration fallback, not demonstrated payload boots.
+
+The loader read/write/scratch behavior, the calibration UI, the
+static boot-chain analysis, the DRAMPAR3 scripts, and the
+staged-loader storage contract remain solid. The normal app, a
+modified image, and a working RAM launch are not demonstrated.
+The next work is to re-examine the `0x04f7` copy/jump/reset path and
+re-test RAM execution with a **UI marker**, not a USB
+descriptor/timing signature
+([ram-push-reassessment-2026-11-09.md](ram-push-reassessment-2026-11-09.md)).
 Reserved C is fully mapped (`PHYTABLE` head
 plus firstburn Linux only; no resident updater, main-image copy, or
 RawCBoot), and the earlier stage has a `2aad:6500` SPBoot USB

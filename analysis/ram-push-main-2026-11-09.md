@@ -132,6 +132,19 @@ A corrected control is prepared: `card-updater-hang340.bin`
 the pushed updater executes at `0x340`; the updater service
 appearing again means the payload is a fallback/not executing.
 
+**Result: no hang.** The device re-enumerated, the bootquery timed
+out, and the debug UI was **live** (PLAY/lever responds). The
+updater does not drive the display, so a live debug menu is the
+**stock main firmware's calibration mode**, not the updater. The
+pushed updater did not execute.
+
+This overturns the earlier "updater boots from RAM" conclusion:
+the 3-interface/bootquery-timeout signature is shared by the stock
+calibration mode and the loader, so it was never a unique updater
+marker. The 7/15 state-6 "completions" are resets into this
+calibration fallback, not demonstrated payload boots. See
+[ram-push-reassessment-2026-11-09.md](ram-push-reassessment-2026-11-09.md).
+
 The same caveat applies to the main-image hang tests: they patched
 `0x0/0x200/0x338/0xec0`, but the main image's RTOS entry
 (`0x400037e8`) and app-init vector (`0x40003498`) were not patched.
