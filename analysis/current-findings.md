@@ -634,16 +634,25 @@ Low-memory/SRAM data reads wedge. But these are **not** all the paths:
 - **A. Hijack-driven SD boot via the main firmware.** The handler-slot
   trampoline is a **proven live execution primitive** (counter 13, slots
   restored) and does not use `0xb34`. The prior SD failures were in the
-  **RAM-pushed updater**; the main firmware's own `sdDetect`/
-  `esdVfsMount`/`sdReMount` path and the shell `read` architecture are
-  untested. Calling the main firmware's SD detect/mount and then its
-  file-boot path (card already prepared with `MAIN.BIN`) is the best
-  remaining safe-SD-boot lead. It is card-level, not a NAND write.
+  **RAM-pushed updater**; the main firmware's own shell has the vendor
+  SD F/W commands: **`sdset`** (allocate SD reserved blocks),
+  **`sdfww <addr> <size>`** (write F/W from DRAM to the SD reserved
+  slot), **`sdhdr`** (display header), **`sdboot <addr>`** (read the
+  slot and jump). The device-1 SD context is null in the debug shell
+  until `sdset`/`sdfww` initialize it (`0x4004e9dc(1)`); the prior card
+  test only put `MAIN.BIN` in the FAT root, so the eSD reserved layout
+  was never created. The card-level sequence is: back up the card →
+  `sdset` → stage the image in DRAM → `sdfww` → `sdhdr` →
+  `sdboot 0x40000000`. This bypasses the `+0x200` staged-loader reload.
+  Card-level only; the camera's NAND is untouched. It is the best
+  remaining safe-SD-boot lead.
 - **B. SPBoot USB entry.** The earlier stage's `2aad:6500`/`iCatch
-  CA6500A` USB descriptor block is in the SRAM dump. Finding the
-  boot-info/button condition that enumerates that earlier-stage ISP
-  personality is the best independent-recovery lead. The trampoline can
-  write the boot-info/status fields; a reset then tests the entry.
+  CA6500A` USB descriptor block is in the SRAM dump. The shell `usbt`
+  command (`0x4031d498`, “Ready for Usb Boot ..”) is a running-firmware
+  USB boot transition lead. Finding the boot-info/button condition that
+  enumerates the earlier-stage ISP personality is the best
+  independent-recovery lead. The trampoline can write the boot-info/
+  status fields; a reset then tests the entry.
 - **C. Public/sibling SPCA6500 boot artifacts.** A public V50/Akaso/
   iCatch bootloader or ISP dump could supply the `0xb34`/SPBoot code.
   Research-only; no hardware.
