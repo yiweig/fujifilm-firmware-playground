@@ -5,6 +5,10 @@ The `0x04f7` helper copies the 0x800-byte stub at 0x401ed070 into its
 workspace before the handoff. Patching a call site in the running
 loader's stub (before the push) therefore changes the copied stub.
 
+The patch is applied with the handler-slot trampoline v3 (CPU stores),
+not the `0x04f5` bulk write: a direct write to the stub's code address
+wedges the receiver.
+
 Call sites:
   helper  0x401ed134  blx 0x00000b34(dest, size)
   entry   0x401ed150  blx 0x40000200 (payload +0x200)
@@ -36,17 +40,51 @@ TARGETS = {
     "reset": (0x401ED140, 0x14, 0xE12FFF34),   # blx r4 -> 0x40000000
 }
 SELF_LOOP = 0xEAFFFFFE
+STUB_STAGE = 0x41130000  # fixed scratch source for the 32-byte block
 
 
-def write_block32(loader: x.Loader, block: int, data: bytes) -> None:
-    """0x04f5 write of one 32-byte-aligned block, bypassing the scratch allowlist."""
-    if block % 32 or len(data) != 32:
-        raise SystemExit("block must be 32-byte aligned and exactly 32 bytes")
-    payload = struct.pack("<II", 32, block)
-    if loader.dev.ctrl_transfer(0x40, 0xFD, 0, 0x04F5, payload, timeout=x.TIMEOUT_MS) != 8:
-        raise SystemExit("stub write setup: short control write")
-    if loader.dev.write(x.EP_OUT, data, timeout=x.TIMEOUT_MS) != 32:
-        raise SystemExit("stub write: short bulk OUT")
+def patch_with_trampoline(loader: x.Loader, block: int, patched: bytes) -> None:
+    """Copy `patched` to `block` using the handler-slot trampoline v3."""
+    loader.write_mem(loader.TRAMP_ADDR, bytes.fromhex(loader.TRAMP3_HEX))
+    loader.write_mem(loader.COUNTER_ADDR, bytes(32))
+    if loader.read_mem(loader.TRAMP_ADDR, 32) != bytes.fromhex(loader.TRAMP3_HEX)[:32]:
+        raise SystemExit("trampoline read-back mismatch; abort")
+
+    originals = []
+    for slot, off in loader.SLOT_BLOCKS:
+        data = loader.read_mem(slot, 32)
+        if struct.unpack_from("<I", data, off)[0] != loader.HANDLER:
+            raise SystemExit("handler slot does not hold the expected handler; abort")
+        originals.append(data)
+
+    try:
+        for (slot, off), _ in zip(loader.SLOT_BLOCKS, originals):
+            data = bytearray(loader.read_mem(slot, 32))
+            struct.pack_into("<I", data, off, loader.TRAMP_ADDR)
+            loader._write_block32(slot, bytes(data))
+        print("trampoline v3 installed")
+
+        loader.write_mem(STUB_STAGE, patched)
+        if loader.read_mem(STUB_STAGE, 32) != patched:
+            raise SystemExit("staged block read-back mismatch; abort")
+
+        loader._set_stage(STUB_STAGE, block, 32)
+        loader.bootquery()
+        if not loader._wait_done():
+            raise SystemExit(
+                "stub copy did not complete (DONE!=2); camera may need a power cycle"
+            )
+        check = loader.read_mem(block, 32)
+        if check != patched:
+            raise SystemExit("stub patch read-back mismatch; abort")
+        print(f"patched stub block 0x{block:08x} via trampoline")
+    finally:
+        try:
+            for (slot, _), orig in zip(loader.SLOT_BLOCKS, originals):
+                loader._write_block32(slot, orig)
+            print("slots restored")
+        except Exception as exc:  # noqa: BLE001
+            print(f"WARNING: slot restore failed: {exc}")
 
 
 def main() -> None:
@@ -59,22 +97,19 @@ def main() -> None:
     dev = x.open_device()
     try:
         loader = x.Loader(dev)
-        data = bytearray(loader.read_mem(block, 32))
-        got = struct.unpack_from("<I", data, offset)[0]
+        current = bytearray(loader.read_mem(block, 32))
+        got = struct.unpack_from("<I", current, offset)[0]
         if got != expected:
             raise SystemExit(
                 f"unexpected instruction at {block + offset:#x}: {got:#010x} "
                 f"(want {expected:#010x}); refusing to patch"
             )
-        struct.pack_into("<I", data, offset, SELF_LOOP)
-        write_block32(loader, block, bytes(data))
-        check = loader.read_mem(block, 32)
-        if check[offset : offset + 4] != struct.pack("<I", SELF_LOOP):
-            raise SystemExit("stub patch read-back mismatch")
+        struct.pack_into("<I", current, offset, SELF_LOOP)
         print(
-            f"patched {args.site} at {block + offset:#x}: "
+            f"target {args.site} at {block + offset:#x}: "
             f"{expected:#010x} -> {SELF_LOOP:#010x}"
         )
+        patch_with_trampoline(loader, block, bytes(current))
         if args.push:
             loader.ram_push(args.push)
     finally:
