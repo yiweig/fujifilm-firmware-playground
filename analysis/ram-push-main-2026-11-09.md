@@ -54,29 +54,71 @@ that the lever toggles. This is the main image's own UI and input
 task running from RAM, not a stale framebuffer and not the old
 loader. The main image boot reaches calibration/debug mode.
 
+## The marker test and the staged-loader reload
+
+A patched copy of the same image changed the calibration menu labels
+`BOOT TYPE` → `RAM-BOOT!` and `USB MODE` → `RAM-USB!` (same length,
+SHA-256 `60e819af…`). The live menu after the push still showed the
+**stock labels**. The package check rules out a resource copy: the
+two strings exist only in the main image (`FPUPDATE.DAT` offset
+`0x09df8434` / `0x09df84e8`, i.e. main-image `0x40e14714` /
+`0x40e147c8`).
+
+The explanation is the loader-facing entry. The handoff calls
+`0x40000200` first; that stub stamps the gate and branches to the
+**staged loader** at `0x40000338`. The staged loader validates the
+section table and loads the selected firmware region **from NAND
+storage** into RAM (`staged-loader-storage-handoff.md`). So the
+handoff executes the pushed entry stub, but the application sections
+are re-read from NAND. The live menu is the stock image loaded from
+NAND, not the pushed payload's rodata.
+
+This also means the earlier "main image boots from RAM" result is
+narrower than it looked: the **entry stub** is pushed and executed,
+but the app sections are stock NAND content. The main image's UI is
+running from RAM, but it is not our patched copy.
+
+## Direct-boot bypass
+
+The next test removes the staged-loader reload. A copy of the stock
+image (`firmware-main-direct.bin`, SHA-256 `2c64a814…`) changes:
+
+- `0x4000022c`: `b 0x40000338` → `b 0x40000000` (skip the staged
+  loader and run the pushed image's reset vector directly);
+- the two menu labels to `RAM-BOOT!` / `RAM-USB!`.
+
+The stub's gate writes are kept. If the direct reset path runs, the
+menu labels prove the pushed image is executing. If it hangs or
+shows stock labels, the reset path needs state that the staged
+loader normally provides, and the next step is to identify that
+state rather than the handoff itself.
+
 ## Interpretation
 
 - **This was not a state-6 prep hang.** The loader left USB at the
   `0x04f7` trigger, so the handoff executed.
-- The old loader's code at `0x40000000` is overwritten by the new
-  image. Its USB stack cannot keep running; a re-enumeration must
-  come from the new environment (or a reboot).
-- The re-enumerated personality is the `2aad:6500` vendor
-  template, and the screen stayed on the debug view. That is
-  consistent with the **main image booting into its
-  calibration/debug mode** (the `EnableTest.txt` override is
-  present) rather than the normal camera app.
-- The bootquery timeout is expected in that mode: the loader API
-  is selected by the button combination, which is not held after
-  the handoff. The timeout is not proof that the loader is dead.
-- **The live debug UI settles it.** The UI responds to PLAY and
-  the film/playback lever, so the main image's display, input and
-  menu tasks are executing from RAM. The old loader cannot be
-  producing that UI: its code at `0x40000000` was overwritten.
-- This reclassifies the previous `0/4` from "did not come up" to
-  "the stock main image boots from RAM into calibration/debug
-  mode; the normal app and a modified image are not yet
-  demonstrated."
+- The handoff calls the pushed image's `+0x200` stub. That stub
+  stamps the gate and jumps to the staged loader at `0x40000338`,
+  which re-reads the selected firmware region **from NAND** into
+  RAM. The pushed entry stub executes, but the application
+  sections are the stock NAND copy.
+- **The marker test proves this.** The pushed copy's
+  `RAM-BOOT!`/`RAM-USB!` labels did not appear; the live menu
+  showed the stock labels. The strings exist only in the main
+  image, not in the resource images, so this is not a
+  resource-copy artifact. The running rodata is stock.
+- The re-enumerated `2aad:6500` personality and the live debug UI
+  are the stock main image running from RAM after the staged
+  loader's NAND reload — not our patched payload's sections.
+- The bootquery timeout is expected in calibration/debug mode: the
+  loader API is selected by the button combination, which is not
+  held after the handoff. The timeout is not proof that the loader
+  is dead.
+- The previous `0/4` reclassifies to: **the handoff executes; the
+  pushed entry stub runs; the staged loader then replaces the
+  application sections with the stock NAND copy.** Pushing a
+  modified main image requires bypassing or redirecting that
+  staged-loader copy.
 
 ## Next
 
@@ -91,16 +133,12 @@ The live debug menu exposes two useful controls:
   anything.
 
 The `Disable` dialog with the 5-bit value is a service toggle; do
-not change more bits until its target is identified. The main
-image is running from RAM; a power-cycle still returns the
-camera to the stock NAND firmware, so the normal app can be
-retried safely.
+not change more bits until its target is identified. A power-cycle
+still returns the camera to the stock NAND firmware.
 
-The obvious lever for the normal app remains the `EnableTest.txt`
-override: the post-handoff boot sees it and enters
-calibration/debug mode. Removing it after loader entry (or
-booting the new image with a card that lacks it) should let the
-main image reach the normal application.
+The direct-boot payload bypasses the staged loader and runs the
+pushed reset vector. That is the decisive test of whether the
+pushed sections can execute from RAM.
 
 ## Evidence
 
@@ -112,10 +150,12 @@ main image reach the normal application.
 ## Boundary
 
 The handoff execution, the re-enumeration and the **live debug UI**
-are observed. The main image's own display/input/menu tasks are
-therefore executing from RAM. The normal application and a
-modified image are not demonstrated. The `Disable` toggle was
-changed on screen; whether it writes a persistent calibration
+are observed. The marker test shows the running application rodata
+is the stock image: the pushed entry stub executes, but the staged
+loader reloads the application sections from NAND. The pushed
+application sections are not demonstrated. The normal application
+and a modified image are not demonstrated. The `Disable` toggle
+was changed on screen; whether it writes a persistent calibration
 field is not yet established, and the camera still boots the
 stock NAND firmware normally. No other persistent change was
 observed.

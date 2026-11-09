@@ -550,29 +550,28 @@ loads that file from SD to `0x40000000` and boots it.
 - **The stock main image also left the loader** at the `0x04f7`
   trigger. It re-enumerated ~1 min later as `2aad:6500`
   (`bcdDevice 2.00`, interfaces 0/2/5), and the bootquery timed out.
-  The screen stayed on the debug view; the power switch did not
-  respond until OFF + unplug; the camera recovered normally.
-- **This eliminates the prep-hang explanation for this attempt.**
-  The old loader's code at `0x40000000` is overwritten by the new
-  image, so the re-enumeration must come from new code. The
-  `2aad:6500` vendor template plus the live debug menu is the
-  main image booting into calibration/debug mode (the
-  `EnableTest.txt` override is present), not the normal app.
-- **The debug view is live:** PLAY opens the menu, the
-  film/playback lever navigates, and entries include `BOOT TYPE`
-  and `USB MODE`. The main image's display/input/menu tasks are
-  running from RAM.
+  The screen showed a **live** debug menu (PLAY opens it, the
+  film/playback lever navigates); the power switch did not respond
+  until OFF + unplug; the camera recovered normally.
+- **The pushed sections do not run.** A marker copy changed the
+  calibration labels to `RAM-BOOT!`/`RAM-USB!`; the live menu still
+  showed the stock labels. The strings exist only in the main image,
+  not in the resource images, so this is not a resource-copy
+  artifact.
+- **The mechanism is the loader-facing stub.** The handoff calls
+  `0x40000200`, which stamps the gate and branches to the staged
+  loader `0x40000338`. The staged loader validates the section
+  table and re-reads the selected firmware region **from NAND**
+  into RAM. The pushed entry stub executes; the application
+  sections are the stock NAND copy.
 - **Correction:** the loader and the updater expose the **same**
   interface template (0/2/5). Interface count is not a
   discriminator; the bootquery response is.
-- Next: use the live menu to read the current `BOOT TYPE` and
-  `USB MODE` values (read-only first). `USB MODE` may switch the
-  runtime personality to the normal PTP device without a reboot;
-  `BOOT TYPE` is potentially persistent. The `Disable` toggle was
-  changed once; do not change more calibration bits until its
-  target is identified. The normal app still needs the
-  `EnableTest.txt` override removed after loader entry (or a card
-  without it for the new image's boot).
+- Next: the direct-boot bypass (`0x4000022c`: `b 0x40000338` →
+  `b 0x40000000`) runs the pushed reset vector without the staged
+  loader. If the marker labels then appear, the pushed image is
+  executing; if not, the reset path needs the staged loader's
+  state.
 - Details: [ram-push-main-2026-11-09.md](ram-push-main-2026-11-09.md).
 
 ## What remains open
@@ -580,23 +579,25 @@ loads that file from SD to `0x40000000` and boots it.
 | Item | State |
 | --- | --- |
 | SD boot of stock main image | Updater ran with the mailbox set (19:31 and 2026-11-06) but did not boot the file; mailbox eliminated. Live backend is `0x00` (drive 2), so the drive-5 branch is eliminated too. `0x04f2` read probe timed out; 1.5 GB FAT16 card test still settled into service mode, so card format/volume is eliminated. The `sdReMount(2,0)` pre-call, the full SD init/config (`0x4006ed88(0)` + `0x4007155c(0)`), and the `0x400715c8` ready-gate NOP all failed. Live status shows `0x10004365=0x00` (card state 0); the mount path likely uses the driver state field, not the hardware gate. Remaining: the main firmware shell `read` architecture, or Level 2 RAW pivot; SDHC protocol is secondary. Retries blocked by state-6 prep |
-| RAM-pushed main image (stock or modified) | **Confirmed live (2026-11-09):** loader drops at `0x04f7`, re-enumerates as the `2aad:6500` vendor template; the debug view is a **live main-image UI** (PLAY opens the menu, the film/playback lever navigates; entries include `BOOT TYPE` and `USB MODE`). The stock main image runs from RAM in **calibration/debug mode**; the normal app and a modified image are not yet demonstrated. [detail](ram-push-main-2026-11-09.md) |
+| RAM-pushed main image (stock or modified) | 2026-11-09: handoff executes (loader drops at `0x04f7`). The pushed `+0x200` stub runs, but it branches to the staged loader, which **re-reads the stock image from NAND** into RAM. The live calibration UI is the stock image's rodata — a `RAM-BOOT!` label patch did not appear. The pushed app sections do not run. Next: direct-boot bypass (`0x4000022c`: `b 0x40000338` → `b 0x40000000`). [detail](ram-push-main-2026-11-09.md) |
 | Modified firmware by any route | No proven path |
 | Flashed mod + cold recovery | No proven recovery. New lead: the earlier stage's SPBoot `2aad:6500` USB descriptor block in SRAM suggests a host-assisted cold/ISP entry; entry conditions and protocol are unqualified. Firmware2 empty, slot selector unknown |
 | Mode `0x88` stop list, helper indirects | Partially traced; do not change any conclusion |
 
 ## Bottom line
 
-RAM-push works for Fujifilm's updater. **The stock main image
-also boots from RAM into a live calibration/debug UI** — the
-loader leaves USB at `0x04f7`, the new image re-enumerates, and
-its display/input/menu tasks respond. The normal app and a
-modified image are not yet demonstrated. The blockers are
-identified rather than mysterious: leaving calibration mode for
-the normal app (the `EnableTest.txt` override), preparation
-intermittency (state 6), and an SD file-boot path that fails
-after the updater runs (the mailbox is no longer a candidate).
-Reserved C is fully mapped (`PHYTABLE` head
+RAM-push works for Fujifilm's updater. **The main-image handoff
+also executes**: the loader leaves USB at `0x04f7`, the pushed
+`+0x200` stub runs, and a live calibration UI appears. But the
+staged loader re-reads the stock image from NAND into RAM, so the
+pushed application sections do not run — a marker in the pushed
+rodata did not appear. The next test bypasses the staged loader.
+The normal app and a modified image are not yet demonstrated. The
+blockers are identified rather than mysterious: redirecting or
+bypassing the staged-loader copy, preparation intermittency
+(state 6), and an SD file-boot path that fails after the updater
+runs (the mailbox is no longer a candidate). Reserved C is fully
+mapped (`PHYTABLE` head
 plus firstburn Linux only; no resident updater, main-image copy, or
 RawCBoot), and the earlier stage has a `2aad:6500` SPBoot USB
 template — a recovery lead, not a proven entry. The working
