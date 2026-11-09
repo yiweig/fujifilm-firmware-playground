@@ -474,7 +474,7 @@ loads that file from SD to `0x40000000` and boots it.
   `(1,0x100,0x20),(4,0x90,0)`; index 5 null; indices 6/7 point
   into an overlapping data blob at `0x40d65a3c`/`0x40d65a48`
   (`0x0f0f0f0f` patterns, byte tables), not a clock-gate list;
-  their consumer is unknown.
+  consumed by `FUN_400822c4` (I2S audio config, `hal_aud`).
 - Details: [bootup-reset-and-rtos.md](bootup-reset-and-rtos.md).
 
 ## What remains open

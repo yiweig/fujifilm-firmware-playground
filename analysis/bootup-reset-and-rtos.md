@@ -153,10 +153,11 @@ The other descriptors are not all clock-gate lists:
 - index 1 (module 0, sub 1): `(1, 0xb100, 1)`, `(2, 0x40000, 0)`.
 - index 3 (module 1, sub 1): `(1, 0x100, 0x20)`, `(4, 0x90, 0)`.
 - index 5: null.
-- indices 6/7: point into an overlapping data blob at
-  `0x40d65a3c`/`0x40d65a48` (`0x0f0f0f0f` patterns, byte tables);
-  not a clock-gate list and not used by the boot-mode dispatch.
-  Their consumer is unknown.
+- indices 6/7: **I2S audio configuration parameters**, consumed by
+  `FUN_400822c4` (`hal_aud/hal_aud.c`; I2S channel/external ADC/DAC
+  config at `0x10006000`), not clock gates. The blob values
+  (`0x1500`/`0x1500`, `0xd00`/`0x500`, `0x8280`, `0x4280`/`0x280`,
+  ...) are I2S clock divider/format values.
 
 `type` selects the clock-gate class (1/2/4); `mask` is the gate
 bit(s); `value` is the register state. `FUN_40080ac8` writes them
