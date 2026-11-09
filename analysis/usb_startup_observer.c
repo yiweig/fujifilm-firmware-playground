@@ -35,6 +35,70 @@ static int64_t number(CFDictionaryRef properties, CFStringRef key) {
     return result;
 }
 
+static void string_field(CFDictionaryRef properties, CFStringRef key, const char *name) {
+    CFTypeRef value = properties ? CFDictionaryGetValue(properties, key) : NULL;
+    printf(",\"%s\":", name);
+    if (value && CFGetTypeID(value) == CFStringGetTypeID()) {
+        char buffer[256];
+        if (CFStringGetCString(value, buffer, sizeof buffer, kCFStringEncodingUTF8)) {
+            putchar('"');
+            for (const unsigned char *p = (const unsigned char *)buffer; *p; ++p) {
+                if (*p == '"' || *p == '\\') printf("\\%c", *p);
+                else if (*p < 0x20) printf("\\u%04x", *p);
+                else putchar(*p);
+            }
+            putchar('"');
+            return;
+        }
+    }
+    printf("null");
+}
+
+// Count and describe the device's IOUSBHostInterface children. The
+// loader has interface 5 (bulk 0x82/0x03); the updater's service
+// personality is vendor-class with different endpoints.
+static void emit_interfaces(io_service_t service) {
+    io_iterator_t iterator = IO_OBJECT_NULL;
+    if (IORegistryEntryGetChildIterator(service, kIOServicePlane, &iterator) != KERN_SUCCESS) {
+        printf(",\"interfaces\":null,\"interface_count\":null");
+        return;
+    }
+    printf(",\"interfaces\":[");
+    io_service_t child;
+    int first = 1, count = 0;
+    while ((child = IOIteratorNext(iterator))) {
+        io_name_t class_name = {0};
+        IOObjectGetClass(child, class_name);
+        if (strcmp(class_name, "IOUSBHostInterface") == 0) {
+            CFMutableDictionaryRef properties = NULL;
+            IORegistryEntryCreateCFProperties(child, &properties, kCFAllocatorDefault, 0);
+            if (!first) putchar(',');
+            printf("{\"number\":");
+            int64_t value = number(properties, CFSTR("bInterfaceNumber"));
+            if (value < 0) printf("null"); else printf("%" PRId64, value);
+            printf(",\"class\":");
+            value = number(properties, CFSTR("bInterfaceClass"));
+            if (value < 0) printf("null"); else printf("%" PRId64, value);
+            printf(",\"subclass\":");
+            value = number(properties, CFSTR("bInterfaceSubClass"));
+            if (value < 0) printf("null"); else printf("%" PRId64, value);
+            printf(",\"protocol\":");
+            value = number(properties, CFSTR("bInterfaceProtocol"));
+            if (value < 0) printf("null"); else printf("%" PRId64, value);
+            printf(",\"endpoints\":");
+            value = number(properties, CFSTR("bNumEndpoints"));
+            if (value < 0) printf("null"); else printf("%" PRId64, value);
+            putchar('}');
+            first = 0;
+            ++count;
+            if (properties) CFRelease(properties);
+        }
+        IOObjectRelease(child);
+    }
+    IOObjectRelease(iterator);
+    printf("],\"interface_count\":%d", count);
+}
+
 static Device metadata(io_service_t service) {
     Device d = {0, -1, -1, -1, -1};
     IORegistryEntryGetRegistryEntryID(service, &d.id);
@@ -71,6 +135,30 @@ static void emit(io_service_t service, const char *event, bool removed) {
     printf(",\"event\":\"%s\",\"registry_id\":%" PRIu64, event, d.id);
     field("vendor_id", d.vid); field("product_id", d.pid);
     field("location_id", d.location); field("usb_address", d.address);
+    CFMutableDictionaryRef properties = NULL;
+    if (IORegistryEntryCreateCFProperties(service, &properties, kCFAllocatorDefault, 0) == KERN_SUCCESS) {
+        int64_t value;
+        printf(",\"device_class\":");
+        value = number(properties, CFSTR("bDeviceClass"));
+        if (value < 0) printf("null"); else printf("%" PRId64, value);
+        printf(",\"device_subclass\":");
+        value = number(properties, CFSTR("bDeviceSubClass"));
+        if (value < 0) printf("null"); else printf("%" PRId64, value);
+        printf(",\"device_protocol\":");
+        value = number(properties, CFSTR("bDeviceProtocol"));
+        if (value < 0) printf("null"); else printf("%" PRId64, value);
+        printf(",\"num_configurations\":");
+        value = number(properties, CFSTR("bNumConfigurations"));
+        if (value < 0) printf("null"); else printf("%" PRId64, value);
+        printf(",\"bcd_device\":");
+        value = number(properties, CFSTR("bcdDevice"));
+        if (value < 0) printf("null"); else printf("%" PRId64, value);
+        string_field(properties, CFSTR("USB Product Name"), "product");
+        string_field(properties, CFSTR("USB Vendor Name"), "vendor");
+        string_field(properties, CFSTR("Serial Number"), "serial");
+        CFRelease(properties);
+    }
+    if (!removed) emit_interfaces(service);
     printf("}\n"); fflush(stdout);
     if (removed && slot >= 0) memset(&cache[slot], 0, sizeof(cache[slot]));
 }
