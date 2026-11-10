@@ -684,6 +684,17 @@ Low-memory/SRAM data reads wedge. But these are **not** all the paths:
   it does not enter the mask ROM. The true mask-ROM ISP remains a
   cold-boot/hardware path. Details:
   [usbt-mask-boundary-2026-11-10.md](usbt-mask-boundary-2026-11-10.md).
+- **H. SD chainloader / trampoline stage — negative (2026-11-10).** A
+  512-byte stage was built to copy a USB-staged image from `0x44000000`
+  to `0x40000000`. The SD path is blocked by the 32 GB SDHC card's
+  speed-switch failure (`sdReDetect`/`eSD header fail`); `sdboot` is not
+  usable on this card. The handler trampoline installs and reads back,
+  but the trigger kills the receiver control path and the stage never
+  drops USB. The `0x04f7` handoff with the 512-byte stage as payload
+  (`dest 0x41100200`, `skip_prep`) hung in the state-6 storage read like
+  the full-updater pushes. No software route executed the staged image;
+  NAND untouched, power-cycle recovery. Details:
+  [sd-chainloader-and-trampoline-2026-11-10.md](sd-chainloader-and-trampoline-2026-11-10.md).
 - **E. Loader-shell software reboot — confirmed (2026-11-10).** The
   factory command `clbt reboot <mode> <time>` works from the APITEST
   shell. Control block `0x413d3988`: flag at `+0`, mode at `+8`,
