@@ -1,0 +1,4 @@
+stage-card.bin
+firmware-main-ramtest.bin
+*.o
+__pycache__/
