@@ -656,6 +656,16 @@ Low-memory/SRAM data reads wedge. But these are **not** all the paths:
 - **D. Static boot-selection analysis.** The main firmware's
   boot-info/button/gate handoff may reveal the earlier-stage SD/SPBoot
   entry condition; supports A and B.
+- **F. Firmware image checksum — decoded (2026-11-10).** The installed
+  Firmware1 check is a **16-bit additive byte sum** (`0x40057d40`), and
+  the expected value is `(u16(NAND header +0x42) + u16(+0x44)) & 0xffff`.
+  The stock image sums to `0x77cb`; header pair `0x3828 + 0x3fa3 =
+  0x77cb` — exact match. `analysis/fw_checksum.py` computes the sums and
+  repairs the header pair. The staged loader consumes the **SRAM-copied**
+  header at `0x3f000000`; writing NAND block 0 is still excluded, but the
+  SRAM copy is RAM. A modified image can be made checksum-correct; a safe
+  boot/execute route is still the blocker. Details:
+  [image-checksum-2026-11-10.md](image-checksum-2026-11-10.md).
 - **E. Loader-shell software reboot — confirmed (2026-11-10).** The
   factory command `clbt reboot <mode> <time>` works from the APITEST
   shell. Control block `0x413d3988`: flag at `+0`, mode at `+8`,
