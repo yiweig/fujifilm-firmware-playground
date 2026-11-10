@@ -47,6 +47,23 @@ If the mode field is not honored without the test flag, the next boot
 is a normal retail boot; power-cycle and restore the file. The NAND is
 never written.
 
+## Test with EnableTest.txt removed
+
+The shell `attr` rename did not take effect (`EnableTest.txt` remained
+on the card), so the test flag was still present for the first mode-3
+reboot. Renaming from the Mac (`EnableTest.txt` -> `EnableTest.bak`)
+and booting normally gave the **normal shooting UI** and retail PTP
+`04cb:030a`, even though the last `clbt reboot 3 0` had set the mode
+field to Playback.
+
+Conclusion: `EnableTest.txt` is the dominant debug-mode selector.
+Modes 3/4 only produce the green debug UI while the test flag is
+present. The stored mode 3 did not produce a visible retail Playback
+screen after a normal boot; the retail boot either consumes/clears the
+RTC/backup field or ignores it. The 3-vs-4 bitfield difference is real
+inside the debug firmware, but not observable as a retail
+Playback-vs-Clbt distinction in this configuration.
+
 ## Mode encoding
 
 The mode executor (`0x40523e94`) writes an RTC/backup boot-mode register at
