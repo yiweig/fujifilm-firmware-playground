@@ -656,6 +656,16 @@ Low-memory/SRAM data reads wedge. But these are **not** all the paths:
 - **D. Static boot-selection analysis.** The main firmware's
   boot-info/button/gate handoff may reveal the earlier-stage SD/SPBoot
   entry condition; supports A and B.
+- **E. Loader-shell software reboot — confirmed (2026-11-10).** The
+  factory command `clbt reboot <mode> <time>` works from the APITEST
+  shell. Control block `0x413d3988`: flag at `+0`, mode at `+8`,
+  countdown at `0x40e0e254`. Mode 1 = clean power-off (waits for the
+  power button); mode 2 = full automatic reboot to View (normal PTP
+  `04cb:030a` re-enumerated). Modes 3/4 pending. The plain `reboot`
+  command hangs in the shell context; use `clbt reboot`. Details:
+  [reboot-control-block-2026-11-10.md](reboot-control-block-2026-11-10.md).
+  Running-firmware only; it cannot recover an earlier-stage `usbt`
+  hang where the shell is not running.
 
 Closed: `0x04f7` payload execution, calibration menu as a boot selector,
 low-memory/SRAM data reads, NAND/flash writes without recovery, and the
