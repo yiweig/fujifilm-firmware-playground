@@ -27,6 +27,26 @@ the pre-reboot function `0x405e6fa0` first. In the shell context that
 call hung the CPU (loader debug UI left on screen, USB bootquery dead);
 the `clbt reboot` path is the safe one.
 
+## Observing the 3-vs-4 difference
+
+`D:\EnableTest.txt` is checked at boot, so it is needed only for the
+current loader session. To see the retail mapping:
+
+1. Boot loader mode with `EnableTest.txt` present and reach `cmd>`.
+2. Rename the file from the shell:
+   `attr D:\EnableTest.txt 0 1 D:\EnableTest.bak`
+   (`opt` bit 0 = rename; bit 1 = set attributes; the handler is
+   `0x402fae38` -> `0x40010ef0`).
+3. Send `clbt reboot 3 0` (Playback) or `4 0` (Clbt).
+4. The next boot has no test flag; the retail boot stage reads the
+   RTC/backup mode field and should select Playback or Clbt.
+5. Restore the card: rename `EnableTest.bak` back to `EnableTest.txt`
+   from the Mac, or rebuild with `restore_loader_card.sh`.
+
+If the mode field is not honored without the test flag, the next boot
+is a normal retail boot; power-cycle and restore the file. The NAND is
+never written.
+
 ## Mode encoding
 
 The mode executor (`0x40523e94`) writes an RTC/backup boot-mode register at
