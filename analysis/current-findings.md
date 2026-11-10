@@ -631,21 +631,18 @@ unrecovered `0x00000b34` and the mapping/cache path returns to the stock
 firmware. The calibration menu is a factory test UI, not a boot selector.
 Low-memory/SRAM data reads wedge. But these are **not** all the paths:
 
-- **A. eSD card boot — confirmed working (2026-11-09).** The vendor
-  `sdset` header plus the stock main image in slot 1 boots the stock
-  firmware **from the card**; the camera's NAND is untouched. The
-  earlier eSD stage enters the slot at image `+0x0`, so the image's
-  first instruction must be patched from `EA0003AE` (`b +0xec0`) to
-  `EA00007E` (`b +0x200`), the same DRAM-init entry the `0x04f7`
-  handoff uses. The header `+0x40` must be the exact halfword
-  `0x0032`; the checksummed `0x0a32` form falls back to NAND. Slot 1
-  starts at block `0xa2` (`0x510000`), length `0xe38400`, `nrFw1 =
-  456`. The camera boots the normal UI with “Card not initialized”
-  (raw card); removing the card returns to the NAND boot. The shell
-  `sdfww`/`sdboot` path is not needed and `sdboot` reads only one
-  sector. Details and the observed matrix:
-  [esd-boot-2026-11-09.md](esd-boot-2026-11-09.md). Card-level only;
-  the camera's NAND is untouched. This is now the safe SD-boot base.
+- **A. eSD card boot — RETRACTED (2026-11-09).** The vendor `sdset`
+  header plus the main image in slot 1 does **not** boot the card
+  image. Control tests with USB unplugged show the camera boots NAND
+  in every configuration (stock entry, `+0x200` entry, type `0x00`,
+  type `0x0032`); PTP model/version patches written only into the
+  card slot never appeared. The black screens were the **raw card +
+  USB communication** crash, not a card-image boot. The `+0x40 = 0x32`
+  field is a slot/format type, not a cold-boot selector. A hybrid
+  MBR/FAT card at 32 MB fixes the USB crash but still boots NAND.
+  Details and evidence:
+  [esd-card-boot-retraction-2026-11-09.md](esd-card-boot-retraction-2026-11-09.md).
+  The safe SD-boot/recovery path remains unproven.
 - **B. SPBoot USB entry.** The earlier stage's `2aad:6500`/`iCatch
   CA6500A` USB descriptor block is in the SRAM dump. The shell `usbt`
   command (`0x4031d498`, “Ready for Usb Boot ..”) is a running-firmware

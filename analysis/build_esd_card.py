@@ -65,6 +65,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--entry-200", action="store_true")
     ap.add_argument("--marker", action="store_true")
+    ap.add_argument("--marker-safe", action="store_true")
+    ap.add_argument("--marker-usb", action="store_true")
     ap.add_argument("--raw-type", action="store_true")
     ap.add_argument("--out", default="analysis/output/esd-boot-card.bin")
     args = ap.parse_args()
@@ -74,6 +76,22 @@ def main() -> None:
         raise SystemExit("firmware-main.bin is not the expected stock image")
     if args.entry_200:
         struct.pack_into("<I", fw, 0, ENTRY_200)
+    if args.marker_usb:
+        off, old, new = 0xB929A5, b"Digital Camera", b"Digital CamerX"
+        if fw[off:off + len(old)] != old or len(new) != len(old):
+            raise SystemExit("USB marker patch mismatch")
+        fw[off:off + len(new)] = new
+        print("USB product marker patched")
+    if args.marker_safe:
+        replacements = {
+            0xB929A5: (b"Digital Camera", b"XHALF-ESD-CAM "),
+            0xB9CB88: (b"0100", b"XESD"),
+        }
+        for off, (old, new) in replacements.items():
+            if fw[off:off + len(old)] != old or len(new) != len(old):
+                raise SystemExit(f"safe marker patch mismatch at 0x{off:x}")
+            fw[off:off + len(new)] = new
+        print("safe marker strings patched")
     if args.marker:
         replacements = {
             0xB929A5: (b"Digital Camera", b"XHALF-ESD-CAM "),
