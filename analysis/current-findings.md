@@ -664,8 +664,14 @@ Low-memory/SRAM data reads wedge. But these are **not** all the paths:
   repairs the header pair. The staged loader consumes the **SRAM-copied**
   header at `0x3f000000`; writing NAND block 0 is still excluded, but the
   SRAM copy is RAM. A modified image can be made checksum-correct; a safe
-  boot/execute route is still the blocker. Details:
-  [image-checksum-2026-11-10.md](image-checksum-2026-11-10.md).
+  boot/execute route is still the blocker. The staged loader
+  (`FUN_40000338`) is **not self-contained**: it consumes the SRAM
+  header and the earlier-stage low helpers `0xb24/0x2700/0xb34/0x2d18/
+  0x788`; the SRAM function slot `0x3f004e34` is zero in the
+  loader-mode dump. A RAM-image substitution via `+0x200` is blocked
+  without the cold-boot earlier stage. Details:
+  [image-checksum-2026-11-10.md](image-checksum-2026-11-10.md),
+  [section-loader-dependency-2026-11-10.md](section-loader-dependency-2026-11-10.md).
 - **E. Loader-shell software reboot — confirmed (2026-11-10).** The
   factory command `clbt reboot <mode> <time>` works from the APITEST
   shell. Control block `0x413d3988`: flag at `+0`, mode at `+8`,
