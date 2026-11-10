@@ -27,6 +27,25 @@ the pre-reboot function `0x405e6fa0` first. In the shell context that
 call hung the CPU (loader debug UI left on screen, USB bootquery dead);
 the `clbt reboot` path is the safe one.
 
+## Mode encoding
+
+The mode executor (`0x40523e94`) writes an RTC/backup boot-mode register at
+`0x40e4ae64` through the RTC helpers `0x40041c44` (read, with checksum)
+and `0x40041be8` (write, with checksum). The final alarm/countdown is set
+by `0x40041d14`, and `FUN_40041550(2)` triggers the power/reset.
+
+| Mode | Register change | Boot target field |
+| --- | --- | --- |
+| 1 | set bit 9 (`0x200`) | power-off / no auto-reboot |
+| 2 | clear bit 9; `bfi` bits 13–14 = 1 | View |
+| 3 | clear bit 9; `bfi` bits 13–14 = 2 | Playback |
+| 4 | clear bit 9; `orr #0x6000` → bits 13–14 = 3 | Clbt |
+
+Modes 2/3/4 are distinct values in the same 2-bit field. The running
+debug/loader firmware maps both 2 and 3 to the same green debug UI in
+this card configuration, so the Playback/Clbt difference is not visible
+here; a boot stage that honors the field would distinguish them.
+
 ## Observed modes
 
 | Command | Result |
