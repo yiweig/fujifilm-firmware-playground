@@ -34,10 +34,13 @@ the `clbt reboot` path is the safe one.
 | `clbt reboot 1 0` | clean power-off; green charge LED; power button boots normally |
 | `clbt reboot 2 0` | full automatic reboot; shooting screen briefly, then normal USB PTP (`04cb:030a`) |
 | `clbt reboot 3 0` | rebooted to the **debug/playback personality** (green UI, `2aad:6500`), not the retail playback UI |
-| `clbt reboot 4 0` | not tested; expected Clbt/calibration (the green UI is already the debug/calibration environment) |
+| `clbt reboot 4 0` | rebooted to the debug/calibration menu (Clbt), `2aad:6500`; confirmed |
 
 Mode 2 is the normal “reboot to View” path and is the safe way to leave
-loader/debug mode without a battery pull.
+loader/debug mode without a battery pull. The command range is 0–4:
+the help string says `mode: 0~4`, the setter bounds-checks `mode <= 4`,
+and the executor has the four defined cases. Mode 0 is the no-op /
+“Out of control.. do nothing!!” path.
 
 ## Shell activation
 
