@@ -672,6 +672,18 @@ Low-memory/SRAM data reads wedge. But these are **not** all the paths:
   without the cold-boot earlier stage. Details:
   [image-checksum-2026-11-10.md](image-checksum-2026-11-10.md),
   [section-loader-dependency-2026-11-10.md](section-loader-dependency-2026-11-10.md).
+- **G. Vendor mask path — not reachable from `usbt` (2026-11-10).** The
+  Windows DLL's `0x04f3`/`0x04f1` sequence is the **mask-ROM** flow. In
+  the live `usbt` state the same indices reach the main firmware's
+  receiver: `state+0x30` first-use flag is **0** (live read at
+  `0x40fd0d50`), so `0x04f3` is a storage read + `memcpy` to
+  `0x3f000200`, not a download; a 666 KiB size would overflow the
+  64 KiB SRAM window. `0x04f1` enters the same state-6 park/handoff as
+  `0x04f7` (prep callback `0x405da53c` is live at `state+0x40`).
+  `usbt` itself only parks mode `0x88` and switches the USB API mode;
+  it does not enter the mask ROM. The true mask-ROM ISP remains a
+  cold-boot/hardware path. Details:
+  [usbt-mask-boundary-2026-11-10.md](usbt-mask-boundary-2026-11-10.md).
 - **E. Loader-shell software reboot — confirmed (2026-11-10).** The
   factory command `clbt reboot <mode> <time>` works from the APITEST
   shell. Control block `0x413d3988`: flag at `+0`, mode at `+8`,
@@ -684,8 +696,8 @@ Low-memory/SRAM data reads wedge. But these are **not** all the paths:
   hang where the shell is not running.
 
 Closed: `0x04f7` payload execution, calibration menu as a boot selector,
-low-memory/SRAM data reads, NAND/flash writes without recovery, and the
-RAM-pushed updater path.
+low-memory/SRAM data reads, NAND/flash writes without recovery, the
+RAM-pushed updater path, and the vendor mask sequence from `usbt`.
 
 ## What remains open
 
