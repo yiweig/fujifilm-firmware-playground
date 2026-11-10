@@ -111,3 +111,18 @@ the help/handler and the `eSD RSV` schema in
 [recovery-entry-review.md](recovery-entry-review.md); the exact
 reserved-size/total-block geometry for a 32 GB card is not yet
 validated. The commands have not been run on the camera.
+
+## Update 2026-11-09: the shell path was not needed
+
+The live follow-up did not complete `sdfww`: the shell's SD read failed
+at CMD18 (`R CRC Err1/2`), reduced the clock, and spent more than ten
+minutes in phase/latch tuning. The card was unchanged after each
+attempt.
+
+The working path is the earlier eSD stage itself, using the `sdset`
+header and the stock image in slot 1. `sdboot` is not a full-image
+loader: `0x40345c80` passes length 0 to `0x400778fc` (one 512-byte
+sector) and uses `+0x1c` as a byte offset. The eSD stage enters the
+slot at image `+0x0`; patching the first instruction to `b +0x200`
+makes the stock firmware boot. See
+[esd-boot-2026-11-09.md](esd-boot-2026-11-09.md).
