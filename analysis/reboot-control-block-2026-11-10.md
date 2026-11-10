@@ -46,6 +46,20 @@ debug/loader firmware maps both 2 and 3 to the same green debug UI in
 this card configuration, so the Playback/Clbt difference is not visible
 here; a boot stage that honors the field would distinguish them.
 
+## Why modes 3 and 4 both show the green UI
+
+The test card contains `D:\EnableTest.txt`, the factory/test enable flag
+the firmware opens at boot. That flag selects the debug/calibration
+personality; the button combo is how loader mode is entered when the
+card is set up. With the test flag present, modes 3 and 4 target the
+debug/test firmware's Playback/Clbt slots, so both land in the same
+green UI without the buttons. Mode 2 targets the retail View app, which
+re-enumerates as `04cb:030a`; that is the visible difference.
+
+The 3-vs-4 bitfield difference is real (field 2 vs 3), but the test-card
+firmware does not expose a visible Playback-vs-Clbt distinction. A boot
+without `EnableTest.txt` would be needed to see the retail mapping.
+
 ## Observed modes
 
 | Command | Result |
